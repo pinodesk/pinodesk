@@ -1,3 +1,3 @@
-### Bianglala
+# Bianglala
 
 Bianglala POS software.
