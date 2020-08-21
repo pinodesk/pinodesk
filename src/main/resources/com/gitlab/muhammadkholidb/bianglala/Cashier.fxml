@@ -1,59 +1,158 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1024.0" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.CashierController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1024.0" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../../bianglala.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.CashierController">
    <children>
-      <Pane layoutX="746.0" layoutY="14.0" prefHeight="110.0" prefWidth="400.0" style="-fx-background-color: #009c7c;" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
+      <VBox layoutX="762.0" layoutY="71.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <Label layoutX="312.0" layoutY="14.0" text="TOTAL" textFill="WHITE">
-               <font>
-                  <Font size="24.0" />
-               </font>
-            </Label>
-            <Label layoutX="56.0" layoutY="43.0" text="Rp 999,000,000" textFill="WHITE">
-               <font>
-                  <Font size="45.0" />
-               </font>
-            </Label>
+            <Pane prefHeight="78.0" prefWidth="262.0" style="-fx-background-color: black;">
+               <children>
+                  <Label alignment="CENTER_RIGHT" layoutX="186.0" layoutY="8.0" text="TOTAL" textFill="WHITE">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="34.0" prefHeight="37.0" prefWidth="223.0" text="Rp 999,000,000" textAlignment="RIGHT" textFill="WHITE">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+            <Pane prefHeight="64.0" prefWidth="262.0" styleClass="bg-secondary">
+               <children>
+                  <Label layoutX="8.0" layoutY="13.0" text="Subtotal :" />
+                  <Label layoutX="8.0" layoutY="38.0" text="Discount :" />
+                  <Label alignment="CENTER_RIGHT" layoutX="160.0" layoutY="11.0" text="Rp 99,000,000" />
+                  <Label alignment="CENTER_RIGHT" layoutX="222.0" layoutY="36.0" text="Rp 0" />
+               </children>
+            </Pane>
+            <Button fx:id="btnNew" mnemonicParsing="false" onMouseClicked="#onBtnNewClicked" prefHeight="29.0" prefWidth="262.0" text="New" textFill="WHITE">
+               <styleClass>
+                  <String fx:value="btn-primary" />
+                  <String fx:value="no-round-corner" />
+                  <String fx:value="align-left" />
+               </styleClass>
+            </Button>
+            <Button fx:id="btnSaveAsDraft" mnemonicParsing="false" onMouseClicked="#onBtnSaveAsDraftClicked" prefHeight="29.0" prefWidth="262.0" text="Save as Draft" textFill="WHITE">
+               <styleClass>
+                  <String fx:value="btn-primary" />
+                  <String fx:value="no-round-corner" />
+                  <String fx:value="align-left" />
+               </styleClass>
+            </Button>
+            <Button fx:id="btnOpenDraft" mnemonicParsing="false" onMouseClicked="#onBtnOpenDraftClicked" prefHeight="29.0" prefWidth="262.0" text="Open Draft" textFill="WHITE">
+               <styleClass>
+                  <String fx:value="btn-primary" />
+                  <String fx:value="no-round-corner" />
+                  <String fx:value="align-left" />
+               </styleClass>
+            </Button>
+            <Button fx:id="btnPriceCheck" mnemonicParsing="false" onMouseClicked="#onBtnPriceCheckClicked" prefHeight="29.0" prefWidth="262.0" text="Price Check" textFill="WHITE">
+               <styleClass>
+                  <String fx:value="btn-primary" />
+                  <String fx:value="no-round-corner" />
+                  <String fx:value="align-left" />
+               </styleClass>
+            </Button>
          </children>
-      </Pane>
-      <ImageView fitHeight="72.0" fitWidth="64.0" layoutX="444.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="430.0" AnchorPane.topAnchor="15.0">
-         <image>
-            <Image url="@../../../../images/woman.png" />
-         </image>
-      </ImageView>
-      <Label layoutX="401.0" layoutY="33.0" text="Diana" AnchorPane.rightAnchor="501.0">
+      </VBox>
+      <HBox layoutX="15.0" layoutY="71.0" prefHeight="29.0" prefWidth="734.0" spacing="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="275.0">
+         <children>
+            <TextField fx:id="inputProduct" prefHeight="29.0" prefWidth="637.0" promptText="Product name or code" HBox.hgrow="ALWAYS">
+               <styleClass>
+                  <String fx:value="input-primary" />
+                  <String fx:value="no-round-corner" />
+               </styleClass>
+            </TextField>
+            <Button fx:id="btnAdd" mnemonicParsing="false" onMouseClicked="#onBtnAddClicked" prefHeight="29.0" prefWidth="87.0" text="Add" textFill="WHITE">
+               <styleClass>
+                  <String fx:value="btn-primary" />
+                  <String fx:value="no-round-corner" />
+               </styleClass>
+            </Button>
+         </children>
+      </HBox>
+      <TableView fx:id="tableProduct" layoutX="14.0" layoutY="115.0" prefHeight="345.0" prefWidth="735.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="275.0">
+        <columns>
+          <TableColumn fx:id="colProductCode" maxWidth="-1.0" minWidth="140.0" prefWidth="140.0" text="Product Code" />
+          <TableColumn fx:id="colProductName" maxWidth="-1.0" minWidth="470.0" prefWidth="470.0" text="Product Name" />
+            <TableColumn fx:id="colQuantity" maxWidth="-1.0" minWidth="75.0" prefWidth="75.0" text="Quantity" />
+            <TableColumn fx:id="colPrice" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" text="Price" />
+            <TableColumn fx:id="colSubtotal" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" text="Subtotal" />
+        </columns>
+      </TableView>
+      <AnchorPane layoutX="10.0" layoutY="688.0" prefHeight="27.0" prefWidth="1024.0" style="-fx-background-color: #009c7c;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <RadioButton layoutX="14.0" layoutY="5.0" mnemonicParsing="false" text="Indonesia" textFill="WHITE" AnchorPane.leftAnchor="15.0">
+               <toggleGroup>
+                  <ToggleGroup fx:id="language" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton layoutX="108.0" layoutY="5.0" mnemonicParsing="false" text="Inggris" textFill="WHITE" toggleGroup="$language" />
+         </children></AnchorPane>
+      <MenuButton layoutX="858.0" layoutY="16.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="138.0" text="Diana" textFill="WHITE" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Logout" />
+        </items>
+         <styleClass>
+            <String fx:value="btn-primary" />
+            <String fx:value="no-round-corner" />
+         </styleClass>
+         <graphic>
+            <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../../../images/user.png" />
+               </image>
+            </ImageView>
+         </graphic>
          <font>
-            <Font size="24.0" />
+            <Font size="18.0" />
          </font>
-      </Label>
-      <ImageView fitHeight="72.0" fitWidth="72.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
+      </MenuButton>
+      <Pane layoutX="200.0" layoutY="12.0" prefHeight="53.0" prefWidth="886.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="138.0" AnchorPane.topAnchor="0.0">
+         <styleClass>
+            <String fx:value="bg-secondary" />
+            <String fx:value="border-secondary" />
+         </styleClass>
+      </Pane>
+      <ImageView fitHeight="44.0" fitWidth="125.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="5.0">
          <image>
             <Image url="@../../../../images/logo.png" />
          </image>
       </ImageView>
-      <TextField fx:id="inputProduct" layoutX="229.0" layoutY="125.0" prefHeight="29.0" prefWidth="510.0" promptText="Product name or code" style="-fx-border-radius: 0 0 0 0; -fx-background-radius: 0 0 0 0; -fx-background-color: -fx-text-box-border, -fx-control-inner-background; -fx-border-color: #009c7c;" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="499.0" />
-      <Button fx:id="btnAdd" layoutX="536.0" layoutY="125.0" mnemonicParsing="false" onMouseClicked="#onMouseClicked" prefHeight="29.0" prefWidth="58.0" style="-fx-background-radius: 0 0 0 0; -fx-border-radius: 0 0 0 0; -fx-background-color: #009c7c;" text="Add" textFill="WHITE" AnchorPane.rightAnchor="430.0" />
-      <AnchorPane layoutX="14.0" layoutY="166.0" prefHeight="351.0" prefWidth="579.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="430.0">
+      <HBox layoutX="565.0" layoutY="473.0" spacing="10.0" AnchorPane.rightAnchor="275.0">
          <children>
-            <TableView fx:id="tableProduct" layoutX="6.0" layoutY="7.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <columns>
-                <TableColumn prefWidth="75.0" text="C1" />
-                <TableColumn prefWidth="75.0" text="C2" />
-              </columns>
-            </TableView>
+            <Button fx:id="btnCancel" mnemonicParsing="false" onMouseClicked="#onBtnCancelClicked" prefHeight="29.0" prefWidth="87.0" text="Cancel" textFill="WHITE">
+               <styleClass>
+                  <String fx:value="btn-secondary" />
+                  <String fx:value="no-round-corner" />
+               </styleClass>
+            </Button>
+            <Button fx:id="btnPay" mnemonicParsing="false" onMouseClicked="#onBtnPayClicked" prefHeight="29.0" prefWidth="87.0" text="Pay" textFill="WHITE">
+               <styleClass>
+                  <String fx:value="btn-danger" />
+                  <String fx:value="no-round-corner" />
+               </styleClass>
+            </Button>
          </children>
-      </AnchorPane>
-      <AnchorPane layoutX="10.0" layoutY="688.0" prefHeight="27.0" prefWidth="1024.0" style="-fx-background-color: #009c7c;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      </HBox>
    </children>
 </AnchorPane>

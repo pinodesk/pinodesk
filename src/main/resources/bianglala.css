@@ -1,0 +1,64 @@
+.no-round-corner {
+    -fx-border-radius: 0 0 0 0;
+    -fx-background-radius: 0 0 0 0;
+}
+
+.btn-primary {
+    -fx-background-color: #009c7c;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #008167;
+    -fx-cursor: pointer;
+}
+
+.btn-secondary {
+    -fx-background-color: #afafaf;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #727272;
+    -fx-cursor: pointer;
+}
+
+.btn-danger {
+    -fx-background-color: #ff5050;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #d13333;
+    -fx-cursor: pointer;
+}
+
+.align-left {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.align-right {
+    -fx-alignment: CENTER_RIGHT;
+}
+
+.bg-primary {
+    -fx-background-color: #009c7c;
+}
+
+.bg-secondary {
+    -fx-background-color: #dddddd;
+}
+
+.border-primary {
+    -fx-border-color: #009c7c;
+}
+
+.border-secondary {
+    -fx-border-color: #dddddd;
+}
+
+.input-primary {
+    -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+    -fx-border-color: #009c7c;
+}
+
+.menu-button > .arrow-button > .arrow {
+    -fx-background-color: #fff;
+}
