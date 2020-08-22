@@ -9,7 +9,6 @@
 
 .btn-primary:hover {
     -fx-background-color: #008167;
-    -fx-cursor: pointer;
 }
 
 .btn-secondary {

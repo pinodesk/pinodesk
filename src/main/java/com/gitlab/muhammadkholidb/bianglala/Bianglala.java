@@ -1,7 +1,12 @@
 package com.gitlab.muhammadkholidb.bianglala;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
-import com.gitlab.muhammadkholidb.bianglala.utility.SpringFXMLLoader;
+import com.gitlab.muhammadkholidb.bianglala.constant.ViewNameConstants;
+import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
+import com.gitlab.muhammadkholidb.bianglala.utility.ViewLoader;
+import com.gitlab.muhammadkholidb.jdbctemplatehelper.config.JdbcTemplateHelperConfig;
+
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -10,12 +15,16 @@ import javafx.stage.Stage;
 
 public class Bianglala extends Application {
 
-    private static final SpringFXMLLoader loader = new SpringFXMLLoader();
+    private void initSpring() {
+        ApplicationContextHolder
+                .init(new AnnotationConfigApplicationContext(SpringConfig.class, JdbcTemplateHelperConfig.class));
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        initSpring();
         primaryStage.setTitle(CommonConstants.APP_TITLE);
-        AnchorPane page = (AnchorPane) loader.load(getClass().getResource("Cashier.fxml"));
+        AnchorPane page = (AnchorPane) ViewLoader.load(ViewNameConstants.CASHIER);
         Scene scene = new Scene(page);
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -24,5 +33,5 @@ public class Bianglala extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-    
+
 }

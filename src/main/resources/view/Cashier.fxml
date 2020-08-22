@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1024.0" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../../bianglala.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.CashierController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1024.0" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../bianglala.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.CashierController">
    <children>
       <VBox layoutX="762.0" layoutY="71.0" AnchorPane.rightAnchor="0.0">
          <children>
@@ -38,34 +38,34 @@
             </Pane>
             <Pane prefHeight="64.0" prefWidth="262.0" styleClass="bg-secondary">
                <children>
-                  <Label layoutX="8.0" layoutY="13.0" text="Subtotal :" />
-                  <Label layoutX="8.0" layoutY="38.0" text="Discount :" />
+                  <Label layoutX="8.0" layoutY="13.0" text="%label.subtotal" />
+                  <Label layoutX="8.0" layoutY="38.0" text="%label.discount" />
                   <Label alignment="CENTER_RIGHT" layoutX="160.0" layoutY="11.0" text="Rp 99,000,000" />
                   <Label alignment="CENTER_RIGHT" layoutX="222.0" layoutY="36.0" text="Rp 0" />
                </children>
             </Pane>
-            <Button fx:id="btnNew" mnemonicParsing="false" onMouseClicked="#onBtnNewClicked" prefHeight="29.0" prefWidth="262.0" text="New" textFill="WHITE">
+            <Button fx:id="btnNew" mnemonicParsing="false" onMouseClicked="#onBtnNewClicked" prefHeight="29.0" prefWidth="262.0" text="%label.new" textFill="WHITE">
                <styleClass>
                   <String fx:value="btn-primary" />
                   <String fx:value="no-round-corner" />
                   <String fx:value="align-left" />
                </styleClass>
             </Button>
-            <Button fx:id="btnSaveAsDraft" mnemonicParsing="false" onMouseClicked="#onBtnSaveAsDraftClicked" prefHeight="29.0" prefWidth="262.0" text="Save as Draft" textFill="WHITE">
+            <Button fx:id="btnSaveAsDraft" mnemonicParsing="false" onMouseClicked="#onBtnSaveAsDraftClicked" prefHeight="29.0" prefWidth="262.0" text="%label.saveAsDraft" textFill="WHITE">
                <styleClass>
                   <String fx:value="btn-primary" />
                   <String fx:value="no-round-corner" />
                   <String fx:value="align-left" />
                </styleClass>
             </Button>
-            <Button fx:id="btnOpenDraft" mnemonicParsing="false" onMouseClicked="#onBtnOpenDraftClicked" prefHeight="29.0" prefWidth="262.0" text="Open Draft" textFill="WHITE">
+            <Button fx:id="btnOpenDraft" mnemonicParsing="false" onMouseClicked="#onBtnOpenDraftClicked" prefHeight="29.0" prefWidth="262.0" text="%label.openDraft" textFill="WHITE">
                <styleClass>
                   <String fx:value="btn-primary" />
                   <String fx:value="no-round-corner" />
                   <String fx:value="align-left" />
                </styleClass>
             </Button>
-            <Button fx:id="btnPriceCheck" mnemonicParsing="false" onMouseClicked="#onBtnPriceCheckClicked" prefHeight="29.0" prefWidth="262.0" text="Price Check" textFill="WHITE">
+            <Button fx:id="btnPriceCheck" mnemonicParsing="false" onMouseClicked="#onBtnPriceCheckClicked" prefHeight="29.0" prefWidth="262.0" text="%label.priceCheck" textFill="WHITE">
                <styleClass>
                   <String fx:value="btn-primary" />
                   <String fx:value="no-round-corner" />
@@ -76,13 +76,13 @@
       </VBox>
       <HBox layoutX="15.0" layoutY="71.0" prefHeight="29.0" prefWidth="734.0" spacing="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="275.0">
          <children>
-            <TextField fx:id="inputProduct" prefHeight="29.0" prefWidth="637.0" promptText="Product name or code" HBox.hgrow="ALWAYS">
+            <TextField fx:id="inputProduct" prefHeight="29.0" prefWidth="637.0" promptText="%label.productNameOrCode" HBox.hgrow="ALWAYS">
                <styleClass>
                   <String fx:value="input-primary" />
                   <String fx:value="no-round-corner" />
                </styleClass>
             </TextField>
-            <Button fx:id="btnAdd" mnemonicParsing="false" onMouseClicked="#onBtnAddClicked" prefHeight="29.0" prefWidth="87.0" text="Add" textFill="WHITE">
+            <Button fx:id="btnAdd" mnemonicParsing="false" onMouseClicked="#onBtnAddClicked" prefHeight="29.0" prefWidth="87.0" text="%label.add" textFill="WHITE">
                <styleClass>
                   <String fx:value="btn-primary" />
                   <String fx:value="no-round-corner" />
@@ -92,21 +92,25 @@
       </HBox>
       <TableView fx:id="tableProduct" layoutX="14.0" layoutY="115.0" prefHeight="345.0" prefWidth="735.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="275.0">
         <columns>
-          <TableColumn fx:id="colProductCode" maxWidth="-1.0" minWidth="140.0" prefWidth="140.0" text="Product Code" />
-          <TableColumn fx:id="colProductName" maxWidth="-1.0" minWidth="470.0" prefWidth="470.0" text="Product Name" />
-            <TableColumn fx:id="colQuantity" maxWidth="-1.0" minWidth="75.0" prefWidth="75.0" text="Quantity" />
-            <TableColumn fx:id="colPrice" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" text="Price" />
-            <TableColumn fx:id="colSubtotal" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" text="Subtotal" />
+          <TableColumn fx:id="colProductCode" maxWidth="-1.0" minWidth="140.0" prefWidth="140.0" text="%label.productCode" />
+          <TableColumn fx:id="colProductName" maxWidth="-1.0" minWidth="470.0" prefWidth="470.0" text="%label.productName" />
+            <TableColumn fx:id="colQuantity" maxWidth="-1.0" minWidth="75.0" prefWidth="75.0" text="%label.quantity" />
+            <TableColumn fx:id="colPrice" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" text="%label.price" />
+            <TableColumn fx:id="colSubtotal" maxWidth="-1.0" minWidth="100.0" prefWidth="100.0" text="%label.subtotal" />
         </columns>
       </TableView>
       <AnchorPane layoutX="10.0" layoutY="688.0" prefHeight="27.0" prefWidth="1024.0" style="-fx-background-color: #009c7c;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <RadioButton layoutX="14.0" layoutY="5.0" mnemonicParsing="false" text="Indonesia" textFill="WHITE" AnchorPane.leftAnchor="15.0">
-               <toggleGroup>
-                  <ToggleGroup fx:id="language" />
-               </toggleGroup>
-            </RadioButton>
-            <RadioButton layoutX="108.0" layoutY="5.0" mnemonicParsing="false" text="Inggris" textFill="WHITE" toggleGroup="$language" />
+            <HBox layoutX="15.0" layoutY="5.0" spacing="10.0" AnchorPane.leftAnchor="15.0">
+               <children>
+                  <RadioButton mnemonicParsing="false" onMouseClicked="#onRbBahasaClicked" text="Indonesia" textFill="WHITE">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="language" />
+                     </toggleGroup>
+                  </RadioButton>
+                  <RadioButton mnemonicParsing="false" onMouseClicked="#onRbEnglishClicked" text="Inggris" textFill="WHITE" toggleGroup="$language" />
+               </children>
+            </HBox>
          </children></AnchorPane>
       <MenuButton layoutX="858.0" layoutY="16.0" mnemonicParsing="false" prefHeight="44.0" prefWidth="138.0" text="Diana" textFill="WHITE" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
@@ -119,7 +123,7 @@
          <graphic>
             <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../images/user.png" />
+                  <Image url="@../image/user.png" />
                </image>
             </ImageView>
          </graphic>
@@ -135,18 +139,18 @@
       </Pane>
       <ImageView fitHeight="44.0" fitWidth="125.0" layoutX="14.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="5.0">
          <image>
-            <Image url="@../../../../images/logo.png" />
+            <Image url="@../image/logo.png" />
          </image>
       </ImageView>
       <HBox layoutX="565.0" layoutY="473.0" spacing="10.0" AnchorPane.rightAnchor="275.0">
          <children>
-            <Button fx:id="btnCancel" mnemonicParsing="false" onMouseClicked="#onBtnCancelClicked" prefHeight="29.0" prefWidth="87.0" text="Cancel" textFill="WHITE">
+            <Button fx:id="btnCancel" mnemonicParsing="false" onMouseClicked="#onBtnCancelClicked" prefHeight="29.0" prefWidth="87.0" text="%label.cancel" textFill="WHITE">
                <styleClass>
                   <String fx:value="btn-secondary" />
                   <String fx:value="no-round-corner" />
                </styleClass>
             </Button>
-            <Button fx:id="btnPay" mnemonicParsing="false" onMouseClicked="#onBtnPayClicked" prefHeight="29.0" prefWidth="87.0" text="Pay" textFill="WHITE">
+            <Button fx:id="btnPay" mnemonicParsing="false" onMouseClicked="#onBtnPayClicked" prefHeight="29.0" prefWidth="87.0" text="%label.pay" textFill="WHITE">
                <styleClass>
                   <String fx:value="btn-danger" />
                   <String fx:value="no-round-corner" />
