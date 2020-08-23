@@ -30,11 +30,11 @@
 }
 
 .align-left {
-    -fx-alignment: CENTER_LEFT;
+    -fx-alignment: center-left;
 }
 
 .align-right {
-    -fx-alignment: CENTER_RIGHT;
+    -fx-alignment: center-right;
 }
 
 .bg-primary {
@@ -58,6 +58,28 @@
     -fx-border-color: #009c7c;
 }
 
-.menu-button > .arrow-button > .arrow {
+.menu-button>.arrow-button>.arrow {
     -fx-background-color: #fff;
+}
+
+.combo-box-base.combo-box-autocomplete {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, white;
+}
+
+.combo-box-base.combo-box-autocomplete>.text-field {
+    -fx-background-color: white;
+}
+
+.combo-box.combo-box-autocomplete .arrow, 
+.combo-box.combo-box-autocomplete .arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.combo-box.combo-box-autocomplete {
+    -fx-background-color: white;
+}
+
+.combo-box-base.combo-box-autocomplete>.arrow-button>.arrow {
+    -fx-background-color: transparent;
 }

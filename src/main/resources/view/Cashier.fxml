@@ -2,13 +2,13 @@
 
 <?import java.lang.String?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -76,12 +76,13 @@
       </VBox>
       <HBox layoutX="15.0" layoutY="71.0" prefHeight="29.0" prefWidth="734.0" spacing="10.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="275.0">
          <children>
-            <TextField fx:id="inputProduct" prefHeight="29.0" prefWidth="637.0" promptText="%label.productNameOrCode" HBox.hgrow="ALWAYS">
+            <ComboBox fx:id="cbProductAutoComplete" editable="true" maxWidth="1.7976931348623157E308" prefHeight="29.0" prefWidth="637.0" promptText="%label.productNameOrCode" HBox.hgrow="ALWAYS">
                <styleClass>
-                  <String fx:value="input-primary" />
+                  <String fx:value="border-primary" />
                   <String fx:value="no-round-corner" />
+                  <String fx:value="combo-box-autocomplete" />
                </styleClass>
-            </TextField>
+            </ComboBox>
             <Button fx:id="btnAdd" mnemonicParsing="false" onMouseClicked="#onBtnAddClicked" prefHeight="29.0" prefWidth="87.0" text="%label.add" textFill="WHITE">
                <styleClass>
                   <String fx:value="btn-primary" />

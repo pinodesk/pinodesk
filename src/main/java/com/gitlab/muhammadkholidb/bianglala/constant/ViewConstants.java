@@ -1,5 +1,5 @@
 package com.gitlab.muhammadkholidb.bianglala.constant;
 
-public interface ViewNameConstants {
+public interface ViewConstants {
     String CASHIER = "Cashier";
 }

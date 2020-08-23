@@ -1,7 +1,7 @@
 package com.gitlab.muhammadkholidb.bianglala;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
-import com.gitlab.muhammadkholidb.bianglala.constant.ViewNameConstants;
+import com.gitlab.muhammadkholidb.bianglala.constant.ViewConstants;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.ViewLoader;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.config.JdbcTemplateHelperConfig;
@@ -24,7 +24,7 @@ public class Bianglala extends Application {
     public void start(Stage primaryStage) throws Exception {
         initSpring();
         primaryStage.setTitle(CommonConstants.APP_TITLE);
-        AnchorPane page = (AnchorPane) ViewLoader.load(ViewNameConstants.CASHIER);
+        AnchorPane page = (AnchorPane) ViewLoader.load(ViewConstants.CASHIER);
         Scene scene = new Scene(page);
         primaryStage.setScene(scene);
         primaryStage.show();

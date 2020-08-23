@@ -14,7 +14,7 @@ public class ViewLoader {
     private ViewLoader() {}
 
     public static Object load(String name) throws IOException {
-        return load(name, CommonConstants.BAHASA); // Default to bahasa language
+        return load(name, CommonConstants.ENGLISH); 
     }
 
     public static Object load(String name, Locale locale) throws IOException {
@@ -23,7 +23,7 @@ public class ViewLoader {
     }
 
     public static Object load(URL location) throws IOException {
-        return load(location, CommonConstants.BAHASA); // Default to bahasa language
+        return load(location, CommonConstants.ENGLISH); 
     }
 
     public static Object load(URL location, Locale locale) throws IOException {
