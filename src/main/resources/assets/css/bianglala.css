@@ -1,32 +1,37 @@
 .no-round-corner {
     -fx-border-radius: 0 0 0 0;
+    border-radius: 0 0 0 0;
     -fx-background-radius: 0 0 0 0;
 }
 
 .btn-primary {
     -fx-background-color: #009c7c;
+    background-color: #009c7c;
 }
 
 .btn-primary:hover {
     -fx-background-color: #008167;
+    background-color: #008167;
 }
 
 .btn-secondary {
     -fx-background-color: #afafaf;
+    background-color: #afafaf;
 }
 
 .btn-secondary:hover {
     -fx-background-color: #727272;
-    -fx-cursor: pointer;
+    background-color: #727272;
 }
 
 .btn-danger {
     -fx-background-color: #ff5050;
+    background-color: #ff5050;
 }
 
 .btn-danger:hover {
     -fx-background-color: #d13333;
-    -fx-cursor: pointer;
+    background-color: #d13333;
 }
 
 .align-left {
@@ -39,47 +44,59 @@
 
 .bg-primary {
     -fx-background-color: #009c7c;
+    background-color: #009c7c;
 }
 
 .bg-secondary {
     -fx-background-color: #dddddd;
+    background-color: #dddddd;
 }
 
 .border-primary {
     -fx-border-color: #009c7c;
+    border-color: #009c7c;
 }
 
 .border-secondary {
     -fx-border-color: #dddddd;
+    border-color: #dddddd;
 }
 
 .input-primary {
     -fx-background-color: -fx-text-box-border, -fx-control-inner-background;
+    background-color: -fx-text-box-border, -fx-control-inner-background;
     -fx-border-color: #009c7c;
+    border-color: #009c7c;
 }
 
 .menu-button>.arrow-button>.arrow {
     -fx-background-color: #fff;
+    background-color: #fff;
 }
 
 .combo-box-base.combo-box-autocomplete {
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, white;
+    background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, white;
 }
 
 .combo-box-base.combo-box-autocomplete>.text-field {
     -fx-background-color: white;
+    background-color: white;
 }
 
-.combo-box.combo-box-autocomplete .arrow, 
-.combo-box.combo-box-autocomplete .arrow-button {
+.combo-box.combo-box-autocomplete .arrow, .combo-box.combo-box-autocomplete .arrow-button {
     -fx-background-color: transparent;
+    background-color: transparent;
     -fx-padding: 0;
+    padding: 0;
 }
 
 .combo-box.combo-box-autocomplete {
     -fx-background-color: white;
+    background-color: white;
 }
 
 .combo-box-base.combo-box-autocomplete>.arrow-button>.arrow {
     -fx-background-color: transparent;
+    background-color: transparent;
 }

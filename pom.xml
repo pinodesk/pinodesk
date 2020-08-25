@@ -57,14 +57,9 @@
             <version>5.2.8.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>jcl-over-slf4j</artifactId>
-            <version>1.7.12</version>
-        </dependency>
-        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.1</version>
+            <version>1.2.3</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
@@ -74,7 +69,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.6.7</version>
+            <version>2.11.2</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -86,12 +81,6 @@
             <artifactId>liquibase-core</artifactId>
             <version>4.0.0</version>
         </dependency>
-		<!-- special dependency to fix liquibase's logging fetish -->
-		<dependency>
-			<groupId>com.mattbertolini</groupId>
-			<artifactId>liquibase-slf4j</artifactId>
-			<version>3.0.0</version>
-		</dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

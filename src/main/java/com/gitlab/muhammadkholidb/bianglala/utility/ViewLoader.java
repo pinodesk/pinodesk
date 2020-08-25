@@ -18,7 +18,7 @@ public class ViewLoader {
     }
 
     public static Object load(String name, Locale locale) throws IOException {
-        String location = String.format("/view/%s.fxml", name);
+        String location = String.format("/assets/views/%s.fxml", name);
         return load(ViewLoader.class.getResource(location), locale);
     }
 
