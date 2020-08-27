@@ -24,7 +24,7 @@ public class Bianglala extends Application {
     public void start(Stage primaryStage) throws Exception {
         initSpring();
         primaryStage.setTitle(CommonConstants.APP_TITLE);
-        AnchorPane page = (AnchorPane) ViewLoader.load(ViewConstants.CASHIER);
+        AnchorPane page = (AnchorPane) ViewLoader.load(ViewConstants.MAIN);
         Scene scene = new Scene(page);
         primaryStage.setScene(scene);
         primaryStage.show();
