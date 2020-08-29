@@ -10,6 +10,8 @@
     -fx-border-radius: 0 0 0 0;
     border-radius: 0 0 0 0;
     -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
 }
 
 .btn-primary:hover, .btn-primary-active {
@@ -18,6 +20,8 @@
     -fx-border-radius: 0 0 0 0;
     border-radius: 0 0 0 0;
     -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
 }
 
 .btn-secondary {
@@ -26,6 +30,8 @@
     -fx-border-radius: 0 0 0 0;
     border-radius: 0 0 0 0;
     -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
 }
 
 .btn-secondary:hover {
@@ -34,6 +40,8 @@
     -fx-border-radius: 0 0 0 0;
     border-radius: 0 0 0 0;
     -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
 }
 
 .btn-danger {
@@ -42,6 +50,8 @@
     -fx-border-radius: 0 0 0 0;
     border-radius: 0 0 0 0;
     -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
 }
 
 .btn-danger:hover {
@@ -50,6 +60,8 @@
     -fx-border-radius: 0 0 0 0;
     border-radius: 0 0 0 0;
     -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
 }
 
 .align-left {
@@ -85,6 +97,8 @@
     background-color: -fx-text-box-border, -fx-control-inner-background;
     -fx-border-color: #009c7c;
     border-color: #009c7c;
+    -fx-font-size: 13px;
+    font-size: 13px;
 }
 
 .menu-button>.arrow-button>.arrow {
@@ -117,4 +131,16 @@
 .combo-box-base.combo-box-autocomplete>.arrow-button>.arrow {
     -fx-background-color: transparent;
     background-color: transparent;
+}
+
+.combo-box-base.combo-box-primary {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, white;
+    background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, white;
+    -fx-border-color: #009c7c;
+    border-color: #009c7c;
+    -fx-border-radius: 0 0 0 0;
+    border-radius: 0 0 0 0;
+    -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
 }
