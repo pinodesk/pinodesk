@@ -11,8 +11,11 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class Bianglala extends Application {
 
     private void initSpring() {
@@ -22,6 +25,8 @@ public class Bianglala extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Font font = Font.loadFont(getClass().getResource("/assets/fonts/Ubuntu/Ubuntu-Medium.ttf").toExternalForm(), 13);
+        log.debug("Loaded font: {}", font); // Always null (unknown issue)
         initSpring();
         primaryStage.setTitle(CommonConstants.APP_TITLE);
         AnchorPane page = (AnchorPane) ViewLoader.load(ViewConstants.MAIN);

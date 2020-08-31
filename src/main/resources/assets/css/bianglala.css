@@ -1,3 +1,10 @@
+.root {
+    -fx-font-size: 13px;
+    font-size: 13px;
+    -fx-font-family: 'Ubuntu';
+    font-family: 'Ubuntu';
+}
+
 .no-round-corner {
     -fx-border-radius: 0 0 0 0;
     border-radius: 0 0 0 0;
@@ -14,7 +21,8 @@
     font-size: 13px;
 }
 
-.btn-primary:hover, .btn-primary-active {
+.btn-primary:hover,
+.btn-primary-active {
     -fx-background-color: #008167;
     background-color: #008167;
     -fx-border-radius: 0 0 0 0;
@@ -116,7 +124,8 @@
     background-color: white;
 }
 
-.combo-box.combo-box-autocomplete .arrow, .combo-box.combo-box-autocomplete .arrow-button {
+.combo-box.combo-box-autocomplete .arrow,
+.combo-box.combo-box-autocomplete .arrow-button {
     -fx-background-color: transparent;
     background-color: transparent;
     -fx-padding: 0;
