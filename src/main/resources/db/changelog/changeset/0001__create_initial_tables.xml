@@ -86,7 +86,7 @@
                   separator=","
                   tableName="t_product_category" />
 
-        <createTable tableName="t_drug_rack">
+        <createTable tableName="t_rack">
             <column name="id" type="java.sql.Types.BIGINT" autoIncrement="true" >
                 <constraints nullable="false" primaryKey="true" />
             </column>
@@ -145,8 +145,8 @@
             </column>
             <column name="deleted_at" type="java.sql.Types.TIMESTAMP" />
             <!-- START model columns -->
-            <column name="category_base_id" type="java.sql.Types.BIGINT" >
-                <constraints nullable="false" references="t_drug_category_base(id)" foreignKeyName="fk_t_drug_category_category_base_id" />
+            <column name="drug_category_base_id" type="java.sql.Types.BIGINT" >
+                <constraints nullable="false" references="t_drug_category_base(id)" foreignKeyName="fk_t_drug_category_drug_category_base_id" />
             </column>
             <column name="code" type="java.sql.Types.VARCHAR(64)" >
                 <constraints nullable="false"/>
@@ -186,6 +186,12 @@
             <column name="category_code" type="java.sql.Types.VARCHAR(64)" />
             <column name="purchase_price" type="java.sql.Types.DECIMAL" defaultValue="0" />
             <column name="selling_price" type="java.sql.Types.DECIMAL" defaultValue="0" />
+            <column name="rack_id" type="java.sql.Types.BIGINT" >
+                <constraints references="t_rack(id)" foreignKeyName="fk_t_product_rack_id" />
+            </column>
+            <column name="rack_code" type="java.sql.Types.VARCHAR(64)" />
+            <column name="rack_name" type="java.sql.Types.VARCHAR(256)" />
+            <column name="expired_date" type="java.sql.Types.DATE" />
             <!-- END model columns -->
         </createTable>
         <createIndex tableName="t_product" indexName="idx_t_product_code">
@@ -210,17 +216,11 @@
             <column name="product_id" type="java.sql.Types.BIGINT" >
                 <constraints nullable="false" references="t_product(id)" foreignKeyName="fk_t_drug_detail_product_id" />
             </column>
-            <column name="category_id" type="java.sql.Types.BIGINT" >
-                <constraints references="t_drug_category(id)" foreignKeyName="fk_t_drug_detail_category_id" />
+            <column name="drug_category_id" type="java.sql.Types.BIGINT" >
+                <constraints references="t_drug_category(id)" foreignKeyName="fk_t_drug_detail_drug_category_id" />
             </column>
-            <column name="category_code" type="java.sql.Types.VARCHAR(64)" />
-            <column name="category_name" type="java.sql.Types.VARCHAR(256)" />
-            <column name="rack_id" type="java.sql.Types.BIGINT" >
-                <constraints references="t_drug_rack(id)" foreignKeyName="fk_t_drug_detail_rack_id" />
-            </column>
-            <column name="rack_code" type="java.sql.Types.VARCHAR(64)" />
-            <column name="rack_name" type="java.sql.Types.VARCHAR(256)" />
-            <column name="expired_date" type="java.sql.Types.DATE" />
+            <column name="drug_category_code" type="java.sql.Types.VARCHAR(64)" />
+            <column name="drug_category_name" type="java.sql.Types.VARCHAR(256)" />
             <column name="indication" type="java.sql.Types.VARCHAR(512)" />
             <column name="contraindication" type="java.sql.Types.VARCHAR(512)" />
             <column name="prescription_price" type="java.sql.Types.DECIMAL" defaultValue="0" />

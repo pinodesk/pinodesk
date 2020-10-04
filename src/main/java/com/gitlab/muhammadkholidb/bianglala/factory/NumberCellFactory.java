@@ -41,6 +41,7 @@ public class NumberCellFactory<E, T extends Number> implements Callback<TableCol
                 super.updateItem(item, empty);
                 if (item == null) {
                     super.setText(null);
+                    super.setGraphic(null);
                 } else {
                     DecimalFormat df = new DecimalFormat();
                     DecimalFormatSymbols customSymbol = new DecimalFormatSymbols();

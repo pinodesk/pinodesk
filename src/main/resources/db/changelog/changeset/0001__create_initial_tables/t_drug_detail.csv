@@ -1,2 +1,1 @@
-created_at,updated_at,product_id,category_id,category_code,category_name,expired_date,prescription_price
-CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,2,PERMENKESRI02,Obat Bebas,2021-01-01,10000
+created_at,updated_at,product_id,drug_category_id,drug_category_code,drug_category_name,prescription_price

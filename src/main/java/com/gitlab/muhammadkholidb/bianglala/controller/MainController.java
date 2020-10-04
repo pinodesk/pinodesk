@@ -1,6 +1,8 @@
 package com.gitlab.muhammadkholidb.bianglala.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -8,11 +10,20 @@ import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ViewConstants;
 import com.gitlab.muhammadkholidb.bianglala.utility.ViewLoader;
 
+import org.apache.commons.lang3.StringUtils;
+
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,31 +45,29 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    private void onActionBtnMenuProducts(ActionEvent event) throws IOException {
-        loadViewToContentPane(ViewConstants.MASTER_PRODUCTS);
-        setActiveMenu((Button) event.getSource());
+    private void onActionBtnMenuProducts(ActionEvent event) {
+        changeContent(ViewConstants.MASTER_PRODUCTS, (Button) event.getSource());
     }
 
     @FXML
-    private void onActionBtnMenuCustomers(ActionEvent event) throws IOException {
-        loadViewToContentPane(ViewConstants.MASTER_CUSTOMERS);
-        setActiveMenu((Button) event.getSource());
+    private void onActionBtnMenuCustomers(ActionEvent event) {
+        changeContent(ViewConstants.MASTER_CUSTOMERS, (Button) event.getSource());
     }
 
     @FXML
-    private void onActionBtnMenuSuppliers(ActionEvent event) throws IOException {
-        loadViewToContentPane(ViewConstants.MASTER_SUPPLIERS);
-        setActiveMenu((Button) event.getSource());
+    private void onActionBtnMenuSuppliers(ActionEvent event) {
+        changeContent(ViewConstants.MASTER_SUPPLIERS, (Button) event.getSource());
     }
 
-    private void loadViewToContentPane(String name) throws IOException {
-        VBox content = (VBox) ViewLoader.load(name, CommonConstants.BAHASA);
-        AnchorPane.setTopAnchor(content, 0d);
-        AnchorPane.setBottomAnchor(content, 0d);
-        AnchorPane.setLeftAnchor(content, 0d);
-        AnchorPane.setRightAnchor(content, 0d);
-        contentPane.getChildren().clear();
-        contentPane.getChildren().add(content);
+    private void changeContent(String name, Button btn) {
+        Platform.runLater(() -> {
+            try {
+                setActiveMenu(btn);
+                swapContentPane(name);
+            } catch (Exception e) {
+                showErrorDialog(e);
+            }
+        });
     }
 
     private void setActiveMenu(Button btn) {
@@ -71,4 +80,45 @@ public class MainController implements Initializable {
         });
     }
 
+    private void swapContentPane(String name) throws IOException {
+        VBox content = ViewLoader.load(name, CommonConstants.BAHASA);
+        AnchorPane.setTopAnchor(content, 0.0);
+        AnchorPane.setBottomAnchor(content, 0.0);
+        AnchorPane.setLeftAnchor(content, 0.0);
+        AnchorPane.setRightAnchor(content, 0.0);
+        contentPane.getChildren().clear();
+        contentPane.getChildren().add(content);
+    }
+
+    // From https://code.makery.ch/blog/javafx-dialogs-official/
+    private void showErrorDialog(Exception ex) {
+        Alert alert = new Alert(AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText(StringUtils.defaultIfBlank(ex.getMessage(), ex.toString()));
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("Stack trace:");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+        // Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+
+        alert.showAndWait();
+    }
 }

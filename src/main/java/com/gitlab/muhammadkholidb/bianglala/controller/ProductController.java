@@ -3,30 +3,41 @@ package com.gitlab.muhammadkholidb.bianglala.controller;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Date;
-import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.StyleConstants;
-import com.gitlab.muhammadkholidb.bianglala.data.model.Product;
+import com.gitlab.muhammadkholidb.bianglala.converter.ProductCategoryComboBoxConverter;
 import com.gitlab.muhammadkholidb.bianglala.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.bianglala.factory.NumberCellFactory;
+import com.gitlab.muhammadkholidb.bianglala.listener.ProductCategoryComboBoxKeyEventHandler;
 import com.gitlab.muhammadkholidb.bianglala.service.ProductService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
+import com.gitlab.muhammadkholidb.bianglala.utility.Async;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
+import java.util.Objects;
 
+import org.springframework.context.ApplicationContext;
+
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,7 +51,7 @@ public class ProductController implements Initializable {
     private TextField tfName;
 
     @FXML
-    private ComboBox<?> cbCategory;
+    private ComboBox<ProductCategorySearchResult> cbCategory;
 
     @FXML
     private Button btnClear;
@@ -49,59 +60,66 @@ public class ProductController implements Initializable {
     private Button btnSearch;
 
     @FXML
-    private TableView<Product> tableProduct;
+    private TableView<ProductSearchResult> tableProduct;
 
     @FXML
-    private TableColumn<Product, String> colCode;
+    private TableColumn<ProductSearchResult, String> colCode;
 
     @FXML
-    private TableColumn<Product, String> colName;
+    private TableColumn<ProductSearchResult, String> colName;
 
     @FXML
-    private TableColumn<Product, String> colCategory;
+    private TableColumn<ProductSearchResult, String> colCategory;
 
     @FXML
-    private TableColumn<Product, Integer> colQuantity;
+    private TableColumn<ProductSearchResult, Integer> colQuantity;
 
     @FXML
-    private TableColumn<Product, String> colUnit;
+    private TableColumn<ProductSearchResult, String> colUnit;
 
     @FXML
-    private TableColumn<Product, BigDecimal> colPurchasePrice;
+    private TableColumn<ProductSearchResult, BigDecimal> colPurchasePrice;
 
     @FXML
-    private TableColumn<Product, BigDecimal> colSellingPrice;
+    private TableColumn<ProductSearchResult, BigDecimal> colSellingPrice;
 
     @FXML
-    private TableColumn<Product, Date> colCreatedAt;
+    private TableColumn<ProductSearchResult, Date> colCreatedAt;
 
     @FXML
-    private TableColumn<Product, Date> colUpdatedAt;
+    private TableColumn<ProductSearchResult, Date> colUpdatedAt;
 
-    @FXML
-    private void onActionBtnClear(ActionEvent event) {
-        tfCode.setText("");
-        tfName.setText("");
-        cbCategory.getSelectionModel().selectFirst();
-    }
-
-    @FXML
-    private void onActionBtnSearch(ActionEvent event) {
-        populateTableProduct();
-    }
+    private ProductService productService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        populateTableProduct();
+        ApplicationContext ctx = ApplicationContextHolder.get();
+        productService = ctx.getBean(ProductService.class);
+        initComboBoxCategory();
+        initTableProduct();
+        registerKeyListener();
+        filterProducts();
     }
 
-    private void populateTableProduct() {
+    private void initComboBoxCategory() {
+        ComboBoxListViewSkin<ProductCategorySearchResult> comboBoxListViewSkin = new ComboBoxListViewSkin<>(cbCategory);
+        comboBoxListViewSkin.getPopupContent().addEventFilter(KeyEvent.ANY, (event) -> {
+            if (event.getCode() == KeyCode.SPACE) {
+                event.consume();
+            }
+        });
+        cbCategory.setSkin(comboBoxListViewSkin);
+        cbCategory.getEditor().setOnKeyReleased(new ProductCategoryComboBoxKeyEventHandler(cbCategory));
+        cbCategory.setConverter(new ProductCategoryComboBoxConverter(cbCategory));
+    }
+
+    private void initTableProduct() {
 
         colCode.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCode()));
 
         colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
 
-        colCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategoryCode()));
+        colCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategoryName()));
 
         colQuantity.setStyle(StyleConstants.ALIGN_RIGHT);
         colQuantity.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getQuantity()));
@@ -117,40 +135,80 @@ public class ProductController implements Initializable {
         colSellingPrice.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSellingPrice()));
         colSellingPrice.setCellFactory(new NumberCellFactory<>(CommonConstants.BAHASA));
 
-        colCreatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<Date>(cellData.getValue().getCreatedAt()));
+        colCreatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreatedAt()));
         colCreatedAt.setCellFactory(new DateCellFactory<>(CommonConstants.DATETIME_PATTERN));
-        
-        colUpdatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<Date>(cellData.getValue().getUpdatedAt()));
+
+        colUpdatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getUpdatedAt()));
         colUpdatedAt.setCellFactory(new DateCellFactory<>(CommonConstants.DATETIME_PATTERN));
 
-        setTableProductActionHandler();
-
-        ProductService productService = ApplicationContextHolder.get().getBean(ProductService.class);
-
-        List<Product> products = productService.getAllProducts();
-        ObservableList<Product> list = FXCollections.observableList(products);
-        tableProduct.setItems(list);
     }
 
-    private void setTableProductActionHandler() {
-
+    private void registerKeyListener() {
+        tfCode.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                filterProducts();
+            }
+        });
+        tfName.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                filterProducts();
+            }
+        });
+        cbCategory.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                filterProducts();
+            }
+        });
         tableProduct.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 handleActionTableProduct();
             }
         });
-
         tableProduct.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 handleActionTableProduct();
             }
         });
-
     }
 
     private void handleActionTableProduct() {
-        Product selected = tableProduct.getSelectionModel().getSelectedItem();
+        ProductSearchResult selected = tableProduct.getSelectionModel().getSelectedItem();
         log.debug("Selected product: {}", selected);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void filterProducts() {
+        tableProduct.setPlaceholder(new Label("Loading data"));
+        tableProduct.setItems(FXCollections.observableArrayList());
+        Async.supply(() -> {
+            ProductCategorySearchResult selectedCategory = cbCategory.getSelectionModel().getSelectedItem();
+            log.debug("Selected category: {}", selectedCategory);
+            ProductFilter filter = new ProductFilter();
+            filter.setCode(tfCode.getText());
+            filter.setName(tfName.getText());
+            filter.setCategoryCode(Objects.isNull(selectedCategory) ? null : selectedCategory.getCode());
+            return productService.filterProducts(filter);
+        }).thenAccept(products -> {
+            Platform.runLater(() -> {
+                if (products.isEmpty()) {
+                    tableProduct.setPlaceholder(new Label("No data to display"));
+                }
+                tableProduct.setItems(FXCollections.observableList(products));
+                tableProduct.getSortOrder().setAll(colName); // Always sort by name after searching
+            });
+        });
+    }
+
+    @FXML
+    void onActionBtnClear(ActionEvent event) {
+        tfCode.setText("");
+        tfName.setText("");
+        cbCategory.getSelectionModel().clearSelection();
+    }
+
+    @FXML
+    void onActionBtnSearch(ActionEvent event) {
+        filterProducts();
     }
 
 }

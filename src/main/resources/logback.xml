@@ -41,5 +41,6 @@
 
     <logger name="org.springframework" level="INFO"/>
     <logger name="liquibase" level="INFO"/>
+    <logger name="openjpa.jdbc.SQL" level="TRACE" />
     
 </configuration>

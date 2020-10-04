@@ -1,4 +1,4 @@
-created_at,updated_at,category_base_id,name,code
+created_at,updated_at,drug_category_base_id,name,code
 CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,Obat Bebas Terbatas,PERMENKESRI01
 CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,Obat Bebas,PERMENKESRI02
 CURRENT_TIMESTAMP,CURRENT_TIMESTAMP,1,Obat Keras,PERMENKESRI03

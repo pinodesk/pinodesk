@@ -28,6 +28,7 @@ public class DateCellFactory<E, T extends Date> implements Callback<TableColumn<
                 super.updateItem(item, empty);
                 if (item == null) {
                     super.setText(null);
+                    super.setGraphic(null);
                 } else {
                     super.setText(DateFormatUtils.format(item, pattern));
                 }

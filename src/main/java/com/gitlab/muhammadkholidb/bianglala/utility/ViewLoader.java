@@ -13,20 +13,20 @@ public class ViewLoader {
     
     private ViewLoader() {}
 
-    public static Object load(String name) throws IOException {
+    public static <T> T load(String name) throws IOException {
         return load(name, CommonConstants.ENGLISH); 
     }
 
-    public static Object load(String name, Locale locale) throws IOException {
+    public static <T> T load(String name, Locale locale) throws IOException {
         String location = String.format("/assets/views/%s.fxml", name);
         return load(ViewLoader.class.getResource(location), locale);
     }
 
-    public static Object load(URL location) throws IOException {
+    public static  <T> T load(URL location) throws IOException {
         return load(location, CommonConstants.ENGLISH); 
     }
 
-    public static Object load(URL location, Locale locale) throws IOException {
+    public static <T> T load(URL location, Locale locale) throws IOException {
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(location);
         loader.setResources(ResourceBundle.getBundle("com.gitlab.muhammadkholidb.bianglala.lang", locale));
