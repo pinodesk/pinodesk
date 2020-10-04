@@ -14,8 +14,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Entity
-@Table(name = DrugCategoryBase.TABLE_NAME)
-public class DrugCategoryBase extends BaseEntity {
+@Table(name = DrugCategoryBaseEntity.TABLE_NAME)
+public class DrugCategoryBaseEntity extends BaseEntity {
 
     public static final String TABLE_NAME = "t_drug_category_base";
 

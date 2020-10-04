@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.h2.Driver;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -39,10 +38,10 @@ public class SpringConfig {
     @Bean
     public DataSource dataSource() {
         BasicDataSource ds = new BasicDataSource();
-        ds.setDriver(new Driver());
         ds.setUrl(env.getRequiredProperty("jdbc.url"));
-        ds.setUsername(env.getRequiredProperty("jdbc.username"));
+        ds.setUsername(env.getRequiredProperty("jdbc.user"));
         ds.setPassword(env.getRequiredProperty("jdbc.password"));
+        ds.setDriverClassName(env.getRequiredProperty("jdbc.driver"));
         return ds;
     }
 

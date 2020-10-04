@@ -25,7 +25,7 @@ public class DrugCategoryEntity extends BaseEntity {
     @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "category_base_id", referencedColumnName = "id")
-    private DrugCategoryBase drugCategoryBase;
+    private DrugCategoryBaseEntity drugCategoryBase;
 
     @Column(name = "code")
     private String code;

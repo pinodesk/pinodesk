@@ -3,10 +3,10 @@
   <persistence-unit name="bianglala" transaction-type="RESOURCE_LOCAL">
     <provider>org.apache.openjpa.persistence.PersistenceProviderImpl</provider>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:h2:~/.bianglala/db/bianglaladb;AUTO_SERVER=TRUE;DB_CLOSE_ON_EXIT=FALSE"/>
-      <property name="javax.persistence.jdbc.user" value="sa"/>
-      <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
-      <property name="javax.persistence.jdbc.password" value="sa"/>
+      <property name="javax.persistence.jdbc.url" value="${jdbc.url}"/>
+      <property name="javax.persistence.jdbc.user" value="${jdbc.user}"/>
+      <property name="javax.persistence.jdbc.password" value="${jdbc.password}"/>
+      <property name="javax.persistence.jdbc.driver" value="${jdbc.driver}"/>
     </properties>
   </persistence-unit>
 </persistence>

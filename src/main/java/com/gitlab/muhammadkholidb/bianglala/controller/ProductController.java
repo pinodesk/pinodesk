@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.StyleConstants;
@@ -204,6 +203,7 @@ public class ProductController implements Initializable {
         tfCode.setText("");
         tfName.setText("");
         cbCategory.getSelectionModel().clearSelection();
+        cbCategory.getEditor().clear();
     }
 
     @FXML

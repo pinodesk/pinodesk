@@ -7,11 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 
-@Slf4j
+import lombok.Data;
+
 @Data
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable {
@@ -30,4 +30,14 @@ public abstract class BaseEntity implements Serializable {
     @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
+    @PrePersist
+    public void beforeCreate() {
+        updatedAt = createdAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PreUpdate
+    public void beforeUpdate() {
+        updatedAt = new Timestamp(System.currentTimeMillis());
+    }
+    
 }
