@@ -35,24 +35,26 @@ public class ProductService {
         LanguageEntity language = new LanguageEntity();
         language.setId(2L);
         List<ProductEntity> products = productRepository.filter(param, language);
-        return products.stream().map(product -> {
-            ProductSearchResult result = objectMapper.convertValue(product, ProductSearchResult.class);
-            ProductCategoryEntity pc = product.getCategory();
-            UnitEntity unit = product.getUnit();
-            RackEntity rack = product.getRack();
-            if (pc != null) {
-                result.setCategoryId(pc.getId());
-                result.setCategoryCode(pc.getCode());
-                result.setCategoryName(pc.getName());
-            }
-            if (unit != null) {
-                result.setUnitId(unit.getId());
-            }
-            if (rack != null) {
-                result.setRackId(rack.getId());
-            }
-            return result;
-        }).collect(Collectors.toList());
+        return products.stream().map(this::toProductSearchResult).collect(Collectors.toList());
+    }
+
+    private ProductSearchResult toProductSearchResult(ProductEntity product) {
+        ProductSearchResult result = objectMapper.convertValue(product, ProductSearchResult.class);
+        ProductCategoryEntity pc = product.getCategory();
+        UnitEntity unit = product.getUnit();
+        RackEntity rack = product.getRack();
+        if (pc != null) {
+            result.setCategoryId(pc.getId());
+            result.setCategoryCode(pc.getCode());
+            result.setCategoryName(pc.getName());
+        }
+        if (unit != null) {
+            result.setUnitId(unit.getId());
+        }
+        if (rack != null) {
+            result.setRackId(rack.getId());
+        }
+        return result;
     }
 
 }
