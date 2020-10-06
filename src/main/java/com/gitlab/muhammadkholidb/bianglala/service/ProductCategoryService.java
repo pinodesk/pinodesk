@@ -30,26 +30,28 @@ public class ProductCategoryService {
         language.setId(2L);
         List<ProductCategoryEntity> categories = productCategoryRepository.findByKeyword(keyword, language, new PageRequest(0, 10));
         List<ProductCategorySearchResult> results = new ArrayList<>();
-        int maxNested = 3;
-        for (ProductCategoryEntity category : categories) {
+        int maxParent = 3;
+        categories.stream().map(category -> {
             ProductCategoryEntity parentCategory = category.getParentCategory();
-            int countNested = 0;
+            int countParent = 0;
             while (parentCategory != null) {
                 parentCategory = productCategoryRepository.findOne(parentCategory.getId());
-                if (parentCategory != null) {
-                    if (countNested == (maxNested - 1)) {
-                        category.setName("... > " + parentCategory.getName() + " > " + category.getName());
-                        parentCategory = null;
-                        continue;
-                    }
-                    category.setName(parentCategory.getName() + " > " + category.getName());
+                countParent++;
+                category.setName(parentCategory.getName() + " > " + category.getName());
+                parentCategory = parentCategory.getParentCategory();
+                if (parentCategory != null && countParent == maxParent) {
+                    category.setName("... > " + parentCategory.getName() + " > " + category.getName());
+                    parentCategory = null;
                 }
-                countNested++;
             }
+            return category;
+        }).map(category -> {
             ProductCategorySearchResult result = new ProductCategorySearchResult();
             BeanUtils.copyProperties(category, result);
+            return result;
+        }).forEachOrdered(result -> {
             results.add(result);
-        }
+        });
         return results;
     }
 

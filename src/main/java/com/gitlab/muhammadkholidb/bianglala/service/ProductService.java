@@ -30,12 +30,12 @@ public class ProductService {
     private ObjectMapper objectMapper;
 
     @Cacheable("searchProduct")
-    public List<ProductSearchResult> filterProducts(ProductFilter param) {
+    public List<ProductSearchResult> searchProduct(ProductFilter param) {
         log.debug("Filter products");
         LanguageEntity language = new LanguageEntity();
         language.setId(2L);
         List<ProductEntity> products = productRepository.filter(param, language);
-        return products.stream().map(this::toProductSearchResult).collect(Collectors.toList());
+        return products.stream().parallel().map(this::toProductSearchResult).collect(Collectors.toList());
     }
 
     private ProductSearchResult toProductSearchResult(ProductEntity product) {

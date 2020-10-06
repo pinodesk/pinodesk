@@ -49,7 +49,6 @@ public class SpringConfig {
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         Properties jpaProperties = new Properties();
         jpaProperties.setProperty("openjpa.Log", "slf4j");
-        jpaProperties.setProperty("openjpa.ConnectionFactoryProperties", "PrettyPrint=true");
         LocalContainerEntityManagerFactoryBean emfBean = new LocalContainerEntityManagerFactoryBean();
         emfBean.setDataSource(dataSource());
         emfBean.setJpaVendorAdapter(new OpenJpaVendorAdapter());
@@ -74,7 +73,7 @@ public class SpringConfig {
     
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("searchProduct", "searchProductCategory", "searchProductCategoryByKeyword");
+        return new ConcurrentMapCacheManager("searchProduct", "searchProductCategoryByKeyword");
     }
 
     @Bean

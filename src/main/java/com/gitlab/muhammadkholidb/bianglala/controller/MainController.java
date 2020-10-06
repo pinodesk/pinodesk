@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ViewConstants;
+import com.gitlab.muhammadkholidb.bianglala.utility.Settings;
 import com.gitlab.muhammadkholidb.bianglala.utility.ViewLoader;
 
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,13 @@ import javafx.scene.layout.VBox;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MainController implements Initializable {
+public class MainController {
+
+    @FXML
+    private ResourceBundle resources;
+
+    @FXML
+    private URL location;
 
     @FXML
     private AnchorPane rootPane;
@@ -39,23 +46,23 @@ public class MainController implements Initializable {
     @FXML
     private AnchorPane contentPane;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    @FXML
+    void initialize() {
         log.debug("Initialize");
     }
 
     @FXML
-    private void onActionBtnMenuProducts(ActionEvent event) {
+    void onActionBtnMenuProducts(ActionEvent event) {
         changeContent(ViewConstants.MASTER_PRODUCTS, (Button) event.getSource());
     }
 
     @FXML
-    private void onActionBtnMenuCustomers(ActionEvent event) {
+    void onActionBtnMenuCustomers(ActionEvent event) {
         changeContent(ViewConstants.MASTER_CUSTOMERS, (Button) event.getSource());
     }
 
     @FXML
-    private void onActionBtnMenuSuppliers(ActionEvent event) {
+    void onActionBtnMenuSuppliers(ActionEvent event) {
         changeContent(ViewConstants.MASTER_SUPPLIERS, (Button) event.getSource());
     }
 
@@ -81,7 +88,7 @@ public class MainController implements Initializable {
     }
 
     private void swapContentPane(String name) throws IOException {
-        VBox content = ViewLoader.load(name, CommonConstants.BAHASA);
+        VBox content = ViewLoader.load(name, Settings.CURRENT_LOCALE);
         AnchorPane.setTopAnchor(content, 0.0);
         AnchorPane.setBottomAnchor(content, 0.0);
         AnchorPane.setLeftAnchor(content, 0.0);

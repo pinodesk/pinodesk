@@ -3,6 +3,7 @@ package com.gitlab.muhammadkholidb.bianglala;
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ViewConstants;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
+import com.gitlab.muhammadkholidb.bianglala.utility.Settings;
 import com.gitlab.muhammadkholidb.bianglala.utility.ViewLoader;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -25,7 +26,7 @@ public class Bianglala extends Application {
     public void start(Stage primaryStage) throws Exception {
         initSpring();
         primaryStage.setTitle(CommonConstants.APP_TITLE);
-        AnchorPane page = ViewLoader.load(ViewConstants.MAIN);
+        AnchorPane page = ViewLoader.load(ViewConstants.MAIN, Settings.CURRENT_LOCALE);
         Scene scene = new Scene(page);
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();

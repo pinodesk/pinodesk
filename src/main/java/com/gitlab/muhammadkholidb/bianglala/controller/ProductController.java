@@ -14,6 +14,7 @@ import com.gitlab.muhammadkholidb.bianglala.listener.ProductCategoryComboBoxKeyE
 import com.gitlab.muhammadkholidb.bianglala.service.ProductService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
+import com.gitlab.muhammadkholidb.bianglala.utility.Settings;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
@@ -27,7 +28,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -41,8 +41,17 @@ import javafx.scene.input.MouseButton;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProductController implements Initializable {
+public class ProductController {
 
+    @FXML
+    private ResourceBundle resources;
+
+    @FXML
+    private URL location;
+
+    @FXML
+    private Label lblRows;
+    
     @FXML
     private TextField tfCode;
 
@@ -90,14 +99,14 @@ public class ProductController implements Initializable {
 
     private ProductService productService;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    @FXML
+    void initialize() {
         ApplicationContext ctx = ApplicationContextHolder.get();
         productService = ctx.getBean(ProductService.class);
         initComboBoxCategory();
         initTableProduct();
         registerKeyListener();
-        filterProducts();
+        searchProducts();
     }
 
     private void initComboBoxCategory() {
@@ -122,17 +131,17 @@ public class ProductController implements Initializable {
 
         colQuantity.setStyle(StyleConstants.ALIGN_RIGHT);
         colQuantity.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getQuantity()));
-        colQuantity.setCellFactory(new NumberCellFactory<>(CommonConstants.BAHASA));
+        colQuantity.setCellFactory(new NumberCellFactory<>(Settings.CURRENT_LOCALE));
 
         colUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnitLabel()));
 
         colPurchasePrice.setStyle(StyleConstants.ALIGN_RIGHT);
         colPurchasePrice.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getPurchasePrice()));
-        colPurchasePrice.setCellFactory(new NumberCellFactory<>(CommonConstants.BAHASA));
+        colPurchasePrice.setCellFactory(new NumberCellFactory<>(Settings.CURRENT_LOCALE));
 
         colSellingPrice.setStyle(StyleConstants.ALIGN_RIGHT);
         colSellingPrice.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSellingPrice()));
-        colSellingPrice.setCellFactory(new NumberCellFactory<>(CommonConstants.BAHASA));
+        colSellingPrice.setCellFactory(new NumberCellFactory<>(Settings.CURRENT_LOCALE));
 
         colCreatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreatedAt()));
         colCreatedAt.setCellFactory(new DateCellFactory<>(CommonConstants.DATETIME_PATTERN));
@@ -145,17 +154,17 @@ public class ProductController implements Initializable {
     private void registerKeyListener() {
         tfCode.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                filterProducts();
+                searchProducts();
             }
         });
         tfName.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                filterProducts();
+                searchProducts();
             }
         });
         cbCategory.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
-                filterProducts();
+                searchProducts();
             }
         });
         tableProduct.setOnMouseClicked(event -> {
@@ -176,7 +185,7 @@ public class ProductController implements Initializable {
     }
 
     @SuppressWarnings("unchecked")
-    private void filterProducts() {
+    private void searchProducts() {
         tableProduct.setPlaceholder(new Label("Loading data"));
         tableProduct.setItems(FXCollections.observableArrayList());
         Async.supply(() -> {
@@ -186,14 +195,16 @@ public class ProductController implements Initializable {
             filter.setCode(tfCode.getText());
             filter.setName(tfName.getText());
             filter.setCategoryCode(Objects.isNull(selectedCategory) ? null : selectedCategory.getCode());
-            return productService.filterProducts(filter);
+            return productService.searchProduct(filter);
         }).thenAccept(products -> {
             Platform.runLater(() -> {
                 if (products.isEmpty()) {
                     tableProduct.setPlaceholder(new Label("No data to display"));
+                    lblRows.setText("0");
                 }
                 tableProduct.setItems(FXCollections.observableList(products));
                 tableProduct.getSortOrder().setAll(colName); // Always sort by name after searching
+                lblRows.setText(products.size() + "");
             });
         });
     }
@@ -208,7 +219,7 @@ public class ProductController implements Initializable {
 
     @FXML
     void onActionBtnSearch(ActionEvent event) {
-        filterProducts();
+        searchProducts();
     }
 
 }
