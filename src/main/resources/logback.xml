@@ -40,7 +40,6 @@
     </root>
 
     <logger name="org.springframework" level="INFO"/>
-    <logger name="liquibase" level="INFO"/>
-    <logger name="openjpa.jdbc.SQL" level="TRACE" />
+    <logger name="org.springframework.jdbc" level="TRACE"/>
     
 </configuration>

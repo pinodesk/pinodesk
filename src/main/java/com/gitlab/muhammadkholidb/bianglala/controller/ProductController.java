@@ -3,9 +3,12 @@ package com.gitlab.muhammadkholidb.bianglala.controller;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
+import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.StyleConstants;
 import com.gitlab.muhammadkholidb.bianglala.converter.ProductCategoryComboBoxConverter;
 import com.gitlab.muhammadkholidb.bianglala.factory.DateCellFactory;
@@ -14,11 +17,10 @@ import com.gitlab.muhammadkholidb.bianglala.listener.ProductCategoryComboBoxKeyE
 import com.gitlab.muhammadkholidb.bianglala.service.ProductService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
-import com.gitlab.muhammadkholidb.bianglala.utility.Settings;
+import com.gitlab.muhammadkholidb.bianglala.utility.ConfigurationHolder;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
-import java.util.Objects;
 
 import org.springframework.context.ApplicationContext;
 
@@ -51,7 +53,7 @@ public class ProductController {
 
     @FXML
     private Label lblRows;
-    
+
     @FXML
     private TextField tfCode;
 
@@ -101,7 +103,7 @@ public class ProductController {
 
     @FXML
     void initialize() {
-        ApplicationContext ctx = ApplicationContextHolder.get();
+        ApplicationContext ctx = ApplicationContextHolder.getApplicationContext();
         productService = ctx.getBean(ProductService.class);
         initComboBoxCategory();
         initTableProduct();
@@ -111,7 +113,7 @@ public class ProductController {
 
     private void initComboBoxCategory() {
         ComboBoxListViewSkin<ProductCategorySearchResult> comboBoxListViewSkin = new ComboBoxListViewSkin<>(cbCategory);
-        comboBoxListViewSkin.getPopupContent().addEventFilter(KeyEvent.ANY, (event) -> {
+        comboBoxListViewSkin.getPopupContent().addEventFilter(KeyEvent.ANY, event -> {
             if (event.getCode() == KeyCode.SPACE) {
                 event.consume();
             }
@@ -129,19 +131,22 @@ public class ProductController {
 
         colCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategoryName()));
 
+        String languageCode = ConfigurationHolder.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
+        Locale locale = languageCode == null ? CommonConstants.ENGLISH : new Locale(languageCode);
+
         colQuantity.setStyle(StyleConstants.ALIGN_RIGHT);
         colQuantity.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getQuantity()));
-        colQuantity.setCellFactory(new NumberCellFactory<>(Settings.CURRENT_LOCALE));
+        colQuantity.setCellFactory(new NumberCellFactory<>(locale));
 
         colUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnitLabel()));
 
         colPurchasePrice.setStyle(StyleConstants.ALIGN_RIGHT);
         colPurchasePrice.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getPurchasePrice()));
-        colPurchasePrice.setCellFactory(new NumberCellFactory<>(Settings.CURRENT_LOCALE));
+        colPurchasePrice.setCellFactory(new NumberCellFactory<>(locale));
 
         colSellingPrice.setStyle(StyleConstants.ALIGN_RIGHT);
         colSellingPrice.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSellingPrice()));
-        colSellingPrice.setCellFactory(new NumberCellFactory<>(Settings.CURRENT_LOCALE));
+        colSellingPrice.setCellFactory(new NumberCellFactory<>(locale));
 
         colCreatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreatedAt()));
         colCreatedAt.setCellFactory(new DateCellFactory<>(CommonConstants.DATETIME_PATTERN));
@@ -196,17 +201,15 @@ public class ProductController {
             filter.setName(tfName.getText());
             filter.setCategoryCode(Objects.isNull(selectedCategory) ? null : selectedCategory.getCode());
             return productService.searchProduct(filter);
-        }).thenAccept(products -> {
-            Platform.runLater(() -> {
-                if (products.isEmpty()) {
-                    tableProduct.setPlaceholder(new Label("No data to display"));
-                    lblRows.setText("0");
-                }
-                tableProduct.setItems(FXCollections.observableList(products));
-                tableProduct.getSortOrder().setAll(colName); // Always sort by name after searching
-                lblRows.setText(products.size() + "");
-            });
-        });
+        }).thenAccept(products -> Platform.runLater(() -> {
+            if (products.isEmpty()) {
+                tableProduct.setPlaceholder(new Label("No data to display"));
+                lblRows.setText("0");
+            }
+            tableProduct.setItems(FXCollections.observableList(products));
+            tableProduct.getSortOrder().setAll(colName); // Always sort by name after searching
+            lblRows.setText(products.size() + "");
+        }));
     }
 
     @FXML

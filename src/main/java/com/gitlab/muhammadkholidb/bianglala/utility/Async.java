@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Async {
 
+    private Async() {}
+
     public static <T> CompletableFuture<T> supply(Supplier<T> supplier) {
         return CompletableFuture.supplyAsync(supplier).exceptionally(ex -> {
             log.error("Supply async error: " + Exceptions.getMessage(ex.getCause()), ex);

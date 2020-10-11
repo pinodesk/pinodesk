@@ -13,9 +13,7 @@ import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ProductCategoryComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
 
     private final ComboBox<ProductCategorySearchResult> comboBox;
@@ -23,7 +21,7 @@ public class ProductCategoryComboBoxKeyEventHandler implements EventHandler<KeyE
 
     public ProductCategoryComboBoxKeyEventHandler(ComboBox<ProductCategorySearchResult> comboBox) {
         this.comboBox = comboBox;
-        this.productCategoryService = ApplicationContextHolder.get().getBean(ProductCategoryService.class);
+        this.productCategoryService = ApplicationContextHolder.getApplicationContext().getBean(ProductCategoryService.class);
     }
 
     @Override

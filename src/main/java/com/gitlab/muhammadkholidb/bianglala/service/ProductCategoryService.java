@@ -1,11 +1,12 @@
 package com.gitlab.muhammadkholidb.bianglala.service;
 
-import com.gitlab.muhammadkholidb.bianglala.entity.LanguageEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.bianglala.entity.ProductCategoryEntity;
-import com.gitlab.muhammadkholidb.bianglala.repository.ProductCategoryRepository;
+import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
+import com.gitlab.muhammadkholidb.bianglala.data.model.ProductCategory;
+import com.gitlab.muhammadkholidb.bianglala.data.repository.ProductCategoryRepository;
+import com.gitlab.muhammadkholidb.bianglala.utility.ConfigurationHolder;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
 
 import org.springframework.beans.BeanUtils;
@@ -14,7 +15,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
 
 @Slf4j
 @Service
@@ -26,22 +26,21 @@ public class ProductCategoryService {
     @Cacheable("searchProductCategoryByKeyword")
     public List<ProductCategorySearchResult> searchProductCategoryByKeyword(String keyword) {
         log.debug("Search product category");
-        LanguageEntity language = new LanguageEntity();
-        language.setId(2L);
-        List<ProductCategoryEntity> categories = productCategoryRepository.findByKeyword(keyword, language, new PageRequest(0, 10));
+        String languageId = ConfigurationHolder.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
+        List<ProductCategory> categories = productCategoryRepository.filter(keyword, Long.valueOf(languageId));
         List<ProductCategorySearchResult> results = new ArrayList<>();
         int maxParent = 3;
         categories.stream().map(category -> {
-            ProductCategoryEntity parentCategory = category.getParentCategory();
+            Long parentCategoryId = category.getParentCategoryId();
             int countParent = 0;
-            while (parentCategory != null) {
-                parentCategory = productCategoryRepository.findOne(parentCategory.getId());
+            while (parentCategoryId != null) {
+                ProductCategory parentCategory = productCategoryRepository.readOne(parentCategoryId).orElseThrow();
                 countParent++;
                 category.setName(parentCategory.getName() + " > " + category.getName());
-                parentCategory = parentCategory.getParentCategory();
-                if (parentCategory != null && countParent == maxParent) {
+                parentCategoryId = parentCategory.getParentCategoryId();
+                if (parentCategoryId != null && countParent == maxParent) {
                     category.setName("... > " + parentCategory.getName() + " > " + category.getName());
-                    parentCategory = null;
+                    parentCategoryId = null;
                 }
             }
             return category;
@@ -49,9 +48,7 @@ public class ProductCategoryService {
             ProductCategorySearchResult result = new ProductCategorySearchResult();
             BeanUtils.copyProperties(category, result);
             return result;
-        }).forEachOrdered(result -> {
-            results.add(result);
-        });
+        }).forEachOrdered(results::add);
         return results;
     }
 

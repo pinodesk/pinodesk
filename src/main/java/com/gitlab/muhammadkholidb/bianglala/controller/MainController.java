@@ -6,9 +6,7 @@ import java.io.StringWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ViewConstants;
-import com.gitlab.muhammadkholidb.bianglala.utility.Settings;
 import com.gitlab.muhammadkholidb.bianglala.utility.ViewLoader;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -88,7 +85,7 @@ public class MainController {
     }
 
     private void swapContentPane(String name) throws IOException {
-        VBox content = ViewLoader.load(name, Settings.CURRENT_LOCALE);
+        VBox content = ViewLoader.load(name);
         AnchorPane.setTopAnchor(content, 0.0);
         AnchorPane.setBottomAnchor(content, 0.0);
         AnchorPane.setLeftAnchor(content, 0.0);
