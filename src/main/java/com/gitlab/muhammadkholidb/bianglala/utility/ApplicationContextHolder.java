@@ -8,8 +8,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 public class ApplicationContextHolder {
 
-    private ApplicationContextHolder() {
-    }
+    private ApplicationContextHolder() {}
 
     private static ApplicationContext applicationContext;
 

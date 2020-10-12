@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="632.0" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../css/bianglala.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.ProductController">
+   <children>
+      <AnchorPane prefWidth="774.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: #009c7c;" text="%lbl.title.editproduct" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <padding>
+                  <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
+               </padding>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="568.0" prefWidth="754.0" style="-fx-border-color: #bebebe; -fx-border-width: 1px;" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+         <children>
+            <GridPane hgap="10.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <columnConstraints>
+                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="750.0" minWidth="10.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints />
+                  <RowConstraints maxHeight="51.19999999999999" minHeight="50.400000000000006" prefHeight="51.19999999999999" />
+                  <RowConstraints maxHeight="51.19999999999999" minHeight="50.400000000000006" prefHeight="51.19999999999999" />
+                  <RowConstraints maxHeight="51.19999999999999" minHeight="50.400000000000006" prefHeight="51.19999999999999" />
+                  <RowConstraints maxHeight="51.19999999999999" minHeight="50.400000000000006" prefHeight="51.19999999999999" />
+               </rowConstraints>
+               <children>
+                  <VBox spacing="5.0">
+                     <children>
+                        <Label text="%lbl.code">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfCode" styleClass="input-primary">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <VBox spacing="5.0" GridPane.rowIndex="1">
+                     <children>
+                        <Label text="%lbl.name">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfName" styleClass="input-primary">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <VBox spacing="5.0" GridPane.rowIndex="3">
+                     <children>
+                        <Label text="%lbl.category">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="cbCategory" editable="true" maxWidth="1.7976931348623157E308">
+                           <styleClass>
+                              <String fx:value="combo-box-autocomplete" />
+                              <String fx:value="border-primary" />
+                           </styleClass>
+                        </ComboBox>
+                     </children>
+                  </VBox>
+                  <VBox spacing="5.0" GridPane.rowIndex="2">
+                     <children>
+                        <Label text="%lbl.description">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextArea prefHeight="0.0" prefWidth="730.0" styleClass="input-primary" />
+                     </children>
+                  </VBox>
+                  <HBox spacing="10.0" GridPane.rowIndex="4">
+                     <children>
+                        <VBox prefHeight="51.0" prefWidth="546.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl.quantity">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="cbCategory1" editable="true" maxWidth="1.7976931348623157E308">
+                                 <styleClass>
+                                    <String fx:value="combo-box-autocomplete" />
+                                    <String fx:value="border-primary" />
+                                 </styleClass>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl.unit">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="cbCategory2" editable="true" maxWidth="1.7976931348623157E308">
+                                 <styleClass>
+                                    <String fx:value="combo-box-autocomplete" />
+                                    <String fx:value="border-primary" />
+                                 </styleClass>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox spacing="10.0" GridPane.rowIndex="5">
+                     <children>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl.purchaseprice">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfName1" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl.sellingprice">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfName2" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </GridPane>
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>
