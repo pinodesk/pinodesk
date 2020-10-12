@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1024.0" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/bianglala.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.MainController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1024.0" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/bianglala.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.MainController">
    <children>
       <ImageView fx:id="imgLogo" fitHeight="50.0" fitWidth="134.0" layoutX="14.0" layoutY="8.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0">
          <image>
@@ -143,7 +143,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Label>
-                        <Button fx:id="btnMenuSystem" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.system" textFill="WHITE">
+                        <Button fx:id="btnMenuSystem" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.configuration" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />

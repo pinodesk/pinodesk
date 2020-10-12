@@ -191,7 +191,7 @@ public class ProductController {
 
     @SuppressWarnings("unchecked")
     private void searchProducts() {
-        tableProduct.setPlaceholder(new Label("Loading data"));
+        tableProduct.setPlaceholder(new Label(resources.getString("message.loadingdata")));
         tableProduct.setItems(FXCollections.observableArrayList());
         Async.supply(() -> {
             ProductCategorySearchResult selectedCategory = cbCategory.getSelectionModel().getSelectedItem();
@@ -203,7 +203,7 @@ public class ProductController {
             return productService.searchProduct(filter);
         }).thenAccept(products -> Platform.runLater(() -> {
             if (products.isEmpty()) {
-                tableProduct.setPlaceholder(new Label("No data to display"));
+                tableProduct.setPlaceholder(new Label(resources.getString("message.nodata")));
                 lblRows.setText("0");
             }
             tableProduct.setItems(FXCollections.observableList(products));

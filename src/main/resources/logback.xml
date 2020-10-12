@@ -30,16 +30,17 @@
     <root level="DEBUG">
         <if condition='property("os.name").toLowerCase().contains("windows")'>
             <then>
-                <appender-ref ref="STDOUT_NO_COLOR"/>
+                <appender-ref ref="STDOUT_NO_COLOR" />
             </then>
             <else>
-                <appender-ref ref="STDOUT_COLOR"/>
+                <appender-ref ref="STDOUT_COLOR" />
             </else>
         </if>
         <appender-ref ref="FILE" />
     </root>
 
-    <logger name="org.springframework" level="INFO"/>
-    <logger name="org.springframework.jdbc" level="TRACE"/>
-    
+    <logger name="org.springframework" level="INFO" />
+    <logger name="org.springframework.jdbc.core.JdbcTemplate" level="TRACE" />
+    <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE" />
+
 </configuration>
