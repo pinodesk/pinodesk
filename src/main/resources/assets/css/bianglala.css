@@ -88,6 +88,10 @@
     background-color: #dddddd;
 }
 
+.bg-disabled {
+    -fx-opacity: 0.4;
+}
+
 .border-primary {
     -fx-border-color: #009c7c;
     border-color: #009c7c;
@@ -122,6 +126,11 @@
     background-color: white;
 }
 
+.combo-box-base.combo-box-autocomplete>.text-field .bg-disabled {
+    -fx-background-color: #ececec;
+    background-color: #ececec;
+}
+
 .combo-box.combo-box-autocomplete .arrow,
 .combo-box.combo-box-autocomplete .arrow-button {
     -fx-background-color: transparent;
@@ -150,6 +159,43 @@
     -fx-background-radius: 0 0 0 0;
     -fx-font-size: 13px;
     font-size: 13px;
+}
+
+.date-picker {
+/*    -fx-border-insets: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;*/
+}
+
+
+.date-picker:contains-focus {
+    -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-control-inner-background;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
+
+.date-picker>.date-picker-display-node {
+    -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, white;
+    background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, white;
+    -fx-border-color: transparent;
+    border-color: transparent;
+    -fx-border-insets: 0;
+    /*-fx-background-insets: 0;*/
+    -fx-border-radius: 0 0 0 0;
+    border-radius: 0 0 0 0;
+    -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
+}
+
+.date-picker>.arrow-button {
+    -fx-background-color: black;
+    background-color: #dddddd;
+    -fx-border-radius: 0 0 0 0;
+    border-radius: 0 0 0 0;
+    -fx-background-radius: 0 0 0 0;
+    -fx-border-insets: 0;
+    /*-fx-background-insets: 0;*/
 }
 
 .pagination {

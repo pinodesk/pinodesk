@@ -4,6 +4,7 @@ create table if not exists t_product (
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
 	code varchar(64) not null,
+	barcode varchar(24),
 	name varchar(256),
 	description varchar(512),
 	quantity integer default 0,
@@ -18,6 +19,7 @@ create table if not exists t_product (
 	expired_date date,
 	primary key (id),
 	index idx_t_product__code (code),
+	index idx_t_product__barcode (barcode),
 	index idx_t_product__category_code (category_code)
 );
 
@@ -762,3 +764,5 @@ insert into t_product (id, created_at, updated_at, deleted_at, code, name, descr
 (null, current_timestamp, current_timestamp, NULL, '8992727002998', 'LAURIER SPR MXI WING 10', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL),
 (null, current_timestamp, current_timestamp, NULL, '8992727003087', 'LAURIER RELAX NIGHT 35CM 6’S', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL),
 (null, current_timestamp, current_timestamp, NULL, '8992727000048', 'LAURIER SPR MXI NONWING 8’S', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL);
+
+update t_product set barcode = code;

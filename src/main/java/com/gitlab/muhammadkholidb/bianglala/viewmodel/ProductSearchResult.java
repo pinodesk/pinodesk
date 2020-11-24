@@ -24,10 +24,6 @@ public class ProductSearchResult {
 
     private Integer quantity;
 
-    private Long unitId;
-
-    private String unitLabel;
-
     private Long categoryId;
 
     private String categoryCode;
@@ -35,8 +31,6 @@ public class ProductSearchResult {
     private String categoryName;
 
     private BigDecimal purchasePrice;
-
-    private BigDecimal sellingPrice;
 
     private Long rackId;
 

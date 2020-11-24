@@ -110,7 +110,7 @@
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
             <artifactId>jdbctemplate-helper</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>09c280d6</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>

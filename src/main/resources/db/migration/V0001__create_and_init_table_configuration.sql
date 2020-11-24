@@ -14,4 +14,5 @@ insert into t_configuration (id, created_at, updated_at, deleted_at, code, value
 (null, current_timestamp, current_timestamp, null, 'language_id', '2', ''),
 (null, current_timestamp, current_timestamp, null, 'language_code', 'ind', ''),
 (null, current_timestamp, current_timestamp, null, 'store_name', 'Hello Store', ''),
-(null, current_timestamp, current_timestamp, null, 'store_address', 'Jakarta, Indonesia', '');
+(null, current_timestamp, current_timestamp, null, 'store_address', 'Jakarta, Indonesia', ''),
+(null, current_timestamp, current_timestamp, null, 'vat_percentage', '10', '');

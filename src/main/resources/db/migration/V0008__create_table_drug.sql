@@ -1,4 +1,4 @@
-create table if not exists t_drug_detail (
+create table if not exists t_drug (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -11,6 +11,6 @@ create table if not exists t_drug_detail (
 	contraindication varchar(512),
 	prescription_price decimal default 0,
 	primary key (id),
-	constraint fk_t_drug_detail__product_id foreign key (product_id) references t_product(id),
-	constraint fk_t_drug_detail__drug_category_id foreign key (drug_category_id) references t_drug_category(id)
+	constraint fk_t_drug__product_id foreign key (product_id) references t_product(id),
+	constraint fk_t_drug__drug_category_id foreign key (drug_category_id) references t_drug_category(id)
 );

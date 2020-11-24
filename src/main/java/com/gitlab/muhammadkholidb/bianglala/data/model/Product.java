@@ -20,6 +20,7 @@ public class Product extends DataModel {
     public static final String TABLE_NAME = "t_product";
 
     public static final String C_CODE = "code";
+    public static final String C_BARCODE = "barcode";
     public static final String C_NAME = "name";
     public static final String C_DESCRIPTION = "description";
     public static final String C_QUANTITY = "quantity";
@@ -28,6 +29,8 @@ public class Product extends DataModel {
     public static final String C_CATEGORY_CODE = "category_code";
     public static final String C_PURCHASE_PRICE = "purchase_price";
     public static final String C_SELLING_PRICE = "selling_price";
+    public static final String C_SELLING_PRICE_BEFORE_TAX = "selling_price_before_tax";
+    public static final String C_VAT_PERCENTAGE = "vat_percentage";
     public static final String C_RACK_ID = "rack_id";
     public static final String C_RACK_CODE = "rack_code";
     public static final String C_RACK_NAME = "rack_name";
@@ -35,6 +38,9 @@ public class Product extends DataModel {
 
     @DataColumn(C_CODE)
     private String code;
+
+    @DataColumn(C_BARCODE)
+    private String barcode;
 
     @DataColumn(C_NAME)
     private String name;
@@ -45,22 +51,13 @@ public class Product extends DataModel {
     @DataColumn(C_QUANTITY)
     private Integer quantity;
 
-    @DataColumn(C_UNIT_ID)
-    private Long unitId;
-
-    @DataColumn(C_UNIT_LABEL)
-    private String unitLabel;
-
     @DataColumn(C_CATEGORY_CODE)
     private String categoryCode;
 
     @DataColumn(C_PURCHASE_PRICE)
     private BigDecimal purchasePrice;
 
-    @DataColumn(C_SELLING_PRICE)
-    private BigDecimal sellingPrice;
-
-    @DataColumn(C_UNIT_ID)
+    @DataColumn(C_RACK_ID)
     private Long rackId;
 
     @DataColumn(C_RACK_CODE)

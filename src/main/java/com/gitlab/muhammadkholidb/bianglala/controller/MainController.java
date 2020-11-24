@@ -1,13 +1,12 @@
 package com.gitlab.muhammadkholidb.bianglala.controller;
 
+import com.gitlab.muhammadkholidb.bianglala.constant.Page;
+import com.gitlab.muhammadkholidb.bianglala.utility.PageLoader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.util.ResourceBundle;
-
-import com.gitlab.muhammadkholidb.bianglala.constant.ViewConstants;
-import com.gitlab.muhammadkholidb.bianglala.utility.ViewLoader;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -50,24 +49,24 @@ public class MainController {
 
     @FXML
     void onActionBtnMenuProducts(ActionEvent event) {
-        changeContent(ViewConstants.MASTER_PRODUCTS, (Button) event.getSource());
+        changeContent(Page.MASTER_PRODUCT_MAIN, (Button) event.getSource());
     }
 
     @FXML
     void onActionBtnMenuCustomers(ActionEvent event) {
-        changeContent(ViewConstants.MASTER_CUSTOMERS, (Button) event.getSource());
+        changeContent(Page.MASTER_CUSTOMER_MAIN, (Button) event.getSource());
     }
 
     @FXML
     void onActionBtnMenuSuppliers(ActionEvent event) {
-        changeContent(ViewConstants.MASTER_SUPPLIERS, (Button) event.getSource());
+        changeContent(Page.MASTER_SUPPLIER_MAIN, (Button) event.getSource());
     }
 
-    private void changeContent(String name, Button btn) {
+    private void changeContent(Page page, Button btn) {
         Platform.runLater(() -> {
             try {
                 setActiveMenu(btn);
-                swapContentPane(name);
+                swapContentPane(page);
             } catch (Exception e) {
                 showErrorDialog(e);
             }
@@ -84,8 +83,8 @@ public class MainController {
         });
     }
 
-    private void swapContentPane(String name) throws IOException {
-        VBox content = ViewLoader.load(name);
+    private void swapContentPane(Page page) throws IOException {
+        VBox content = PageLoader.load(page);
         AnchorPane.setTopAnchor(content, 0.0);
         AnchorPane.setBottomAnchor(content, 0.0);
         AnchorPane.setLeftAnchor(content, 0.0);

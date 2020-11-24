@@ -8,11 +8,13 @@ import com.gitlab.muhammadkholidb.bianglala.data.model.ProductCategory;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
+import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 
+@Slf4j
 @Repository
 public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepository {
 
