@@ -18,6 +18,8 @@ public class ProductSearchResult {
 
     private String code;
 
+    private String barcode;
+
     private String name;
 
     private String description;
@@ -31,6 +33,10 @@ public class ProductSearchResult {
     private String categoryName;
 
     private BigDecimal purchasePrice;
+
+    private Long unitId;
+
+    private String unitLabel;
 
     private Long rackId;
 

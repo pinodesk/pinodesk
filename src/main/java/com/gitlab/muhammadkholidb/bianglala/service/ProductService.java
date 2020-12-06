@@ -3,7 +3,7 @@ package com.gitlab.muhammadkholidb.bianglala.service;
 import java.util.List;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
-import com.gitlab.muhammadkholidb.bianglala.data.repository.ProductRepository;
+import com.gitlab.muhammadkholidb.bianglala.repository.ProductRepository;
 import com.gitlab.muhammadkholidb.bianglala.utility.ConfigurationHolder;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;

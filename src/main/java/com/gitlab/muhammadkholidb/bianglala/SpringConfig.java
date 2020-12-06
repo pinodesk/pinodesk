@@ -45,10 +45,16 @@ public class SpringConfig {
     public DataSourceTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
-
+    
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager("searchProduct", "searchProductCategoryByKeyword");
+        return new ConcurrentMapCacheManager(
+                "searchProduct", 
+                "searchProductCategoryByKeyword", 
+                "getAllRacks",
+                "searchRackByKeyword", 
+                "getAllUnits",
+                "searchUnitByKeyword");
     }
 
     @Bean

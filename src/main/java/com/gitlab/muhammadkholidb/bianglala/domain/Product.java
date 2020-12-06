@@ -1,4 +1,4 @@
-package com.gitlab.muhammadkholidb.bianglala.data.model;
+package com.gitlab.muhammadkholidb.bianglala.domain;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -53,6 +53,12 @@ public class Product extends DataModel {
 
     @DataColumn(C_CATEGORY_CODE)
     private String categoryCode;
+
+    @DataColumn(C_UNIT_ID)
+    private Long unitId;
+
+    @DataColumn(C_UNIT_LABEL)
+    private String unitLabel;
 
     @DataColumn(C_PURCHASE_PRICE)
     private BigDecimal purchasePrice;

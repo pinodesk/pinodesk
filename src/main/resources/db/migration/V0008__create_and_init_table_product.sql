@@ -18,9 +18,12 @@ create table if not exists t_product (
 	rack_name varchar(256),
 	expired_date date,
 	primary key (id),
+	constraint fk_t_product__unit_id foreign key (unit_id) references t_unit(id),
+	constraint fk_t_product__rack_id foreign key (rack_id) references t_rack(id),
 	index idx_t_product__code (code),
 	index idx_t_product__barcode (barcode),
-	index idx_t_product__category_code (category_code)
+	index idx_t_product__category_code (category_code),
+	index idx_t_product__id__unit_id (id, unit_id)
 );
 
 insert into t_product (id, created_at, updated_at, deleted_at, code, name, description, quantity, unit_id, unit_label, category_code, purchase_price, selling_price, rack_id, rack_code, rack_name, expired_date) values

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
-import com.gitlab.muhammadkholidb.bianglala.data.model.ProductCategory;
-import com.gitlab.muhammadkholidb.bianglala.data.repository.ProductCategoryRepository;
+import com.gitlab.muhammadkholidb.bianglala.constant.DomainError;
+import com.gitlab.muhammadkholidb.bianglala.domain.ProductCategory;
+import com.gitlab.muhammadkholidb.bianglala.exception.DomainException;
+import com.gitlab.muhammadkholidb.bianglala.repository.ProductCategoryRepository;
 import com.gitlab.muhammadkholidb.bianglala.utility.ConfigurationHolder;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
 
@@ -18,10 +20,16 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class ProductCategoryService {
+public class ProductCategoryService extends BaseService {
 
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
+
+    public ProductCategorySearchResult getProductCateoryById(Long id) {
+        return productCategoryRepository.readOne(id)
+                .map(pc -> objectMapper.convertValue(pc, ProductCategorySearchResult.class))
+                .orElseThrow(() -> new DomainException(DomainError.NOT_FOUND));
+    }
 
     @Cacheable("searchProductCategoryByKeyword")
     public List<ProductCategorySearchResult> searchProductCategoryByKeyword(String keyword) {

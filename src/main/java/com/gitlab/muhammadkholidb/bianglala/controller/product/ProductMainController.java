@@ -1,5 +1,6 @@
 package com.gitlab.muhammadkholidb.bianglala.controller.product;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.Date;
@@ -11,20 +12,20 @@ import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
 import com.gitlab.muhammadkholidb.bianglala.constant.StyleConstants;
+import com.gitlab.muhammadkholidb.bianglala.controller.BaseController;
 import com.gitlab.muhammadkholidb.bianglala.converter.ProductCategoryComboBoxConverter;
 import com.gitlab.muhammadkholidb.bianglala.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.bianglala.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.bianglala.listener.ProductCategoryComboBoxKeyEventHandler;
 import com.gitlab.muhammadkholidb.bianglala.service.ProductService;
-import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
+import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.ConfigurationHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
-import java.io.IOException;
 
 import org.springframework.context.ApplicationContext;
 
@@ -40,14 +41,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProductMainController {
+public class ProductMainController extends BaseController {
 
     @FXML
     private ResourceBundle resources;
@@ -105,26 +104,18 @@ public class ProductMainController {
 
     private ProductService productService;
 
-    @FXML
-    void initialize() {
-        ApplicationContext ctx = ApplicationContextHolder.getApplicationContext();
+    @Override
+    protected void initServices(ApplicationContext ctx) {
         productService = ctx.getBean(ProductService.class);
-        initComboBoxCategory();
+    }
+
+    @Override
+    protected void initControls() {
+        ComboBoxUtils.initEditable(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
+                new ProductCategoryComboBoxConverter(cbCategory));
         initTableProduct();
         registerKeyListener();
         searchProducts();
-    }
-
-    private void initComboBoxCategory() {
-        ComboBoxListViewSkin<ProductCategorySearchResult> comboBoxListViewSkin = new ComboBoxListViewSkin<>(cbCategory);
-        comboBoxListViewSkin.getPopupContent().addEventFilter(KeyEvent.ANY, event -> {
-            if (event.getCode() == KeyCode.SPACE) {
-                event.consume();
-            }
-        });
-        cbCategory.setSkin(comboBoxListViewSkin);
-        cbCategory.getEditor().setOnKeyReleased(new ProductCategoryComboBoxKeyEventHandler(cbCategory));
-        cbCategory.setConverter(new ProductCategoryComboBoxConverter(cbCategory));
     }
 
     private void initTableProduct() {
@@ -142,8 +133,11 @@ public class ProductMainController {
         colQuantity.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getQuantity()));
         colQuantity.setCellFactory(new NumberCellFactory<>(locale));
 
+        colUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnitLabel()));
+
         colPurchasePrice.setStyle(StyleConstants.ALIGN_RIGHT);
-        colPurchasePrice.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getPurchasePrice()));
+        colPurchasePrice
+                .setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getPurchasePrice()));
         colPurchasePrice.setCellFactory(new NumberCellFactory<>(locale));
 
         colCreatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreatedAt()));
@@ -185,7 +179,7 @@ public class ProductMainController {
     private void handleActionTableProduct() {
         ProductSearchResult selected = tableProduct.getSelectionModel().getSelectedItem();
         log.debug("Selected product: {}", selected);
-        PageData.INSTANCE.set(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT, selected); 
+        PageData.INSTANCE.set(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT, selected);
         try {
             FXUtils.show("Bianglala", Page.MASTER_PRODUCT_EDIT);
         } catch (IOException ex) {

@@ -1,20 +1,18 @@
-package com.gitlab.muhammadkholidb.bianglala.data.repository;
+package com.gitlab.muhammadkholidb.bianglala.repository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.bianglala.data.model.Product;
-import com.gitlab.muhammadkholidb.bianglala.data.model.ProductCategory;
+import com.gitlab.muhammadkholidb.bianglala.domain.Product;
+import com.gitlab.muhammadkholidb.bianglala.domain.ProductCategory;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 
-@Slf4j
 @Repository
 public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepository {
 

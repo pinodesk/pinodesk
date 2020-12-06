@@ -1,8 +1,8 @@
-package com.gitlab.muhammadkholidb.bianglala.data.repository;
+package com.gitlab.muhammadkholidb.bianglala.repository;
 
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.bianglala.data.model.Product;
+import com.gitlab.muhammadkholidb.bianglala.domain.Product;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.CommonRepository;

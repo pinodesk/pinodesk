@@ -1,18 +1,36 @@
 package com.gitlab.muhammadkholidb.bianglala.controller.product;
 
-import com.gitlab.muhammadkholidb.bianglala.constant.Page;
-import com.gitlab.muhammadkholidb.bianglala.control.MaskedTextField;
-import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import com.gitlab.muhammadkholidb.bianglala.constant.Page;
+import com.gitlab.muhammadkholidb.bianglala.control.MaskedTextField;
+import com.gitlab.muhammadkholidb.bianglala.controller.BaseController;
+import com.gitlab.muhammadkholidb.bianglala.converter.ProductCategoryComboBoxConverter;
+import com.gitlab.muhammadkholidb.bianglala.converter.RackComboBoxConverter;
+import com.gitlab.muhammadkholidb.bianglala.converter.UnitComboBoxConverter;
+import com.gitlab.muhammadkholidb.bianglala.listener.ProductCategoryComboBoxKeyEventHandler;
+import com.gitlab.muhammadkholidb.bianglala.listener.RackComboBoxKeyEventHandler;
+import com.gitlab.muhammadkholidb.bianglala.listener.UnitComboBoxKeyEventHandler;
+import com.gitlab.muhammadkholidb.bianglala.service.ProductCategoryService;
+import com.gitlab.muhammadkholidb.bianglala.service.RackService;
+import com.gitlab.muhammadkholidb.bianglala.service.UnitService;
+import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackSearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitSearchResult;
+
+import org.springframework.context.ApplicationContext;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-public class ProductEditController {
-    
+public class ProductEditController extends BaseController {
+
     @FXML
     private ResourceBundle resources;
 
@@ -32,13 +50,13 @@ public class ProductEditController {
     private TextField tfDescription;
 
     @FXML
-    private ComboBox<?> cbCategory;
+    private ComboBox<ProductCategorySearchResult> cbCategory;
 
     @FXML
     private TextField tfQuantity;
 
     @FXML
-    private ComboBox<?> cbUnit;
+    private ComboBox<UnitSearchResult> cbUnit;
 
     @FXML
     private TextField tfPurchasePrice;
@@ -62,7 +80,7 @@ public class ProductEditController {
     private MaskedTextField tfExpiredDate;
 
     @FXML
-    private ComboBox<?> cbRack;
+    private ComboBox<RackSearchResult> cbRack;
 
     @FXML
     private ComboBox<?> cbDrugCategory;
@@ -126,16 +144,39 @@ public class ProductEditController {
 
     @FXML
     private TextField tfProfitPercentage4;
-    
-    @FXML
-    void initialize() {
+
+    private ProductCategoryService productCategoryService;
+
+    private RackService rackService;
+
+    private UnitService unitService;
+
+    @Override
+    protected void initServices(ApplicationContext ctx) {
+        productCategoryService = ctx.getBean(ProductCategoryService.class);
+        rackService = ctx.getBean(RackService.class);
+        unitService = ctx.getBean(UnitService.class);
+    }
+
+    @Override
+    protected void initControls() {
         ProductSearchResult result = PageData.INSTANCE.get(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT);
-        tfCode.setText(result.getCode());
         tfName.setText(result.getName());
+        tfCode.setText(result.getCode());
+        tfBarcode.setText(result.getBarcode());
         tfDescription.setText(result.getDescription());
         tfQuantity.setText(result.getQuantity().toString());
         tfPurchasePrice.setText(result.getPurchasePrice().toString());
-        
+        ComboBoxUtils.initEditable(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
+                new ProductCategoryComboBoxConverter(cbCategory),
+                () -> productCategoryService.getProductCateoryById(result.getCategoryId()));
+        ComboBoxUtils.initEditable(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit), new UnitComboBoxConverter(cbUnit),
+                () -> unitService.getUnitById(result.getUnitId()));
+        ComboBoxUtils.initEditable(cbRack, new RackComboBoxKeyEventHandler(cbRack), new RackComboBoxConverter(cbRack),
+                () -> {
+                    Long rackId = result.getRackId();
+                    return rackId == null ? null : rackService.getRackById(rackId);
+                });
     }
-    
+
 }

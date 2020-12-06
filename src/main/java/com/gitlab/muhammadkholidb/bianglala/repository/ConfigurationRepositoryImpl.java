@@ -1,6 +1,6 @@
-package com.gitlab.muhammadkholidb.bianglala.data.repository;
+package com.gitlab.muhammadkholidb.bianglala.repository;
 
-import com.gitlab.muhammadkholidb.bianglala.data.model.Configuration;
+import com.gitlab.muhammadkholidb.bianglala.domain.Configuration;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
 
 import org.springframework.stereotype.Repository;

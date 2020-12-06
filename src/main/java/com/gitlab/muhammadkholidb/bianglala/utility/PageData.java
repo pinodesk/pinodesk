@@ -11,7 +11,7 @@ public class PageData {
 
     private final Map<PageSet, Object> map = new HashMap<>();
 
-    public static PageData INSTANCE = new PageData();
+    public static final PageData INSTANCE = new PageData();
 
     private PageData() {}
 

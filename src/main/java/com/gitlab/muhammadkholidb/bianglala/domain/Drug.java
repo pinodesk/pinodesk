@@ -1,4 +1,4 @@
-package com.gitlab.muhammadkholidb.bianglala.data.model;
+package com.gitlab.muhammadkholidb.bianglala.domain;
 
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.annotation.DataColumn;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.model.DataModel;

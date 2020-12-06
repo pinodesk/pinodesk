@@ -1,8 +1,10 @@
-package com.gitlab.muhammadkholidb.bianglala.data.repository;
+package com.gitlab.muhammadkholidb.bianglala.repository;
+
+import static com.gitlab.muhammadkholidb.bianglala.constant.StringConstants.PERCENT;
 
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.bianglala.data.model.ProductCategory;
+import com.gitlab.muhammadkholidb.bianglala.domain.ProductCategory;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
 
@@ -16,7 +18,7 @@ public class ProductCategoryRepositoryImpl extends AbstractRepository<ProductCat
     public List<ProductCategory> filter(String keyword, Long languageId) {
         return read(new Where()
                 .equals(ProductCategory.C_LANGUAGE_ID, languageId)
-                .andLikeIgnoreCase(ProductCategory.C_NAME, StringUtils.join("%", keyword, "%")), 
+                .andLikeIgnoreCase(ProductCategory.C_NAME, StringUtils.join(PERCENT, keyword, PERCENT)), 
                 limitFactory.create(10));
     }
 
