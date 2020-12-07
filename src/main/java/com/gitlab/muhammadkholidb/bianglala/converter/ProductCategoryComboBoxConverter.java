@@ -1,6 +1,6 @@
 package com.gitlab.muhammadkholidb.bianglala.converter;
 
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,17 +9,17 @@ import javafx.util.StringConverter;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class ProductCategoryComboBoxConverter extends StringConverter<ProductCategorySearchResult> {
+public class ProductCategoryComboBoxConverter extends StringConverter<ProductCategoryVM> {
 
-    private ComboBox<ProductCategorySearchResult> cb;
+    private ComboBox<ProductCategoryVM> cb;
 
     @Override
-    public String toString(ProductCategorySearchResult pc) {
+    public String toString(ProductCategoryVM pc) {
         return pc == null ? null : pc.getName();
     }
 
     @Override
-    public ProductCategorySearchResult fromString(String string) {
+    public ProductCategoryVM fromString(String string) {
         if (StringUtils.isBlank(string)) {
             return null;
         }

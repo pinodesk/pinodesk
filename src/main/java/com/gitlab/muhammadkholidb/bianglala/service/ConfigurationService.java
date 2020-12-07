@@ -9,7 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ConfigurationService {
+public class ConfigurationService extends BaseService {
 
     @Autowired
     private ConfigurationRepository configurationRepository;

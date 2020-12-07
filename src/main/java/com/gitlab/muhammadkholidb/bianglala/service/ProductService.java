@@ -4,8 +4,8 @@ import java.util.List;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
 import com.gitlab.muhammadkholidb.bianglala.repository.ProductRepository;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -21,7 +21,7 @@ public class ProductService {
     private ConfigurationService configurationService;
 
     @Cacheable("searchProduct")
-    public List<ProductSearchResult> searchProduct(ProductFilter param) {
+    public List<ProductVM> searchProduct(ProductFilterVM param) {
         String languageId = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
         return productRepository.filter(param, Long.valueOf(languageId));
     }

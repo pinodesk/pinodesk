@@ -1,6 +1,6 @@
 package com.gitlab.muhammadkholidb.bianglala.converter;
 
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitSearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitVM;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -9,17 +9,17 @@ import javafx.util.StringConverter;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class UnitComboBoxConverter extends StringConverter<UnitSearchResult> {
+public class UnitComboBoxConverter extends StringConverter<UnitVM> {
 
-    private ComboBox<UnitSearchResult> cb;
+    private ComboBox<UnitVM> cb;
 
     @Override
-    public String toString(UnitSearchResult unit) {
+    public String toString(UnitVM unit) {
         return unit == null ? null : unit.getName();
     }
 
     @Override
-    public UnitSearchResult fromString(String string) {
+    public UnitVM fromString(String string) {
         if (StringUtils.isBlank(string)) {
             return null;
         }

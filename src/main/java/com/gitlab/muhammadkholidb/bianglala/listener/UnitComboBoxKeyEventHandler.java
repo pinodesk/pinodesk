@@ -3,7 +3,7 @@ package com.gitlab.muhammadkholidb.bianglala.listener;
 import com.gitlab.muhammadkholidb.bianglala.service.UnitService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitSearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitVM;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,10 +15,10 @@ import javafx.scene.input.KeyEvent;
 
 public class UnitComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
 
-    private final ComboBox<UnitSearchResult> cb;
+    private final ComboBox<UnitVM> cb;
     private final UnitService unitService;
 
-    public UnitComboBoxKeyEventHandler(ComboBox<UnitSearchResult> cb) {
+    public UnitComboBoxKeyEventHandler(ComboBox<UnitVM> cb) {
         this.cb = cb;
         this.unitService = ApplicationContextHolder.getApplicationContext().getBean(UnitService.class);
     }
@@ -26,7 +26,7 @@ public class UnitComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
     @Override
     public void handle(KeyEvent event) {
         String value = cb.getEditor().getText();
-        UnitSearchResult selected = cb.getSelectionModel().getSelectedItem();
+        UnitVM selected = cb.getSelectionModel().getSelectedItem();
         if (selected != null && selected.getName().equals(value)) {
             return;
         }

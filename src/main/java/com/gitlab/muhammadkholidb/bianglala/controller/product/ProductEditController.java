@@ -17,10 +17,10 @@ import com.gitlab.muhammadkholidb.bianglala.service.RackService;
 import com.gitlab.muhammadkholidb.bianglala.service.UnitService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackSearchResult;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitSearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitVM;
 
 import org.springframework.context.ApplicationContext;
 
@@ -50,13 +50,13 @@ public class ProductEditController extends BaseController {
     private TextField tfDescription;
 
     @FXML
-    private ComboBox<ProductCategorySearchResult> cbCategory;
+    private ComboBox<ProductCategoryVM> cbCategory;
 
     @FXML
     private TextField tfQuantity;
 
     @FXML
-    private ComboBox<UnitSearchResult> cbUnit;
+    private ComboBox<UnitVM> cbUnit;
 
     @FXML
     private TextField tfPurchasePrice;
@@ -80,7 +80,7 @@ public class ProductEditController extends BaseController {
     private MaskedTextField tfExpiredDate;
 
     @FXML
-    private ComboBox<RackSearchResult> cbRack;
+    private ComboBox<RackVM> cbRack;
 
     @FXML
     private ComboBox<?> cbDrugCategory;
@@ -160,7 +160,7 @@ public class ProductEditController extends BaseController {
 
     @Override
     protected void initControls() {
-        ProductSearchResult result = PageData.INSTANCE.get(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT);
+        ProductVM result = PageData.INSTANCE.get(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT);
         tfName.setText(result.getName());
         tfCode.setText(result.getCode());
         tfBarcode.setText(result.getBarcode());

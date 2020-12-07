@@ -23,9 +23,9 @@ import com.gitlab.muhammadkholidb.bianglala.utility.Async;
 import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
 
 import org.springframework.context.ApplicationContext;
 
@@ -64,7 +64,7 @@ public class ProductMainController extends BaseController {
     private TextField tfName;
 
     @FXML
-    private ComboBox<ProductCategorySearchResult> cbCategory;
+    private ComboBox<ProductCategoryVM> cbCategory;
 
     @FXML
     private Button btnClear;
@@ -73,34 +73,34 @@ public class ProductMainController extends BaseController {
     private Button btnSearch;
 
     @FXML
-    private TableView<ProductSearchResult> tableProduct;
+    private TableView<ProductVM> tableProduct;
 
     @FXML
-    private TableColumn<ProductSearchResult, String> colCode;
+    private TableColumn<ProductVM, String> colCode;
 
     @FXML
-    private TableColumn<ProductSearchResult, String> colName;
+    private TableColumn<ProductVM, String> colName;
 
     @FXML
-    private TableColumn<ProductSearchResult, String> colCategory;
+    private TableColumn<ProductVM, String> colCategory;
 
     @FXML
-    private TableColumn<ProductSearchResult, Integer> colQuantity;
+    private TableColumn<ProductVM, Integer> colQuantity;
 
     @FXML
-    private TableColumn<ProductSearchResult, String> colUnit;
+    private TableColumn<ProductVM, String> colUnit;
 
     @FXML
-    private TableColumn<ProductSearchResult, BigDecimal> colPurchasePrice;
+    private TableColumn<ProductVM, BigDecimal> colPurchasePrice;
 
     @FXML
-    private TableColumn<ProductSearchResult, BigDecimal> colSellingPrice;
+    private TableColumn<ProductVM, BigDecimal> colSellingPrice;
 
     @FXML
-    private TableColumn<ProductSearchResult, Date> colCreatedAt;
+    private TableColumn<ProductVM, Date> colCreatedAt;
 
     @FXML
-    private TableColumn<ProductSearchResult, Date> colUpdatedAt;
+    private TableColumn<ProductVM, Date> colUpdatedAt;
 
     private ProductService productService;
 
@@ -180,7 +180,7 @@ public class ProductMainController extends BaseController {
     }
 
     private void handleActionTableProduct() {
-        ProductSearchResult selected = tableProduct.getSelectionModel().getSelectedItem();
+        ProductVM selected = tableProduct.getSelectionModel().getSelectedItem();
         PageData.INSTANCE.set(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT, selected);
         try {
             FXUtils.show("Bianglala", Page.MASTER_PRODUCT_EDIT);
@@ -194,8 +194,8 @@ public class ProductMainController extends BaseController {
         tableProduct.setPlaceholder(new Label(resources.getString("message.loadingdata")));
         tableProduct.setItems(FXCollections.observableArrayList());
         Async.supply(() -> {
-            ProductCategorySearchResult selectedCategory = cbCategory.getSelectionModel().getSelectedItem();
-            ProductFilter filter = new ProductFilter();
+            ProductCategoryVM selectedCategory = cbCategory.getSelectionModel().getSelectedItem();
+            ProductFilterVM filter = new ProductFilterVM();
             filter.setCode(tfCode.getText());
             filter.setName(tfName.getText());
             filter.setCategoryCode(Objects.isNull(selectedCategory) ? null : selectedCategory.getCode());

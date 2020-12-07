@@ -3,8 +3,7 @@ package com.gitlab.muhammadkholidb.bianglala.listener;
 import com.gitlab.muhammadkholidb.bianglala.service.ProductCategoryService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
-
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,10 +15,10 @@ import javafx.scene.input.KeyEvent;
 
 public class ProductCategoryComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
 
-    private final ComboBox<ProductCategorySearchResult> comboBox;
+    private final ComboBox<ProductCategoryVM> comboBox;
     private final ProductCategoryService productCategoryService;
 
-    public ProductCategoryComboBoxKeyEventHandler(ComboBox<ProductCategorySearchResult> comboBox) {
+    public ProductCategoryComboBoxKeyEventHandler(ComboBox<ProductCategoryVM> comboBox) {
         this.comboBox = comboBox;
         this.productCategoryService = ApplicationContextHolder.getApplicationContext().getBean(ProductCategoryService.class);
     }
@@ -27,7 +26,7 @@ public class ProductCategoryComboBoxKeyEventHandler implements EventHandler<KeyE
     @Override
     public void handle(KeyEvent event) {
         String value = comboBox.getEditor().getText();
-        ProductCategorySearchResult selected = comboBox.getSelectionModel().getSelectedItem();
+        ProductCategoryVM selected = comboBox.getSelectionModel().getSelectedItem();
         if (selected != null && selected.getName().equals(value)) {
             return;
         }

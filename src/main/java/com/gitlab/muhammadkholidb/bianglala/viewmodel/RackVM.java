@@ -5,8 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class ProductCategorySearchResult {
-
+public class RackVM {
     private Long id;
     private Date createdAt;
     private Date updatedAt;

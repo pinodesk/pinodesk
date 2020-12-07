@@ -8,9 +8,8 @@ import com.gitlab.muhammadkholidb.bianglala.constant.DomainError;
 import com.gitlab.muhammadkholidb.bianglala.domain.ProductCategory;
 import com.gitlab.muhammadkholidb.bianglala.exception.DomainException;
 import com.gitlab.muhammadkholidb.bianglala.repository.ProductCategoryRepository;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -24,17 +23,16 @@ public class ProductCategoryService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
-    public ProductCategorySearchResult getProductCateoryById(Long id) {
-        return productCategoryRepository.readOne(id)
-                .map(pc -> objectMapper.convertValue(pc, ProductCategorySearchResult.class))
-                .orElseThrow(() -> new DomainException(DomainError.NOT_FOUND));
+    public ProductCategoryVM getProductCateoryById(Long id) {
+        return convertOptionalOrThrow(productCategoryRepository.readOne(id), ProductCategoryVM.class,
+                new DomainException(DomainError.NOT_FOUND));
     }
 
     @Cacheable("searchProductCategoryByKeyword")
-    public List<ProductCategorySearchResult> searchProductCategoryByKeyword(String keyword) {
+    public List<ProductCategoryVM> searchProductCategoryByKeyword(String keyword) {
         String languageId = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
         List<ProductCategory> categories = productCategoryRepository.filter(keyword, Long.valueOf(languageId));
-        List<ProductCategorySearchResult> results = new ArrayList<>();
+        List<ProductCategoryVM> results = new ArrayList<>();
         int maxParent = 3;
         categories.stream().map(category -> {
             Long parentCategoryId = category.getParentCategoryId();
@@ -50,11 +48,7 @@ public class ProductCategoryService extends BaseService {
                 }
             }
             return category;
-        }).map(category -> {
-            ProductCategorySearchResult result = new ProductCategorySearchResult();
-            BeanUtils.copyProperties(category, result);
-            return result;
-        }).forEachOrdered(results::add);
+        }).map(category -> convertObject(category, ProductCategoryVM.class)).forEachOrdered(results::add);
         return results;
     }
 

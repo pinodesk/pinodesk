@@ -5,8 +5,8 @@ import java.util.List;
 
 import com.gitlab.muhammadkholidb.bianglala.domain.Product;
 import com.gitlab.muhammadkholidb.bianglala.domain.ProductCategory;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilter;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductSearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepository {
 
     @Override
-    public List<ProductSearchResult> filter(ProductFilter filter, Long languageId) {
+    public List<ProductVM> filter(ProductFilterVM filter, Long languageId) {
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT p.*, pc.id as category_id, pc.code as category_code, pc.name as category_name ");
         sb.append(" FROM ")
@@ -41,7 +41,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
             sb.append(" AND pc.code = ? ");
             params.add(filter.getCategoryCode());
         }
-        return jdbcTemplate.query(sb.toString(), params.toArray(), BeanPropertyRowMapper.newInstance(ProductSearchResult.class));
+        return jdbcTemplate.query(sb.toString(), params.toArray(), BeanPropertyRowMapper.newInstance(ProductVM.class));
 
     }
 

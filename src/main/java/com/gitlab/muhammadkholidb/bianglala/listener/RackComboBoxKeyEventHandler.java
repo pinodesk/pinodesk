@@ -3,7 +3,7 @@ package com.gitlab.muhammadkholidb.bianglala.listener;
 import com.gitlab.muhammadkholidb.bianglala.service.RackService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackSearchResult;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackVM;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -15,10 +15,10 @@ import javafx.scene.input.KeyEvent;
 
 public class RackComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
 
-    private final ComboBox<RackSearchResult> cb;
+    private final ComboBox<RackVM> cb;
     private final RackService rackService;
 
-    public RackComboBoxKeyEventHandler(ComboBox<RackSearchResult> cb) {
+    public RackComboBoxKeyEventHandler(ComboBox<RackVM> cb) {
         this.cb = cb;
         this.rackService = ApplicationContextHolder.getApplicationContext().getBean(RackService.class);
     }
@@ -26,7 +26,7 @@ public class RackComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
     @Override
     public void handle(KeyEvent event) {
         String value = cb.getEditor().getText();
-        RackSearchResult selected = cb.getSelectionModel().getSelectedItem();
+        RackVM selected = cb.getSelectionModel().getSelectedItem();
         if (selected != null && selected.getName().equals(value)) {
             return;
         }

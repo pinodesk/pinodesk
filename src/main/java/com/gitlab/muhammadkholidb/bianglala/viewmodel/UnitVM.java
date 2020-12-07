@@ -5,8 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class UnitSearchResult {
-
+public class UnitVM {
     private Long id;
     private Date createdAt;
     private Date updatedAt;
