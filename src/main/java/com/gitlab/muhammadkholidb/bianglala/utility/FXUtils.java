@@ -3,7 +3,9 @@ package com.gitlab.muhammadkholidb.bianglala.utility;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
 
+import com.gitlab.muhammadkholidb.bianglala.Bianglala;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
 
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -20,12 +23,15 @@ import javafx.stage.Stage;
 
 public class FXUtils {
 
-    private FXUtils() {}
+    private FXUtils() {
+    }
 
     public static void show(String title, Page page) throws IOException {
         VBox container = PageLoader.load(page);
         Scene scene = new Scene(container);
         Stage stage = new Stage();
+        Arrays.stream(Bianglala.ICON_PATHS)
+                .forEach(path -> stage.getIcons().add(new Image(FXUtils.class.getResourceAsStream(path))));
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(title);
         stage.setScene(scene);
@@ -63,5 +69,5 @@ public class FXUtils {
 
         alert.showAndWait();
     }
-    
+
 }

@@ -49,6 +49,7 @@ public class SpringConfig {
     @Bean
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager(
+                "configurationByCode",
                 "searchProduct", 
                 "searchProductCategoryByKeyword", 
                 "getAllRacks",

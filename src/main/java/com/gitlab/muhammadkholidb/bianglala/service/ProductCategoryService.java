@@ -8,7 +8,6 @@ import com.gitlab.muhammadkholidb.bianglala.constant.DomainError;
 import com.gitlab.muhammadkholidb.bianglala.domain.ProductCategory;
 import com.gitlab.muhammadkholidb.bianglala.exception.DomainException;
 import com.gitlab.muhammadkholidb.bianglala.repository.ProductCategoryRepository;
-import com.gitlab.muhammadkholidb.bianglala.utility.ConfigurationHolder;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
 
 import org.springframework.beans.BeanUtils;
@@ -16,14 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
 public class ProductCategoryService extends BaseService {
 
     @Autowired
     private ProductCategoryRepository productCategoryRepository;
+
+    @Autowired
+    private ConfigurationService configurationService;
 
     public ProductCategorySearchResult getProductCateoryById(Long id) {
         return productCategoryRepository.readOne(id)
@@ -33,8 +32,7 @@ public class ProductCategoryService extends BaseService {
 
     @Cacheable("searchProductCategoryByKeyword")
     public List<ProductCategorySearchResult> searchProductCategoryByKeyword(String keyword) {
-        log.debug("Search product category");
-        String languageId = ConfigurationHolder.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
+        String languageId = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
         List<ProductCategory> categories = productCategoryRepository.filter(keyword, Long.valueOf(languageId));
         List<ProductCategorySearchResult> results = new ArrayList<>();
         int maxParent = 3;

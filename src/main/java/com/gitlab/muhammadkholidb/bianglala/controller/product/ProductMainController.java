@@ -17,10 +17,10 @@ import com.gitlab.muhammadkholidb.bianglala.converter.ProductCategoryComboBoxCon
 import com.gitlab.muhammadkholidb.bianglala.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.bianglala.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.bianglala.listener.ProductCategoryComboBoxKeyEventHandler;
+import com.gitlab.muhammadkholidb.bianglala.service.ConfigurationService;
 import com.gitlab.muhammadkholidb.bianglala.service.ProductService;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
 import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
-import com.gitlab.muhammadkholidb.bianglala.utility.ConfigurationHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategorySearchResult;
@@ -104,9 +104,12 @@ public class ProductMainController extends BaseController {
 
     private ProductService productService;
 
+    private ConfigurationService configurationService;
+
     @Override
     protected void initServices(ApplicationContext ctx) {
         productService = ctx.getBean(ProductService.class);
+        configurationService = ctx.getBean(ConfigurationService.class);
     }
 
     @Override
@@ -126,7 +129,7 @@ public class ProductMainController extends BaseController {
 
         colCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategoryName()));
 
-        String languageCode = ConfigurationHolder.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
+        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
         Locale locale = languageCode == null ? CommonConstants.ENGLISH : new Locale(languageCode);
 
         colQuantity.setStyle(StyleConstants.ALIGN_RIGHT);
@@ -178,7 +181,6 @@ public class ProductMainController extends BaseController {
 
     private void handleActionTableProduct() {
         ProductSearchResult selected = tableProduct.getSelectionModel().getSelectedItem();
-        log.debug("Selected product: {}", selected);
         PageData.INSTANCE.set(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT, selected);
         try {
             FXUtils.show("Bianglala", Page.MASTER_PRODUCT_EDIT);
@@ -193,7 +195,6 @@ public class ProductMainController extends BaseController {
         tableProduct.setItems(FXCollections.observableArrayList());
         Async.supply(() -> {
             ProductCategorySearchResult selectedCategory = cbCategory.getSelectionModel().getSelectedItem();
-            log.debug("Selected category: {}", selectedCategory);
             ProductFilter filter = new ProductFilter();
             filter.setCode(tfCode.getText());
             filter.setName(tfName.getText());
