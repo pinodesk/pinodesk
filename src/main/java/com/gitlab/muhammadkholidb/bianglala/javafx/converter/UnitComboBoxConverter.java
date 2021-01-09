@@ -1,4 +1,4 @@
-package com.gitlab.muhammadkholidb.bianglala.converter;
+package com.gitlab.muhammadkholidb.bianglala.javafx.converter;
 
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitVM;
 
@@ -15,7 +15,7 @@ public class UnitComboBoxConverter extends StringConverter<UnitVM> {
 
     @Override
     public String toString(UnitVM unit) {
-        return unit == null ? null : unit.getName();
+        return unit == null ? null : unit.getLabel() + " (" + unit.getName() + ")";
     }
 
     @Override
@@ -23,7 +23,7 @@ public class UnitComboBoxConverter extends StringConverter<UnitVM> {
         if (StringUtils.isBlank(string)) {
             return null;
         }
-        return cb.getItems().stream().filter(unit -> unit.getName().equals(string)).findFirst().orElse(null);
+        return cb.getItems().stream().filter(unit -> unit.getName().equalsIgnoreCase(string)).findFirst().orElse(null);
     }
 
 }

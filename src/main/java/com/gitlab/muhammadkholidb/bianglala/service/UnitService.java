@@ -17,12 +17,12 @@ public class UnitService extends BaseService {
     @Autowired
     private UnitRepository unitRepository;
 
-    @Cacheable("getAllUnits")
+    @Cacheable("unitsAll")
     public List<UnitVM> getAllUnits() {
         return convertList(unitRepository.read(), UnitVM.class);
     }
 
-    @Cacheable("searchUnitByKeyword")
+    @Cacheable("unitsByKeyword")
     public List<UnitVM> searchUnitByKeyword(String keyword) {
         return convertList(unitRepository.filter(keyword, 10), UnitVM.class);
     }

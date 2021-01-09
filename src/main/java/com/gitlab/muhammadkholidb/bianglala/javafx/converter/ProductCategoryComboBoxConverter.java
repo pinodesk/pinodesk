@@ -1,4 +1,4 @@
-package com.gitlab.muhammadkholidb.bianglala.converter;
+package com.gitlab.muhammadkholidb.bianglala.javafx.converter;
 
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
 
@@ -15,7 +15,10 @@ public class ProductCategoryComboBoxConverter extends StringConverter<ProductCat
 
     @Override
     public String toString(ProductCategoryVM pc) {
-        return pc == null ? null : pc.getName();
+        if (pc == null) {
+            return null;
+        }
+        return pc.getName();
     }
 
     @Override

@@ -1,9 +1,9 @@
-package com.gitlab.muhammadkholidb.bianglala.listener;
+package com.gitlab.muhammadkholidb.bianglala.javafx.listener;
 
-import com.gitlab.muhammadkholidb.bianglala.service.RackService;
+import com.gitlab.muhammadkholidb.bianglala.service.DrugCategoryService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.DrugCategoryVM;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,26 +13,26 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
 
-public class RackComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
+public class DrugCategoryComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
 
-    private final ComboBox<RackVM> cb;
-    private final RackService rackService;
+    private final ComboBox<DrugCategoryVM> cb;
+    private final DrugCategoryService drugCategoryService;
 
-    public RackComboBoxKeyEventHandler(ComboBox<RackVM> cb) {
+    public DrugCategoryComboBoxKeyEventHandler(ComboBox<DrugCategoryVM> cb) {
         this.cb = cb;
-        this.rackService = ApplicationContextHolder.getApplicationContext().getBean(RackService.class);
+        this.drugCategoryService = ApplicationContextHolder.getApplicationContext().getBean(DrugCategoryService.class);
     }
 
     @Override
     public void handle(KeyEvent event) {
         String value = cb.getEditor().getText();
-        RackVM selected = cb.getSelectionModel().getSelectedItem();
+        DrugCategoryVM selected = cb.getSelectionModel().getSelectedItem();
         if (selected != null && selected.getName().equals(value)) {
             return;
         }
         cb.hide();
         if (StringUtils.isNotBlank(value) && value.length() >= 3) {
-            Async.supply(() -> rackService.searchRackByKeyword(value)).thenAccept(list -> {
+            Async.supply(() -> drugCategoryService.searchDrugCategoriesByKeyword(value)).thenAccept(list -> {
                 if (!list.isEmpty()) {
                     Platform.runLater(() -> {
                         cb.setItems(FXCollections.observableList(list));

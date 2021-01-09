@@ -1,4 +1,4 @@
-package com.gitlab.muhammadkholidb.bianglala.listener;
+package com.gitlab.muhammadkholidb.bianglala.javafx.listener;
 
 import com.gitlab.muhammadkholidb.bianglala.service.ProductCategoryService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;

@@ -20,7 +20,7 @@ public class ProductService {
     @Autowired
     private ConfigurationService configurationService;
 
-    @Cacheable("searchProduct")
+    @Cacheable("productsByFilter")
     public List<ProductVM> searchProduct(ProductFilterVM param) {
         String languageId = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
         return productRepository.filter(param, Long.valueOf(languageId));

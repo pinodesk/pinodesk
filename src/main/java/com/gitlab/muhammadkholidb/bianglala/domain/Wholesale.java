@@ -5,14 +5,18 @@ import java.math.BigDecimal;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.annotation.DataColumn;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.model.DataModel;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class ProductPrice extends DataModel {
+public class Wholesale extends DataModel {
 
-    public static final String TABLE_NAME = "t_product_price";
+    public static final String TABLE_NAME = "t_wholesale";
 
     public static final String C_PRODUCT_ID = "product_id";
     public static final String C_PURCHASE_QUANTITY = "purchase_quantity";

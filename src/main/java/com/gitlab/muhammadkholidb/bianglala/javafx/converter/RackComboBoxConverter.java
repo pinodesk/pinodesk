@@ -1,4 +1,4 @@
-package com.gitlab.muhammadkholidb.bianglala.converter;
+package com.gitlab.muhammadkholidb.bianglala.javafx.converter;
 
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackVM;
 
@@ -23,7 +23,7 @@ public class RackComboBoxConverter extends StringConverter<RackVM> {
         if (StringUtils.isBlank(string)) {
             return null;
         }
-        return cb.getItems().stream().filter(rack -> rack.getName().equals(string)).findFirst().orElse(null);
+        return cb.getItems().stream().filter(rack -> rack.getName().equalsIgnoreCase(string)).findFirst().orElse(null);
     }
 
 }

@@ -29,8 +29,7 @@ public class Product extends DataModel {
     public static final String C_CATEGORY_CODE = "category_code";
     public static final String C_PURCHASE_PRICE = "purchase_price";
     public static final String C_SELLING_PRICE = "selling_price";
-    public static final String C_SELLING_PRICE_BEFORE_TAX = "selling_price_before_tax";
-    public static final String C_VAT_PERCENTAGE = "vat_percentage";
+    public static final String C_VAT_INCLUDED = "vat_included";
     public static final String C_RACK_ID = "rack_id";
     public static final String C_RACK_CODE = "rack_code";
     public static final String C_RACK_NAME = "rack_name";
@@ -62,6 +61,12 @@ public class Product extends DataModel {
 
     @DataColumn(C_PURCHASE_PRICE)
     private BigDecimal purchasePrice;
+
+    @DataColumn(C_SELLING_PRICE)
+    private BigDecimal sellingPrice;
+
+    @DataColumn(C_VAT_INCLUDED)
+    private String vatIncluded;
 
     @DataColumn(C_RACK_ID)
     private Long rackId;

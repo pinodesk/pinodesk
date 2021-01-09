@@ -17,12 +17,12 @@ public class RackService extends BaseService {
     @Autowired
     private RackRepository rackRepository;
 
-    @Cacheable("getAllRacks")
+    @Cacheable("racksAll")
     public List<RackVM> getAllRacks() {
         return convertList(rackRepository.read(), RackVM.class);
     }
 
-    @Cacheable("searchRackByKeyword")
+    @Cacheable("racksByKeyword")
     public List<RackVM> searchRackByKeyword(String keyword) {
         return convertList(rackRepository.filter(keyword, 10), RackVM.class);
     }

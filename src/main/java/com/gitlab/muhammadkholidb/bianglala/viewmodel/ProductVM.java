@@ -20,6 +20,8 @@ public class ProductVM {
     private String categoryCode;
     private String categoryName;
     private BigDecimal purchasePrice;
+    private BigDecimal sellingPrice;
+    private String vatIncluded;
     private Long unitId;
     private String unitLabel;
     private Long rackId;

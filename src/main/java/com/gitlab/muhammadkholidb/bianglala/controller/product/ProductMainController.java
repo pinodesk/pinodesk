@@ -13,10 +13,10 @@ import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
 import com.gitlab.muhammadkholidb.bianglala.constant.StyleConstants;
 import com.gitlab.muhammadkholidb.bianglala.controller.BaseController;
-import com.gitlab.muhammadkholidb.bianglala.converter.ProductCategoryComboBoxConverter;
-import com.gitlab.muhammadkholidb.bianglala.factory.DateCellFactory;
-import com.gitlab.muhammadkholidb.bianglala.factory.NumberCellFactory;
-import com.gitlab.muhammadkholidb.bianglala.listener.ProductCategoryComboBoxKeyEventHandler;
+import com.gitlab.muhammadkholidb.bianglala.javafx.converter.ProductCategoryComboBoxConverter;
+import com.gitlab.muhammadkholidb.bianglala.javafx.factory.DateCellFactory;
+import com.gitlab.muhammadkholidb.bianglala.javafx.factory.NumberCellFactory;
+import com.gitlab.muhammadkholidb.bianglala.javafx.listener.ProductCategoryComboBoxKeyEventHandler;
 import com.gitlab.muhammadkholidb.bianglala.service.ConfigurationService;
 import com.gitlab.muhammadkholidb.bianglala.service.ProductService;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
@@ -143,6 +143,10 @@ public class ProductMainController extends BaseController {
                 .setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getPurchasePrice()));
         colPurchasePrice.setCellFactory(new NumberCellFactory<>(locale));
 
+        colSellingPrice.setStyle(StyleConstants.ALIGN_RIGHT);
+        colSellingPrice.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSellingPrice()));
+        colSellingPrice.setCellFactory(new NumberCellFactory<>(locale));
+
         colCreatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreatedAt()));
         colCreatedAt.setCellFactory(new DateCellFactory<>(CommonConstants.DATETIME_PATTERN));
 
@@ -183,7 +187,7 @@ public class ProductMainController extends BaseController {
         ProductVM selected = tableProduct.getSelectionModel().getSelectedItem();
         PageData.INSTANCE.set(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT, selected);
         try {
-            FXUtils.show("Bianglala", Page.MASTER_PRODUCT_EDIT);
+            FXUtils.show(Page.MASTER_PRODUCT_EDIT, false);
         } catch (IOException ex) {
             log.error("Failed to show window", ex);
         }

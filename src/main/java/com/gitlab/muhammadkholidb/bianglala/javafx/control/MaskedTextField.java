@@ -1,4 +1,4 @@
-package com.gitlab.muhammadkholidb.bianglala.control;
+package com.gitlab.muhammadkholidb.bianglala.javafx.control;
 
 import java.util.ArrayList;
 import java.util.List;

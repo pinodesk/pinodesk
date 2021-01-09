@@ -3,7 +3,7 @@ create table if not exists t_unit (
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
-	label varchar(32),
+	label varchar(32) not null,
 	name varchar(128) not null,
 	primary key (id)
 );

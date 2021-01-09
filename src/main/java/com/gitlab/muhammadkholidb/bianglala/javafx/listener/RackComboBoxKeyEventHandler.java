@@ -1,9 +1,9 @@
-package com.gitlab.muhammadkholidb.bianglala.listener;
+package com.gitlab.muhammadkholidb.bianglala.javafx.listener;
 
-import com.gitlab.muhammadkholidb.bianglala.service.UnitService;
+import com.gitlab.muhammadkholidb.bianglala.service.RackService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackVM;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -13,26 +13,26 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
 
-public class UnitComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
+public class RackComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
 
-    private final ComboBox<UnitVM> cb;
-    private final UnitService unitService;
+    private final ComboBox<RackVM> cb;
+    private final RackService rackService;
 
-    public UnitComboBoxKeyEventHandler(ComboBox<UnitVM> cb) {
+    public RackComboBoxKeyEventHandler(ComboBox<RackVM> cb) {
         this.cb = cb;
-        this.unitService = ApplicationContextHolder.getApplicationContext().getBean(UnitService.class);
+        this.rackService = ApplicationContextHolder.getApplicationContext().getBean(RackService.class);
     }
 
     @Override
     public void handle(KeyEvent event) {
         String value = cb.getEditor().getText();
-        UnitVM selected = cb.getSelectionModel().getSelectedItem();
+        RackVM selected = cb.getSelectionModel().getSelectedItem();
         if (selected != null && selected.getName().equals(value)) {
             return;
         }
         cb.hide();
         if (StringUtils.isNotBlank(value) && value.length() >= 3) {
-            Async.supply(() -> unitService.searchUnitByKeyword(value)).thenAccept(list -> {
+            Async.supply(() -> rackService.searchRackByKeyword(value)).thenAccept(list -> {
                 if (!list.isEmpty()) {
                     Platform.runLater(() -> {
                         cb.setItems(FXCollections.observableList(list));

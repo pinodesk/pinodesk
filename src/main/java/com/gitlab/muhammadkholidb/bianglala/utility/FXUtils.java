@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.util.Arrays;
 
 import com.gitlab.muhammadkholidb.bianglala.Bianglala;
+import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
 
 import org.apache.commons.lang3.StringUtils;
@@ -16,8 +17,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -26,16 +27,21 @@ public class FXUtils {
     private FXUtils() {
     }
 
-    public static void show(String title, Page page) throws IOException {
-        VBox container = PageLoader.load(page);
+    public static void show(Page page, boolean resizeable) throws IOException {
+        Pane container = PageLoader.load(page);
         Scene scene = new Scene(container);
         Stage stage = new Stage();
         Arrays.stream(Bianglala.ICON_PATHS)
                 .forEach(path -> stage.getIcons().add(new Image(FXUtils.class.getResourceAsStream(path))));
+        stage.setResizable(resizeable);
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle(title);
+        stage.setTitle(CommonConstants.APP_TITLE);
         stage.setScene(scene);
         stage.showAndWait();
+    }
+
+    public static void show(Page page) throws IOException {
+        show(page, true);
     }
 
     // From https://code.makery.ch/blog/javafx-dialogs-official/

@@ -1,4 +1,4 @@
-package com.gitlab.muhammadkholidb.bianglala.factory;
+package com.gitlab.muhammadkholidb.bianglala.javafx.factory;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;

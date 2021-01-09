@@ -50,12 +50,13 @@ public class SpringConfig {
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager(
                 "configurationByCode",
-                "searchProduct", 
-                "searchProductCategoryByKeyword", 
-                "getAllRacks",
-                "searchRackByKeyword", 
-                "getAllUnits",
-                "searchUnitByKeyword");
+                "productsByFilter", 
+                "productCategoriesByKeyword", 
+                "racksAll",
+                "racksByKeyword", 
+                "unitsAll",
+                "unitsByKeyword",
+                "drugCategoriesByKeyword");
     }
 
     @Bean
