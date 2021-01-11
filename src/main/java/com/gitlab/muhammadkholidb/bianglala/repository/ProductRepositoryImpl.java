@@ -3,6 +3,7 @@ package com.gitlab.muhammadkholidb.bianglala.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.vertical_blank.sqlformatter.SqlFormatter;
 import com.gitlab.muhammadkholidb.bianglala.domain.Product;
 import com.gitlab.muhammadkholidb.bianglala.domain.ProductCategory;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
@@ -13,6 +14,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Repository
 public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepository {
 
@@ -41,8 +45,8 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
             sb.append(" AND pc.code = ? ");
             params.add(filter.getCategoryCode());
         }
+        log.debug("Formatted SQL: \n{}", SqlFormatter.format(sb.toString()));
         return jdbcTemplate.query(sb.toString(), params.toArray(), BeanPropertyRowMapper.newInstance(ProductVM.class));
-
     }
 
 }

@@ -2,6 +2,7 @@ package com.gitlab.muhammadkholidb.bianglala.controller.product;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -43,9 +44,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ProductEditController extends BaseController {
 
     @FXML
@@ -110,9 +109,6 @@ public class ProductEditController extends BaseController {
 
     @FXML
     private TextField tfContraindication;
-
-    @FXML
-    private CheckBox chkWholesale;
 
     @FXML
     private TextField tfPurchaseQuantity1;
@@ -200,11 +196,8 @@ public class ProductEditController extends BaseController {
         tfCode.setText(result.getCode());
         tfBarcode.setText(result.getBarcode());
         tfDescription.setText(result.getDescription());
-        tfQuantity.setTextFormatter(new DigitFormatter());
         tfQuantity.setText(result.getQuantity().toString());
-        tfPurchasePrice.setTextFormatter(new DigitFormatter());
         tfPurchasePrice.setText(result.getPurchasePrice().toString());
-        tfSellingPrice.setTextFormatter(new DigitFormatter());
         tfSellingPrice.setText(result.getSellingPrice().toString());
         ComboBoxUtils.initEditable(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
                 new ProductCategoryComboBoxConverter(cbCategory),
@@ -223,7 +216,6 @@ public class ProductEditController extends BaseController {
             DrugCategoryVM selectedDrugCategory = drugCategoryService.getDrugCategoryById(drug.getDrugCategoryId());
             cbDrugCategory.getSelectionModel().select(selectedDrugCategory);
             tfPrescriptionPrice.setText(drug.getPrescriptionPrice().toString());
-            tfPrescriptionPrice.setTextFormatter(new DigitFormatter());
             tfIndication.setText(drug.getIndication());
             tfContraindication.setText(drug.getContraindication());
         }
@@ -235,36 +227,35 @@ public class ProductEditController extends BaseController {
             switch (i) {
                 case 1:
                     tfPurchaseQuantity1.setText(purchaseQuantity.toString());
-                    tfPurchaseQuantity1.setTextFormatter(new DigitFormatter());
                     tfSellingPrice1.setText(sellingPrice.toString());
-                    tfSellingPrice1.setTextFormatter(new DigitFormatter());
                     break;
 
                 case 2:
                     tfPurchaseQuantity2.setText(purchaseQuantity.toString());
-                    tfPurchaseQuantity2.setTextFormatter(new DigitFormatter());
                     tfSellingPrice2.setText(sellingPrice.toString());
-                    tfSellingPrice2.setTextFormatter(new DigitFormatter());
                     break;
 
                 case 3:
                     tfPurchaseQuantity3.setText(purchaseQuantity.toString());
-                    tfPurchaseQuantity3.setTextFormatter(new DigitFormatter());
                     tfSellingPrice3.setText(sellingPrice.toString());
-                    tfSellingPrice3.setTextFormatter(new DigitFormatter());
                     break;
 
                 case 4:
                     tfPurchaseQuantity4.setText(purchaseQuantity.toString());
-                    tfPurchaseQuantity4.setTextFormatter(new DigitFormatter());
                     tfSellingPrice4.setText(sellingPrice.toString());
-                    tfSellingPrice4.setTextFormatter(new DigitFormatter());
                     break;
 
                 default:
                     // Do nothing
             }
         }
+        initDigitTextFields();
+    }
+
+    private void initDigitTextFields() {
+        Arrays.asList(tfSellingPrice, tfPurchasePrice, tfQuantity, tfPrescriptionPrice, tfPurchaseQuantity1,
+                tfPurchaseQuantity2, tfPurchaseQuantity3, tfPurchaseQuantity4, tfSellingPrice1, tfSellingPrice2,
+                tfSellingPrice3, tfSellingPrice4).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
     }
 
     @FXML

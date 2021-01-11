@@ -2,28 +2,17 @@ package com.gitlab.muhammadkholidb.bianglala.javafx.converter;
 
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitVM;
 
-import org.apache.commons.lang3.StringUtils;
-
 import javafx.scene.control.ComboBox;
-import javafx.util.StringConverter;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public class UnitComboBoxConverter extends StringConverter<UnitVM> {
+public class UnitComboBoxConverter extends DefaultStringConverterAdapter<UnitVM> {
 
-    private ComboBox<UnitVM> cb;
-
-    @Override
-    public String toString(UnitVM unit) {
-        return unit == null ? null : unit.getLabel() + " (" + unit.getName() + ")";
+    public UnitComboBoxConverter(ComboBox<UnitVM> cb) {
+        super(cb);
     }
 
     @Override
-    public UnitVM fromString(String string) {
-        if (StringUtils.isBlank(string)) {
-            return null;
-        }
-        return cb.getItems().stream().filter(unit -> unit.getName().equalsIgnoreCase(string)).findFirst().orElse(null);
+    protected String getDisplayText(UnitVM unit) {
+        return unit.getLabel() + " (" + unit.getName() + ")";
     }
 
 }

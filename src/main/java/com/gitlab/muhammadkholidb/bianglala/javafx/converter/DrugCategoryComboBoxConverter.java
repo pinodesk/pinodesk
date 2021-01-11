@@ -2,28 +2,17 @@ package com.gitlab.muhammadkholidb.bianglala.javafx.converter;
 
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.DrugCategoryVM;
 
-import org.apache.commons.lang3.StringUtils;
-
 import javafx.scene.control.ComboBox;
-import javafx.util.StringConverter;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
-public class DrugCategoryComboBoxConverter extends StringConverter<DrugCategoryVM> {
+public class DrugCategoryComboBoxConverter extends DefaultStringConverterAdapter<DrugCategoryVM> {
 
-    private ComboBox<DrugCategoryVM> cb;
-
-    @Override
-    public String toString(DrugCategoryVM dc) {
-        return dc == null ? null : dc.getName();
+    public DrugCategoryComboBoxConverter(ComboBox<DrugCategoryVM> cb) {
+        super(cb);
     }
 
     @Override
-    public DrugCategoryVM fromString(String string) {
-        if (StringUtils.isBlank(string)) {
-            return null;
-        }
-        return cb.getItems().stream().filter(dc -> dc.getName().equalsIgnoreCase(string)).findFirst().orElse(null);
+    protected String getDisplayText(DrugCategoryVM t) {
+        return t.getName();
     }
 
 }
