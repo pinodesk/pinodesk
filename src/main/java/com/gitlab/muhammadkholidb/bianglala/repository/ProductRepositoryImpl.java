@@ -6,6 +6,7 @@ import java.util.List;
 import com.github.vertical_blank.sqlformatter.SqlFormatter;
 import com.gitlab.muhammadkholidb.bianglala.domain.Product;
 import com.gitlab.muhammadkholidb.bianglala.domain.ProductCategory;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductEditVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
@@ -47,6 +48,41 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         }
         log.debug("Formatted SQL: \n{}", SqlFormatter.format(sb.toString()));
         return jdbcTemplate.query(sb.toString(), params.toArray(), BeanPropertyRowMapper.newInstance(ProductVM.class));
+    }
+
+    @Override
+    public Integer updateProduct(ProductEditVM productEdit) {
+        return update(new String[] {
+            Product.C_NAME,
+            Product.C_DESCRIPTION,
+            Product.C_CODE,
+            Product.C_BARCODE,
+            Product.C_CATEGORY_CODE,
+            Product.C_UNIT_ID,
+            Product.C_UNIT_LABEL,
+            Product.C_QUANTITY,
+            Product.C_PURCHASE_PRICE,
+            Product.C_SELLING_PRICE,
+            Product.C_VAT_INCLUDED,
+            Product.C_EXPIRED_DATE,
+            Product.C_RACK_ID,
+            Product.C_RACK_CODE
+        }, new Object[] {
+            productEdit.getName(),
+            productEdit.getDescription(),
+            productEdit.getCode(),
+            productEdit.getBarcode(),
+            productEdit.getProductCategory().getCode(),
+            productEdit.getUnit().getId(),
+            productEdit.getUnit().getLabel(),
+            productEdit.getQuantity(),
+            productEdit.getPurchasePrice(),
+            productEdit.getSellingPrice(),
+            productEdit.getVatIncluded(),
+            productEdit.getExpiredDate(),
+            productEdit.getRack() == null ? null : productEdit.getRack().getId(),
+            productEdit.getRack() == null ? null : productEdit.getRack().getCode()
+        }, productEdit.getId());
     }
 
 }

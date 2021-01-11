@@ -6,6 +6,6 @@ create table if not exists t_wholesale (
     product_id bigint not null,
     purchase_quantity integer not null,
     selling_price decimal not null,
-    vat_included char(1),
-    primary key (id)
+    primary key (id),
+	constraint fk_t_wholesale__product_id foreign key (product_id) references t_product(id)
 );

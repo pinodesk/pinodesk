@@ -7,6 +7,6 @@ import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.CommonRepository
 
 public interface DrugCategoryRepository extends CommonRepository<DrugCategory> {
     
-    List<DrugCategory> filter(String keyword, int limit);
+    List<DrugCategory> filter(String keyword, Long drugCategoryBaseId);
 
 }
