@@ -17,6 +17,7 @@ import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,7 @@ public class ProductService extends BaseService {
         return productRepository.filter(param, Long.valueOf(languageId));
     }
 
+    @CacheEvict(value = "productsByFilter", allEntries = true)
     @Transactional
     public boolean updateProduct(ProductEditVM productEdit) {
 

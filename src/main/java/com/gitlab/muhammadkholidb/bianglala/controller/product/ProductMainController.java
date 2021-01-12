@@ -187,7 +187,10 @@ public class ProductMainController extends BaseController {
         ProductVM selected = tableProduct.getSelectionModel().getSelectedItem();
         PageData.INSTANCE.set(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT, selected);
         try {
-            FXUtils.show(Page.MASTER_PRODUCT_EDIT, false);
+            FXUtils.show(Page.MASTER_PRODUCT_EDIT, false, event -> {
+                log.debug("source: {}", event.getSource());
+                searchProducts();
+            });
         } catch (IOException ex) {
             log.error("Failed to show window", ex);
         }

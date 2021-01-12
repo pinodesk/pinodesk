@@ -2,10 +2,11 @@ package com.gitlab.muhammadkholidb.bianglala.controller.product;
 
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
@@ -40,23 +41,21 @@ import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.WholesaleVM;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ProductEditController extends BaseController {
 
     @FXML
@@ -214,8 +213,12 @@ public class ProductEditController extends BaseController {
         tfBarcode.setText(currentProduct.getBarcode());
         tfDescription.setText(currentProduct.getDescription());
         tfQuantity.setText(currentProduct.getQuantity().toString());
-        tfPurchasePrice.setText(currentProduct.getPurchasePrice().toString());
-        tfSellingPrice.setText(currentProduct.getSellingPrice().toString());
+        tfPurchasePrice.setText(currentProduct.getPurchasePrice().setScale(0).toString());
+        tfSellingPrice.setText(currentProduct.getSellingPrice().setScale(0).toString());
+        chkIncludesVat.setSelected(CommonConstants.YES.equals(currentProduct.getVatIncluded()));
+        Date expiredDate = currentProduct.getExpiredDate();
+        tfExpiredDate.setPlainText(
+                expiredDate == null ? null : DateFormatUtils.format(expiredDate, CommonConstants.DATE_PATTERN));
         ComboBoxUtils.initEditable(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
                 new ProductCategoryComboBoxConverter(cbCategory),
                 () -> productCategoryService.getProductCategoryById(currentProduct.getCategoryId()));
@@ -231,8 +234,9 @@ public class ProductEditController extends BaseController {
         DrugVM drug = drugService.getDrugByProductId(currentProduct.getId());
         if (drug != null) {
             DrugCategoryVM selectedDrugCategory = drugCategoryService.getDrugCategoryById(drug.getDrugCategoryId());
+            cbDrugCategory.getItems().add(selectedDrugCategory);
             cbDrugCategory.getSelectionModel().select(selectedDrugCategory);
-            tfPrescriptionPrice.setText(drug.getPrescriptionPrice().toString());
+            tfPrescriptionPrice.setText(drug.getPrescriptionPrice().setScale(0).toString());
             tfIndication.setText(drug.getIndication());
             tfContraindication.setText(drug.getContraindication());
         }
@@ -244,22 +248,22 @@ public class ProductEditController extends BaseController {
             switch (i) {
                 case 0:
                     tfPurchaseQuantity1.setText(purchaseQuantity.toString());
-                    tfSellingPrice1.setText(sellingPrice.toString());
+                    tfSellingPrice1.setText(sellingPrice.setScale(0).toString());
                     break;
 
                 case 1:
                     tfPurchaseQuantity2.setText(purchaseQuantity.toString());
-                    tfSellingPrice2.setText(sellingPrice.toString());
+                    tfSellingPrice2.setText(sellingPrice.setScale(0).toString());
                     break;
 
                 case 2:
                     tfPurchaseQuantity3.setText(purchaseQuantity.toString());
-                    tfSellingPrice3.setText(sellingPrice.toString());
+                    tfSellingPrice3.setText(sellingPrice.setScale(0).toString());
                     break;
 
                 case 3:
                     tfPurchaseQuantity4.setText(purchaseQuantity.toString());
-                    tfSellingPrice4.setText(sellingPrice.toString());
+                    tfSellingPrice4.setText(sellingPrice.setScale(0).toString());
                     break;
 
                 default:
@@ -280,6 +284,7 @@ public class ProductEditController extends BaseController {
         close();
     }
 
+    
     private String validate() {
         if (StringUtils.isEmpty(tfName.getText())) {
             return "Name cannot be empty";
@@ -287,22 +292,27 @@ public class ProductEditController extends BaseController {
         if (StringUtils.isEmpty(tfCode.getText())) {
             return "Code cannot be empty";
         }
-        if (cbCategory.getSelectionModel().isEmpty()) {
+        if (cbCategory.getSelectionModel().getSelectedItem() == null) {
             return "Category cannot be empty";
         }
-        if (cbUnit.getSelectionModel().isEmpty()) {
+        if (cbUnit.getSelectionModel().getSelectedItem() == null) {
             return "Unit cannot be empty";
         }
-        if (cbDrugCategory.getSelectionModel().isEmpty() && ObjectUtils.isEmpty(tfPrescriptionPrice)) {
+        if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) && !StringUtils.isAllBlank(
+                tfPrescriptionPrice.getText(),
+                tfIndication.getText(), 
+                tfContraindication.getText())) {
             return "Drug category cannot be empty";
         }
-        // if (StringUtils.isAnyBlank(tfPurchaseQuantity1.getText(), tfSellingPrice1.getText())
-        //         || StringUtils.isAnyBlank(tfPurchaseQuantity2.getText(), tfSellingPrice2.getText())
-        //         || StringUtils.isAnyBlank(tfPurchaseQuantity3.getText(), tfSellingPrice3.getText())
-        //         || StringUtils.isAnyBlank(tfPurchaseQuantity4.getText(), tfSellingPrice4.getText())) {
-        //     return "Both wholesale purchase quantity and selling price must be filled";
-        // }
         return null;
+    }
+
+    private Date parseDateQuietly(String str, String pattern) {
+        try {
+            return DateUtils.parseDate(str, pattern);
+        } catch (ParseException e) {
+            return null;
+        }
     }
 
     @FXML
@@ -324,10 +334,13 @@ public class ProductEditController extends BaseController {
         productEdit.setVatIncluded(chkIncludesVat.isSelected() ? CommonConstants.YES : CommonConstants.NO);
         productEdit.setUnit(cbUnit.getSelectionModel().getSelectedItem());
         productEdit.setProductCategory(cbCategory.getSelectionModel().getSelectedItem());
+        String expiredDate = tfExpiredDate.getTextMasked();
+        productEdit.setExpiredDate(parseDateQuietly(expiredDate, CommonConstants.DATE_PATTERN));
         productEdit.setRack(cbRack.getSelectionModel().getSelectedItem());
-        if (StringUtils.isNotBlank(tfPrescriptionPrice.getText())) {
-            DrugCategoryVM drugCategory = cbDrugCategory.getSelectionModel().getSelectedItem();
+        if (ComboBoxUtils.hasItemSelected(cbDrugCategory)) {
+            DrugCategoryVM drugCategory = ComboBoxUtils.getSelectedItem(cbDrugCategory);
             DrugVM drug = new DrugVM();
+            drug.setProductId(currentProduct.getId());
             drug.setDrugCategoryId(drugCategory.getId());
             drug.setDrugCategoryCode(drugCategory.getCode());
             drug.setDrugCategoryName(drugCategory.getName());
@@ -368,9 +381,8 @@ public class ProductEditController extends BaseController {
         productEdit.setWholesales(wholesales);
         boolean updated = productService.updateProduct(productEdit);
         if (updated) {
-            Optional<ButtonType> result = FXUtils.showInfo("Successfully update product");
-            log.debug("Result: {}", result);
-            // close();   
+            FXUtils.showInfo("Successfully update product");
+            close();
         }
     }
 

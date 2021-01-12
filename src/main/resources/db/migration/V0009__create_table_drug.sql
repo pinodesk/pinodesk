@@ -9,7 +9,7 @@ create table if not exists t_drug (
 	drug_category_name varchar(256) not null,
 	indication varchar(512),
 	contraindication varchar(512),
-	prescription_price decimal,
+	prescription_price decimal(12,2),
 	primary key (id),
 	constraint fk_t_drug__product_id foreign key (product_id) references t_product(id),
 	constraint fk_t_drug__drug_category_id foreign key (drug_category_id) references t_drug_category(id)

@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import com.gitlab.muhammadkholidb.bianglala.Bianglala;
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
@@ -23,13 +24,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 public class FXUtils {
 
     private FXUtils() {
     }
 
-    public static void show(Page page, boolean resizeable) throws IOException {
+    public static void show(Page page, boolean resizeable, Consumer<WindowEvent> onClose) throws IOException {
         Pane container = PageLoader.load(page);
         Scene scene = new Scene(container);
         Stage stage = new Stage();
@@ -39,11 +41,22 @@ public class FXUtils {
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setTitle(CommonConstants.APP_TITLE);
         stage.setScene(scene);
-        stage.showAndWait();
+        if (onClose != null) {
+            stage.setOnHidden(onClose::accept);
+        }
+        stage.show();
+    }
+
+    public static void show(Page page, boolean resizeable) throws IOException {
+        show(page, resizeable, null);
+    }
+
+    public static void show(Page page, Consumer<WindowEvent> onClose) throws IOException {
+        show(page, true, onClose);
     }
 
     public static void show(Page page) throws IOException {
-        show(page, true);
+        show(page, null);
     }
 
     public static Optional<ButtonType> showError(String message) {

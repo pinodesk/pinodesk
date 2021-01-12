@@ -8,6 +8,6 @@ public interface CommonConstants {
     Locale ENGLISH = new Locale("eng");
     String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     String DATE_PATTERN = "yyyy-MM-dd";
-    String YES = "y";
-    String NO = "n";
+    String YES = "yes";
+    String NO = "no";
 }

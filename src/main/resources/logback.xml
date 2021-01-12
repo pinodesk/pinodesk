@@ -40,7 +40,7 @@
     </root>
 
     <logger name="com.gitlab.muhammadkholidb.jdbctemplatehelper" level="TRACE" />
-    <logger name="org.springframework" level="INFO" />
+    <logger name="org.springframework" level="DEBUG" />
     <logger name="org.springframework.jdbc.core.JdbcTemplate" level="TRACE" />
     <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE" />
 

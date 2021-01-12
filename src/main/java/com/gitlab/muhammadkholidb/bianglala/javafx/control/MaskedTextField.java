@@ -120,6 +120,10 @@ public class MaskedTextField extends TextField {
         this.placeholder = placeholder;
     }
 
+    public String getTextMasked() {
+        return valuesToString();
+    }
+
     // *******************************************************
     // Semantic Mask Methods
     // *******************************************************

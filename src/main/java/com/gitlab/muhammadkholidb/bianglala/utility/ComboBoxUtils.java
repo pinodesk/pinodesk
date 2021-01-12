@@ -15,6 +15,14 @@ public class ComboBoxUtils {
     
     private ComboBoxUtils() {}
 
+    public static boolean hasItemSelected(ComboBox<?> cb) {
+        return cb.getSelectionModel().getSelectedItem() != null;
+    }
+
+    public static <T> T getSelectedItem(ComboBox<T> cb) {
+        return cb.getSelectionModel().getSelectedItem();
+    }
+
     public static <T> void allowSpaceOnEditor(ComboBox<T> cb) {
         notNull(cb);
         ComboBoxListViewSkin<T> comboBoxListViewSkin = new ComboBoxListViewSkin<>(cb);
@@ -34,11 +42,15 @@ public class ComboBoxUtils {
         allowSpaceOnEditor(cb);
         cb.getEditor().setOnKeyReleased(keyEvent);
         cb.setConverter(converter);
-        select(cb, selectedSupplier.get());
+        if (selectedSupplier != null) {
+            T type = selectedSupplier.get();
+            cb.getItems().add(type);
+            select(cb, type);
+        }
     }
 
     public static <T> void initEditable(ComboBox<T> cb, EventHandler<KeyEvent> keyEvent, StringConverter<T> converter) {
-        initEditable(cb, keyEvent, converter, () -> null);
+        initEditable(cb, keyEvent, converter, null);
     }
 
     public static <T> void select(ComboBox<T> cb, T item) {
