@@ -47,7 +47,7 @@ public class ProductService extends BaseService {
     @Transactional
     public boolean updateProduct(ProductEditVM productEdit) {
 
-        productRepository.updateProduct(productEdit);
+        Integer countUpdated = productRepository.updateProduct(productEdit);
 
         DrugVM drug = productEdit.getDrug();
         if (drug != null) {
@@ -61,7 +61,7 @@ public class ProductService extends BaseService {
             wholesales.forEach(wholesale -> wholesaleRepository.create(convertObject(wholesale, Wholesale.class)));
         }
 
-        return true;
+        return countUpdated > 0;
     }
 
 }

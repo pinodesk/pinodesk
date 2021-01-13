@@ -32,7 +32,7 @@
       </AnchorPane>
       <HBox VBox.vgrow="ALWAYS">
          <children>
-            <AnchorPane maxHeight="-Infinity" prefWidth="550.0" style="-fx-border-color: #bebebe; -fx-border-width: 1px;">
+            <AnchorPane maxHeight="-Infinity" prefHeight="440.0" prefWidth="500.0" style="-fx-border-color: #bebebe; -fx-border-width: 1px;">
                <children>
                   <GridPane hgap="10.0" vgap="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <columnConstraints>
@@ -117,7 +117,7 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <ComboBox fx:id="cbCategory" editable="true" prefHeight="29.0" prefWidth="169.0">
+                                    <ComboBox fx:id="cbCategory" editable="true" prefWidth="169.0">
                                        <styleClass>
                                           <String fx:value="combo-box-autocomplete" />
                                           <String fx:value="border-primary" />
@@ -132,7 +132,7 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfQuantity" prefHeight="29.0" prefWidth="169.0" styleClass="input-primary">
+                                    <TextField fx:id="tfQuantity" prefWidth="169.0" styleClass="input-primary">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -146,7 +146,7 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <ComboBox fx:id="cbUnit" editable="true" prefHeight="29.0" prefWidth="169.0">
+                                    <ComboBox fx:id="cbUnit" editable="true" prefWidth="169.0">
                                        <styleClass>
                                           <String fx:value="combo-box-autocomplete" />
                                           <String fx:value="input-primary" />
@@ -193,7 +193,7 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <CheckBox fx:id="chkIncludesVat" mnemonicParsing="false" prefHeight="30.0" selected="true" text="%chk.includesvat">
+                                    <CheckBox fx:id="chkIncludesVat" mnemonicParsing="false" prefHeight="30.0" prefWidth="162.0" selected="true" text="%chk.includesvat">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -204,6 +204,24 @@
                         </HBox>
                         <HBox spacing="10.0" GridPane.rowIndex="5">
                            <children>
+                              <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label styleClass="bg-disabled" text="%lbl.vat">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="tfVat" editable="false">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                       <styleClass>
+                                          <String fx:value="input-primary" />
+                                          <String fx:value="bg-disabled" />
+                                       </styleClass>
+                                    </TextField>
+                                 </children>
+                              </VBox>
                               <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label styleClass="bg-disabled" text="%lbl.sellingpricebeforetax">
@@ -229,27 +247,9 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfProfitAmount" editable="false">
-                                       <font>
-                                          <Font size="13.0" />
-                                       </font>
-                                       <styleClass>
-                                          <String fx:value="input-primary" />
-                                          <String fx:value="bg-disabled" />
-                                       </styleClass>
-                                    </TextField>
-                                 </children>
-                              </VBox>
-                              <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                 <children>
-                                    <Label>
-                                       <font>
-                                          <Font size="13.0" />
-                                       </font>
-                                    </Label>
                                     <HBox spacing="10.0">
                                        <children>
-                                          <TextField fx:id="tfProfitPercentage" editable="false" HBox.hgrow="ALWAYS">
+                                          <TextField fx:id="tfProfit" editable="false" HBox.hgrow="ALWAYS">
                                              <font>
                                                 <Font size="13.0" />
                                              </font>
@@ -304,7 +304,7 @@
                   </GridPane>
                </children>
             </AnchorPane>
-            <VBox prefHeight="452.0" prefWidth="550.0" spacing="10.0">
+            <VBox prefWidth="550.0" spacing="10.0">
                <children>
                   <AnchorPane maxHeight="-Infinity" prefHeight="210.0" prefWidth="506.0" style="-fx-border-color: #bebebe; -fx-border-width: 1px;">
                      <children>
@@ -328,7 +328,7 @@
                                                 <Font size="13.0" />
                                              </font>
                                           </Label>
-                                          <ComboBox fx:id="cbDrugCategory" editable="true" maxWidth="1.7976931348623157E308">
+                                          <ComboBox fx:id="cbDrugCategory" editable="true" prefWidth="365.0">
                                              <styleClass>
                                                 <String fx:value="combo-box-autocomplete" />
                                                 <String fx:value="border-primary" />
@@ -400,6 +400,9 @@
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints />
+                              <RowConstraints maxHeight="-Infinity" minHeight="0.0" />
                               <RowConstraints maxHeight="-Infinity" minHeight="0.0" />
                            </rowConstraints>
                            <children>
@@ -408,160 +411,120 @@
                                     <Font name="System Bold" size="13.0" />
                                  </font>
                               </Label>
+                              <HBox spacing="10.0" GridPane.rowIndex="2">
+                                 <children>
+                                    <TextField fx:id="tfPurchaseQuantity1" prefWidth="134.0" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfSellingPrice1" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfVat1" disable="true" editable="false" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfSellingPriceBeforeTax1" disable="true" editable="false" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfProfit1" disable="true" editable="false" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
                               <HBox spacing="10.0" GridPane.rowIndex="1">
                                  <children>
-                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <Label text="%lbl.purchasequantity">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="tfPurchaseQuantity1" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfPurchaseQuantity2" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfPurchaseQuantity3" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfPurchaseQuantity4" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </TextField>
-                                       </children>
-                                    </VBox>
-                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <Label text="%lbl.sellingprice">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="tfSellingPrice1" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfSellingPrice2" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfSellingPrice3" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfSellingPrice4" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </TextField>
-                                       </children>
-                                    </VBox>
-                                    <VBox spacing="5.0">
-                                       <children>
-                                          <Label styleClass="bg-disabled" text="%lbl.profit">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="tfProfitAmount1" disable="true" editable="false" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfProfitAmount2" disable="true" editable="false" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfProfitAmount3" disable="true" editable="false" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfProfitAmount4" disable="true" editable="false" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </TextField>
-                                       </children>
-                                    </VBox>
-                                    <VBox spacing="5.0">
-                                       <children>
-                                          <Label>
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="tfProfitPercentage1" disable="true" editable="false" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfProfitPercentage2" disable="true" editable="false" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfProfitPercentage3" disable="true" editable="false" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                             <VBox.margin>
-                                                <Insets bottom="5.0" />
-                                             </VBox.margin>
-                                          </TextField>
-                                          <TextField fx:id="tfProfitPercentage4" disable="true" editable="false" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </TextField>
-                                       </children>
-                                    </VBox>
+                                    <Label prefWidth="74.5" text="%lbl.purchasequantity" wrapText="true">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label prefWidth="103.0" text="%lbl.sellingprice" wrapText="true">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label prefWidth="103.0" styleClass="bg-disabled" text="%lbl.vat" wrapText="true">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label prefWidth="103.0" styleClass="bg-disabled" text="%lbl.sellingpricebeforetax" wrapText="true">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label prefWidth="103.0" styleClass="bg-disabled" text="%lbl.profit" wrapText="true">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <HBox spacing="10.0" GridPane.rowIndex="3">
+                                 <children>
+                                    <TextField fx:id="tfPurchaseQuantity2" prefWidth="134.0" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfSellingPrice2" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfVat2" disable="true" editable="false" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfSellingPriceBeforeTax2" disable="true" editable="false" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfProfit2" disable="true" editable="false" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                 </children>
+                              </HBox>
+                              <HBox spacing="10.0" GridPane.rowIndex="4">
+                                 <children>
+                                    <TextField fx:id="tfPurchaseQuantity3" prefWidth="134.0" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfSellingPrice3" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfVat3" disable="true" editable="false" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfSellingPriceBeforeTax3" disable="true" editable="false" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
+                                    <TextField fx:id="tfProfit3" disable="true" editable="false" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
                                  </children>
                               </HBox>
                            </children>

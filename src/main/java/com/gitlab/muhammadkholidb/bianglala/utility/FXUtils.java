@@ -62,6 +62,7 @@ public class FXUtils {
     public static Optional<ButtonType> showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Bianglala");
+        alert.setHeaderText("Error");
         alert.setContentText(message);
         return alert.showAndWait();
     }
@@ -69,6 +70,7 @@ public class FXUtils {
     public static Optional<ButtonType> showInfo(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Bianglala");
+        alert.setHeaderText("Information");
         alert.setContentText(message);
         return alert.showAndWait();
     }

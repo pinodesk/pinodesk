@@ -1,6 +1,7 @@
 package com.gitlab.muhammadkholidb.bianglala.controller.product;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
+import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
 import com.gitlab.muhammadkholidb.bianglala.controller.BaseController;
 import com.gitlab.muhammadkholidb.bianglala.javafx.control.MaskedTextField;
@@ -22,6 +24,7 @@ import com.gitlab.muhammadkholidb.bianglala.javafx.listener.DrugCategoryComboBox
 import com.gitlab.muhammadkholidb.bianglala.javafx.listener.ProductCategoryComboBoxKeyEventHandler;
 import com.gitlab.muhammadkholidb.bianglala.javafx.listener.RackComboBoxKeyEventHandler;
 import com.gitlab.muhammadkholidb.bianglala.javafx.listener.UnitComboBoxKeyEventHandler;
+import com.gitlab.muhammadkholidb.bianglala.service.ConfigurationService;
 import com.gitlab.muhammadkholidb.bianglala.service.DrugCategoryService;
 import com.gitlab.muhammadkholidb.bianglala.service.DrugService;
 import com.gitlab.muhammadkholidb.bianglala.service.ProductCategoryService;
@@ -32,6 +35,7 @@ import com.gitlab.muhammadkholidb.bianglala.service.WholesaleService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
+import com.gitlab.muhammadkholidb.bianglala.utility.PageData.PageSet;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.DrugCategoryVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.DrugVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
@@ -55,7 +59,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ProductEditController extends BaseController {
 
     @FXML
@@ -98,10 +104,10 @@ public class ProductEditController extends BaseController {
     private TextField tfSellingPriceBeforeTax;
 
     @FXML
-    private TextField tfProfitAmount;
+    private TextField tfVat;
 
     @FXML
-    private TextField tfProfitPercentage;
+    private TextField tfProfit;
 
     @FXML
     private MaskedTextField tfExpiredDate;
@@ -131,9 +137,6 @@ public class ProductEditController extends BaseController {
     private TextField tfPurchaseQuantity3;
 
     @FXML
-    private TextField tfPurchaseQuantity4;
-
-    @FXML
     private TextField tfSellingPrice1;
 
     @FXML
@@ -143,31 +146,31 @@ public class ProductEditController extends BaseController {
     private TextField tfSellingPrice3;
 
     @FXML
-    private TextField tfSellingPrice4;
+    private TextField tfVat1;
 
     @FXML
-    private TextField tfProfitAmount1;
+    private TextField tfVat2;
 
     @FXML
-    private TextField tfProfitAmount2;
+    private TextField tfVat3;
 
     @FXML
-    private TextField tfProfitAmount3;
+    private TextField tfProfit1;
 
     @FXML
-    private TextField tfProfitAmount4;
+    private TextField tfProfit2;
 
     @FXML
-    private TextField tfProfitPercentage1;
+    private TextField tfProfit3;
 
     @FXML
-    private TextField tfProfitPercentage2;
+    private TextField tfSellingPriceBeforeTax1;
 
     @FXML
-    private TextField tfProfitPercentage3;
+    private TextField tfSellingPriceBeforeTax2;
 
     @FXML
-    private TextField tfProfitPercentage4;
+    private TextField tfSellingPriceBeforeTax3;
 
     @FXML
     private Button btnCancel;
@@ -178,7 +181,11 @@ public class ProductEditController extends BaseController {
     @FXML
     private VBox contentPane;
 
+    private PageSet currentPageSet;
+
     private ProductVM currentProduct;
+
+    private BigDecimal vatPercentage;
 
     private ProductService productService;
 
@@ -194,6 +201,8 @@ public class ProductEditController extends BaseController {
 
     private WholesaleService wholesaleService;
 
+    private ConfigurationService configurationService;
+
     @Override
     protected void initServices(ApplicationContext ctx) {
         productService = ctx.getBean(ProductService.class);
@@ -203,19 +212,59 @@ public class ProductEditController extends BaseController {
         drugService = ctx.getBean(DrugService.class);
         drugCategoryService = ctx.getBean(DrugCategoryService.class);
         wholesaleService = ctx.getBean(WholesaleService.class);
+        configurationService = ctx.getBean(ConfigurationService.class);
     }
 
     @Override
     protected void initControls() {
-        currentProduct = PageData.INSTANCE.get(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT);
+        String vatPercentageBase = configurationService.getConfiguration(ConfigurationConstants.VAT_PERCENTAGE);
+        vatPercentage = NumberUtils.toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
+        currentPageSet = new PageSet(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT);
+        currentProduct = PageData.INSTANCE.get(currentPageSet);
+        initDigitTextFields();
+        initProductFields();
+        initDrugFields();
+        initWholesaleFields();
+        calculateTaxAndProfit();
+        calculateWholesaleTaxAndProfit();
+    }
+
+    // @formatter:off
+    private void initDigitTextFields() {
+        Arrays.asList(
+                tfSellingPrice, 
+                tfPurchasePrice, 
+                tfQuantity, 
+                tfPrescriptionPrice, 
+                tfPurchaseQuantity1,
+                tfPurchaseQuantity2, 
+                tfPurchaseQuantity3, 
+                tfSellingPrice1, 
+                tfSellingPrice2,
+                tfSellingPrice3).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
+    }
+    // @formatter:on
+
+    private void initProductFields() {
         tfName.setText(currentProduct.getName());
         tfCode.setText(currentProduct.getCode());
         tfBarcode.setText(currentProduct.getBarcode());
         tfDescription.setText(currentProduct.getDescription());
         tfQuantity.setText(currentProduct.getQuantity().toString());
         tfPurchasePrice.setText(currentProduct.getPurchasePrice().setScale(0).toString());
+        tfPurchasePrice.setOnKeyTyped(event -> {
+            calculateTaxAndProfit();
+            calculateWholesaleTaxAndProfit();
+        });
         tfSellingPrice.setText(currentProduct.getSellingPrice().setScale(0).toString());
+        tfSellingPrice.setOnKeyTyped(event -> calculateTaxAndProfit());
+        chkIncludesVat.setText(
+                chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
         chkIncludesVat.setSelected(CommonConstants.YES.equals(currentProduct.getVatIncluded()));
+        chkIncludesVat.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            calculateTaxAndProfit();
+            calculateWholesaleTaxAndProfit();
+        });
         Date expiredDate = currentProduct.getExpiredDate();
         tfExpiredDate.setPlainText(
                 expiredDate == null ? null : DateFormatUtils.format(expiredDate, CommonConstants.DATE_PATTERN));
@@ -231,6 +280,9 @@ public class ProductEditController extends BaseController {
                 });
         ComboBoxUtils.initEditable(cbDrugCategory, new DrugCategoryComboBoxKeyEventHandler(cbDrugCategory),
                 new DrugCategoryComboBoxConverter(cbDrugCategory));
+    }
+
+    private void initDrugFields() {
         DrugVM drug = drugService.getDrugByProductId(currentProduct.getId());
         if (drug != null) {
             DrugCategoryVM selectedDrugCategory = drugCategoryService.getDrugCategoryById(drug.getDrugCategoryId());
@@ -240,6 +292,12 @@ public class ProductEditController extends BaseController {
             tfIndication.setText(drug.getIndication());
             tfContraindication.setText(drug.getContraindication());
         }
+    }
+
+    private void initWholesaleFields() {
+        tfSellingPrice1.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
+        tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
+        tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         List<WholesaleVM> wholesales = wholesaleService.getWholesalesByProductId(currentProduct.getId());
         for (int i = 0; i < wholesales.size(); i++) {
             WholesaleVM wholesale = wholesales.get(i);
@@ -250,60 +308,84 @@ public class ProductEditController extends BaseController {
                     tfPurchaseQuantity1.setText(purchaseQuantity.toString());
                     tfSellingPrice1.setText(sellingPrice.setScale(0).toString());
                     break;
-
                 case 1:
                     tfPurchaseQuantity2.setText(purchaseQuantity.toString());
                     tfSellingPrice2.setText(sellingPrice.setScale(0).toString());
                     break;
-
                 case 2:
                     tfPurchaseQuantity3.setText(purchaseQuantity.toString());
                     tfSellingPrice3.setText(sellingPrice.setScale(0).toString());
                     break;
-
-                case 3:
-                    tfPurchaseQuantity4.setText(purchaseQuantity.toString());
-                    tfSellingPrice4.setText(sellingPrice.setScale(0).toString());
-                    break;
-
                 default:
                     // Do nothing
             }
         }
-        initDigitTextFields();
     }
 
-    private void initDigitTextFields() {
-        Arrays.asList(tfSellingPrice, tfPurchasePrice, tfQuantity, tfPrescriptionPrice, tfPurchaseQuantity1,
-                tfPurchaseQuantity2, tfPurchaseQuantity3, tfPurchaseQuantity4, tfSellingPrice1, tfSellingPrice2,
-                tfSellingPrice3, tfSellingPrice4).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
+    // @formatter:off
+    private void calculate(
+            TextField tfSellingPrice, 
+            TextField tfVat, 
+            TextField tfSellingPriceBeforeTax,
+            TextField tfProfit) {
+    // @formatter:on
+
+        boolean includesVat = chkIncludesVat.isSelected();
+        double sellingPrice = NumberUtils.toDouble(StringUtils.defaultIfBlank(tfSellingPrice.getText(), null));
+        double purchasePrice = NumberUtils.toDouble(StringUtils.defaultIfBlank(tfPurchasePrice.getText(), null));
+        double vatAmount = includesVat ? sellingPrice * vatPercentage.doubleValue() : 0;
+        double sellingPriceBeforeTax = includesVat ? sellingPrice - vatAmount : sellingPrice;
+        double profitAmount = includesVat ? sellingPriceBeforeTax - purchasePrice : sellingPrice - purchasePrice;
+        double profitPercentage = purchasePrice == 0 ? profitAmount * 100 : profitAmount / purchasePrice * 100;
+        tfVat.setText(BigDecimal.valueOf(vatAmount).setScale(0).toString());
+        tfSellingPriceBeforeTax.setText(BigDecimal.valueOf(sellingPriceBeforeTax).setScale(0).toString());
+        tfProfit.setText(BigDecimal.valueOf(profitAmount).setScale(0).toString() + " ("
+                + BigDecimal.valueOf(profitPercentage).setScale(2, RoundingMode.HALF_EVEN).toString() + "%)");
     }
 
-    @FXML
-    void onActionBtnCancel(ActionEvent event) {
-        close();
+    private void calculateTaxAndProfit() {
+        calculate(tfSellingPrice, tfVat, tfSellingPriceBeforeTax, tfProfit);
     }
 
-    
+    private void calculateWholesaleTaxAndProfit() {
+        if (StringUtils.isNoneBlank(tfPurchaseQuantity1.getText(), tfSellingPrice1.getText())) {
+            calculate(tfSellingPrice1, tfVat1, tfSellingPriceBeforeTax1, tfProfit1);
+        }
+        if (StringUtils.isNoneBlank(tfPurchaseQuantity2.getText(), tfSellingPrice2.getText())) {
+            calculate(tfSellingPrice2, tfVat2, tfSellingPriceBeforeTax2, tfProfit2);
+        }
+        if (StringUtils.isNoneBlank(tfPurchaseQuantity3.getText(), tfSellingPrice3.getText())) {
+            calculate(tfSellingPrice3, tfVat3, tfSellingPriceBeforeTax3, tfProfit3);
+        }
+    }
+
     private String validate() {
-        if (StringUtils.isEmpty(tfName.getText())) {
+        if (StringUtils.isBlank(tfName.getText())) {
             return "Name cannot be empty";
         }
-        if (StringUtils.isEmpty(tfCode.getText())) {
+        if (StringUtils.isBlank(tfCode.getText())) {
             return "Code cannot be empty";
         }
-        if (cbCategory.getSelectionModel().getSelectedItem() == null) {
+        if (StringUtils.isBlank(tfPurchasePrice.getText())) {
+            return "Purchase price cannot be empty";
+        }
+        if (StringUtils.isBlank(tfSellingPrice.getText())) {
+            return "Selling price cannot be empty";
+        }
+        if (!ComboBoxUtils.hasItemSelected(cbCategory)) {
             return "Category cannot be empty";
         }
-        if (cbUnit.getSelectionModel().getSelectedItem() == null) {
+        if (!ComboBoxUtils.hasItemSelected(cbUnit)) {
             return "Unit cannot be empty";
         }
+        // @formatter:off
         if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) && !StringUtils.isAllBlank(
                 tfPrescriptionPrice.getText(),
                 tfIndication.getText(), 
                 tfContraindication.getText())) {
             return "Drug category cannot be empty";
         }
+        // @formatter:on
         return null;
     }
 
@@ -349,6 +431,16 @@ public class ProductEditController extends BaseController {
             drug.setContraindication(tfIndication.getText());
             productEdit.setDrug(drug);
         }
+        productEdit.setWholesales(loadWholesales());
+        boolean updated = productService.updateProduct(productEdit);
+        if (updated) {
+            PageData.INSTANCE.set(currentPageSet.swap(), Boolean.TRUE);
+            FXUtils.showInfo("Successfully update product");
+            close();
+        }
+    }
+
+    private List<WholesaleVM> loadWholesales() {
         List<WholesaleVM> wholesales = new ArrayList<>();
         if (StringUtils.isNoneBlank(tfPurchaseQuantity1.getText(), tfSellingPrice1.getText())) {
             WholesaleVM wholesale = new WholesaleVM();
@@ -371,19 +463,12 @@ public class ProductEditController extends BaseController {
             wholesale.setSellingPrice(NumberUtils.toScaledBigDecimal(tfSellingPrice3.getText()));
             wholesales.add(wholesale);
         }
-        if (StringUtils.isNoneBlank(tfPurchaseQuantity4.getText(), tfSellingPrice4.getText())) {
-            WholesaleVM wholesale = new WholesaleVM();
-            wholesale.setProductId(currentProduct.getId());
-            wholesale.setPurchaseQuantity(NumberUtils.toInt(tfPurchaseQuantity4.getText()));
-            wholesale.setSellingPrice(NumberUtils.toScaledBigDecimal(tfSellingPrice4.getText()));
-            wholesales.add(wholesale);
-        }
-        productEdit.setWholesales(wholesales);
-        boolean updated = productService.updateProduct(productEdit);
-        if (updated) {
-            FXUtils.showInfo("Successfully update product");
-            close();
-        }
+        return wholesales;
+    }
+
+    @FXML
+    void onActionBtnCancel(ActionEvent event) {
+        close();
     }
 
     private void close() {

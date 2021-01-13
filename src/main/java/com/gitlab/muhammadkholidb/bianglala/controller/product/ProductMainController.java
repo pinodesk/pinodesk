@@ -23,6 +23,7 @@ import com.gitlab.muhammadkholidb.bianglala.utility.Async;
 import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
+import com.gitlab.muhammadkholidb.bianglala.utility.PageData.PageSet;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
@@ -144,7 +145,8 @@ public class ProductMainController extends BaseController {
         colPurchasePrice.setCellFactory(new NumberCellFactory<>(locale));
 
         colSellingPrice.setStyle(StyleConstants.ALIGN_RIGHT);
-        colSellingPrice.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSellingPrice()));
+        colSellingPrice
+                .setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSellingPrice()));
         colSellingPrice.setCellFactory(new NumberCellFactory<>(locale));
 
         colCreatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreatedAt()));
@@ -185,11 +187,13 @@ public class ProductMainController extends BaseController {
 
     private void handleActionTableProduct() {
         ProductVM selected = tableProduct.getSelectionModel().getSelectedItem();
-        PageData.INSTANCE.set(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT, selected);
+        PageSet pageSet = new PageSet(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT);
+        PageData.INSTANCE.set(pageSet, selected);
         try {
             FXUtils.show(Page.MASTER_PRODUCT_EDIT, false, event -> {
-                log.debug("source: {}", event.getSource());
-                searchProducts();
+                if (Boolean.TRUE.equals(PageData.INSTANCE.get(pageSet.swap()))) {
+                    searchProducts();
+                }
             });
         } catch (IOException ex) {
             log.error("Failed to show window", ex);

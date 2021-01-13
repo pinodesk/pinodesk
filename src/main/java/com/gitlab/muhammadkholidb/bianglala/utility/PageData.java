@@ -13,7 +13,8 @@ public class PageData {
 
     public static final PageData INSTANCE = new PageData();
 
-    private PageData() {}
+    private PageData() {
+    }
 
     public <T> void set(Page from, Page to, T data) {
         PageData.this.set(new PageSet(from, to), data);
@@ -29,7 +30,15 @@ public class PageData {
     }
 
     public <T> T get(PageSet pageSet) {
-        return (T) map.get(pageSet);
+        return (T) map.remove(pageSet);
+    }
+
+    public boolean hasData(Page from, Page to) {
+        return hasData(new PageSet(from, to));
+    }
+
+    public boolean hasData(PageSet pageSet) {
+        return map.containsKey(pageSet);
     }
 
     @AllArgsConstructor
@@ -38,6 +47,13 @@ public class PageData {
 
         private Page from;
         private Page to;
+
+        public PageSet swap() {
+            Page temp = from;
+            from = to;
+            to = temp;
+            return this;
+        }
     }
 
 }
