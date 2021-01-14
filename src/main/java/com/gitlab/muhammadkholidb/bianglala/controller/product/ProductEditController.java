@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
+import com.gitlab.muhammadkholidb.bianglala.constant.MessageCode;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
 import com.gitlab.muhammadkholidb.bianglala.controller.BaseController;
 import com.gitlab.muhammadkholidb.bianglala.javafx.control.MaskedTextField;
@@ -31,7 +32,6 @@ import com.gitlab.muhammadkholidb.bianglala.service.RackService;
 import com.gitlab.muhammadkholidb.bianglala.service.UnitService;
 import com.gitlab.muhammadkholidb.bianglala.service.WholesaleService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
-import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData.PageSet;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.DrugCategoryVM;
@@ -41,6 +41,7 @@ import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductEditVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.UnitVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.ValidationResult;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.WholesaleVM;
 
 import org.apache.commons.lang3.StringUtils;
@@ -352,34 +353,35 @@ public class ProductEditController extends BaseController {
         }
     }
 
-    private String validate() {
+    private ValidationResult validate() {
+        ValidationResult result = new ValidationResult();
         if (StringUtils.isBlank(tfName.getText())) {
-            return "message.error.emptyname";
+            result.setError(MessageCode.ERROR_EMPTY_NAME);
         }
         if (StringUtils.isBlank(tfCode.getText())) {
-            return "message.error.emptycode";
+            result.setError(MessageCode.ERROR_EMPTY_CODE);
         }
         if (StringUtils.isBlank(tfPurchasePrice.getText())) {
-            return "message.error.emptypurchaseprice";
+            result.setError(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
         }
         if (StringUtils.isBlank(tfSellingPrice.getText())) {
-            return "message.error.emptysellingprice";
+            result.setError(MessageCode.ERROR_EMPTY_SELLING_PRICE);
         }
         if (!ComboBoxUtils.hasItemSelected(cbCategory)) {
-            return "message.error.emptycategory";
+            result.setError(MessageCode.ERROR_EMPTY_CATEGORY);
         }
         if (!ComboBoxUtils.hasItemSelected(cbUnit)) {
-            return "message.error.emptyunit";
+            result.setError(MessageCode.ERROR_EMPTY_UNIT);
         }
         // @formatter:off
         if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) && !StringUtils.isAllBlank(
                 tfPrescriptionPrice.getText(),
                 tfIndication.getText(), 
                 tfContraindication.getText())) {
-            return "message.error.emptydrugcategory";
-        }
         // @formatter:on
-        return null;
+            result.setError(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
+        }
+        return result;
     }
 
     private Date parseDateQuietly(String str, String pattern) {
@@ -392,9 +394,9 @@ public class ProductEditController extends BaseController {
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
-        String err = validate();
-        if (StringUtils.isNotBlank(err)) {
-            displayError(err);
+        ValidationResult result = validate();
+        if (result.isError()) {
+            displayError(result.getMessageCode());
             return;
         }
         ProductEditVM productEdit = new ProductEditVM();
@@ -428,7 +430,7 @@ public class ProductEditController extends BaseController {
         boolean updated = productService.updateProduct(productEdit);
         if (updated) {
             PageData.INSTANCE.set(currentPageSet.swap(), Boolean.TRUE);
-            displayInfo("message.success.updateproduct");
+            displayInfo(MessageCode.SUCCESS_EDIT_PRODUCT);
             close();
         }
     }

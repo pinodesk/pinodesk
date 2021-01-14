@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
+import com.gitlab.muhammadkholidb.bianglala.constant.MessageCode;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 
 import org.springframework.context.ApplicationContext;
@@ -67,11 +68,11 @@ public abstract class BaseController {
         }
     }
 
-    protected Optional<ButtonType> displayAlert(AlertType type, String messageCode) {
+    protected Optional<ButtonType> displayAlert(AlertType type, String message) {
         Alert alert = new Alert(type);
         alert.setTitle(CommonConstants.APP_TITLE);
         alert.setHeaderText(translate(getAlertHeaderLabelByType(type)));
-        alert.setContentText(translate(messageCode));
+        alert.setContentText(message);
         return alert.showAndWait();
     }
 
@@ -79,8 +80,16 @@ public abstract class BaseController {
         return displayAlert(AlertType.ERROR, message);
     }
 
+    protected Optional<ButtonType> displayError(MessageCode messageCode) {
+        return displayError(translate(messageCode.toString()));
+    }
+
     protected Optional<ButtonType> displayInfo(String message) {
         return displayAlert(AlertType.INFORMATION, message);
+    }
+
+    protected Optional<ButtonType> displayInfo(MessageCode messageCode) {
+        return displayInfo(translate(messageCode.toString()));
     }
 
 }

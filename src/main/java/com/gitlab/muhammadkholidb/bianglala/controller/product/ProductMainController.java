@@ -194,7 +194,7 @@ public class ProductMainController extends BaseController {
 
     @SuppressWarnings("unchecked")
     private void searchProducts() {
-        tableProduct.setPlaceholder(new Label(translate("message.loadingdata")));
+        tableProduct.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableProduct.setItems(FXCollections.observableArrayList());
         Async.supply(() -> {
             ProductCategoryVM selectedCategory = cbCategory.getSelectionModel().getSelectedItem();
@@ -205,7 +205,7 @@ public class ProductMainController extends BaseController {
             return productService.searchProduct(filter);
         }).thenAccept(products -> Platform.runLater(() -> {
             if (products.isEmpty()) {
-                tableProduct.setPlaceholder(new Label(translate("message.nodata")));
+                tableProduct.setPlaceholder(new Label(translate("lbl.nodata")));
                 lblRows.setText("0");
             }
             tableProduct.setItems(FXCollections.observableList(products));

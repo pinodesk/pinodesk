@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.gitlab.muhammadkholidb.bianglala.Bianglala;
@@ -15,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
@@ -57,22 +55,6 @@ public class FXUtils {
 
     public static void show(Page page) throws IOException {
         show(page, null);
-    }
-
-    public static Optional<ButtonType> showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Bianglala");
-        alert.setHeaderText("Error");
-        alert.setContentText(message);
-        return alert.showAndWait();
-    }
-
-    public static Optional<ButtonType> showInfo(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Bianglala");
-        alert.setHeaderText("Information");
-        alert.setContentText(message);
-        return alert.showAndWait();
     }
 
     // From https://code.makery.ch/blog/javafx-dialogs-official/
