@@ -2,11 +2,9 @@ package com.gitlab.muhammadkholidb.bianglala.controller.product;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URL;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
@@ -48,12 +46,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ProductMainController extends BaseController {
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
 
     @FXML
     private Label lblRows;
@@ -202,7 +194,7 @@ public class ProductMainController extends BaseController {
 
     @SuppressWarnings("unchecked")
     private void searchProducts() {
-        tableProduct.setPlaceholder(new Label(resources.getString("message.loadingdata")));
+        tableProduct.setPlaceholder(new Label(translate("message.loadingdata")));
         tableProduct.setItems(FXCollections.observableArrayList());
         Async.supply(() -> {
             ProductCategoryVM selectedCategory = cbCategory.getSelectionModel().getSelectedItem();
@@ -213,7 +205,7 @@ public class ProductMainController extends BaseController {
             return productService.searchProduct(filter);
         }).thenAccept(products -> Platform.runLater(() -> {
             if (products.isEmpty()) {
-                tableProduct.setPlaceholder(new Label(resources.getString("message.nodata")));
+                tableProduct.setPlaceholder(new Label(translate("message.nodata")));
                 lblRows.setText("0");
             }
             tableProduct.setItems(FXCollections.observableList(products));

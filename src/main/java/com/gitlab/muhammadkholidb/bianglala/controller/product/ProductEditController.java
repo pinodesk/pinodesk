@@ -2,13 +2,11 @@ package com.gitlab.muhammadkholidb.bianglala.controller.product;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
@@ -63,12 +61,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ProductEditController extends BaseController {
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
 
     @FXML
     private TextField tfName;
@@ -324,22 +316,23 @@ public class ProductEditController extends BaseController {
 
     // @formatter:off
     private void calculate(
-            TextField tfSellingPrice, 
-            TextField tfVat, 
-            TextField tfSellingPriceBeforeTax,
-            TextField tfProfit) {
+            TextField _tfSellingPrice, 
+            TextField _tfVat, 
+            TextField _tfSellingPriceBeforeTax,
+            TextField _tfProfit) {
     // @formatter:on
 
         boolean includesVat = chkIncludesVat.isSelected();
-        double sellingPrice = NumberUtils.toDouble(StringUtils.defaultIfBlank(tfSellingPrice.getText(), null));
+        double sellingPrice = NumberUtils.toDouble(StringUtils.defaultIfBlank(_tfSellingPrice.getText(), null));
         double purchasePrice = NumberUtils.toDouble(StringUtils.defaultIfBlank(tfPurchasePrice.getText(), null));
         double vatAmount = includesVat ? sellingPrice * vatPercentage.doubleValue() : 0;
         double sellingPriceBeforeTax = includesVat ? sellingPrice - vatAmount : sellingPrice;
         double profitAmount = includesVat ? sellingPriceBeforeTax - purchasePrice : sellingPrice - purchasePrice;
         double profitPercentage = purchasePrice == 0 ? profitAmount * 100 : profitAmount / purchasePrice * 100;
-        tfVat.setText(BigDecimal.valueOf(vatAmount).setScale(0).toString());
-        tfSellingPriceBeforeTax.setText(BigDecimal.valueOf(sellingPriceBeforeTax).setScale(0).toString());
-        tfProfit.setText(BigDecimal.valueOf(profitAmount).setScale(0).toString() + " ("
+        _tfVat.setText(BigDecimal.valueOf(vatAmount).setScale(0, RoundingMode.HALF_EVEN).toString());
+        _tfSellingPriceBeforeTax
+                .setText(BigDecimal.valueOf(sellingPriceBeforeTax).setScale(0, RoundingMode.HALF_EVEN).toString());
+        _tfProfit.setText(BigDecimal.valueOf(profitAmount).setScale(0, RoundingMode.HALF_EVEN).toString() + " ("
                 + BigDecimal.valueOf(profitPercentage).setScale(2, RoundingMode.HALF_EVEN).toString() + "%)");
     }
 
@@ -361,29 +354,29 @@ public class ProductEditController extends BaseController {
 
     private String validate() {
         if (StringUtils.isBlank(tfName.getText())) {
-            return "Name cannot be empty";
+            return "message.error.emptyname";
         }
         if (StringUtils.isBlank(tfCode.getText())) {
-            return "Code cannot be empty";
+            return "message.error.emptycode";
         }
         if (StringUtils.isBlank(tfPurchasePrice.getText())) {
-            return "Purchase price cannot be empty";
+            return "message.error.emptypurchaseprice";
         }
         if (StringUtils.isBlank(tfSellingPrice.getText())) {
-            return "Selling price cannot be empty";
+            return "message.error.emptysellingprice";
         }
         if (!ComboBoxUtils.hasItemSelected(cbCategory)) {
-            return "Category cannot be empty";
+            return "message.error.emptycategory";
         }
         if (!ComboBoxUtils.hasItemSelected(cbUnit)) {
-            return "Unit cannot be empty";
+            return "message.error.emptyunit";
         }
         // @formatter:off
         if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) && !StringUtils.isAllBlank(
                 tfPrescriptionPrice.getText(),
                 tfIndication.getText(), 
                 tfContraindication.getText())) {
-            return "Drug category cannot be empty";
+            return "message.error.emptydrugcategory";
         }
         // @formatter:on
         return null;
@@ -401,7 +394,7 @@ public class ProductEditController extends BaseController {
     void onActionBtnSave(ActionEvent event) {
         String err = validate();
         if (StringUtils.isNotBlank(err)) {
-            FXUtils.showError(err);
+            displayError(err);
             return;
         }
         ProductEditVM productEdit = new ProductEditVM();
@@ -435,7 +428,7 @@ public class ProductEditController extends BaseController {
         boolean updated = productService.updateProduct(productEdit);
         if (updated) {
             PageData.INSTANCE.set(currentPageSet.swap(), Boolean.TRUE);
-            FXUtils.showInfo("Successfully update product");
+            displayInfo("message.success.updateproduct");
             close();
         }
     }

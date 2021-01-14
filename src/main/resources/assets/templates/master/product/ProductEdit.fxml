@@ -211,7 +211,7 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfVat" editable="false">
+                                    <TextField fx:id="tfVat" disable="true" editable="false">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -229,7 +229,7 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfSellingPriceBeforeTax" editable="false">
+                                    <TextField fx:id="tfSellingPriceBeforeTax" disable="true" editable="false">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -249,7 +249,7 @@
                                     </Label>
                                     <HBox spacing="10.0">
                                        <children>
-                                          <TextField fx:id="tfProfit" editable="false" HBox.hgrow="ALWAYS">
+                                          <TextField fx:id="tfProfit" disable="true" editable="false" HBox.hgrow="ALWAYS">
                                              <font>
                                                 <Font size="13.0" />
                                              </font>
