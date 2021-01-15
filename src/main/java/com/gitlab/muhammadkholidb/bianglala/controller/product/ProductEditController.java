@@ -56,6 +56,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
@@ -220,6 +221,11 @@ public class ProductEditController extends BaseController {
         initWholesaleFields();
         calculateTaxAndProfit();
         calculateWholesaleTaxAndProfit();
+        contentPane.setOnKeyPressed(event -> {
+            if (KeyCode.ENTER.equals(event.getCode())) {
+                save();
+            }
+        });
     }
 
     // @formatter:off
@@ -374,14 +380,22 @@ public class ProductEditController extends BaseController {
             result.setError(MessageCode.ERROR_EMPTY_UNIT);
         }
         // @formatter:off
-        if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) && !StringUtils.isAllBlank(
-                tfPrescriptionPrice.getText(),
-                tfIndication.getText(), 
-                tfContraindication.getText())) {
+        if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) 
+                && !StringUtils.isAllBlank(
+                        tfPrescriptionPrice.getText(),
+                        tfIndication.getText(), 
+                        tfContraindication.getText())) {
         // @formatter:on
             result.setError(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
         }
+        if (ComboBoxUtils.hasItemSelected(cbDrugCategory) && !isProductCategoryDrugs()) {
+            result.setError(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
+        }
         return result;
+    }
+
+    private boolean isProductCategoryDrugs() {
+        return ComboBoxUtils.getSelectedItem(cbCategory).getCode().equals(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
     }
 
     private Date parseDateQuietly(String str, String pattern) {
@@ -392,8 +406,7 @@ public class ProductEditController extends BaseController {
         }
     }
 
-    @FXML
-    void onActionBtnSave(ActionEvent event) {
+    private void save() {
         ValidationResult result = validate();
         if (result.isError()) {
             displayError(result.getMessageCode());
@@ -462,12 +475,18 @@ public class ProductEditController extends BaseController {
     }
 
     @FXML
+    void onActionBtnSave(ActionEvent event) {
+        save();
+    }
+
+    @FXML
     void onActionBtnCancel(ActionEvent event) {
         close();
     }
 
-    private void close() {
-        ((Stage) contentPane.getScene().getWindow()).close();
+    @Override
+    protected Stage getCurrentStage() {
+        return (Stage) contentPane.getScene().getWindow();
     }
 
 }

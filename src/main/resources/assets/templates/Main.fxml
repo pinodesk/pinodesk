@@ -183,6 +183,11 @@
                   <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
                </padding>
             </Label>
+            <ImageView fitHeight="108.0" fitWidth="128.0" layoutX="298.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
+               <image>
+                  <Image url="@../images/bianglala.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
    </children>

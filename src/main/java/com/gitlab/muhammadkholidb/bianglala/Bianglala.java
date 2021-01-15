@@ -16,9 +16,9 @@ import javafx.stage.Stage;
 public class Bianglala extends Application {
 
     public static final String[] ICON_PATHS = new String[] { 
-            "/assets/images/bianglala-icon-128.png",
-            "/assets/images/bianglala-icon-64.png", 
-            "/assets/images/bianglala-icon-32.png" };
+            "/assets/images/bianglala-wheel-128.png",
+            "/assets/images/bianglala-wheel-64.png", 
+            "/assets/images/bianglala-wheel-32.png" };
 
     @Override
     public void init() throws Exception {

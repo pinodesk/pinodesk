@@ -10,4 +10,5 @@ public interface CommonConstants {
     String DATE_PATTERN = "yyyy-MM-dd";
     String YES = "yes";
     String NO = "no";
+    String PRODUCT_CATEGORY_CODE_DRUGS = "000000518";
 }

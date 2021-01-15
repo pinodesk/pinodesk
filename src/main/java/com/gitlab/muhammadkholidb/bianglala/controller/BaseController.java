@@ -14,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -90,6 +91,12 @@ public abstract class BaseController {
 
     protected Optional<ButtonType> displayInfo(MessageCode messageCode) {
         return displayInfo(translate(messageCode.toString()));
+    }
+
+    protected abstract Stage getCurrentStage();
+
+    protected void close() {
+        getCurrentStage().close();
     }
 
 }
