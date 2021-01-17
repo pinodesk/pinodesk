@@ -1,12 +1,13 @@
 package com.gitlab.muhammadkholidb.bianglala.controller;
 
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
+import com.gitlab.muhammadkholidb.bianglala.constant.StyleConstants;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageLoader;
+
+import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,16 +15,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MainController {
-
-    @FXML
-    private ResourceBundle resources;
-
-    @FXML
-    private URL location;
+public class MainController extends BaseController {
 
     @FXML
     private AnchorPane rootPane;
@@ -34,9 +30,14 @@ public class MainController {
     @FXML
     private AnchorPane contentPane;
 
-    @FXML
-    void initialize() {
-        log.debug("Initialize");
+    @Override
+    protected void initServices(ApplicationContext ctx) {
+        // No services to initialize
+    }
+
+    @Override
+    protected void initControls() {
+        // No controls to initialize
     }
 
     @FXML
@@ -67,10 +68,9 @@ public class MainController {
 
     private void setActiveMenu(Button btn) {
         vboxMenu.getChildren().forEach(node -> {
-            String styleClass = "btn-primary-active";
-            node.getStyleClass().remove(styleClass);
+            node.getStyleClass().remove(StyleConstants.BTN_PRIMARY_ACTIVE);
             if (btn.equals(node)) {
-                node.getStyleClass().add(styleClass);
+                node.getStyleClass().add(StyleConstants.BTN_PRIMARY_ACTIVE);
             }
         });
     }
@@ -83,6 +83,11 @@ public class MainController {
         AnchorPane.setRightAnchor(content, 0.0);
         contentPane.getChildren().clear();
         contentPane.getChildren().add(content);
+    }
+
+    @Override
+    protected Stage getCurrentStage() {
+        return null;
     }
 
 }

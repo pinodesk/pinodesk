@@ -105,7 +105,7 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
-            <version>3.4.5</version>
+            <version>3.4.3</version>
         </dependency>
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
@@ -172,6 +172,23 @@
                     <mainClass>${project.mainClass}</mainClass>
                     <includePathExceptionsInClasspath>true</includePathExceptionsInClasspath>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>io.github.fvarrui</groupId>
+                <artifactId>javapackager</artifactId>
+                <version>1.4.2</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>${project.mainClass}</mainClass>
+                            <bundleJre>true</bundleJre>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

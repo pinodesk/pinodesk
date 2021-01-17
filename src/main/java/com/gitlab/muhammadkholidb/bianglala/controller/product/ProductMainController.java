@@ -4,42 +4,34 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Objects;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
 import com.gitlab.muhammadkholidb.bianglala.constant.StyleConstants;
 import com.gitlab.muhammadkholidb.bianglala.controller.BaseController;
-import com.gitlab.muhammadkholidb.bianglala.javafx.converter.ProductCategoryComboBoxConverter;
+import com.gitlab.muhammadkholidb.bianglala.javafx.factory.BooleanImageCellFactory;
 import com.gitlab.muhammadkholidb.bianglala.javafx.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.bianglala.javafx.factory.NumberCellFactory;
-import com.gitlab.muhammadkholidb.bianglala.javafx.listener.ProductCategoryComboBoxKeyEventHandler;
 import com.gitlab.muhammadkholidb.bianglala.service.ConfigurationService;
 import com.gitlab.muhammadkholidb.bianglala.service.ProductService;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
-import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData.PageSet;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
+import com.gitlab.muhammadkholidb.bianglala.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
 
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
@@ -47,24 +39,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ProductMainController extends BaseController {
-
-    @FXML
-    private Label lblRows;
-
-    @FXML
-    private TextField tfCode;
-
-    @FXML
-    private TextField tfName;
-
-    @FXML
-    private ComboBox<ProductCategoryVM> cbCategory;
-
-    @FXML
-    private Button btnClear;
-
-    @FXML
-    private Button btnSearch;
 
     @FXML
     private TableView<ProductVM> tableProduct;
@@ -91,10 +65,16 @@ public class ProductMainController extends BaseController {
     private TableColumn<ProductVM, BigDecimal> colSellingPrice;
 
     @FXML
+    private TableColumn<ProductVM, String> colIncludesVat;
+
+    @FXML
     private TableColumn<ProductVM, Date> colCreatedAt;
 
     @FXML
     private TableColumn<ProductVM, Date> colUpdatedAt;
+
+    @FXML
+    private Label lblRows;
 
     private ProductService productService;
 
@@ -108,64 +88,35 @@ public class ProductMainController extends BaseController {
 
     @Override
     protected void initControls() {
-        ComboBoxUtils.initEditable(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
-                new ProductCategoryComboBoxConverter(cbCategory));
         initTableProduct();
         registerKeyListener();
         searchProducts();
     }
 
     private void initTableProduct() {
-
-        colCode.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCode()));
-
-        colName.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getName()));
-
-        colCategory.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getCategoryName()));
-
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
         Locale locale = languageCode == null ? CommonConstants.ENGLISH : new Locale(languageCode);
-
-        colQuantity.setStyle(StyleConstants.ALIGN_RIGHT);
-        colQuantity.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getQuantity()));
-        colQuantity.setCellFactory(new NumberCellFactory<>(locale));
-
-        colUnit.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getUnitLabel()));
-
-        colPurchasePrice.setStyle(StyleConstants.ALIGN_RIGHT);
-        colPurchasePrice
-                .setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getPurchasePrice()));
-        colPurchasePrice.setCellFactory(new NumberCellFactory<>(locale));
-
-        colSellingPrice.setStyle(StyleConstants.ALIGN_RIGHT);
-        colSellingPrice
-                .setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getSellingPrice()));
-        colSellingPrice.setCellFactory(new NumberCellFactory<>(locale));
-
-        colCreatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getCreatedAt()));
-        colCreatedAt.setCellFactory(new DateCellFactory<>(CommonConstants.DATETIME_PATTERN));
-
-        colUpdatedAt.setCellValueFactory(cellData -> new SimpleObjectProperty<>(cellData.getValue().getUpdatedAt()));
-        colUpdatedAt.setCellFactory(new DateCellFactory<>(CommonConstants.DATETIME_PATTERN));
-
+        TableViewUtils.setColumnValue(colCode, ProductVM::getCode);
+        TableViewUtils.setColumnValue(colName, ProductVM::getName);
+        TableViewUtils.setColumnValue(colCategory, ProductVM::getCategoryName);
+        TableViewUtils.setColumnValue(colUnit, ProductVM::getUnitLabel);
+        TableViewUtils.initTableColumn(colQuantity, new NumberCellFactory<>(locale), ProductVM::getQuantity,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(colPurchasePrice, new NumberCellFactory<>(locale), ProductVM::getPurchasePrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(colSellingPrice, new NumberCellFactory<>(locale), ProductVM::getSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(colPurchasePrice, new NumberCellFactory<>(locale), ProductVM::getPurchasePrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(colIncludesVat, new BooleanImageCellFactory<>(CommonConstants.YES::equals),
+                ProductVM::getVatIncluded, StyleConstants.ALIGN_CENTER);
+        TableViewUtils.initTableColumn(colCreatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
+                ProductVM::getCreatedAt);
+        TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
+                ProductVM::getUpdatedAt);
     }
 
     private void registerKeyListener() {
-        tfCode.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                searchProducts();
-            }
-        });
-        tfName.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                searchProducts();
-            }
-        });
-        cbCategory.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                searchProducts();
-            }
-        });
         tableProduct.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 handleActionTableProduct();
@@ -198,11 +149,7 @@ public class ProductMainController extends BaseController {
         tableProduct.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableProduct.setItems(FXCollections.observableArrayList());
         Async.supply(() -> {
-            ProductCategoryVM selectedCategory = cbCategory.getSelectionModel().getSelectedItem();
             ProductFilterVM filter = new ProductFilterVM();
-            filter.setCode(tfCode.getText());
-            filter.setName(tfName.getText());
-            filter.setCategoryCode(Objects.isNull(selectedCategory) ? null : selectedCategory.getCode());
             return productService.searchProduct(filter);
         }).thenAccept(products -> Platform.runLater(() -> {
             if (products.isEmpty()) {
@@ -216,16 +163,13 @@ public class ProductMainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnClear(ActionEvent event) {
-        tfCode.setText("");
-        tfName.setText("");
-        cbCategory.getSelectionModel().clearSelection();
-        cbCategory.getEditor().clear();
+    void onActionBtnSearch(ActionEvent event) {
+        searchProducts();
     }
 
     @FXML
-    void onActionBtnSearch(ActionEvent event) {
-        searchProducts();
+    void onActionBtnFilter(ActionEvent event) {
+        //
     }
 
     @Override
