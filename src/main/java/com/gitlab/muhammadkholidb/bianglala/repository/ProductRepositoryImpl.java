@@ -74,7 +74,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         }
         if (quantityMax != null) {
             sb.append(" AND p.quantity <= ? ");
-            params.add(quantityMin);
+            params.add(quantityMax);
         }
         if (purchasePriceMin != null) {
             sb.append(" AND p.purchase_price >= ? ");

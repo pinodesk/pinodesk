@@ -36,6 +36,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -120,6 +121,11 @@ public class ProductFilterController extends BaseController {
                 new BasicComboBoxVM(CommonConstants.YES, translate("lbl.yes")),
                 new BasicComboBoxVM(CommonConstants.NO, translate("lbl.no")));
         initDigitTextFields();
+        contentPane.setOnKeyPressed(event -> {
+            if (KeyCode.ENTER.equals(event.getCode())) {
+                btnFilter.fire();
+            }
+        });
     }
 
     @Override
@@ -161,10 +167,8 @@ public class ProductFilterController extends BaseController {
                 ComboBoxUtils.select(cbRack, () -> rackService.getRackById(rackId));
             }
             if (StringUtils.isNotBlank(includesVat)) {
-                ComboBoxUtils.select(cbIncludesVat, () -> {
-                    return cbIncludesVat.getItems().stream().filter(vm -> includesVat.equals(vm.getValue())).findAny()
-                            .orElseThrow();
-                });
+                ComboBoxUtils.select(cbIncludesVat, () -> cbIncludesVat.getItems().stream()
+                        .filter(vm -> includesVat.equals(vm.getValue())).findAny().orElseThrow());
             }
         }
     }

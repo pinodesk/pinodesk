@@ -16,11 +16,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" style="-fx-background-color: white;" stylesheets="@../../../css/bianglala.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.product.ProductEditController">
+<VBox fx:id="contentPane" style="-fx-background-color: white;" stylesheets="@../../../css/bianglala.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.product.ProductAddController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: #009c7c;" text="%lbl.title.editproduct" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: #009c7c;" text="%lbl.title.addproduct" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -549,7 +549,6 @@
             <HBox layoutX="644.0" layoutY="7.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
                   <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn.cancel" textFill="WHITE" />
-                  <Button fx:id="btnRemove" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemove" styleClass="btn-danger" text="%btn.remove" textFill="WHITE" />
                   <Button fx:id="btnSave" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSave" styleClass="btn-primary" text="%btn.save" textFill="WHITE" />
                </children>
             </HBox>

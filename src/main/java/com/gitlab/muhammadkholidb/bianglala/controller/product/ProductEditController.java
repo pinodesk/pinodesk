@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
@@ -49,6 +50,7 @@ import org.springframework.context.ApplicationContext;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -480,6 +482,12 @@ public class ProductEditController extends BaseController {
     @FXML
     void onActionBtnCancel(ActionEvent event) {
         close();
+    }
+
+    @FXML
+    void onActionBtnRemove(ActionEvent event) {
+        Optional<ButtonType> confirmation = displayConfirmation("Are you sure?");
+        log.debug("Confirmation: {}", confirmation);
     }
 
 }

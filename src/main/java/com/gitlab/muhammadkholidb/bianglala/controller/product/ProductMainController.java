@@ -17,12 +17,9 @@ import com.gitlab.muhammadkholidb.bianglala.service.ConfigurationService;
 import com.gitlab.muhammadkholidb.bianglala.service.ProductService;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
-import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
-import com.gitlab.muhammadkholidb.bianglala.utility.PageData.PageSet;
 import com.gitlab.muhammadkholidb.bianglala.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
-import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackVM;
 
 import org.springframework.context.ApplicationContext;
 
@@ -187,8 +184,8 @@ public class ProductMainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnSearch(ActionEvent event) {
-        searchProducts();
+    void onActionBtnAdd(ActionEvent event) {
+        //
     }
 
     @FXML

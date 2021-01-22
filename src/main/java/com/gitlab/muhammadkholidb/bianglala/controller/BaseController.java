@@ -105,6 +105,8 @@ public abstract class BaseController {
                 return "lbl.information";
             case ERROR:
                 return "lbl.error";
+            case CONFIRMATION:
+                return "lbl.confirmation";
             default:
                 return "";
         }
@@ -133,6 +135,14 @@ public abstract class BaseController {
 
     protected Optional<ButtonType> displayInfo(MessageCode messageCode) {
         return displayInfo(translate(messageCode.toString()));
+    }
+
+    protected Optional<ButtonType> displayConfirmation(String message) {
+        return displayAlert(AlertType.CONFIRMATION, message);
+    }
+
+    protected Optional<ButtonType> displayConfirmation(MessageCode messageCode) {
+        return displayConfirmation(translate(messageCode.toString()));
     }
 
     // From https://code.makery.ch/blog/javafx-dialogs-official/
