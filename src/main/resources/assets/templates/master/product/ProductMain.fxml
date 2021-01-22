@@ -43,16 +43,18 @@
       </HBox>
       <TableView fx:id="tableProduct" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn fx:id="colCode" prefWidth="75.0" text="%lbl.code" />
-          <TableColumn fx:id="colName" prefWidth="75.0" text="%lbl.name" />
-            <TableColumn fx:id="colCategory" prefWidth="75.0" text="%lbl.category" />
-            <TableColumn fx:id="colQuantity" prefWidth="75.0" text="%lbl.quantity" />
-            <TableColumn fx:id="colUnit" prefWidth="75.0" text="%lbl.unit" />
-            <TableColumn fx:id="colPurchasePrice" prefWidth="75.0" text="%lbl.purchaseprice" />
-            <TableColumn fx:id="colSellingPrice" prefWidth="75.0" text="%lbl.sellingprice" />
-            <TableColumn fx:id="colIncludesVat" prefWidth="75.0" text="%lbl.includesvat" />
-            <TableColumn fx:id="colCreatedAt" prefWidth="75.0" text="%lbl.createdat" />
-            <TableColumn fx:id="colUpdatedAt" prefWidth="75.0" text="%lbl.updatedat" />
+          <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl.code" />
+          <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="300.0" text="%lbl.name" />
+            <TableColumn fx:id="colCategory" minWidth="-Infinity" prefWidth="200.0" text="%lbl.category" />
+            <TableColumn fx:id="colQuantity" minWidth="-Infinity" prefWidth="100.0" text="%lbl.quantity" />
+            <TableColumn fx:id="colUnit" minWidth="-Infinity" prefWidth="100.0" text="%lbl.unit" />
+            <TableColumn fx:id="colPurchasePrice" minWidth="-Infinity" prefWidth="100.0" text="%lbl.purchaseprice" />
+            <TableColumn fx:id="colSellingPrice" minWidth="-Infinity" prefWidth="100.0" text="%lbl.sellingprice" />
+            <TableColumn fx:id="colIncludesVat" minWidth="-Infinity" prefWidth="100.0" text="%lbl.includesvat" />
+            <TableColumn fx:id="colExpiredDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl.expireddate" />
+            <TableColumn fx:id="colRack" minWidth="-Infinity" prefWidth="150.0" text="%lbl.rack" />
+            <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl.createdat" />
+            <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl.updatedat" />
         </columns>
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

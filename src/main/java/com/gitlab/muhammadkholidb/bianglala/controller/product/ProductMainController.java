@@ -22,6 +22,7 @@ import com.gitlab.muhammadkholidb.bianglala.utility.PageData.PageSet;
 import com.gitlab.muhammadkholidb.bianglala.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.RackVM;
 
 import org.springframework.context.ApplicationContext;
 
@@ -68,6 +69,12 @@ public class ProductMainController extends BaseController {
     private TableColumn<ProductVM, String> colIncludesVat;
 
     @FXML
+    private TableColumn<ProductVM, Date> colExpiredDate;
+
+    @FXML
+    private TableColumn<ProductVM, String> colRack;
+
+    @FXML
     private TableColumn<ProductVM, Date> colCreatedAt;
 
     @FXML
@@ -75,6 +82,8 @@ public class ProductMainController extends BaseController {
 
     @FXML
     private Label lblRows;
+
+    private ProductFilterVM productFilter;
 
     private ProductService productService;
 
@@ -87,10 +96,25 @@ public class ProductMainController extends BaseController {
     }
 
     @Override
-    protected void initControls() {
+    protected void initControlsActions() {
         initTableProduct();
         registerKeyListener();
+    }
+
+    @Override
+    protected void initControlsValues() {
+        productFilter = new ProductFilterVM();
         searchProducts();
+    }
+
+    @Override
+    protected Page getCurrentPage() {
+        return Page.MASTER_PRODUCT_MAIN;
+    }
+
+    @Override
+    protected Stage getCurrentStage() {
+        return null;
     }
 
     private void initTableProduct() {
@@ -100,6 +124,7 @@ public class ProductMainController extends BaseController {
         TableViewUtils.setColumnValue(colName, ProductVM::getName);
         TableViewUtils.setColumnValue(colCategory, ProductVM::getCategoryName);
         TableViewUtils.setColumnValue(colUnit, ProductVM::getUnitLabel);
+        TableViewUtils.setColumnValue(colRack, ProductVM::getRackName);
         TableViewUtils.initTableColumn(colQuantity, new NumberCellFactory<>(locale), ProductVM::getQuantity,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colPurchasePrice, new NumberCellFactory<>(locale), ProductVM::getPurchasePrice,
@@ -110,6 +135,8 @@ public class ProductMainController extends BaseController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colIncludesVat, new BooleanImageCellFactory<>(CommonConstants.YES::equals),
                 ProductVM::getVatIncluded, StyleConstants.ALIGN_CENTER);
+        TableViewUtils.initTableColumn(colExpiredDate, new DateCellFactory<>(CommonConstants.DATE_PATTERN),
+                ProductVM::getExpiredDate);
         TableViewUtils.initTableColumn(colCreatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 ProductVM::getCreatedAt);
         TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
@@ -131,16 +158,16 @@ public class ProductMainController extends BaseController {
 
     private void handleActionTableProduct() {
         ProductVM selected = tableProduct.getSelectionModel().getSelectedItem();
-        PageSet pageSet = new PageSet(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT);
-        PageData.INSTANCE.set(pageSet, selected);
+        Page nextPage = Page.MASTER_PRODUCT_EDIT;
+        setNextPageData(nextPage, selected);
         try {
-            FXUtils.show(Page.MASTER_PRODUCT_EDIT, false, event -> {
-                if (Boolean.TRUE.equals(PageData.INSTANCE.get(pageSet.swap()))) {
+            FXUtils.show(nextPage, false, event -> {
+                if (Boolean.TRUE.equals(getPageData())) {
                     searchProducts();
                 }
             });
         } catch (IOException ex) {
-            log.error("Failed to show window", ex);
+            log.error("Failed to show edit product window", ex);
         }
     }
 
@@ -148,10 +175,7 @@ public class ProductMainController extends BaseController {
     private void searchProducts() {
         tableProduct.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableProduct.setItems(FXCollections.observableArrayList());
-        Async.supply(() -> {
-            ProductFilterVM filter = new ProductFilterVM();
-            return productService.searchProduct(filter);
-        }).thenAccept(products -> Platform.runLater(() -> {
+        Async.supply(() -> productService.searchProduct(productFilter)).thenAccept(products -> Platform.runLater(() -> {
             if (products.isEmpty()) {
                 tableProduct.setPlaceholder(new Label(translate("lbl.nodata")));
                 lblRows.setText("0");
@@ -168,12 +192,13 @@ public class ProductMainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnFilter(ActionEvent event) {
-        //
+    void onActionBtnFilter(ActionEvent event) throws IOException {
+        Page nextPage = Page.MASTER_PRODUCT_FILTER;
+        setNextPageData(nextPage, productFilter);
+        FXUtils.show(nextPage, false, we -> {
+            productFilter = getPageData();
+            searchProducts();
+        });
     }
 
-    @Override
-    protected Stage getCurrentStage() {
-        return null;
-    }
 }

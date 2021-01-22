@@ -1,6 +1,8 @@
 package com.gitlab.muhammadkholidb.bianglala.repository;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.github.vertical_blank.sqlformatter.SqlFormatter;
@@ -23,33 +25,94 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
 
     @Override
     public List<ProductVM> filter(ProductFilterVM filter, Long languageId) {
+        String name = filter.getName();
+        String code = filter.getCode();
+        String barcode = filter.getBarcode();
+        String categoryCode = filter.getCategoryCode();
+        Long unitId = filter.getUnitId();
+        Integer quantityMax = filter.getQuantityMax();
+        Integer quantityMin = filter.getQuantityMin();
+        BigDecimal purchasePriceMax = filter.getPurchasePriceMax();
+        BigDecimal purchasePriceMin = filter.getPurchasePriceMin();
+        BigDecimal sellingPriceMax = filter.getSellingPriceMax();
+        BigDecimal sellingPriceMin = filter.getSellingPriceMin();
+        Date expiredDateMax = filter.getExpiredDateMax();
+        Date expiredDateMin = filter.getExpiredDateMin();
+        Long rackId = filter.getRackId();
+        String includesVat = filter.getIncludesVat();
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT p.*, pc.id as category_id, pc.code as category_code, pc.name as category_name ");
-        sb.append(" FROM ")
-                .append(Product.TABLE_NAME)
-                .append(" p ");
-        sb.append(" LEFT JOIN ")
-                .append(ProductCategory.TABLE_NAME)
-                .append(" pc ON pc.code = p.category_code AND pc.deleted_at IS NULL AND pc.language_id = ? ");
+        sb.append(" FROM ").append(Product.TABLE_NAME).append(" p ");
+        sb.append(" LEFT JOIN ").append(ProductCategory.TABLE_NAME).append(" pc ")
+                .append(" ON pc.code = p.category_code AND pc.deleted_at IS NULL AND pc.language_id = ? ");
         sb.append(" WHERE p.deleted_at IS NULL ");
         List<Object> params = new ArrayList<>();
         params.add(languageId);
-        if (StringUtils.isNotBlank(filter.getName())) {
+        if (StringUtils.isNotBlank(name)) {
             sb.append(" AND LOWER(p.name) LIKE ? ");
-            params.add(StringUtils.join("%", filter.getName().toLowerCase(), "%"));
+            params.add(StringUtils.join("%", name.toLowerCase(), "%"));
         }
-        if (StringUtils.isNotBlank(filter.getCode())) {
+        if (StringUtils.isNotBlank(code)) {
             sb.append(" AND LOWER(p.code) LIKE ? ");
-            params.add(StringUtils.join("%", filter.getCode().toLowerCase(), "%"));
+            params.add(StringUtils.join("%", code.toLowerCase(), "%"));
         }
-        if (StringUtils.isNotBlank(filter.getCategoryCode())) {
+        if (StringUtils.isNotBlank(barcode)) {
+            sb.append(" AND LOWER(p.barcode) LIKE ? ");
+            params.add(StringUtils.join("%", barcode.toLowerCase(), "%"));
+        }
+        if (StringUtils.isNotBlank(categoryCode)) {
             sb.append(" AND pc.code = ? ");
-            params.add(filter.getCategoryCode());
+            params.add(categoryCode);
+        }
+        if (unitId != null) {
+            sb.append(" AND p.unit_id = ? ");
+            params.add(unitId);
+        }
+        if (quantityMin != null) {
+            sb.append(" AND p.quantity >= ? ");
+            params.add(quantityMin);
+        }
+        if (quantityMax != null) {
+            sb.append(" AND p.quantity <= ? ");
+            params.add(quantityMin);
+        }
+        if (purchasePriceMin != null) {
+            sb.append(" AND p.purchase_price >= ? ");
+            params.add(purchasePriceMin);
+        }
+        if (purchasePriceMax != null) {
+            sb.append(" AND p.purchase_price <= ? ");
+            params.add(purchasePriceMax);
+        }
+        if (sellingPriceMin != null) {
+            sb.append(" AND p.selling_price >= ? ");
+            params.add(sellingPriceMin);
+        }
+        if (sellingPriceMax != null) {
+            sb.append(" AND p.selling_price <= ? ");
+            params.add(sellingPriceMax);
+        }
+        if (expiredDateMin != null) {
+            sb.append(" AND p.expired_date >= ? ");
+            params.add(expiredDateMin);
+        }
+        if (expiredDateMax != null) {
+            sb.append(" AND p.expired_date <= ? ");
+            params.add(expiredDateMax);
+        }
+        if (rackId != null) {
+            sb.append(" AND p.rack_id = ? ");
+            params.add(rackId);
+        }
+        if (StringUtils.isNotBlank(includesVat)) {
+            sb.append(" AND p.vat_included = ? ");
+            params.add(includesVat);
         }
         log.debug("Formatted SQL: \n{}", SqlFormatter.format(sb.toString()));
         return jdbcTemplate.query(sb.toString(), params.toArray(), BeanPropertyRowMapper.newInstance(ProductVM.class));
     }
 
+    // @formatter:off
     @Override
     public Integer updateProduct(ProductEditVM productEdit) {
         return update(new String[] {
@@ -84,5 +147,6 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
             productEdit.getRack() == null ? null : productEdit.getRack().getCode()
         }, productEdit.getId());
     }
+    // @formatter:on
 
 }

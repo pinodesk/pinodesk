@@ -1,15 +1,18 @@
 package com.gitlab.muhammadkholidb.bianglala.utility;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
-import java.util.HashMap;
-import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 
 @SuppressWarnings("unchecked")
 public class PageData {
 
-    private final Map<PageSet, Object> map = new HashMap<>();
+    @Getter
+    private PageSet pageSet;
+
+    private Object data;
 
     public static final PageData INSTANCE = new PageData();
 
@@ -17,20 +20,20 @@ public class PageData {
     }
 
     public <T> void set(Page from, Page to, T data) {
-        PageData.this.set(new PageSet(from, to), data);
+        set(new PageSet(from, to), data);
     }
 
     public <T> void set(PageSet pageSet, T data) {
-        map.clear(); // The map should only contains one value
-        map.put(pageSet, data);
+        this.pageSet = pageSet;
+        this.data = data;
     }
 
     public <T> T get(Page from, Page to) {
-        return PageData.this.get(new PageSet(from, to));
+        return get(new PageSet(from, to));
     }
 
     public <T> T get(PageSet pageSet) {
-        return (T) map.remove(pageSet);
+        return this.pageSet.equals(pageSet) ? (T) data : null;
     }
 
     public boolean hasData(Page from, Page to) {
@@ -38,7 +41,7 @@ public class PageData {
     }
 
     public boolean hasData(PageSet pageSet) {
-        return map.containsKey(pageSet);
+        return this.pageSet.equals(pageSet) && data != null;
     }
 
     @AllArgsConstructor
@@ -54,6 +57,11 @@ public class PageData {
             to = temp;
             return this;
         }
+
+        public PageSet swapCopy() {
+            return new PageSet(to, from);
+        }
+
     }
 
 }

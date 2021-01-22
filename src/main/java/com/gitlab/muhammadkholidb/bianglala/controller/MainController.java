@@ -36,8 +36,23 @@ public class MainController extends BaseController {
     }
 
     @Override
-    protected void initControls() {
+    protected void initControlsActions() {
         // No controls to initialize
+    }
+
+    @Override
+    protected void initControlsValues() {
+        // No fields values to initialize
+    }
+    
+    @Override
+    protected Page getCurrentPage() {
+        return Page.MAIN;
+    }
+
+    @Override
+    protected Stage getCurrentStage() {
+        return null;
     }
 
     @FXML
@@ -61,7 +76,7 @@ public class MainController extends BaseController {
                 setActiveMenu(btn);
                 swapContentPane(page);
             } catch (Exception e) {
-                FXUtils.showErrorDialog(e);
+                displayException(e);
             }
         });
     }
@@ -83,11 +98,6 @@ public class MainController extends BaseController {
         AnchorPane.setRightAnchor(content, 0.0);
         contentPane.getChildren().clear();
         contentPane.getChildren().add(content);
-    }
-
-    @Override
-    protected Stage getCurrentStage() {
-        return null;
     }
 
 }

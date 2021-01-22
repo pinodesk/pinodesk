@@ -2,7 +2,6 @@ package com.gitlab.muhammadkholidb.bianglala.controller.product;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -32,8 +31,6 @@ import com.gitlab.muhammadkholidb.bianglala.service.RackService;
 import com.gitlab.muhammadkholidb.bianglala.service.UnitService;
 import com.gitlab.muhammadkholidb.bianglala.service.WholesaleService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
-import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
-import com.gitlab.muhammadkholidb.bianglala.utility.PageData.PageSet;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.DrugCategoryVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.DrugVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
@@ -47,7 +44,6 @@ import com.gitlab.muhammadkholidb.bianglala.viewmodel.WholesaleVM;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
@@ -175,8 +171,6 @@ public class ProductEditController extends BaseController {
     @FXML
     private VBox contentPane;
 
-    private PageSet currentPageSet;
-
     private ProductVM currentProduct;
 
     private BigDecimal vatPercentage;
@@ -210,22 +204,74 @@ public class ProductEditController extends BaseController {
     }
 
     @Override
-    protected void initControls() {
-        String vatPercentageBase = configurationService.getConfiguration(ConfigurationConstants.VAT_PERCENTAGE);
-        vatPercentage = NumberUtils.toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
-        currentPageSet = new PageSet(Page.MASTER_PRODUCT_MAIN, Page.MASTER_PRODUCT_EDIT);
-        currentProduct = PageData.INSTANCE.get(currentPageSet);
+    protected void initControlsActions() {
         initDigitTextFields();
-        initProductFields();
-        initDrugFields();
-        initWholesaleFields();
-        calculateTaxAndProfit();
-        calculateWholesaleTaxAndProfit();
+        tfPurchasePrice.setOnKeyTyped(event -> {
+            calculateTaxAndProfit();
+            calculateWholesaleTaxAndProfit();
+        });
+        tfSellingPrice.setOnKeyTyped(event -> calculateTaxAndProfit());
+        chkIncludesVat.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            calculateTaxAndProfit();
+            calculateWholesaleTaxAndProfit();
+        });
+        ComboBoxUtils.initAutoComplete(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
+                new ProductCategoryComboBoxConverter(cbCategory));
+        ComboBoxUtils.initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit),
+                new UnitComboBoxConverter(cbUnit));
+        ComboBoxUtils.initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack),
+                new RackComboBoxConverter(cbRack));
+        ComboBoxUtils.initAutoComplete(cbDrugCategory, new DrugCategoryComboBoxKeyEventHandler(cbDrugCategory),
+                new DrugCategoryComboBoxConverter(cbDrugCategory));
+        tfSellingPrice1.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
+        tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
+        tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         contentPane.setOnKeyPressed(event -> {
             if (KeyCode.ENTER.equals(event.getCode())) {
                 save();
             }
         });
+    }
+
+    @Override
+    protected void initControlsValues() {
+        String vatPercentageBase = configurationService.getConfiguration(ConfigurationConstants.VAT_PERCENTAGE);
+        vatPercentage = NumberUtils.toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
+        currentProduct = getPageData();
+        tfName.setText(currentProduct.getName());
+        tfCode.setText(currentProduct.getCode());
+        tfBarcode.setText(currentProduct.getBarcode());
+        tfDescription.setText(currentProduct.getDescription());
+        tfQuantity.setText(currentProduct.getQuantity().toString());
+        tfPurchasePrice.setText(currentProduct.getPurchasePrice().setScale(0).toString());
+        tfSellingPrice.setText(currentProduct.getSellingPrice().setScale(0).toString());
+        chkIncludesVat.setText(
+                chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
+        chkIncludesVat.setSelected(CommonConstants.YES.equals(currentProduct.getVatIncluded()));
+        Date expiredDate = currentProduct.getExpiredDate();
+        tfExpiredDate.setPlainText(
+                expiredDate == null ? null : DateFormatUtils.format(expiredDate, CommonConstants.DATE_PATTERN));
+        ComboBoxUtils.select(cbCategory,
+                () -> productCategoryService.getProductCategoryById(currentProduct.getCategoryId()));
+        ComboBoxUtils.select(cbUnit, () -> unitService.getUnitById(currentProduct.getUnitId()));
+        ComboBoxUtils.select(cbRack, () -> {
+            Long rackId = currentProduct.getRackId();
+            return rackId == null ? null : rackService.getRackById(rackId);
+        });
+        initDrugControlsValues();
+        initWholesaleControlsValues();
+        calculateTaxAndProfit();
+        calculateWholesaleTaxAndProfit();
+    }
+
+    @Override
+    protected Page getCurrentPage() {
+        return Page.MASTER_PRODUCT_EDIT;
+    }
+
+    @Override
+    protected Stage getCurrentStage() {
+        return (Stage) contentPane.getScene().getWindow();
     }
 
     // @formatter:off
@@ -244,44 +290,7 @@ public class ProductEditController extends BaseController {
     }
     // @formatter:on
 
-    private void initProductFields() {
-        tfName.setText(currentProduct.getName());
-        tfCode.setText(currentProduct.getCode());
-        tfBarcode.setText(currentProduct.getBarcode());
-        tfDescription.setText(currentProduct.getDescription());
-        tfQuantity.setText(currentProduct.getQuantity().toString());
-        tfPurchasePrice.setText(currentProduct.getPurchasePrice().setScale(0).toString());
-        tfPurchasePrice.setOnKeyTyped(event -> {
-            calculateTaxAndProfit();
-            calculateWholesaleTaxAndProfit();
-        });
-        tfSellingPrice.setText(currentProduct.getSellingPrice().setScale(0).toString());
-        tfSellingPrice.setOnKeyTyped(event -> calculateTaxAndProfit());
-        chkIncludesVat.setText(
-                chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
-        chkIncludesVat.setSelected(CommonConstants.YES.equals(currentProduct.getVatIncluded()));
-        chkIncludesVat.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            calculateTaxAndProfit();
-            calculateWholesaleTaxAndProfit();
-        });
-        Date expiredDate = currentProduct.getExpiredDate();
-        tfExpiredDate.setPlainText(
-                expiredDate == null ? null : DateFormatUtils.format(expiredDate, CommonConstants.DATE_PATTERN));
-        ComboBoxUtils.initEditable(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
-                new ProductCategoryComboBoxConverter(cbCategory),
-                () -> productCategoryService.getProductCategoryById(currentProduct.getCategoryId()));
-        ComboBoxUtils.initEditable(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit), new UnitComboBoxConverter(cbUnit),
-                () -> unitService.getUnitById(currentProduct.getUnitId()));
-        ComboBoxUtils.initEditable(cbRack, new RackComboBoxKeyEventHandler(cbRack), new RackComboBoxConverter(cbRack),
-                () -> {
-                    Long rackId = currentProduct.getRackId();
-                    return rackId == null ? null : rackService.getRackById(rackId);
-                });
-        ComboBoxUtils.initEditable(cbDrugCategory, new DrugCategoryComboBoxKeyEventHandler(cbDrugCategory),
-                new DrugCategoryComboBoxConverter(cbDrugCategory));
-    }
-
-    private void initDrugFields() {
+    private void initDrugControlsValues() {
         DrugVM drug = drugService.getDrugByProductId(currentProduct.getId());
         if (drug != null) {
             DrugCategoryVM selectedDrugCategory = drugCategoryService.getDrugCategoryById(drug.getDrugCategoryId());
@@ -293,10 +302,7 @@ public class ProductEditController extends BaseController {
         }
     }
 
-    private void initWholesaleFields() {
-        tfSellingPrice1.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
-        tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
-        tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
+    private void initWholesaleControlsValues() {
         List<WholesaleVM> wholesales = wholesaleService.getWholesalesByProductId(currentProduct.getId());
         for (int i = 0; i < wholesales.size(); i++) {
             WholesaleVM wholesale = wholesales.get(i);
@@ -398,14 +404,6 @@ public class ProductEditController extends BaseController {
         return ComboBoxUtils.getSelectedItem(cbCategory).getCode().equals(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
     }
 
-    private Date parseDateQuietly(String str, String pattern) {
-        try {
-            return DateUtils.parseDate(str, pattern);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
     private void save() {
         ValidationResult result = validate();
         if (result.isError()) {
@@ -442,7 +440,7 @@ public class ProductEditController extends BaseController {
         productEdit.setWholesales(loadWholesales());
         boolean updated = productService.updateProduct(productEdit);
         if (updated) {
-            PageData.INSTANCE.set(currentPageSet.swap(), Boolean.TRUE);
+            setPrevPageData(Boolean.TRUE);
             displayInfo(MessageCode.SUCCESS_EDIT_PRODUCT);
             close();
         }
@@ -482,11 +480,6 @@ public class ProductEditController extends BaseController {
     @FXML
     void onActionBtnCancel(ActionEvent event) {
         close();
-    }
-
-    @Override
-    protected Stage getCurrentStage() {
-        return (Stage) contentPane.getScene().getWindow();
     }
 
 }

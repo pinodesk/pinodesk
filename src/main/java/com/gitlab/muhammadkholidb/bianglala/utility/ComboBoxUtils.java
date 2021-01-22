@@ -1,9 +1,13 @@
 package com.gitlab.muhammadkholidb.bianglala.utility;
 
-import static org.apache.commons.lang3.Validate.notNull;
-
 import java.util.function.Supplier;
 
+import com.gitlab.muhammadkholidb.bianglala.javafx.converter.DefaultStringConverterAdapter;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.BasicComboBoxVM;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import javafx.collections.FXCollections;
 import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.skin.ComboBoxListViewSkin;
@@ -12,8 +16,9 @@ import javafx.scene.input.KeyEvent;
 import javafx.util.StringConverter;
 
 public class ComboBoxUtils {
-    
-    private ComboBoxUtils() {}
+
+    private ComboBoxUtils() {
+    }
 
     public static boolean hasItemSelected(ComboBox<?> cb) {
         return cb.getSelectionModel().getSelectedItem() != null;
@@ -24,7 +29,6 @@ public class ComboBoxUtils {
     }
 
     public static <T> void allowSpaceOnEditor(ComboBox<T> cb) {
-        notNull(cb);
         ComboBoxListViewSkin<T> comboBoxListViewSkin = new ComboBoxListViewSkin<>(cb);
         comboBoxListViewSkin.getPopupContent().addEventFilter(KeyEvent.ANY, event -> {
             if (event.getCode() == KeyCode.SPACE) {
@@ -34,8 +38,8 @@ public class ComboBoxUtils {
         cb.setSkin(comboBoxListViewSkin);
     }
 
-    public static <T> void initEditable(ComboBox<T> cb, EventHandler<KeyEvent> keyEvent, StringConverter<T> converter, Supplier<T> selectedSupplier) {
-        notNull(cb);
+    public static <T> void initAutoComplete(ComboBox<T> cb, EventHandler<KeyEvent> keyEvent,
+            StringConverter<T> converter, Supplier<T> selectedSupplier) {
         if (!cb.isEditable()) {
             return;
         }
@@ -43,22 +47,39 @@ public class ComboBoxUtils {
         cb.getEditor().setOnKeyReleased(keyEvent);
         cb.setConverter(converter);
         if (selectedSupplier != null) {
-            T type = selectedSupplier.get();
-            cb.getItems().add(type);
-            select(cb, type);
+            select(cb, selectedSupplier);
         }
     }
 
-    public static <T> void initEditable(ComboBox<T> cb, EventHandler<KeyEvent> keyEvent, StringConverter<T> converter) {
-        initEditable(cb, keyEvent, converter, null);
-    }
-
-    public static <T> void select(ComboBox<T> cb, T item) {
-        cb.getSelectionModel().select(item);
+    public static <T> void initAutoComplete(ComboBox<T> cb, EventHandler<KeyEvent> keyEvent,
+            StringConverter<T> converter) {
+        initAutoComplete(cb, keyEvent, converter, null);
     }
 
     public static <T> void select(ComboBox<T> cb, Supplier<T> itemSupplier) {
-        select(cb, itemSupplier.get());
+        T item = itemSupplier.get();
+        if (!cb.getItems().contains(item)) {
+            cb.getItems().add(item);
+        }
+        cb.getSelectionModel().select(itemSupplier.get());
+    }
+
+    public static <T> void init(ComboBox<T> cb, StringConverter<T> converter, T... data) {
+        if (ArrayUtils.isNotEmpty(data)) {
+            cb.setItems(FXCollections.observableArrayList(data));
+        }
+        cb.setConverter(converter);
+    }
+
+    public static void initBasic(ComboBox<BasicComboBoxVM> cb, BasicComboBoxVM... data) {
+        init(cb, new DefaultStringConverterAdapter<BasicComboBoxVM>(cb) {
+
+            @Override
+            protected String getDisplayText(BasicComboBoxVM vm) {
+                return vm.getLabel();
+            }
+
+        }, data);
     }
 
 }
