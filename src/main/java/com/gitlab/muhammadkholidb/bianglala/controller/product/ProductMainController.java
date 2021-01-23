@@ -4,9 +4,12 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
+import com.gitlab.muhammadkholidb.bianglala.constant.MessageCode;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
 import com.gitlab.muhammadkholidb.bianglala.constant.StyleConstants;
 import com.gitlab.muhammadkholidb.bianglala.controller.BaseController;
@@ -25,9 +28,12 @@ import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
@@ -138,6 +144,7 @@ public class ProductMainController extends BaseController {
                 ProductVM::getCreatedAt);
         TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 ProductVM::getUpdatedAt);
+        tableProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     private void registerKeyListener() {
@@ -196,6 +203,19 @@ public class ProductMainController extends BaseController {
             productFilter = getPageData();
             searchProducts();
         });
+    }
+
+    @FXML
+    void onActionBtnRemove(ActionEvent event) {
+        ObservableList<ProductVM> items = tableProduct.getSelectionModel().getSelectedItems();
+        if (!items.isEmpty()) {
+            Optional<ButtonType> buttonType = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PRODUCTS);
+            if (ButtonType.OK.equals(buttonType.orElse(null))) {
+                productService.removeProducts(items.stream().map(ProductVM::getId).collect(Collectors.toList()));
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PRODUCTS);
+                searchProducts();
+            }
+        }
     }
 
 }

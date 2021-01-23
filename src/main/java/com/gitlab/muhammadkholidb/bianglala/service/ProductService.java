@@ -13,6 +13,7 @@ import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductEditVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.WholesaleVM;
+import com.gitlab.muhammadkholidb.jdbctemplatehelper.model.DataModel;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -62,6 +63,12 @@ public class ProductService extends BaseService {
         }
 
         return countUpdated > 0;
+    }
+
+    @CacheEvict(value = "productsByFilter", allEntries = true)
+    @Transactional
+    public void removeProducts(List<Long> ids) {
+        productRepository.delete(new Where().in(DataModel.C_ID, ids)); 
     }
 
 }

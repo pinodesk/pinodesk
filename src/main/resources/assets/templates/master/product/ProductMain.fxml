@@ -34,6 +34,11 @@
                   <Font size="13.0" />
                </font>
             </Button>
+            <Button fx:id="btnRemove" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemove" prefHeight="30.0" prefWidth="73.0" styleClass="btn-danger" text="%btn.remove" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
             <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" prefHeight="30.0" prefWidth="73.0" styleClass="btn-secondary" text="%btn.filter" textFill="WHITE">
                <font>
                   <Font size="13.0" />

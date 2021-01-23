@@ -3,6 +3,8 @@ package com.gitlab.muhammadkholidb.bianglala.constant;
 public enum MessageCode {
     
     SUCCESS_EDIT_PRODUCT,
+    SUCCESS_REMOVE_PRODUCT,
+    SUCCESS_REMOVE_SELECTED_PRODUCTS,
 
     ERROR_EMPTY_NAME,
     ERROR_EMPTY_CODE,
@@ -12,5 +14,8 @@ public enum MessageCode {
     ERROR_EMPTY_UNIT,
     ERROR_EMPTY_DRUG_CATEGORY,
     ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS,
+
+    CONFIRMATION_REMOVE_PRODUCT,
+    CONFIRMATION_REMOVE_SELECTED_PRODUCTS,
 
 }

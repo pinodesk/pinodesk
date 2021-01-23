@@ -406,11 +406,11 @@ public class ProductEditController extends BaseController {
         return ComboBoxUtils.getSelectedItem(cbCategory).getCode().equals(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
     }
 
-    private void save() {
+    private boolean save() {
         ValidationResult result = validate();
         if (result.isError()) {
             displayError(result.getMessageCode());
-            return;
+            return false;
         }
         ProductEditVM productEdit = new ProductEditVM();
         productEdit.setId(currentProduct.getId());
@@ -440,12 +440,8 @@ public class ProductEditController extends BaseController {
             productEdit.setDrug(drug);
         }
         productEdit.setWholesales(loadWholesales());
-        boolean updated = productService.updateProduct(productEdit);
-        if (updated) {
-            setPrevPageData(Boolean.TRUE);
-            displayInfo(MessageCode.SUCCESS_EDIT_PRODUCT);
-            close();
-        }
+        return productService.updateProduct(productEdit);
+       
     }
 
     private List<WholesaleVM> loadWholesales() {
@@ -476,7 +472,12 @@ public class ProductEditController extends BaseController {
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
-        save();
+        boolean updated = save();
+        if (updated) {
+            displayInfo(MessageCode.SUCCESS_EDIT_PRODUCT);
+            setPrevPageData(Boolean.TRUE);
+            close();
+        }
     }
 
     @FXML
@@ -486,8 +487,13 @@ public class ProductEditController extends BaseController {
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-        Optional<ButtonType> confirmation = displayConfirmation("Are you sure?");
-        log.debug("Confirmation: {}", confirmation);
+        Optional<ButtonType> confirmation = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_PRODUCT);
+        if (ButtonType.OK.equals(confirmation.orElse(null))) {
+            productService.removeProducts(Arrays.asList(currentProduct.getId()));
+            displayInfo(MessageCode.SUCCESS_REMOVE_PRODUCT);
+            setPrevPageData(Boolean.TRUE);
+            close();
+        }
     }
 
 }
