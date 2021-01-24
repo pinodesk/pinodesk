@@ -24,7 +24,7 @@ public class ProductCategoryService extends BaseService {
 
     public ProductCategoryVM getProductCategoryById(Long id) {
         return convertOptionalOrThrow(productCategoryRepository.readOne(id), ProductCategoryVM.class,
-                new DomainException(DomainError.NOT_FOUND));
+                new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_ID));
     }
 
     @Cacheable("productCategoriesByKeyword")

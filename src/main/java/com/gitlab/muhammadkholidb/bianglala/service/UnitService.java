@@ -29,7 +29,7 @@ public class UnitService extends BaseService {
 
     public UnitVM getUnitById(Long id) {
         return convertOptionalOrThrow(unitRepository.readOne(id), UnitVM.class,
-                new DomainException(DomainError.NOT_FOUND));
+                new DomainException(DomainError.UNIT_NOT_FOUND_BY_ID));
     }
 
 }

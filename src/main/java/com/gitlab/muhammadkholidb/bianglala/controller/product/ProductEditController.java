@@ -488,7 +488,7 @@ public class ProductEditController extends BaseController {
     @FXML
     void onActionBtnRemove(ActionEvent event) {
         Optional<ButtonType> confirmation = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_PRODUCT);
-        if (ButtonType.OK.equals(confirmation.orElse(null))) {
+        if (isButtonDataOK(confirmation)) {
             productService.removeProducts(Arrays.asList(currentProduct.getId()));
             displayInfo(MessageCode.SUCCESS_REMOVE_PRODUCT);
             setPrevPageData(Boolean.TRUE);

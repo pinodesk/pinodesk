@@ -12,6 +12,7 @@ import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductEditVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
+import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -148,5 +149,15 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         }, productEdit.getId());
     }
     // @formatter:on
+
+    @Override
+    public boolean existsByCode(String code) {
+        return exists(new Where().equals(Product.C_CODE, code));
+    }
+
+    @Override
+    public boolean existsByBarcode(String barcode) {
+        return exists(new Where().equals(Product.C_BARCODE, barcode));
+    }
 
 }

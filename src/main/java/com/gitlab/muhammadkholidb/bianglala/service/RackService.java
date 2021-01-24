@@ -29,7 +29,7 @@ public class RackService extends BaseService {
 
     public RackVM getRackById(Long id) {
         return convertOptionalOrThrow(rackRepository.readOne(id), RackVM.class,
-                new DomainException(DomainError.NOT_FOUND));
+                new DomainException(DomainError.RACK_NOT_FOUND_BY_ID));
     }
 
 }

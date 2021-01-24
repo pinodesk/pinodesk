@@ -210,7 +210,7 @@ public class ProductMainController extends BaseController {
         ObservableList<ProductVM> items = tableProduct.getSelectionModel().getSelectedItems();
         if (!items.isEmpty()) {
             Optional<ButtonType> buttonType = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PRODUCTS);
-            if (ButtonType.OK.equals(buttonType.orElse(null))) {
+            if (isButtonDataOK(buttonType)) {
                 productService.removeProducts(items.stream().map(ProductVM::getId).collect(Collectors.toList()));
                 displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PRODUCTS);
                 searchProducts();

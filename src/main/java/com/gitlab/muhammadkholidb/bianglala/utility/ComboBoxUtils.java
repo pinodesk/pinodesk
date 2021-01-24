@@ -64,6 +64,7 @@ public class ComboBoxUtils {
         cb.getSelectionModel().select(itemSupplier.get());
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> void init(ComboBox<T> cb, StringConverter<T> converter, T... data) {
         if (ArrayUtils.isNotEmpty(data)) {
             cb.setItems(FXCollections.observableArrayList(data));

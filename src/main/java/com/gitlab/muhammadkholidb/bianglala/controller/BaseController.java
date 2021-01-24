@@ -22,12 +22,15 @@ import org.springframework.context.ApplicationContext;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -113,12 +116,45 @@ public abstract class BaseController {
     }
 
     protected Optional<ButtonType> displayAlert(AlertType type, String message) {
+        ButtonType btnTypeOk = new ButtonType(translate("btn.ok"), ButtonData.OK_DONE);
+        ButtonType btnTypeCancel = new ButtonType(translate("btn.cancel"), ButtonData.CANCEL_CLOSE);
         Alert alert = new Alert(type);
-        FXUtils.setDefaultIcons((Stage) alert.getDialogPane().getScene().getWindow());
         alert.setTitle(CommonConstants.APP_TITLE);
         alert.setHeaderText(translate(getAlertHeaderMessageCode(type)));
-        alert.setContentText(message);
+        DialogPane dialogPane = alert.getDialogPane();
+        FXUtils.setDefaultIcons((Stage) dialogPane.getScene().getWindow());
+        Text text = new Text(message);
+        text.setWrappingWidth(dialogPane.getWidth());
+        text.setStyle("-fx-font-size: 13px");
+        AnchorPane.setLeftAnchor(text, 2d);
+        AnchorPane.setTopAnchor(text, 2d);
+        AnchorPane contentPane = new AnchorPane(text);
+        dialogPane.setContent(contentPane);
+        dialogPane.getButtonTypes().clear();
+        dialogPane.getStylesheets().add(getClass().getResource("/assets/css/bianglala.css").toExternalForm());
+        switch (type) {
+            case INFORMATION:
+            case ERROR:
+                dialogPane.getButtonTypes().add(btnTypeOk);
+                dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
+                break;
+            case CONFIRMATION:
+                dialogPane.getButtonTypes().addAll(btnTypeOk, btnTypeCancel);
+                dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
+                dialogPane.lookupButton(btnTypeCancel).getStyleClass().add("btn-secondary");
+                break;
+            default:
+                break;
+        }
         return alert.showAndWait();
+    }
+
+    protected boolean isButtonDataOK(Optional<ButtonType> optBtnType) {
+        return optBtnType.isPresent() && optBtnType.get().getButtonData().equals(ButtonData.OK_DONE);
+    }
+
+    protected boolean isButtonDataCancel(Optional<ButtonType> optBtnType) {
+        return optBtnType.isPresent() && optBtnType.get().getButtonData().equals(ButtonData.CANCEL_CLOSE);
     }
 
     protected Optional<ButtonType> displayError(String message) {

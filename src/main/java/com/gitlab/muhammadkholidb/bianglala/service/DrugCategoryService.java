@@ -29,7 +29,7 @@ public class DrugCategoryService extends BaseService {
 
     public DrugCategoryVM getDrugCategoryById(Long id) {
         return convertOptionalOrThrow(drugCategoryRepository.readOne(id), DrugCategoryVM.class,
-                new DomainException(DomainError.NOT_FOUND));
+                new DomainException(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_ID));
     }
 
 }

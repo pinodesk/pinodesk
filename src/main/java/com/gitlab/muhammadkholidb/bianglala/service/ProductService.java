@@ -3,8 +3,11 @@ package com.gitlab.muhammadkholidb.bianglala.service;
 import java.util.List;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
+import com.gitlab.muhammadkholidb.bianglala.constant.DomainError;
 import com.gitlab.muhammadkholidb.bianglala.domain.Drug;
+import com.gitlab.muhammadkholidb.bianglala.domain.Product;
 import com.gitlab.muhammadkholidb.bianglala.domain.Wholesale;
+import com.gitlab.muhammadkholidb.bianglala.exception.DomainException;
 import com.gitlab.muhammadkholidb.bianglala.repository.DrugRepository;
 import com.gitlab.muhammadkholidb.bianglala.repository.ProductRepository;
 import com.gitlab.muhammadkholidb.bianglala.repository.WholesaleRepository;
@@ -17,6 +20,7 @@ import com.gitlab.muhammadkholidb.jdbctemplatehelper.model.DataModel;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -47,6 +51,16 @@ public class ProductService extends BaseService {
     @CacheEvict(value = "productsByFilter", allEntries = true)
     @Transactional
     public boolean updateProduct(ProductEditVM productEdit) {
+
+        if (productRepository.existsByCode(productEdit.getCode())) {
+            throw new DomainException(DomainError.PRODUCT_EXISTS_BY_CODE);
+        }
+
+        String barcode = productEdit.getBarcode();
+
+        if (StringUtils.isNotBlank(barcode) && productRepository.existsByBarcode(barcode)) {
+            throw new DomainException(DomainError.PRODUCT_EXISTS_BY_BARCODE);
+        }
 
         Integer countUpdated = productRepository.updateProduct(productEdit);
 
