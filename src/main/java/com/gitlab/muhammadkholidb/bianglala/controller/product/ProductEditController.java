@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
@@ -32,6 +31,7 @@ import com.gitlab.muhammadkholidb.bianglala.service.RackService;
 import com.gitlab.muhammadkholidb.bianglala.service.UnitService;
 import com.gitlab.muhammadkholidb.bianglala.service.WholesaleService;
 import com.gitlab.muhammadkholidb.bianglala.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.AlertResult;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.DrugCategoryVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.DrugVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductCategoryVM;
@@ -50,7 +50,6 @@ import org.springframework.context.ApplicationContext;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -487,8 +486,8 @@ public class ProductEditController extends BaseController {
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-        Optional<ButtonType> confirmation = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_PRODUCT);
-        if (isButtonDataOK(confirmation)) {
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_PRODUCT);
+        if (result.isConfirmed()) {
             productService.removeProducts(Arrays.asList(currentProduct.getId()));
             displayInfo(MessageCode.SUCCESS_REMOVE_PRODUCT);
             setPrevPageData(Boolean.TRUE);

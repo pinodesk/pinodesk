@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefHeight="586.0" style="-fx-background-color: white;" stylesheets="@../../../css/bianglala.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.product.ProductEditController">
+<VBox fx:id="contentPane" style="-fx-background-color: white;" stylesheets="@../../../css/bianglala.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.product.ProductEditController">
    <children>
       <AnchorPane>
          <children>

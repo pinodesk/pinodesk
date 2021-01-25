@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
@@ -21,6 +20,7 @@ import com.gitlab.muhammadkholidb.bianglala.service.ProductService;
 import com.gitlab.muhammadkholidb.bianglala.utility.Async;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.AlertResult;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
 
@@ -31,7 +31,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -209,8 +208,8 @@ public class ProductMainController extends BaseController {
     void onActionBtnRemove(ActionEvent event) {
         ObservableList<ProductVM> items = tableProduct.getSelectionModel().getSelectedItems();
         if (!items.isEmpty()) {
-            Optional<ButtonType> buttonType = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PRODUCTS);
-            if (isButtonDataOK(buttonType)) {
+            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PRODUCTS);
+            if (result.isConfirmed()) {
                 productService.removeProducts(items.stream().map(ProductVM::getId).collect(Collectors.toList()));
                 displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PRODUCTS);
                 searchProducts();

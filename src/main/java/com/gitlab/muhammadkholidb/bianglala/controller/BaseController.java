@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
@@ -17,6 +16,7 @@ import com.gitlab.muhammadkholidb.bianglala.exception.DomainException;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
+import com.gitlab.muhammadkholidb.bianglala.viewmodel.AlertResult;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -103,7 +103,7 @@ public abstract class BaseController {
 
     private void handleDomainException(DomainException e) {
         DomainError err = e.getError();
-        displayError(err.code() + " -- " + translate(err.messageCode()));
+        displayError(err.code() + " - " + translate(err.messageCode()));
     }
 
     protected String translate(String messageCode) {
@@ -132,9 +132,10 @@ public abstract class BaseController {
         }
     }
 
-    protected Optional<ButtonType> displayAlert(AlertType type, String message) {
+    protected AlertResult displayAlert(AlertType type, String message) {
         ButtonType btnTypeOk = new ButtonType(translate("btn.ok"), ButtonData.OK_DONE);
-        ButtonType btnTypeCancel = new ButtonType(translate("btn.cancel"), ButtonData.CANCEL_CLOSE);
+        ButtonType btnTypeYes = new ButtonType(translate("btn.yes"), ButtonData.YES);
+        ButtonType btnTypeNo = new ButtonType(translate("btn.no"), ButtonData.NO);
         Alert alert = new Alert(type);
         alert.setTitle(CommonConstants.APP_TITLE);
         alert.setHeaderText(translate(getAlertHeaderMessageCode(type)));
@@ -156,45 +157,37 @@ public abstract class BaseController {
                 dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
                 break;
             case CONFIRMATION:
-                dialogPane.getButtonTypes().addAll(btnTypeOk, btnTypeCancel);
-                dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
-                dialogPane.lookupButton(btnTypeCancel).getStyleClass().add("btn-secondary");
+                dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
+                dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
+                dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
                 break;
             default:
                 break;
         }
-        return alert.showAndWait();
+        return new AlertResult(alert.showAndWait());
     }
 
-    protected boolean isButtonDataOK(Optional<ButtonType> optBtnType) {
-        return optBtnType.isPresent() && optBtnType.get().getButtonData().equals(ButtonData.OK_DONE);
-    }
-
-    protected boolean isButtonDataCancel(Optional<ButtonType> optBtnType) {
-        return optBtnType.isPresent() && optBtnType.get().getButtonData().equals(ButtonData.CANCEL_CLOSE);
-    }
-
-    protected Optional<ButtonType> displayError(String message) {
+    protected AlertResult displayError(String message) {
         return displayAlert(AlertType.ERROR, message);
     }
 
-    protected Optional<ButtonType> displayError(MessageCode messageCode) {
+    protected AlertResult displayError(MessageCode messageCode) {
         return displayError(translate(messageCode.toString()));
     }
 
-    protected Optional<ButtonType> displayInfo(String message) {
+    protected AlertResult displayInfo(String message) {
         return displayAlert(AlertType.INFORMATION, message);
     }
 
-    protected Optional<ButtonType> displayInfo(MessageCode messageCode) {
+    protected AlertResult displayInfo(MessageCode messageCode) {
         return displayInfo(translate(messageCode.toString()));
     }
 
-    protected Optional<ButtonType> displayConfirmation(String message) {
+    protected AlertResult displayConfirmation(String message) {
         return displayAlert(AlertType.CONFIRMATION, message);
     }
 
-    protected Optional<ButtonType> displayConfirmation(MessageCode messageCode) {
+    protected AlertResult displayConfirmation(MessageCode messageCode) {
         return displayConfirmation(translate(messageCode.toString()));
     }
 
