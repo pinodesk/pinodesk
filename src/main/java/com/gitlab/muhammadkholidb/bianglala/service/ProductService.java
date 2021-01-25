@@ -52,14 +52,17 @@ public class ProductService extends BaseService {
     @Transactional
     public boolean updateProduct(ProductEditVM productEdit) {
 
-        if (productRepository.existsByCode(productEdit.getCode())) {
-            throw new DomainException(DomainError.PRODUCT_EXISTS_BY_CODE);
-        }
-
+        Long productId = productEdit.getId();
+        String code = productEdit.getCode();
         String barcode = productEdit.getBarcode();
 
-        if (StringUtils.isNotBlank(barcode) && productRepository.existsByBarcode(barcode)) {
-            throw new DomainException(DomainError.PRODUCT_EXISTS_BY_BARCODE);
+
+        if (productRepository.existsByCode(code, productId)) {
+            throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_CODE);
+        }
+
+        if (StringUtils.isNotBlank(barcode) && productRepository.existsByBarcode(barcode, productId)) {
+            throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_BARCODE);
         }
 
         Integer countUpdated = productRepository.updateProduct(productEdit);

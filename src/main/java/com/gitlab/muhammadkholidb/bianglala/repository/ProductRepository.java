@@ -14,8 +14,8 @@ public interface ProductRepository extends CommonRepository<Product> {
 
     Integer updateProduct(ProductEditVM productEdit);
 
-    boolean existsByCode(String code);
+    boolean existsByCode(String code, Long... excludedIds);
 
-    boolean existsByBarcode(String barcode);
+    boolean existsByBarcode(String barcode, Long... excludedIds);
 
 }

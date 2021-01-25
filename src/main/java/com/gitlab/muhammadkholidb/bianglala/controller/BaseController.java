@@ -10,12 +10,15 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
+import com.gitlab.muhammadkholidb.bianglala.constant.DomainError;
 import com.gitlab.muhammadkholidb.bianglala.constant.MessageCode;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
+import com.gitlab.muhammadkholidb.bianglala.exception.DomainException;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageData;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.ApplicationContext;
 
@@ -84,13 +87,23 @@ public abstract class BaseController {
         try {
             if (Thread.getDefaultUncaughtExceptionHandler() == null) {
                 Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-                    log.error("Uncaught exception detected in thread: " + t.getName(), e);
-                    displayException(e);
+                    Throwable rootCause = ExceptionUtils.getRootCause(e);
+                    if (rootCause instanceof DomainException) {
+                        handleDomainException((DomainException) rootCause);
+                        return;
+                    }
+                    log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
+                    displayException(rootCause);
                 });
             }
         } catch (SecurityException e) {
             log.error("Unable to execute Thread.setDefaultUncaughtExceptionHandler()", e);
         }
+    }
+
+    private void handleDomainException(DomainException e) {
+        DomainError err = e.getError();
+        displayError(err.code() + " -- " + translate(err.messageCode()));
     }
 
     protected String translate(String messageCode) {
@@ -100,6 +113,10 @@ public abstract class BaseController {
             log.warn("Failed to translate message code '{}': {}", messageCode, e.toString());
             return messageCode;
         }
+    }
+
+    protected String translate(MessageCode messageCode) {
+        return translate(messageCode.toString());
     }
 
     private String getAlertHeaderMessageCode(AlertType type) {

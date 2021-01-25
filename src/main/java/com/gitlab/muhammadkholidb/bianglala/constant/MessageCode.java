@@ -20,9 +20,16 @@ public enum MessageCode {
     ERROR_PRODUCT_EXISTS_BY_CODE,
     ERROR_PRODUCT_EXISTS_BY_BARCODE,
     
+    // Drug category
     ERROR_DRUG_CATEGORY_NOT_FOUND_BY_ID,
+
+    // Product category
     ERROR_PRODUCT_CATEGORY_NOT_FOUND_BY_ID,
+
+    // Unit
     ERROR_UNIT_NOT_FOUND_BY_ID,
+
+    // Rack
     ERROR_RACK_NOT_FOUND_BY_ID,
 
     CONFIRMATION_REMOVE_PRODUCT,

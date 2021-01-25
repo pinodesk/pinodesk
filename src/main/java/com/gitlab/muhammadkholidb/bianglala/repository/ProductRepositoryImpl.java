@@ -2,6 +2,7 @@ package com.gitlab.muhammadkholidb.bianglala.repository;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -11,9 +12,11 @@ import com.gitlab.muhammadkholidb.bianglala.domain.ProductCategory;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductEditVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductFilterVM;
 import com.gitlab.muhammadkholidb.bianglala.viewmodel.ProductVM;
+import com.gitlab.muhammadkholidb.jdbctemplatehelper.model.DataModel;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
@@ -151,13 +154,21 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
     // @formatter:on
 
     @Override
-    public boolean existsByCode(String code) {
-        return exists(new Where().equals(Product.C_CODE, code));
+    public boolean existsByCode(String code, Long... excludedIds) {
+        Where where = new Where().equals(Product.C_CODE, code);
+        if (ArrayUtils.isNotEmpty(excludedIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
+        }
+        return exists(where);
     }
 
     @Override
-    public boolean existsByBarcode(String barcode) {
-        return exists(new Where().equals(Product.C_BARCODE, barcode));
+    public boolean existsByBarcode(String barcode, Long... excludedIds) {
+        Where where = new Where().equals(Product.C_BARCODE, barcode);
+        if (ArrayUtils.isNotEmpty(excludedIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
+        }
+        return exists(where);
     }
 
 }
