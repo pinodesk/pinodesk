@@ -5,7 +5,6 @@ import java.util.List;
 import com.gitlab.muhammadkholidb.bianglala.constant.ConfigurationConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.DomainError;
 import com.gitlab.muhammadkholidb.bianglala.domain.Drug;
-import com.gitlab.muhammadkholidb.bianglala.domain.Product;
 import com.gitlab.muhammadkholidb.bianglala.domain.Wholesale;
 import com.gitlab.muhammadkholidb.bianglala.exception.DomainException;
 import com.gitlab.muhammadkholidb.bianglala.repository.DrugRepository;

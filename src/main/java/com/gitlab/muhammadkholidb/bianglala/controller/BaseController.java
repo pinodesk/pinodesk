@@ -12,6 +12,7 @@ import com.gitlab.muhammadkholidb.bianglala.constant.CommonConstants;
 import com.gitlab.muhammadkholidb.bianglala.constant.DomainError;
 import com.gitlab.muhammadkholidb.bianglala.constant.MessageCode;
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
+import com.gitlab.muhammadkholidb.bianglala.constant.StringConstants;
 import com.gitlab.muhammadkholidb.bianglala.exception.DomainException;
 import com.gitlab.muhammadkholidb.bianglala.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
@@ -198,8 +199,8 @@ public abstract class BaseController {
         alert.setHeaderText(translate("lbl.systemerror"));
 
         DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.setMinWidth(800);
-        dialogPane.setPrefWidth(800);
+        dialogPane.setMinWidth(600);
+        dialogPane.setPrefWidth(600);
 
         FXUtils.setDefaultIcons((Stage) dialogPane.getScene().getWindow());
 
@@ -208,24 +209,22 @@ public abstract class BaseController {
         ex.printStackTrace(pw);
         String exceptionText = sw.toString();
 
-        Label label = new Label(translate("lbl.details") + ":");
+        Label label = new Label(translate("lbl.details") + StringConstants.COLON);
 
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);
-        textArea.setWrapText(true);
-
         textArea.setMaxWidth(Double.MAX_VALUE);
         textArea.setMaxHeight(Double.MAX_VALUE);
         GridPane.setVgrow(textArea, Priority.ALWAYS);
         GridPane.setHgrow(textArea, Priority.ALWAYS);
-
+        
         GridPane expContent = new GridPane();
         expContent.setMaxWidth(Double.MAX_VALUE);
         expContent.add(label, 0, 0);
         expContent.add(textArea, 0, 1);
 
         // Set expandable Exception into the dialog pane.
-        alert.getDialogPane().setExpandableContent(expContent);
+        dialogPane.setExpandableContent(expContent);
 
         alert.showAndWait();
     }

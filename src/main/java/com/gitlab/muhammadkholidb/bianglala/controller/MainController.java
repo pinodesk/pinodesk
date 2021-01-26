@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import com.gitlab.muhammadkholidb.bianglala.constant.Page;
 import com.gitlab.muhammadkholidb.bianglala.constant.StyleConstants;
-import com.gitlab.muhammadkholidb.bianglala.utility.FXUtils;
 import com.gitlab.muhammadkholidb.bianglala.utility.PageLoader;
 
 import org.springframework.context.ApplicationContext;
