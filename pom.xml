@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.gitlab.muhammadkholidb</groupId>
-    <artifactId>bianglala</artifactId>
+    <groupId>com.getkembang</groupId>
+    <artifactId>kembang-desktop</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <name>Kembang Desktop</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.mainClass>com.gitlab.muhammadkholidb.bianglala.Main</project.mainClass>
+        <project.mainClass>com.getkembang.kembangdesktop.Main</project.mainClass>
         <java.version>11</java.version>
     </properties>
 
@@ -160,8 +161,8 @@
                             <goal>package</goal>
                         </goals>
                         <configuration>
-                            <name>Bianglala</name>
-                            <displayName>Bianglala</displayName>
+                            <name>Kembang</name>
+                            <displayName>Kembang</displayName>
                             <mainClass>${project.mainClass}</mainClass>
                             <bundleJre>true</bundleJre>
                         </configuration>

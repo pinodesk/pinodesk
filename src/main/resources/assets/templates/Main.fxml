@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1024.0" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/bianglala.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.gitlab.muhammadkholidb.bianglala.controller.MainController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="720.0" minWidth="1024.0" prefHeight="720.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.MainController">
    <children>
       <AnchorPane layoutY="61.0" prefHeight="70.0" prefWidth="250.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -185,7 +185,7 @@
             </Label>
             <ImageView fitHeight="108.0" fitWidth="128.0" layoutX="298.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
                <image>
-                  <Image url="@../images/bianglala.png" />
+                  <Image url="@../images/kembang-256.png" />
                </image>
             </ImageView>
          </children>
