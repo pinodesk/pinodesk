@@ -190,8 +190,8 @@ public class ProductMainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnAdd(ActionEvent event) {
-        //
+    void onActionBtnAdd(ActionEvent event) throws IOException {
+        FXUtils.show(Page.MASTER_PRODUCT_ADD);
     }
 
     @FXML

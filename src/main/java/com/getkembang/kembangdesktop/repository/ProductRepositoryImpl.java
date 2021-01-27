@@ -8,6 +8,7 @@ import java.util.List;
 
 import com.getkembang.kembangdesktop.domain.Product;
 import com.getkembang.kembangdesktop.domain.ProductCategory;
+import com.getkembang.kembangdesktop.viewmodel.ProductAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductVM;
@@ -170,5 +171,50 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         }
         return exists(where);
     }
+
+    @Override
+    public boolean existsByNameAndUnit(String name, Long unitId, Long... excludedIds) {
+        Where where = new Where().equalsIgnoreCase(Product.C_NAME, name).andEquals(Product.C_UNIT_ID, unitId);
+        if (ArrayUtils.isNotEmpty(excludedIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
+        }
+        return exists(where);
+    }
+
+    // @formatter:off
+    @Override
+    public Long createProduct(ProductAddVM productAdd) {
+        return executeInsert(new String[] {
+            Product.C_NAME,
+            Product.C_DESCRIPTION,
+            Product.C_CODE,
+            Product.C_BARCODE,
+            Product.C_CATEGORY_CODE,
+            Product.C_UNIT_ID,
+            Product.C_UNIT_LABEL,
+            Product.C_QUANTITY,
+            Product.C_PURCHASE_PRICE,
+            Product.C_SELLING_PRICE,
+            Product.C_VAT_INCLUDED,
+            Product.C_EXPIRED_DATE,
+            Product.C_RACK_ID,
+            Product.C_RACK_CODE
+        }, new Object[] {
+            productAdd.getName(),
+            productAdd.getDescription(),
+            productAdd.getCode(),
+            productAdd.getBarcode(),
+            productAdd.getProductCategory().getCode(),
+            productAdd.getUnit().getId(),
+            productAdd.getUnit().getLabel(),
+            productAdd.getQuantity(),
+            productAdd.getPurchasePrice(),
+            productAdd.getSellingPrice(),
+            productAdd.getVatIncluded(),
+            productAdd.getExpiredDate(),
+            productAdd.getRack() == null ? null : productAdd.getRack().getId(),
+            productAdd.getRack() == null ? null : productAdd.getRack().getCode()});
+    }
+    // @formatter:on
 
 }

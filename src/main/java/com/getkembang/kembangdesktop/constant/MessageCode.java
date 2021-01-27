@@ -2,6 +2,7 @@ package com.getkembang.kembangdesktop.constant;
 
 public enum MessageCode {
     
+    SUCCESS_ADD_PRODUCT,
     SUCCESS_EDIT_PRODUCT,
     SUCCESS_REMOVE_PRODUCT,
     SUCCESS_REMOVE_SELECTED_PRODUCTS,
@@ -19,6 +20,7 @@ public enum MessageCode {
     ERROR_PRODUCT_NOT_FOUND_BY_ID,
     ERROR_PRODUCT_EXISTS_BY_CODE,
     ERROR_PRODUCT_EXISTS_BY_BARCODE,
+    ERROR_PRODUCT_EXISTS_BY_NAME_AND_UNIT,
     
     // Drug category
     ERROR_DRUG_CATEGORY_NOT_FOUND_BY_ID,

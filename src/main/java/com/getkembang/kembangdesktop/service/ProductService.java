@@ -11,6 +11,7 @@ import com.getkembang.kembangdesktop.repository.DrugRepository;
 import com.getkembang.kembangdesktop.repository.ProductRepository;
 import com.getkembang.kembangdesktop.repository.WholesaleRepository;
 import com.getkembang.kembangdesktop.viewmodel.DrugVM;
+import com.getkembang.kembangdesktop.viewmodel.ProductAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductVM;
@@ -55,13 +56,16 @@ public class ProductService extends BaseService {
         String code = productEdit.getCode();
         String barcode = productEdit.getBarcode();
 
-
         if (productRepository.existsByCode(code, productId)) {
             throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_CODE);
         }
 
         if (StringUtils.isNotBlank(barcode) && productRepository.existsByBarcode(barcode, productId)) {
             throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_BARCODE);
+        }
+
+        if (productRepository.existsByNameAndUnit(productEdit.getName(), productEdit.getUnit().getId(), productId)) {
+            throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_NAME_AND_UNIT);
         }
 
         Integer countUpdated = productRepository.updateProduct(productEdit);
@@ -84,7 +88,45 @@ public class ProductService extends BaseService {
     @CacheEvict(value = "productsByFilter", allEntries = true)
     @Transactional
     public void removeProducts(List<Long> ids) {
-        productRepository.delete(new Where().in(DataModel.C_ID, ids)); 
+        productRepository.delete(new Where().in(DataModel.C_ID, ids));
+    }
+
+    @CacheEvict(value = "productsByFilter", allEntries = true)
+    @Transactional
+    public Long createProduct(ProductAddVM productAdd) {
+
+        String code = productAdd.getCode();
+        String barcode = productAdd.getBarcode();
+
+        if (productRepository.existsByCode(code)) {
+            throw new DomainException(DomainError.PRODUCT_EXISTS_BY_CODE);
+        }
+
+        if (StringUtils.isNotBlank(barcode) && productRepository.existsByBarcode(barcode)) {
+            throw new DomainException(DomainError.PRODUCT_EXISTS_BY_BARCODE);
+        }
+
+        if (productRepository.existsByNameAndUnit(productAdd.getName(), productAdd.getUnit().getId())) {
+            throw new DomainException(DomainError.PRODUCT_EXISTS_BY_NAME_AND_UNIT);
+        }
+
+        Long productId = productRepository.createProduct(productAdd);
+
+        DrugVM drug = productAdd.getDrug();
+        if (drug != null) {
+            drug.setProductId(productId);
+            drugRepository.create(convertObject(drug, Drug.class));
+        }
+
+        List<WholesaleVM> wholesales = productAdd.getWholesales();
+        if (ObjectUtils.isNotEmpty(wholesales)) {
+            wholesales.forEach(wholesale -> {
+                wholesale.setProductId(productId);
+                wholesaleRepository.create(convertObject(wholesale, Wholesale.class));
+            });
+        }
+
+        return productId;
     }
 
 }

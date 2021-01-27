@@ -193,7 +193,7 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <CheckBox fx:id="chkIncludesVat" mnemonicParsing="false" prefHeight="30.0" prefWidth="162.0" selected="true" text="%chk.includesvat">
+                                    <CheckBox fx:id="chkIncludesVat" mnemonicParsing="false" prefHeight="30.0" prefWidth="162.0" text="%chk.includesvat">
                                        <font>
                                           <Font size="13.0" />
                                        </font>

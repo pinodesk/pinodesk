@@ -3,16 +3,24 @@ package com.getkembang.kembangdesktop.viewmodel;
 import com.getkembang.kembangdesktop.constant.MessageCode;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
-@Getter
+@NoArgsConstructor
 public class ValidationResult {
 
-    private boolean error;
+    @Getter
     private MessageCode messageCode;
 
-    public void setError(MessageCode messageCode) {
-        this.error = true;
+    public ValidationResult(MessageCode messageCode) {
         this.messageCode = messageCode;
+    }
+
+    public void setError(MessageCode messageCode) {
+        this.messageCode = messageCode;
+    }
+
+    public boolean isError() {
+        return this.messageCode != null;
     }
 
 }

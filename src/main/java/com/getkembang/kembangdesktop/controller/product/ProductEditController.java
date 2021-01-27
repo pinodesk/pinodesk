@@ -367,24 +367,23 @@ public class ProductEditController extends BaseController {
     }
 
     private ValidationResult validate() {
-        ValidationResult result = new ValidationResult();
         if (StringUtils.isBlank(tfName.getText())) {
-            result.setError(MessageCode.ERROR_EMPTY_NAME);
+            return new ValidationResult(MessageCode.ERROR_EMPTY_NAME);
         }
         if (StringUtils.isBlank(tfCode.getText())) {
-            result.setError(MessageCode.ERROR_EMPTY_CODE);
+            return new ValidationResult(MessageCode.ERROR_EMPTY_CODE);
         }
         if (StringUtils.isBlank(tfPurchasePrice.getText())) {
-            result.setError(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
+            return new ValidationResult(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
         }
         if (StringUtils.isBlank(tfSellingPrice.getText())) {
-            result.setError(MessageCode.ERROR_EMPTY_SELLING_PRICE);
+            return new ValidationResult(MessageCode.ERROR_EMPTY_SELLING_PRICE);
         }
         if (!ComboBoxUtils.hasItemSelected(cbCategory)) {
-            result.setError(MessageCode.ERROR_EMPTY_CATEGORY);
+            return new ValidationResult(MessageCode.ERROR_EMPTY_CATEGORY);
         }
         if (!ComboBoxUtils.hasItemSelected(cbUnit)) {
-            result.setError(MessageCode.ERROR_EMPTY_UNIT);
+            return new ValidationResult(MessageCode.ERROR_EMPTY_UNIT);
         }
         // @formatter:off
         if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) 
@@ -393,12 +392,12 @@ public class ProductEditController extends BaseController {
                         tfIndication.getText(), 
                         tfContraindication.getText())) {
         // @formatter:on
-            result.setError(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
+            return new ValidationResult(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
         }
         if (ComboBoxUtils.hasItemSelected(cbDrugCategory) && !isProductCategoryDrugs()) {
-            result.setError(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
+            return new ValidationResult(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
         }
-        return result;
+        return new ValidationResult();
     }
 
     private boolean isProductCategoryDrugs() {

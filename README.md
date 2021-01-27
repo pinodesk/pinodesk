@@ -1,3 +1,3 @@
-# Bianglala
+# Kembang
 
-Bianglala POS software.
+Kembang POS (Point-of-Sale) Desktop App
