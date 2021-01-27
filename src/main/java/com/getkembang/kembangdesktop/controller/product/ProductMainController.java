@@ -191,7 +191,12 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) throws IOException {
-        FXUtils.show(Page.MASTER_PRODUCT_ADD);
+        setNextPage(Page.MASTER_PRODUCT_ADD);
+        FXUtils.show(Page.MASTER_PRODUCT_ADD, false, we -> {
+            if (Boolean.TRUE.equals(getPageData())) {
+                searchProducts();
+            }
+        });
     }
 
     @FXML

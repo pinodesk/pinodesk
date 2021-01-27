@@ -229,7 +229,7 @@ public class ProductEditController extends BaseController {
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         contentPane.setOnKeyPressed(event -> {
             if (KeyCode.ENTER.equals(event.getCode())) {
-                save();
+                btnSave.fire();
             }
         });
     }

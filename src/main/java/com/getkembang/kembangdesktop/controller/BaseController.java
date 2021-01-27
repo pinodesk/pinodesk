@@ -83,6 +83,10 @@ public abstract class BaseController {
         PageData.INSTANCE.set(getCurrentPage(), to, data);
     }
 
+    protected void setNextPage(Page to) {
+        setNextPageData(to, null);
+    }
+
     // https://stackoverflow.com/questions/12409638/java-exception-handling-catching-superclass-exception
     private void setDefaultUncaughtExceptionHandler() {
         try {

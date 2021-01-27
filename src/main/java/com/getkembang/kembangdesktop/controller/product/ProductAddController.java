@@ -166,6 +166,8 @@ public class ProductAddController extends BaseController {
 
     private ConfigurationService configurationService;
 
+    private boolean productAdded;
+
     @FXML
     void onActionBtnSave(ActionEvent event) {
         if (save() != null) {
@@ -177,12 +179,14 @@ public class ProductAddController extends BaseController {
 
     @FXML
     void onActionBtnCancel(ActionEvent event) {
+        setPrevPageData(productAdded);
         close();
     }
 
     @FXML
     void onActionBtnSaveAndCopy(ActionEvent event) {
         if (save() != null) {
+            productAdded = true;
             displayInfo(MessageCode.SUCCESS_ADD_PRODUCT);
             cbUnit.getSelectionModel().clearSelection();
         }
@@ -219,7 +223,7 @@ public class ProductAddController extends BaseController {
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         contentPane.setOnKeyPressed(event -> {
             if (KeyCode.ENTER.equals(event.getCode())) {
-                save();
+                btnSave.fire();
             }
         });
     }
