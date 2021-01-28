@@ -8,10 +8,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- *
- * @author muhammad
- */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data

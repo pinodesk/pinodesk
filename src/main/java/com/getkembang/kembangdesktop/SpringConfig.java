@@ -56,7 +56,8 @@ public class SpringConfig {
                 "racksByKeyword", 
                 "unitsAll",
                 "unitsByKeyword",
-                "drugCategoriesByKeyword");
+                "drugCategoriesByKeyword",
+                "contactsByFilter");
     }
 
     @Bean

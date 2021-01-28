@@ -12,10 +12,10 @@ import com.getkembang.kembangdesktop.viewmodel.ProductAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductVM;
-import com.github.vertical_blank.sqlformatter.SqlFormatter;
 import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
+import com.gitlab.muhammadkholidb.sequel.utility.SQLUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -113,7 +113,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
             sb.append(" AND p.vat_included = ? ");
             params.add(includesVat);
         }
-        log.debug("Formatted SQL: \n{}", SqlFormatter.format(sb.toString()));
+        log.debug("Formatted SQL: \n{}", SQLUtils.format(sb.toString()));
         return jdbcTemplate.query(sb.toString(), params.toArray(), BeanPropertyRowMapper.newInstance(ProductVM.class));
     }
 

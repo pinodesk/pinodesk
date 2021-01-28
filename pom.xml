@@ -111,7 +111,7 @@
         </dependency>
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
-            <artifactId>jdbctemplate-helper</artifactId>
+            <artifactId>sequel</artifactId>
             <version>master-SNAPSHOT</version>
         </dependency>
         <dependency>

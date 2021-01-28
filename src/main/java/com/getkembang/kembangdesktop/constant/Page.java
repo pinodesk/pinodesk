@@ -7,8 +7,7 @@ public enum Page {
     MASTER_PRODUCT_ADD("master/product/ProductAdd"),
     MASTER_PRODUCT_EDIT("master/product/ProductEdit"),
     MASTER_PRODUCT_FILTER("master/product/ProductFilter"),
-    MASTER_SUPPLIER_MAIN("master/Suppliers"),
-    MASTER_CUSTOMER_MAIN("master/Customers");
+    MASTER_CONTACT_MAIN("master/contact/ContactMain");
     
     private final String templateName;
     

@@ -9,10 +9,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * 
- * @author muhammad
- */
 @Slf4j
 public class JSON {
 

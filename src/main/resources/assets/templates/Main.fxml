@@ -56,16 +56,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuCustomers" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuCustomers" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.customers" textFill="WHITE">
-                           <styleClass>
-                              <String fx:value="btn-primary" />
-                              <String fx:value="align-left" />
-                           </styleClass>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </Button>
-                        <Button fx:id="btnMenuSuppliers" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuSuppliers" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.suppliers" textFill="WHITE">
+                        <Button fx:id="btnMenuContact" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuContact" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.contact" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />

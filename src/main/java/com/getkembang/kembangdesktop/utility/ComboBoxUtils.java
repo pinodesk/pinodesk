@@ -64,6 +64,10 @@ public class ComboBoxUtils {
         cb.getSelectionModel().select(itemSupplier.get());
     }
 
+    public static <T> void selectIndex(ComboBox<T> cb, int index) {
+        cb.getSelectionModel().clearAndSelect(index);
+    }
+
     @SuppressWarnings("unchecked")
     public static <T> void init(ComboBox<T> cb, StringConverter<T> converter, T... data) {
         if (ArrayUtils.isNotEmpty(data)) {

@@ -43,7 +43,7 @@ public class MainController extends BaseController {
     protected void initControlsValues() {
         // No fields values to initialize
     }
-    
+
     @Override
     protected Page getCurrentPage() {
         return Page.MAIN;
@@ -60,13 +60,8 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnMenuCustomers(ActionEvent event) {
-        changeContent(Page.MASTER_CUSTOMER_MAIN, (Button) event.getSource());
-    }
-
-    @FXML
-    void onActionBtnMenuSuppliers(ActionEvent event) {
-        changeContent(Page.MASTER_SUPPLIER_MAIN, (Button) event.getSource());
+    void onActionBtnMenuContact(ActionEvent event) {
+        changeContent(Page.MASTER_CONTACT_MAIN, (Button) event.getSource());
     }
 
     private void changeContent(Page page, Button btn) {
@@ -75,7 +70,7 @@ public class MainController extends BaseController {
                 setActiveMenu(btn);
                 swapContentPane(page);
             } catch (Exception e) {
-                displayException(e);
+                throw new UnsupportedOperationException(e);
             }
         });
     }

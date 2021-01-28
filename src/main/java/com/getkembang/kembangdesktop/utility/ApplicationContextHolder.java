@@ -15,7 +15,7 @@ public class ApplicationContextHolder {
 
     public static void init() {
         if (applicationContext != null) {
-            throw new IllegalStateException("Initialized already");
+            throw new UnsupportedOperationException("Initialized already");
         }
         applicationContext = new AnnotationConfigApplicationContext(SpringConfig.class, SequelConfig.class);
     }

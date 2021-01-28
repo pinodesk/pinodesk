@@ -6,10 +6,6 @@ import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- *
- * @author muhammad
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class ProductCategory extends DataModel {
