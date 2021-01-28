@@ -3,8 +3,8 @@ package com.getkembang.kembangdesktop.domain;
 import java.math.BigDecimal;
 import java.sql.Date;
 
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.annotation.DataColumn;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.model.DataModel;
+import com.gitlab.muhammadkholidb.sequel.annotation.DataColumn;
+import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

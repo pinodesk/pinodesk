@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.repository;
 
 import com.getkembang.kembangdesktop.domain.Configuration;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
+import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 
 import org.springframework.stereotype.Repository;
 

@@ -13,9 +13,9 @@ import com.getkembang.kembangdesktop.viewmodel.ProductEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductVM;
 import com.github.vertical_blank.sqlformatter.SqlFormatter;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.model.DataModel;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
+import com.gitlab.muhammadkholidb.sequel.model.DataModel;
+import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
+import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;

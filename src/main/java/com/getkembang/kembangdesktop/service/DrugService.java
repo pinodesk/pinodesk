@@ -3,7 +3,7 @@ package com.getkembang.kembangdesktop.service;
 import com.getkembang.kembangdesktop.domain.Drug;
 import com.getkembang.kembangdesktop.repository.DrugRepository;
 import com.getkembang.kembangdesktop.viewmodel.DrugVM;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
+import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

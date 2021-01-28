@@ -7,7 +7,7 @@ import com.getkembang.kembangdesktop.viewmodel.ProductAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductVM;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.CommonRepository;
+import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
 
 public interface ProductRepository extends CommonRepository<Product> {
     

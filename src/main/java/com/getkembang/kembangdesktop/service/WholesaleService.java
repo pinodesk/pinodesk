@@ -5,8 +5,8 @@ import java.util.List;
 import com.getkembang.kembangdesktop.domain.Wholesale;
 import com.getkembang.kembangdesktop.repository.WholesaleRepository;
 import com.getkembang.kembangdesktop.viewmodel.WholesaleVM;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Order;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
+import com.gitlab.muhammadkholidb.sequel.sql.Order;
+import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

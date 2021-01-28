@@ -2,8 +2,8 @@ package com.getkembang.kembangdesktop.domain;
 
 import java.math.BigDecimal;
 
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.annotation.DataColumn;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.model.DataModel;
+import com.gitlab.muhammadkholidb.sequel.annotation.DataColumn;
+import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

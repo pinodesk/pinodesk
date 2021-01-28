@@ -3,9 +3,9 @@ package com.getkembang.kembangdesktop.repository;
 import java.util.List;
 
 import com.getkembang.kembangdesktop.domain.Rack;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Limit;
-import com.gitlab.muhammadkholidb.jdbctemplatehelper.sql.Where;
+import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
+import com.gitlab.muhammadkholidb.sequel.sql.Limit;
+import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.springframework.stereotype.Repository;
 
