@@ -39,7 +39,7 @@ public class Contact extends DataModel {
     private String companyName;
 
     @DataColumn(C_CONTACT_TYPE)
-    private Integer contactType;
+    private String contactType;
 
     @Override
     public String tableName() {

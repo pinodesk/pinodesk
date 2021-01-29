@@ -31,6 +31,7 @@ import com.getkembang.kembangdesktop.service.RackService;
 import com.getkembang.kembangdesktop.service.UnitService;
 import com.getkembang.kembangdesktop.service.WholesaleService;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
+import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.AlertResult;
 import com.getkembang.kembangdesktop.viewmodel.DrugCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.DrugVM;
@@ -206,7 +207,6 @@ public class ProductEditController extends BaseController {
 
     @Override
     protected void initControlsActions() {
-        initDigitTextFields();
         tfPurchasePrice.setOnKeyTyped(event -> {
             calculateTaxAndProfit();
             calculateWholesaleTaxAndProfit();
@@ -227,6 +227,19 @@ public class ProductEditController extends BaseController {
         tfSellingPrice1.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
+        // @formatter:off
+        FXUtils.initDigitTextFields(
+                tfSellingPrice, 
+                tfPurchasePrice, 
+                tfQuantity, 
+                tfPrescriptionPrice, 
+                tfPurchaseQuantity1,
+                tfPurchaseQuantity2, 
+                tfPurchaseQuantity3, 
+                tfSellingPrice1, 
+                tfSellingPrice2,
+                tfSellingPrice3);
+        // @formatter:on
         contentPane.setOnKeyPressed(event -> {
             if (KeyCode.ENTER.equals(event.getCode())) {
                 btnSave.fire();
@@ -274,22 +287,6 @@ public class ProductEditController extends BaseController {
     protected Stage getCurrentStage() {
         return (Stage) contentPane.getScene().getWindow();
     }
-
-    // @formatter:off
-    private void initDigitTextFields() {
-        Arrays.asList(
-                tfSellingPrice, 
-                tfPurchasePrice, 
-                tfQuantity, 
-                tfPrescriptionPrice, 
-                tfPurchaseQuantity1,
-                tfPurchaseQuantity2, 
-                tfPurchaseQuantity3, 
-                tfSellingPrice1, 
-                tfSellingPrice2,
-                tfSellingPrice3).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
-    }
-    // @formatter:on
 
     private void initDrugControlsValues() {
         DrugVM drug = drugService.getDrugByProductId(currentProduct.getId());

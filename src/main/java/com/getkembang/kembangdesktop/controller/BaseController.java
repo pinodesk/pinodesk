@@ -249,4 +249,13 @@ public abstract class BaseController {
         return num == null ? dflt : num.toString();
     }
 
+    protected <T> T conditionalObject(boolean condition, T objectIfTrue, T objectIfFalse) {
+        return condition ? objectIfTrue : objectIfFalse;
+    }
+
+    protected <T> T conditionalObject(boolean condition, T objectIfTrue) {
+        log.debug("Condition: {}, object: {}", condition, objectIfTrue);
+        return conditionalObject(condition, objectIfTrue, null);
+    }
+
 }

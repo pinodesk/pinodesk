@@ -16,5 +16,5 @@ public class ContactVM {
     private String email;
     private String address;
     private String companyName;
-    private Integer contactType;
+    private String contactType;
 }

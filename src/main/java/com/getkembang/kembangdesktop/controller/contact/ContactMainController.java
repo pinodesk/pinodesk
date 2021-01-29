@@ -1,5 +1,6 @@
 package com.getkembang.kembangdesktop.controller.contact;
 
+import java.io.IOException;
 import java.util.Date;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
@@ -10,6 +11,7 @@ import com.getkembang.kembangdesktop.javafx.factory.DateCellFactory;
 import com.getkembang.kembangdesktop.service.ContactService;
 import com.getkembang.kembangdesktop.utility.Async;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
+import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.utility.TableViewUtils;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
@@ -84,8 +86,13 @@ public class ContactMainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnFilter(ActionEvent event) {
-        //
+    void onActionBtnFilter(ActionEvent event) throws IOException {
+        Page nextPage = Page.MASTER_CONTACT_FILTER;
+        setNextPageData(nextPage, contactFilter);
+        FXUtils.show(nextPage, false, we -> {
+            contactFilter = getPageData();
+            searchContacts();
+        });
     }
 
     @FXML
@@ -97,7 +104,7 @@ public class ContactMainController extends BaseController {
     void onActionCbContactType(ActionEvent event) {
         BasicComboBoxVM selected = ComboBoxUtils.getSelectedItem(cbContactType);
         String value = selected.getValue();
-        contactFilter.setContactType(value == null ? null : Integer.valueOf(value));
+        contactFilter.setContactType(value);
         searchContacts();
     }
 
@@ -120,8 +127,8 @@ public class ContactMainController extends BaseController {
         TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 ContactVM::getUpdatedAt);
         ComboBoxUtils.initBasic(cbContactType, new BasicComboBoxVM(null, translate("lbl.all")),
-                new BasicComboBoxVM(String.valueOf(ContactType.CUSTOMER.ordinal()), translate("lbl.customer")),
-                new BasicComboBoxVM(String.valueOf(ContactType.SUPPLIER.ordinal()), translate("lbl.supplier")));
+                new BasicComboBoxVM(ContactType.CUSTOMER.toString(), translate("lbl.customer")),
+                new BasicComboBoxVM(ContactType.SUPPLIER.toString(), translate("lbl.supplier")));
         ComboBoxUtils.selectIndex(cbContactType, 0);
     }
 

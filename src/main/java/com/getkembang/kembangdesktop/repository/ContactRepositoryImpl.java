@@ -35,7 +35,7 @@ public class ContactRepositoryImpl extends AbstractRepository<Contact> implement
             where.containsIgnoreCase(Contact.C_COMPANY_NAME, filter.getCompanyName());
         }
         if (filter.getContactType() != null) {
-            where.equals(Contact.C_CONTACT_TYPE, filter.getContactType());
+            where.equals(Contact.C_CONTACT_TYPE, filter.getContactType().toLowerCase());
         }
         return read(where);
     }

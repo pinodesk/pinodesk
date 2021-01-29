@@ -7,7 +7,7 @@ import java.util.Date;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
-import com.getkembang.kembangdesktop.controller.BaseController;
+import com.getkembang.kembangdesktop.controller.BaseFilterController;
 import com.getkembang.kembangdesktop.javafx.control.MaskedTextField;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.RackComboBoxConverter;
@@ -20,6 +20,7 @@ import com.getkembang.kembangdesktop.service.ProductCategoryService;
 import com.getkembang.kembangdesktop.service.RackService;
 import com.getkembang.kembangdesktop.service.UnitService;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
+import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
@@ -31,19 +32,13 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.context.ApplicationContext;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 
-public class ProductFilterController extends BaseController {
-
-    @FXML
-    private VBox contentPane;
+@Slf4j
+public class ProductFilterController extends BaseFilterController<ProductFilterVM> {
 
     @FXML
     private TextField tfName;
@@ -90,12 +85,6 @@ public class ProductFilterController extends BaseController {
     @FXML
     private ComboBox<BasicComboBoxVM> cbIncludesVat;
 
-    @FXML
-    private Button btnReset;
-
-    @FXML
-    private Button btnFilter;
-
     private ProductCategoryService productCategoryService;
 
     private RackService rackService;
@@ -103,34 +92,7 @@ public class ProductFilterController extends BaseController {
     private UnitService unitService;
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        productCategoryService = ctx.getBean(ProductCategoryService.class);
-        rackService = ctx.getBean(RackService.class);
-        unitService = ctx.getBean(UnitService.class);
-    }
-
-    @Override
-    protected void initControlsActions() {
-        ComboBoxUtils.initAutoComplete(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
-                new ProductCategoryComboBoxConverter(cbCategory));
-        ComboBoxUtils.initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit),
-                new UnitComboBoxConverter(cbUnit));
-        ComboBoxUtils.initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack),
-                new RackComboBoxConverter(cbRack));
-        ComboBoxUtils.initBasic(cbIncludesVat, new BasicComboBoxVM(null, StringConstants.EMPTY),
-                new BasicComboBoxVM(CommonConstants.YES, translate("lbl.yes")),
-                new BasicComboBoxVM(CommonConstants.NO, translate("lbl.no")));
-        initDigitTextFields();
-        contentPane.setOnKeyPressed(event -> {
-            if (KeyCode.ENTER.equals(event.getCode())) {
-                btnFilter.fire();
-            }
-        });
-    }
-
-    @Override
-    protected void initControlsValues() {
-        ProductFilterVM currentProductFilter = getPageData();
+    protected void initFilterControlsValues(final ProductFilterVM currentProductFilter) {
         if (currentProductFilter != null) {
             Integer quantityMin = currentProductFilter.getQuantityMin();
             Integer quantityMax = currentProductFilter.getQuantityMax();
@@ -174,29 +136,7 @@ public class ProductFilterController extends BaseController {
     }
 
     @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_PRODUCT_FILTER;
-    }
-
-    @Override
-    protected Stage getCurrentStage() {
-        return (Stage) contentPane.getScene().getWindow();
-    }
-
-    // @formatter:off
-    private void initDigitTextFields() {
-        Arrays.asList(
-                tfSellingPriceMin,
-                tfSellingPriceMax,  
-                tfPurchasePriceMin, 
-                tfPurchasePriceMax, 
-                tfQuantityMin,
-                tfQuantityMax).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
-    }
-    // @formatter:on
-
-    private ProductFilterVM getFreshProductFilter() {
-        ProductFilterVM filter = new ProductFilterVM();
+    protected void setFilterValues(final ProductFilterVM filter) {
         String purchasePriceMax = tfPurchasePriceMax.getText();
         String purchasePriceMin = tfPurchasePriceMin.getText();
         String sellingPriceMax = tfSellingPriceMax.getText();
@@ -212,47 +152,29 @@ public class ProductFilterController extends BaseController {
         filter.setName(tfName.getText());
         filter.setCode(tfCode.getText());
         filter.setBarcode(tfBarcode.getText());
-        if (StringUtils.isNotBlank(purchasePriceMax)) {
-            filter.setPurchasePriceMax(NumberUtils.toScaledBigDecimal(purchasePriceMax));
-        }
-        if (StringUtils.isNotBlank(purchasePriceMin)) {
-            filter.setPurchasePriceMin(NumberUtils.toScaledBigDecimal(purchasePriceMin));
-        }
-        if (StringUtils.isNotBlank(sellingPriceMax)) {
-            filter.setSellingPriceMax(NumberUtils.toScaledBigDecimal(sellingPriceMax));
-        }
-        if (StringUtils.isNotBlank(sellingPriceMin)) {
-            filter.setSellingPriceMin(NumberUtils.toScaledBigDecimal(sellingPriceMin));
-        }
-        if (StringUtils.isNotBlank(quantityMax)) {
-            filter.setQuantityMax(NumberUtils.toInt(quantityMax));
-        }
-        if (StringUtils.isNotBlank(quantityMin)) {
-            filter.setQuantityMin(NumberUtils.toInt(quantityMin));
-        }
-        if (StringUtils.isNotBlank(expiredDateMin)) {
-            filter.setExpiredDateMin(parseDateQuietly(expiredDateMin, CommonConstants.DATE_PATTERN));
-        }
-        if (StringUtils.isNotBlank(expiredDateMax)) {
-            filter.setExpiredDateMax(parseDateQuietly(expiredDateMax, CommonConstants.DATE_PATTERN));
-        }
-        if (selectedCategory != null) {
-            filter.setCategoryId(selectedCategory.getId());
-            filter.setCategoryCode(selectedCategory.getCode());
-        }
-        if (selectedUnit != null) {
-            filter.setUnitId(selectedUnit.getId());
-        }
-        if (selectedRack != null) {
-            filter.setRackId(selectedRack.getId());
-        }
-        if (selectedIncludesVat != null) {
-            filter.setIncludesVat(selectedIncludesVat.getValue());
-        }
-        return filter;
+        filter.setPurchasePriceMax(
+                StringUtils.isBlank(purchasePriceMax) ? null : NumberUtils.toScaledBigDecimal(purchasePriceMax));
+        filter.setPurchasePriceMin(
+                StringUtils.isBlank(purchasePriceMin) ? null : NumberUtils.toScaledBigDecimal(purchasePriceMin));
+        filter.setSellingPriceMax(
+                StringUtils.isBlank(sellingPriceMax) ? null : NumberUtils.toScaledBigDecimal(sellingPriceMax));
+        filter.setSellingPriceMin(
+                StringUtils.isBlank(sellingPriceMin) ? null : NumberUtils.toScaledBigDecimal(sellingPriceMin));
+        filter.setQuantityMax(StringUtils.isBlank(quantityMax) ? null : NumberUtils.toInt(quantityMax));
+        filter.setQuantityMin(StringUtils.isBlank(quantityMin) ? null : NumberUtils.toInt(quantityMin));
+        filter.setExpiredDateMin(StringUtils.isBlank(expiredDateMin) ? null
+                : parseDateQuietly(expiredDateMin, CommonConstants.DATE_PATTERN));
+        filter.setExpiredDateMax(StringUtils.isBlank(expiredDateMax) ? null
+                : parseDateQuietly(expiredDateMax, CommonConstants.DATE_PATTERN));
+        filter.setCategoryId(selectedCategory == null ? null : selectedCategory.getId());
+        filter.setCategoryCode(selectedCategory == null ? null : selectedCategory.getCode());
+        filter.setUnitId(selectedUnit == null ? null : selectedUnit.getId());
+        filter.setRackId(selectedRack == null ? null : selectedRack.getId());
+        filter.setIncludesVat(selectedIncludesVat == null ? null : selectedIncludesVat.getValue());
     }
 
-    private void resetControlsValues() {
+    @Override
+    protected void resetControls() {
         tfName.setText(null);
         tfCode.setText(null);
         tfBarcode.setText(null);
@@ -270,20 +192,42 @@ public class ProductFilterController extends BaseController {
         cbIncludesVat.getSelectionModel().clearSelection();
     }
 
-    @FXML
-    void onActionBtnFilter(ActionEvent event) {
-        setPrevPageData(getFreshProductFilter());
-        close();
+    @Override
+    protected void initServices(ApplicationContext ctx) {
+        productCategoryService = ctx.getBean(ProductCategoryService.class);
+        rackService = ctx.getBean(RackService.class);
+        unitService = ctx.getBean(UnitService.class);
     }
 
-    @FXML
-    void onActionBtnReset(ActionEvent event) {
-        resetControlsValues();
+    @Override
+    protected void initControlsActions() {
+        ComboBoxUtils.initAutoComplete(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
+                new ProductCategoryComboBoxConverter(cbCategory));
+        ComboBoxUtils.initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit),
+                new UnitComboBoxConverter(cbUnit));
+        ComboBoxUtils.initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack),
+                new RackComboBoxConverter(cbRack));
+        ComboBoxUtils.initBasic(cbIncludesVat, new BasicComboBoxVM(null, StringConstants.EMPTY),
+                new BasicComboBoxVM(CommonConstants.YES, translate("lbl.yes")),
+                new BasicComboBoxVM(CommonConstants.NO, translate("lbl.no")));
+        FXUtils.
     }
 
-    @FXML
-    void onActionBtnCancel(ActionEvent event) {
-        close();
+    @Override
+    protected Page getCurrentPage() {
+        return Page.MASTER_PRODUCT_FILTER;
     }
+
+    // @formatter:off
+    private void initDigitTextFields() {
+        Arrays.asList(
+                tfSellingPriceMin,
+                tfSellingPriceMax,  
+                tfPurchasePriceMin, 
+                tfPurchasePriceMax, 
+                tfQuantityMin,
+                tfQuantityMax).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
+    }
+    // @formatter:on
 
 }

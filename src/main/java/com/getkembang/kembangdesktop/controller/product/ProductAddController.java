@@ -3,7 +3,6 @@ package com.getkembang.kembangdesktop.controller.product;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
@@ -16,7 +15,6 @@ import com.getkembang.kembangdesktop.javafx.converter.DrugCategoryComboBoxConver
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.RackComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.UnitComboBoxConverter;
-import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 import com.getkembang.kembangdesktop.javafx.listener.DrugCategoryComboBoxKeyEventHandler;
 import com.getkembang.kembangdesktop.javafx.listener.ProductCategoryComboBoxKeyEventHandler;
 import com.getkembang.kembangdesktop.javafx.listener.RackComboBoxKeyEventHandler;
@@ -24,6 +22,7 @@ import com.getkembang.kembangdesktop.javafx.listener.UnitComboBoxKeyEventHandler
 import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.getkembang.kembangdesktop.service.ProductService;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
+import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.DrugCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.DrugVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductAddVM;
@@ -200,7 +199,6 @@ public class ProductAddController extends BaseController {
 
     @Override
     protected void initControlsActions() {
-        initDigitTextFields();
         tfPurchasePrice.setOnKeyTyped(event -> {
             calculateTaxAndProfit();
             calculateWholesaleTaxAndProfit();
@@ -221,6 +219,19 @@ public class ProductAddController extends BaseController {
         tfSellingPrice1.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
+        // @formatter:off
+        FXUtils.initDigitTextFields(
+                tfSellingPrice, 
+                tfPurchasePrice, 
+                tfQuantity, 
+                tfPrescriptionPrice, 
+                tfPurchaseQuantity1,
+                tfPurchaseQuantity2, 
+                tfPurchaseQuantity3, 
+                tfSellingPrice1, 
+                tfSellingPrice2,
+                tfSellingPrice3);
+        // @formatter:on
         contentPane.setOnKeyPressed(event -> {
             if (KeyCode.ENTER.equals(event.getCode())) {
                 btnSave.fire();
@@ -243,22 +254,6 @@ public class ProductAddController extends BaseController {
     protected Stage getCurrentStage() {
         return (Stage) contentPane.getScene().getWindow();
     }
-
-    // @formatter:off
-    private void initDigitTextFields() {
-        Arrays.asList(
-                tfSellingPrice, 
-                tfPurchasePrice, 
-                tfQuantity, 
-                tfPrescriptionPrice, 
-                tfPurchaseQuantity1,
-                tfPurchaseQuantity2, 
-                tfPurchaseQuantity3, 
-                tfSellingPrice1, 
-                tfSellingPrice2,
-                tfSellingPrice3).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
-    }
-    // @formatter:on
 
     // @formatter:off
     private void calculate(

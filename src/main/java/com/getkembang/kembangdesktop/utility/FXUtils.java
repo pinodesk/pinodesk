@@ -7,8 +7,10 @@ import java.util.function.Consumer;
 import com.getkembang.kembangdesktop.Kembang;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.Page;
+import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 
 import javafx.scene.Scene;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
@@ -50,6 +52,10 @@ public class FXUtils {
     public static void setDefaultIcons(Stage stage) {
         Arrays.stream(Kembang.ICON_PATHS)
                 .forEach(path -> stage.getIcons().add(new Image(FXUtils.class.getResourceAsStream(path))));
+    }
+
+    public static void initDigitTextFields(TextField... controls) {
+        Arrays.asList(controls).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
     }
 
 }

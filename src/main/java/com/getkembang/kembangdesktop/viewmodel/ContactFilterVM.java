@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class ContactFilterVM {
-    private Integer contactType;
+    private String contactType;
     private String name;
     private String code;
     private String phone;

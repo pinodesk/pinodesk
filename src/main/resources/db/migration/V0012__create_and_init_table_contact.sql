@@ -3,7 +3,7 @@ create table if not exists t_contact (
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
-	contact_type int not null,
+	contact_type char(8) not null,
 	code varchar(128) not null,
 	name varchar(256) not null,
 	phone varchar(16),
