@@ -1,7 +1,6 @@
 package com.getkembang.kembangdesktop.controller.product;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Date;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
@@ -12,7 +11,6 @@ import com.getkembang.kembangdesktop.javafx.control.MaskedTextField;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.RackComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.UnitComboBoxConverter;
-import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 import com.getkembang.kembangdesktop.javafx.listener.ProductCategoryComboBoxKeyEventHandler;
 import com.getkembang.kembangdesktop.javafx.listener.RackComboBoxKeyEventHandler;
 import com.getkembang.kembangdesktop.javafx.listener.UnitComboBoxKeyEventHandler;
@@ -210,24 +208,21 @@ public class ProductFilterController extends BaseFilterController<ProductFilterV
         ComboBoxUtils.initBasic(cbIncludesVat, new BasicComboBoxVM(null, StringConstants.EMPTY),
                 new BasicComboBoxVM(CommonConstants.YES, translate("lbl.yes")),
                 new BasicComboBoxVM(CommonConstants.NO, translate("lbl.no")));
-        FXUtils.
+        // @formatter:off
+        FXUtils.setDigitFormatter(
+                tfBarcode,
+                tfSellingPriceMin,
+                tfSellingPriceMax,  
+                tfPurchasePriceMin, 
+                tfPurchasePriceMax, 
+                tfQuantityMin,
+                tfQuantityMax);
+        // @formatter:on
     }
 
     @Override
     protected Page getCurrentPage() {
         return Page.MASTER_PRODUCT_FILTER;
     }
-
-    // @formatter:off
-    private void initDigitTextFields() {
-        Arrays.asList(
-                tfSellingPriceMin,
-                tfSellingPriceMax,  
-                tfPurchasePriceMin, 
-                tfPurchasePriceMax, 
-                tfQuantityMin,
-                tfQuantityMax).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
-    }
-    // @formatter:on
 
 }

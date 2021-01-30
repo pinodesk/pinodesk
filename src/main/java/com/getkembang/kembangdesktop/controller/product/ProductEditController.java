@@ -17,7 +17,6 @@ import com.getkembang.kembangdesktop.javafx.converter.DrugCategoryComboBoxConver
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.RackComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.UnitComboBoxConverter;
-import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 import com.getkembang.kembangdesktop.javafx.listener.DrugCategoryComboBoxKeyEventHandler;
 import com.getkembang.kembangdesktop.javafx.listener.ProductCategoryComboBoxKeyEventHandler;
 import com.getkembang.kembangdesktop.javafx.listener.RackComboBoxKeyEventHandler;
@@ -228,7 +227,8 @@ public class ProductEditController extends BaseController {
         tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         // @formatter:off
-        FXUtils.initDigitTextFields(
+        FXUtils.setDigitFormatter(
+                tfBarcode,
                 tfSellingPrice, 
                 tfPurchasePrice, 
                 tfQuantity, 

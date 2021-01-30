@@ -1,7 +1,6 @@
 package com.getkembang.kembangdesktop.utility;
 
-import com.getkembang.kembangdesktop.SpringConfig;
-import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
+import com.getkembang.kembangdesktop.KembangConfig;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -17,7 +16,7 @@ public class ApplicationContextHolder {
         if (applicationContext != null) {
             throw new UnsupportedOperationException("Initialized already");
         }
-        applicationContext = new AnnotationConfigApplicationContext(SpringConfig.class, SequelConfig.class);
+        applicationContext = new AnnotationConfigApplicationContext(KembangConfig.class);
     }
 
     public static ApplicationContext getApplicationContext() {

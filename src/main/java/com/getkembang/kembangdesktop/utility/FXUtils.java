@@ -54,7 +54,7 @@ public class FXUtils {
                 .forEach(path -> stage.getIcons().add(new Image(FXUtils.class.getResourceAsStream(path))));
     }
 
-    public static void initDigitTextFields(TextField... controls) {
+    public static void setDigitFormatter(TextField... controls) {
         Arrays.asList(controls).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
     }
 

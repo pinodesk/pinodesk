@@ -220,7 +220,8 @@ public class ProductAddController extends BaseController {
         tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         // @formatter:off
-        FXUtils.initDigitTextFields(
+        FXUtils.setDigitFormatter(
+                tfBarcode,
                 tfSellingPrice, 
                 tfPurchasePrice, 
                 tfQuantity, 

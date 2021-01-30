@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -16,17 +17,19 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+@Import(SequelConfig.class)
 @ComponentScan
 @EnableCaching
 @EnableTransactionManagement
 @PropertySource({ "classpath:application.properties" })
-public class SpringConfig {
+public class KembangConfig {
 
     @Resource // https://stackoverflow.com/questions/19421092/autowired-environment-is-null
     private Environment env;
