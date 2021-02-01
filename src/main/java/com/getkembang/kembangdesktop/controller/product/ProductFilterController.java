@@ -6,7 +6,7 @@ import java.util.Date;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
-import com.getkembang.kembangdesktop.controller.BaseDataFilterController;
+import com.getkembang.kembangdesktop.controller.CommonDataFilterWindowController;
 import com.getkembang.kembangdesktop.javafx.control.MaskedTextField;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.RackComboBoxConverter;
@@ -36,7 +36,7 @@ import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProductFilterController extends BaseDataFilterController<ProductFilterVM> {
+public class ProductFilterController extends CommonDataFilterWindowController<ProductFilterVM> {
 
     @FXML
     private TextField tfName;
@@ -90,23 +90,23 @@ public class ProductFilterController extends BaseDataFilterController<ProductFil
     private UnitService unitService;
 
     @Override
-    protected void initFilterControlsValues(final ProductFilterVM currentProductFilter) {
-        if (currentProductFilter != null) {
-            Integer quantityMin = currentProductFilter.getQuantityMin();
-            Integer quantityMax = currentProductFilter.getQuantityMax();
-            BigDecimal purchasePriceMax = currentProductFilter.getPurchasePriceMax();
-            BigDecimal purchasePriceMin = currentProductFilter.getPurchasePriceMin();
-            BigDecimal sellingPriceMax = currentProductFilter.getSellingPriceMax();
-            BigDecimal sellingPriceMin = currentProductFilter.getSellingPriceMin();
-            Long categoryId = currentProductFilter.getCategoryId();
-            Long unitId = currentProductFilter.getUnitId();
-            Long rackId = currentProductFilter.getRackId();
-            Date expiredDateMin = currentProductFilter.getExpiredDateMin();
-            Date expiredDateMax = currentProductFilter.getExpiredDateMax();
-            String includesVat = currentProductFilter.getIncludesVat();
-            tfName.setText(currentProductFilter.getName());
-            tfCode.setText(currentProductFilter.getCode());
-            tfBarcode.setText(currentProductFilter.getBarcode());
+    protected void initFilterControlsValues() {
+        if (currentFilter != null) {
+            Integer quantityMin = currentFilter.getQuantityMin();
+            Integer quantityMax = currentFilter.getQuantityMax();
+            BigDecimal purchasePriceMax = currentFilter.getPurchasePriceMax();
+            BigDecimal purchasePriceMin = currentFilter.getPurchasePriceMin();
+            BigDecimal sellingPriceMax = currentFilter.getSellingPriceMax();
+            BigDecimal sellingPriceMin = currentFilter.getSellingPriceMin();
+            Long categoryId = currentFilter.getCategoryId();
+            Long unitId = currentFilter.getUnitId();
+            Long rackId = currentFilter.getRackId();
+            Date expiredDateMin = currentFilter.getExpiredDateMin();
+            Date expiredDateMax = currentFilter.getExpiredDateMax();
+            String includesVat = currentFilter.getIncludesVat();
+            tfName.setText(currentFilter.getName());
+            tfCode.setText(currentFilter.getCode());
+            tfBarcode.setText(currentFilter.getBarcode());
             tfQuantityMin.setText(toStringOrDefault(quantityMin, null));
             tfQuantityMax.setText(toStringOrDefault(quantityMax, null));
             tfPurchasePriceMax.setText(toStringOrDefault(purchasePriceMax, null));
@@ -134,7 +134,7 @@ public class ProductFilterController extends BaseDataFilterController<ProductFil
     }
 
     @Override
-    protected void setFilterValues(final ProductFilterVM filter) {
+    protected ProductFilterVM getFreshFilterValues() {
         String purchasePriceMax = tfPurchasePriceMax.getText();
         String purchasePriceMin = tfPurchasePriceMin.getText();
         String sellingPriceMax = tfSellingPriceMax.getText();
@@ -147,28 +147,48 @@ public class ProductFilterController extends BaseDataFilterController<ProductFil
         UnitVM selectedUnit = ComboBoxUtils.getSelectedItem(cbUnit);
         RackVM selectedRack = ComboBoxUtils.getSelectedItem(cbRack);
         BasicComboBoxVM selectedIncludesVat = ComboBoxUtils.getSelectedItem(cbIncludesVat);
+        ProductFilterVM filter = new ProductFilterVM();
         filter.setName(tfName.getText());
         filter.setCode(tfCode.getText());
         filter.setBarcode(tfBarcode.getText());
-        filter.setPurchasePriceMax(
-                StringUtils.isBlank(purchasePriceMax) ? null : NumberUtils.toScaledBigDecimal(purchasePriceMax));
-        filter.setPurchasePriceMin(
-                StringUtils.isBlank(purchasePriceMin) ? null : NumberUtils.toScaledBigDecimal(purchasePriceMin));
-        filter.setSellingPriceMax(
-                StringUtils.isBlank(sellingPriceMax) ? null : NumberUtils.toScaledBigDecimal(sellingPriceMax));
-        filter.setSellingPriceMin(
-                StringUtils.isBlank(sellingPriceMin) ? null : NumberUtils.toScaledBigDecimal(sellingPriceMin));
-        filter.setQuantityMax(StringUtils.isBlank(quantityMax) ? null : NumberUtils.toInt(quantityMax));
-        filter.setQuantityMin(StringUtils.isBlank(quantityMin) ? null : NumberUtils.toInt(quantityMin));
-        filter.setExpiredDateMin(StringUtils.isBlank(expiredDateMin) ? null
-                : parseDateQuietly(expiredDateMin, CommonConstants.DATE_PATTERN));
-        filter.setExpiredDateMax(StringUtils.isBlank(expiredDateMax) ? null
-                : parseDateQuietly(expiredDateMax, CommonConstants.DATE_PATTERN));
-        filter.setCategoryId(selectedCategory == null ? null : selectedCategory.getId());
-        filter.setCategoryCode(selectedCategory == null ? null : selectedCategory.getCode());
-        filter.setUnitId(selectedUnit == null ? null : selectedUnit.getId());
-        filter.setRackId(selectedRack == null ? null : selectedRack.getId());
-        filter.setIncludesVat(selectedIncludesVat == null ? null : selectedIncludesVat.getValue());
+        if (StringUtils.isNotBlank(purchasePriceMax)) {
+            filter.setPurchasePriceMax(NumberUtils.toScaledBigDecimal(purchasePriceMax));
+        }
+        if (StringUtils.isNotBlank(purchasePriceMin)) {
+            filter.setPurchasePriceMin(NumberUtils.toScaledBigDecimal(purchasePriceMin));
+        }
+        if (StringUtils.isNotBlank(sellingPriceMax)) {
+            filter.setSellingPriceMax(NumberUtils.toScaledBigDecimal(sellingPriceMax));
+        }
+        if (StringUtils.isNotBlank(sellingPriceMin)) {
+            filter.setSellingPriceMin(NumberUtils.toScaledBigDecimal(sellingPriceMin));
+        }
+        if (StringUtils.isNotBlank(quantityMax)) {
+            filter.setQuantityMax(NumberUtils.toInt(quantityMax));
+        }
+        if (StringUtils.isNotBlank(quantityMin)) {
+            filter.setQuantityMin(NumberUtils.toInt(quantityMin));
+        }
+        if (StringUtils.isNotBlank(expiredDateMin)) {
+            filter.setExpiredDateMin(parseDateQuietly(expiredDateMin, CommonConstants.DATE_PATTERN));
+        }
+        if (StringUtils.isNotBlank(expiredDateMax)) {
+            filter.setExpiredDateMax(parseDateQuietly(expiredDateMax, CommonConstants.DATE_PATTERN));
+        }
+        if (selectedCategory != null) {
+            filter.setCategoryId(selectedCategory.getId());
+            filter.setCategoryCode(selectedCategory.getCode());
+        }
+        if (selectedUnit != null) {
+            filter.setUnitId(selectedUnit.getId());
+        }
+        if (selectedRack != null) {
+            filter.setRackId(selectedRack.getId());
+        }
+        if (selectedIncludesVat != null) {
+            filter.setIncludesVat(selectedIncludesVat.getValue());
+        }
+        return filter;
     }
 
     @Override

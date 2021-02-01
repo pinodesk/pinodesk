@@ -9,7 +9,7 @@ import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
-import com.getkembang.kembangdesktop.controller.BaseDataModController;
+import com.getkembang.kembangdesktop.controller.CommonDataSaveWindowController;
 import com.getkembang.kembangdesktop.javafx.control.MaskedTextField;
 import com.getkembang.kembangdesktop.javafx.converter.DrugCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
@@ -44,7 +44,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
-public class ProductAddController extends BaseDataModController {
+public class ProductAddController extends CommonDataSaveWindowController {
 
     @FXML
     private TextField tfName;

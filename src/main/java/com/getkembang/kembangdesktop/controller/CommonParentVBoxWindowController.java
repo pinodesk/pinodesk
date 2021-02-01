@@ -4,7 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public abstract class BaseParentVBoxController extends BaseController {
+public abstract class CommonParentVBoxWindowController extends BaseController {
     
     @FXML
     protected VBox contentPane;

@@ -7,9 +7,9 @@ import javafx.scene.input.KeyCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class BaseDataFilterController<T> extends BaseParentVBoxController {
-    
-    private T filterVM;
+public abstract class CommonDataFilterWindowController<T> extends CommonParentVBoxWindowController {
+
+    protected T currentFilter;
 
     @FXML
     protected Button btnCancel;
@@ -22,14 +22,13 @@ public abstract class BaseDataFilterController<T> extends BaseParentVBoxControll
 
     @FXML
     void onActionBtnCancel(ActionEvent event) {
-        setPrevPageData(filterVM);
+        setPrevPageData(currentFilter);
         close();
     }
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        setFilterValues(filterVM);
-        setPrevPageData(filterVM);
+        setPrevPageData(getFreshFilterValues());
         close();
     }
 
@@ -40,8 +39,8 @@ public abstract class BaseDataFilterController<T> extends BaseParentVBoxControll
 
     @Override
     protected void initControlsValues() {
-        filterVM = getPageData();
-        initFilterControlsValues(filterVM);
+        currentFilter = getPageData();
+        initFilterControlsValues();
         contentPane.setOnKeyPressed(event -> {
             if (KeyCode.ENTER.equals(event.getCode())) {
                 btnFilter.fire();
@@ -49,10 +48,10 @@ public abstract class BaseDataFilterController<T> extends BaseParentVBoxControll
         });
     }
 
-    protected abstract void initFilterControlsValues(T vm);
+    protected abstract void initFilterControlsValues();
 
-    protected abstract void setFilterValues(T vm);
-    
+    protected abstract T getFreshFilterValues();
+
     protected abstract void resetControls();
 
 }

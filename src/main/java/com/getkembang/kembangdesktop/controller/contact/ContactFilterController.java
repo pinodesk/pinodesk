@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.controller.contact;
 
 import com.getkembang.kembangdesktop.constant.Page;
-import com.getkembang.kembangdesktop.controller.BaseDataFilterController;
+import com.getkembang.kembangdesktop.controller.CommonDataFilterWindowController;
 import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 
@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-public class ContactFilterController extends BaseDataFilterController<ContactFilterVM> {
+public class ContactFilterController extends CommonDataFilterWindowController<ContactFilterVM> {
 
     @FXML
     private TextField tfName;
@@ -31,25 +31,28 @@ public class ContactFilterController extends BaseDataFilterController<ContactFil
     private TextField tfCompanyName;
 
     @Override
-    protected void initFilterControlsValues(final ContactFilterVM vm) {
-        if (vm != null) {
-            tfName.setText(vm.getName());
-            tfCode.setText(vm.getCode());
-            tfPhone.setText(vm.getPhone());
-            tfEmail.setText(vm.getEmail());
-            tfAddress.setText(vm.getAddress());
-            tfCompanyName.setText(vm.getCompanyName());
+    protected void initFilterControlsValues() {
+        if (currentFilter != null) {
+            tfName.setText(currentFilter.getName());
+            tfCode.setText(currentFilter.getCode());
+            tfPhone.setText(currentFilter.getPhone());
+            tfEmail.setText(currentFilter.getEmail());
+            tfAddress.setText(currentFilter.getAddress());
+            tfCompanyName.setText(currentFilter.getCompanyName());
         }
     }
 
     @Override
-    protected void setFilterValues(final ContactFilterVM vm) {
-        vm.setName(tfName.getText());
-        vm.setCode(tfCode.getText());
-        vm.setPhone(tfPhone.getText());
-        vm.setEmail(tfEmail.getText());
-        vm.setAddress(tfAddress.getText());
-        vm.setCompanyName(tfCompanyName.getText());
+    protected ContactFilterVM getFreshFilterValues() {
+        ContactFilterVM filter = new ContactFilterVM();
+        filter.setName(tfName.getText());
+        filter.setCode(tfCode.getText());
+        filter.setPhone(tfPhone.getText());
+        filter.setEmail(tfEmail.getText());
+        filter.setAddress(tfAddress.getText());
+        filter.setCompanyName(tfCompanyName.getText());
+        filter.setContactType(currentFilter.getContactType());
+        return filter;
     }
 
     @Override
