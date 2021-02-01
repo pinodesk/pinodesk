@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.controller.contact;
 
 import com.getkembang.kembangdesktop.constant.Page;
-import com.getkembang.kembangdesktop.controller.BaseFilterController;
+import com.getkembang.kembangdesktop.controller.BaseDataFilterController;
 import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 
@@ -10,7 +10,7 @@ import org.springframework.context.ApplicationContext;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
-public class ContactFilterController extends BaseFilterController<ContactFilterVM> {
+public class ContactFilterController extends BaseDataFilterController<ContactFilterVM> {
 
     @FXML
     private TextField tfName;

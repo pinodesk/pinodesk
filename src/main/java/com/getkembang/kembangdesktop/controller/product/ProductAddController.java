@@ -9,7 +9,7 @@ import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
-import com.getkembang.kembangdesktop.controller.BaseController;
+import com.getkembang.kembangdesktop.controller.BaseDataModController;
 import com.getkembang.kembangdesktop.javafx.control.MaskedTextField;
 import com.getkembang.kembangdesktop.javafx.converter.DrugCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
@@ -38,15 +38,13 @@ import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class ProductAddController extends BaseController {
+public class ProductAddController extends BaseDataModController {
 
     @FXML
     private TextField tfName;
@@ -150,45 +148,85 @@ public class ProductAddController extends BaseController {
     @FXML
     private TextField tfSellingPriceBeforeTax3;
 
-    @FXML
-    private Button btnCancel;
-
-    @FXML
-    private Button btnSave;
-
-    @FXML
-    private VBox contentPane;
-
     private BigDecimal vatPercentage;
 
     private ProductService productService;
 
     private ConfigurationService configurationService;
 
-    private boolean productAdded;
-
-    @FXML
-    void onActionBtnSave(ActionEvent event) {
-        if (save() != null) {
-            displayInfo(MessageCode.SUCCESS_ADD_PRODUCT);
-            setPrevPageData(Boolean.TRUE);
-            close();
-        }
-    }
-
-    @FXML
-    void onActionBtnCancel(ActionEvent event) {
-        setPrevPageData(productAdded);
-        close();
-    }
-
     @FXML
     void onActionBtnSaveAndCopy(ActionEvent event) {
-        if (save() != null) {
-            productAdded = true;
+        if (save()) {
+            saved = true;
             displayInfo(MessageCode.SUCCESS_ADD_PRODUCT);
             cbUnit.getSelectionModel().clearSelection();
         }
+    }
+
+    @Override
+    protected ValidationResult validateValues() {
+        if (StringUtils.isBlank(tfName.getText())) {
+            return new ValidationResult(MessageCode.ERROR_EMPTY_NAME);
+        }
+        if (StringUtils.isBlank(tfCode.getText())) {
+            return new ValidationResult(MessageCode.ERROR_EMPTY_CODE);
+        }
+        if (StringUtils.isBlank(tfPurchasePrice.getText())) {
+            return new ValidationResult(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
+        }
+        if (StringUtils.isBlank(tfSellingPrice.getText())) {
+            return new ValidationResult(MessageCode.ERROR_EMPTY_SELLING_PRICE);
+        }
+        if (!ComboBoxUtils.hasItemSelected(cbCategory)) {
+            return new ValidationResult(MessageCode.ERROR_EMPTY_CATEGORY);
+        }
+        if (!ComboBoxUtils.hasItemSelected(cbUnit)) {
+            return new ValidationResult(MessageCode.ERROR_EMPTY_UNIT);
+        }
+        // @formatter:off
+        if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) 
+                && !StringUtils.isAllBlank(
+                        tfPrescriptionPrice.getText(),
+                        tfIndication.getText(), 
+                        tfContraindication.getText())) {
+        // @formatter:on
+            return new ValidationResult(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
+        }
+        if (ComboBoxUtils.hasItemSelected(cbDrugCategory) && !isProductCategoryDrugs()) {
+            return new ValidationResult(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
+        }
+        return new ValidationResult();
+    }
+
+    @Override
+    protected boolean save() {
+        ProductAddVM productAdd = new ProductAddVM();
+        productAdd.setName(tfName.getText());
+        productAdd.setCode(tfCode.getText());
+        productAdd.setBarcode(tfBarcode.getText());
+        productAdd.setDescription(tfDescription.getText());
+        productAdd.setQuantity(NumberUtils.toInt(tfQuantity.getText()));
+        productAdd.setPurchasePrice(NumberUtils.toScaledBigDecimal(tfPurchasePrice.getText()));
+        productAdd.setSellingPrice(NumberUtils.toScaledBigDecimal(tfSellingPrice.getText()));
+        productAdd.setVatIncluded(chkIncludesVat.isSelected() ? CommonConstants.YES : CommonConstants.NO);
+        productAdd.setUnit(cbUnit.getSelectionModel().getSelectedItem());
+        productAdd.setProductCategory(cbCategory.getSelectionModel().getSelectedItem());
+        String expiredDate = tfExpiredDate.getTextMasked();
+        productAdd.setExpiredDate(parseDateQuietly(expiredDate, CommonConstants.DATE_PATTERN));
+        productAdd.setRack(cbRack.getSelectionModel().getSelectedItem());
+        if (ComboBoxUtils.hasItemSelected(cbDrugCategory)) {
+            DrugCategoryVM drugCategory = ComboBoxUtils.getSelectedItem(cbDrugCategory);
+            DrugVM drug = new DrugVM();
+            drug.setDrugCategoryId(drugCategory.getId());
+            drug.setDrugCategoryCode(drugCategory.getCode());
+            drug.setDrugCategoryName(drugCategory.getName());
+            drug.setPrescriptionPrice(NumberUtils.toScaledBigDecimal(tfPrescriptionPrice.getText()));
+            drug.setIndication(tfIndication.getText());
+            drug.setContraindication(tfIndication.getText());
+            productAdd.setDrug(drug);
+        }
+        productAdd.setWholesales(loadWholesales());
+        return productService.createProduct(productAdd) > 0;
     }
 
     @Override
@@ -294,77 +332,8 @@ public class ProductAddController extends BaseController {
         }
     }
 
-    private ValidationResult validate() {
-        if (StringUtils.isBlank(tfName.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_NAME);
-        }
-        if (StringUtils.isBlank(tfCode.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_CODE);
-        }
-        if (StringUtils.isBlank(tfPurchasePrice.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
-        }
-        if (StringUtils.isBlank(tfSellingPrice.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_SELLING_PRICE);
-        }
-        if (!ComboBoxUtils.hasItemSelected(cbCategory)) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_CATEGORY);
-        }
-        if (!ComboBoxUtils.hasItemSelected(cbUnit)) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_UNIT);
-        }
-        // @formatter:off
-        if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) 
-                && !StringUtils.isAllBlank(
-                        tfPrescriptionPrice.getText(),
-                        tfIndication.getText(), 
-                        tfContraindication.getText())) {
-        // @formatter:on
-            return new ValidationResult(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
-        }
-        if (ComboBoxUtils.hasItemSelected(cbDrugCategory) && !isProductCategoryDrugs()) {
-            return new ValidationResult(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
-        }
-        return new ValidationResult();
-    }
-
     private boolean isProductCategoryDrugs() {
         return ComboBoxUtils.getSelectedItem(cbCategory).getCode().equals(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
-    }
-
-    private Long save() {
-        ValidationResult result = validate();
-        if (result.isError()) {
-            displayError(result.getMessageCode());
-            return null;
-        }
-        ProductAddVM productAdd = new ProductAddVM();
-        productAdd.setName(tfName.getText());
-        productAdd.setCode(tfCode.getText());
-        productAdd.setBarcode(tfBarcode.getText());
-        productAdd.setDescription(tfDescription.getText());
-        productAdd.setQuantity(NumberUtils.toInt(tfQuantity.getText()));
-        productAdd.setPurchasePrice(NumberUtils.toScaledBigDecimal(tfPurchasePrice.getText()));
-        productAdd.setSellingPrice(NumberUtils.toScaledBigDecimal(tfSellingPrice.getText()));
-        productAdd.setVatIncluded(chkIncludesVat.isSelected() ? CommonConstants.YES : CommonConstants.NO);
-        productAdd.setUnit(cbUnit.getSelectionModel().getSelectedItem());
-        productAdd.setProductCategory(cbCategory.getSelectionModel().getSelectedItem());
-        String expiredDate = tfExpiredDate.getTextMasked();
-        productAdd.setExpiredDate(parseDateQuietly(expiredDate, CommonConstants.DATE_PATTERN));
-        productAdd.setRack(cbRack.getSelectionModel().getSelectedItem());
-        if (ComboBoxUtils.hasItemSelected(cbDrugCategory)) {
-            DrugCategoryVM drugCategory = ComboBoxUtils.getSelectedItem(cbDrugCategory);
-            DrugVM drug = new DrugVM();
-            drug.setDrugCategoryId(drugCategory.getId());
-            drug.setDrugCategoryCode(drugCategory.getCode());
-            drug.setDrugCategoryName(drugCategory.getName());
-            drug.setPrescriptionPrice(NumberUtils.toScaledBigDecimal(tfPrescriptionPrice.getText()));
-            drug.setIndication(tfIndication.getText());
-            drug.setContraindication(tfIndication.getText());
-            productAdd.setDrug(drug);
-        }
-        productAdd.setWholesales(loadWholesales());
-        return productService.createProduct(productAdd);
     }
 
     private List<WholesaleVM> loadWholesales() {

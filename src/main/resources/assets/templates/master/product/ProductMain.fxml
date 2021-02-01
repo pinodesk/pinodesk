@@ -29,7 +29,7 @@
             <Insets left="10.0" right="10.0" top="10.0" />
          </VBox.margin>
          <children>
-            <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onActionBtnAdd" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn.add" textFill="WHITE">
+            <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" prefHeight="30.0" prefWidth="73.0" styleClass="btn-secondary" text="%btn.filter" textFill="WHITE">
                <font>
                   <Font size="13.0" />
                </font>
@@ -39,7 +39,7 @@
                   <Font size="13.0" />
                </font>
             </Button>
-            <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" prefHeight="30.0" prefWidth="73.0" styleClass="btn-secondary" text="%btn.filter" textFill="WHITE">
+            <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onActionBtnAdd" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn.add" textFill="WHITE">
                <font>
                   <Font size="13.0" />
                </font>

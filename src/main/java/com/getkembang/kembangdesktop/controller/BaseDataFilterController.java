@@ -4,26 +4,21 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class BaseFilterController<T> extends BaseController {
+public abstract class BaseDataFilterController<T> extends BaseParentVBoxController {
     
     private T filterVM;
 
     @FXML
-    private VBox contentPane;
+    protected Button btnCancel;
 
     @FXML
-    private Button btnCancel;
+    protected Button btnReset;
 
     @FXML
-    private Button btnReset;
-
-    @FXML
-    private Button btnFilter;
+    protected Button btnFilter;
 
     @FXML
     void onActionBtnCancel(ActionEvent event) {
@@ -54,14 +49,9 @@ public abstract class BaseFilterController<T> extends BaseController {
         });
     }
 
-    @Override
-    protected Stage getCurrentStage() {
-        return (Stage) contentPane.getScene().getWindow();
-    }
+    protected abstract void initFilterControlsValues(T vm);
 
-    protected abstract void initFilterControlsValues(final T vm);
-
-    protected abstract void setFilterValues(final T vm);
+    protected abstract void setFilterValues(T vm);
     
     protected abstract void resetControls();
 

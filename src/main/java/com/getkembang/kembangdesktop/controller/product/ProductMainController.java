@@ -91,6 +91,39 @@ public class ProductMainController extends BaseController {
 
     private ConfigurationService configurationService;
 
+    @FXML
+    void onActionBtnAdd(ActionEvent event) throws IOException {
+        setNextPage(Page.MASTER_PRODUCT_ADD);
+        FXUtils.show(Page.MASTER_PRODUCT_ADD, false, we -> {
+            if (Boolean.TRUE.equals(getPageData())) {
+                searchProducts();
+            }
+        });
+    }
+
+    @FXML
+    void onActionBtnFilter(ActionEvent event) throws IOException {
+        Page nextPage = Page.MASTER_PRODUCT_FILTER;
+        setNextPageData(nextPage, productFilter);
+        FXUtils.show(nextPage, false, we -> {
+            productFilter = getPageData();
+            searchProducts();
+        });
+    }
+
+    @FXML
+    void onActionBtnRemove(ActionEvent event) {
+        ObservableList<ProductVM> items = tableProduct.getSelectionModel().getSelectedItems();
+        if (!items.isEmpty()) {
+            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PRODUCTS);
+            if (result.isConfirmed()) {
+                productService.removeProducts(items.stream().map(ProductVM::getId).collect(Collectors.toList()));
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PRODUCTS);
+                searchProducts();
+            }
+        }
+    }
+
     @Override
     protected void initServices(ApplicationContext ctx) {
         productService = ctx.getBean(ProductService.class);
@@ -187,39 +220,6 @@ public class ProductMainController extends BaseController {
             tableProduct.getSortOrder().setAll(colName); // Always sort by name after searching
             lblRows.setText(products.size() + "");
         }));
-    }
-
-    @FXML
-    void onActionBtnAdd(ActionEvent event) throws IOException {
-        setNextPage(Page.MASTER_PRODUCT_ADD);
-        FXUtils.show(Page.MASTER_PRODUCT_ADD, false, we -> {
-            if (Boolean.TRUE.equals(getPageData())) {
-                searchProducts();
-            }
-        });
-    }
-
-    @FXML
-    void onActionBtnFilter(ActionEvent event) throws IOException {
-        Page nextPage = Page.MASTER_PRODUCT_FILTER;
-        setNextPageData(nextPage, productFilter);
-        FXUtils.show(nextPage, false, we -> {
-            productFilter = getPageData();
-            searchProducts();
-        });
-    }
-
-    @FXML
-    void onActionBtnRemove(ActionEvent event) {
-        ObservableList<ProductVM> items = tableProduct.getSelectionModel().getSelectedItems();
-        if (!items.isEmpty()) {
-            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PRODUCTS);
-            if (result.isConfirmed()) {
-                productService.removeProducts(items.stream().map(ProductVM::getId).collect(Collectors.toList()));
-                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PRODUCTS);
-                searchProducts();
-            }
-        }
     }
 
 }

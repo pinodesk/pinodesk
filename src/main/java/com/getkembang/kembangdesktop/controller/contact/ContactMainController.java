@@ -6,6 +6,7 @@ import java.util.Date;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.ContactType;
 import com.getkembang.kembangdesktop.constant.Page;
+import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.controller.BaseController;
 import com.getkembang.kembangdesktop.javafx.factory.DateCellFactory;
 import com.getkembang.kembangdesktop.service.ContactService;
@@ -81,8 +82,14 @@ public class ContactMainController extends BaseController {
     private ContactFilterVM contactFilter;
 
     @FXML
-    void onActionBtnAdd(ActionEvent event) {
-        //
+    void onActionBtnAdd(ActionEvent event) throws IOException {
+        Page nextPage = Page.MASTER_CONTACT_ADD;
+        setNextPage(nextPage);
+        FXUtils.show(nextPage, false, we -> {
+            if (Boolean.TRUE.equals(getPageData())) {
+                searchContacts();
+            }
+        });
     }
 
     @FXML
@@ -126,7 +133,7 @@ public class ContactMainController extends BaseController {
                 ContactVM::getCreatedAt);
         TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 ContactVM::getUpdatedAt);
-        ComboBoxUtils.initBasic(cbContactType, new BasicComboBoxVM(null, translate("lbl.all")),
+        ComboBoxUtils.initBasic(cbContactType, new BasicComboBoxVM(null, StringConstants.EMPTY),
                 new BasicComboBoxVM(ContactType.CUSTOMER.toString(), translate("lbl.customer")),
                 new BasicComboBoxVM(ContactType.SUPPLIER.toString(), translate("lbl.supplier")));
         ComboBoxUtils.selectIndex(cbContactType, 0);

@@ -8,7 +8,8 @@ public enum Page {
     MASTER_PRODUCT_EDIT("master/product/ProductEdit"),
     MASTER_PRODUCT_FILTER("master/product/ProductFilter"),
     MASTER_CONTACT_MAIN("master/contact/ContactMain"), 
-    MASTER_CONTACT_FILTER("master/contact/ContactFilter");
+    MASTER_CONTACT_FILTER("master/contact/ContactFilter"), 
+    MASTER_CONTACT_ADD("master/contact/ContactAdd");
     
     private final String templateName;
     

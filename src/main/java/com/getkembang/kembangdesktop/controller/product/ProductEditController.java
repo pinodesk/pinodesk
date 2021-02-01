@@ -192,6 +192,32 @@ public class ProductEditController extends BaseController {
 
     private ConfigurationService configurationService;
 
+    @FXML
+    void onActionBtnSave(ActionEvent event) {
+        boolean updated = save();
+        if (updated) {
+            displayInfo(MessageCode.SUCCESS_EDIT_PRODUCT);
+            setPrevPageData(Boolean.TRUE);
+            close();
+        }
+    }
+
+    @FXML
+    void onActionBtnCancel(ActionEvent event) {
+        close();
+    }
+
+    @FXML
+    void onActionBtnRemove(ActionEvent event) {
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_PRODUCT);
+        if (result.isConfirmed()) {
+            productService.removeProducts(Arrays.asList(currentProduct.getId()));
+            displayInfo(MessageCode.SUCCESS_REMOVE_PRODUCT);
+            setPrevPageData(Boolean.TRUE);
+            close();
+        }
+    }
+
     @Override
     protected void initServices(ApplicationContext ctx) {
         productService = ctx.getBean(ProductService.class);
@@ -463,32 +489,6 @@ public class ProductEditController extends BaseController {
             wholesales.add(wholesale);
         }
         return wholesales;
-    }
-
-    @FXML
-    void onActionBtnSave(ActionEvent event) {
-        boolean updated = save();
-        if (updated) {
-            displayInfo(MessageCode.SUCCESS_EDIT_PRODUCT);
-            setPrevPageData(Boolean.TRUE);
-            close();
-        }
-    }
-
-    @FXML
-    void onActionBtnCancel(ActionEvent event) {
-        close();
-    }
-
-    @FXML
-    void onActionBtnRemove(ActionEvent event) {
-        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_PRODUCT);
-        if (result.isConfirmed()) {
-            productService.removeProducts(Arrays.asList(currentProduct.getId()));
-            displayInfo(MessageCode.SUCCESS_REMOVE_PRODUCT);
-            setPrevPageData(Boolean.TRUE);
-            close();
-        }
     }
 
 }
