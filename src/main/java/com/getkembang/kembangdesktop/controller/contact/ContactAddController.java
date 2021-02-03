@@ -1,8 +1,14 @@
 package com.getkembang.kembangdesktop.controller.contact;
 
+import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
-import com.getkembang.kembangdesktop.controller.CommonParentVBoxController;
+import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
+import com.getkembang.kembangdesktop.service.ContactService;
+import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
+import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
+import com.getkembang.kembangdesktop.viewmodel.ProductAddVM;
+import com.getkembang.kembangdesktop.viewmodel.ValidationResult;
 
 import org.springframework.context.ApplicationContext;
 
@@ -12,7 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-public class ContactAddController extends CommonParentVBoxController {
+public class ContactAddController extends CommonDataSaveController {
 
     @FXML
     private TextField tfName;
@@ -36,33 +42,22 @@ public class ContactAddController extends CommonParentVBoxController {
     private ComboBox<BasicComboBoxVM> cbContactType;
 
     @FXML
-    private Button btnCancel;
-
-    @FXML
     private Button btnSaveAndAdd;
 
-    @FXML
-    private Button btnSave;
-
-    @FXML
-    void onActionBtnCancel(ActionEvent event) {
-        close();
-    }
-
-    @FXML
-    void onActionBtnSave(ActionEvent event) {
-        close();
-    }
+    private ContactService contactService;
 
     @FXML
     void onActionBtnSaveAndAdd(ActionEvent event) {
-        close();
+        processDataSave();
+        if (isDataSaved()) {
+            displayInfo(MessageCode.SUCCESS_ADD_CONTACT);
+            resetControls();
+        }
     }
 
     @Override
     protected void initServices(ApplicationContext ctx) {
-        // TODO Auto-generated method stub
-
+        contactService = ctx.getBean(ContactService.class);
     }
 
     @Override
@@ -80,6 +75,34 @@ public class ContactAddController extends CommonParentVBoxController {
     @Override
     protected Page getCurrentPage() {
         return Page.MASTER_CONTACT_ADD;
+    }
+
+    @Override
+    protected ValidationResult validateValues() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    protected boolean save() {
+        ContactAddVM contact = new ContactAddVM();
+        contact.setName(tfName.getText());
+        contact.setCode(tfCode.getText());
+        contact.setPhone(tfPhone.getText());
+        contact.setEmail(tfEmail.getText());
+        contact.setAddress(tfAddress.getText());
+        contact.setCompanyName(tfCompanyName.getText());
+        return contactService.createContact(contact) > 0;
+    }
+
+    private void resetControls() {
+        tfName.setText(null);
+        tfCode.setText(null);
+        tfPhone.setText(null);
+        tfEmail.setText(null);
+        tfAddress.setText(null);
+        tfCompanyName.setText(null);
+        ComboBoxUtils.selectIndex(cbContactType, 0);
     }
 
 }

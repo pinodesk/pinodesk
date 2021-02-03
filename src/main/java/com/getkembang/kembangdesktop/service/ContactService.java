@@ -3,12 +3,16 @@ package com.getkembang.kembangdesktop.service;
 import java.util.List;
 
 import com.getkembang.kembangdesktop.repository.ContactRepository;
+import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
+import com.getkembang.kembangdesktop.viewmodel.ContactEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactVM;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ContactService extends BaseService {
@@ -19,6 +23,18 @@ public class ContactService extends BaseService {
     @Cacheable("contactsByFilter")
     public List<ContactVM> searchContacts(ContactFilterVM filter) {
         return convertList(contactRepository.filter(filter), ContactVM.class);
+    }
+
+    @CacheEvict(value = "contactsByFilter", allEntries = true)
+    @Transactional
+    public Long createContact(ContactAddVM contact) {
+        return contactRepository.createContact(contact);
+    }
+
+    @CacheEvict(value = "contactsByFilter", allEntries = true)
+    @Transactional
+    public Integer updateContact(ContactEditVM contact) {
+        return contactRepository.updateContact(contact);
     }
 
 }

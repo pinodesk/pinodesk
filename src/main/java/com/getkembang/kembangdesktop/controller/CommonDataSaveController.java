@@ -14,16 +14,16 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
     @FXML
     protected Button btnSave;
 
-    protected boolean saved;
+    private boolean dataSaved;
+
+    protected boolean isDataSaved() {
+        return dataSaved;
+    }
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
-        ValidationResult result = validateValues();
-        if (result.isError()) {
-            displayError(result.getMessageCode());
-            return;
-        }
-        if (save()) {
+        processDataSave();
+        if (dataSaved) {
             setPrevPageData(Boolean.TRUE);
             close();
         }
@@ -31,10 +31,20 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
 
     @FXML
     void onActionBtnCancel(ActionEvent event) {
-        if (saved) {
+        if (dataSaved) {
             setPrevPageData(Boolean.TRUE);
         }
         close();
+    }
+
+    protected void processDataSave() {
+        dataSaved = false;
+        ValidationResult result = validateValues();
+        if (result.isError()) {
+            displayError(result.getMessageCode());
+            return;
+        }
+        dataSaved = save();
     }
 
     protected abstract ValidationResult validateValues();

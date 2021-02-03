@@ -12,6 +12,9 @@ import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -21,6 +24,12 @@ public class FXUtils {
 
     private FXUtils() {
     }
+
+    //@formatter:off
+    public static final KeyCombination CTRL_S = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+    public static final KeyCombination CTRL_SHIFT_S = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+    public static final KeyCombination CTRL_SHIFT_C = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
+    //@formatter:on
 
     public static void show(Page page, boolean resizeable, Consumer<WindowEvent> onClose) throws IOException {
         Pane container = PageLoader.load(page);

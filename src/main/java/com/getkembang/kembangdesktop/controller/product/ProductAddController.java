@@ -37,13 +37,18 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
+import javafx.scene.input.KeyEvent;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ProductAddController extends CommonDataSaveController {
 
     @FXML
@@ -148,6 +153,11 @@ public class ProductAddController extends CommonDataSaveController {
     @FXML
     private TextField tfSellingPriceBeforeTax3;
 
+    @FXML
+    private SplitMenuButton btnSaveAndAdd;
+
+    private MenuItem btnSaveAndCopy;
+
     private BigDecimal vatPercentage;
 
     private ProductService productService;
@@ -155,11 +165,12 @@ public class ProductAddController extends CommonDataSaveController {
     private ConfigurationService configurationService;
 
     @FXML
-    void onActionBtnSaveAndCopy(ActionEvent event) {
-        if (save()) {
-            saved = true;
+    void onActionBtnSaveAndAdd(ActionEvent event) {
+        processDataSave();
+        if (isDataSaved()) {
             displayInfo(MessageCode.SUCCESS_ADD_PRODUCT);
-            cbUnit.getSelectionModel().clearSelection();
+            resetControls();
+            tfName.requestFocus();
         }
     }
 
@@ -271,9 +282,23 @@ public class ProductAddController extends CommonDataSaveController {
                 tfSellingPrice2,
                 tfSellingPrice3);
         // @formatter:on
+        initBtnSaveAndAdd();
         contentPane.setOnKeyPressed(event -> {
             if (KeyCode.ENTER.equals(event.getCode())) {
                 btnSave.fire();
+                return;
+            }
+            if (FXUtils.CTRL_S.match(event)) {
+                btnSave.fire();
+                return;
+            }
+            if (FXUtils.CTRL_SHIFT_S.match(event)) {
+                btnSaveAndAdd.fire();
+                return;
+            }
+            if (FXUtils.CTRL_SHIFT_C.match(event)) {
+                btnSaveAndCopy.fire();
+                return;
             }
         });
     }
@@ -289,9 +314,17 @@ public class ProductAddController extends CommonDataSaveController {
         return Page.MASTER_PRODUCT_ADD;
     }
 
-    @Override
-    protected Stage getCurrentStage() {
-        return (Stage) contentPane.getScene().getWindow();
+    private void initBtnSaveAndAdd() {
+        btnSaveAndCopy = new MenuItem(translate("btn.saveandcopy"));
+        btnSaveAndCopy.setOnAction(event -> {
+            processDataSave();
+            if (isDataSaved()) {
+                displayInfo(MessageCode.SUCCESS_ADD_PRODUCT);
+                cbUnit.getSelectionModel().clearSelection();
+                cbUnit.requestFocus();
+            }
+        });
+        btnSaveAndAdd.getItems().addAll(btnSaveAndCopy);
     }
 
     // @formatter:off
@@ -357,6 +390,31 @@ public class ProductAddController extends CommonDataSaveController {
             wholesales.add(wholesale);
         }
         return wholesales;
+    }
+
+    private void resetControls() {
+        tfName.setText(null);
+        tfCode.setText(null);
+        tfBarcode.setText(null);
+        tfDescription.setText(null);
+        tfQuantity.setText(null);
+        tfPurchasePrice.setText(null);
+        tfSellingPrice.setText(null);
+        chkIncludesVat.setSelected(false);
+        tfExpiredDate.setPlainText(null);
+        cbCategory.getSelectionModel().clearSelection();
+        cbUnit.getSelectionModel().clearSelection();
+        cbRack.getSelectionModel().clearSelection();
+        cbDrugCategory.getSelectionModel().clearSelection();
+        tfPrescriptionPrice.setText(null);
+        tfIndication.setText(null);
+        tfContraindication.setText(null);
+        tfPurchaseQuantity1.setText(null);
+        tfPurchaseQuantity2.setText(null);
+        tfPurchaseQuantity3.setText(null);
+        tfSellingPrice1.setText(null);
+        tfSellingPrice2.setText(null);
+        tfSellingPrice3.setText(null);
     }
 
 }

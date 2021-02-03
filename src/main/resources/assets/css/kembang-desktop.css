@@ -307,3 +307,40 @@
     -fx-text-fill: gray;
     -fx-highlight-fill: #7ecfff;
 }
+
+.split-menu-button.btn-primary {
+    -fx-background-color: #009c7c;
+    background-color: #009c7c;
+    -fx-border-radius: 0 0 0 0;
+    border-radius: 0 0 0 0;
+    -fx-background-radius: 0 0 0 0;
+}
+
+.split-menu-button.btn-primary > .label {
+    -fx-background-color: #009c7c;
+    background-color: #009c7c;
+    -fx-border-radius: 0 0 0 0;
+    border-radius: 0 0 0 0;
+    -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
+    -fx-text-fill: white;
+}
+
+.split-menu-button.btn-primary > .arrow-button {
+    -fx-background-color: #009c7c;
+    background-color: #009c7c;
+    -fx-border-radius: 0 0 0 0;
+    border-radius: 0 0 0 0;
+    -fx-background-radius: 0 0 0 0;
+    -fx-font-size: 13px;
+    font-size: 13px;
+    -fx-text-fill: white;
+}
+
+.split-menu-button.btn-primary > .arrow-button > .arrow {
+    -fx-background-color: white;
+    background-color: white;
+    -fx-border-color: white;
+    border-color: white;
+}

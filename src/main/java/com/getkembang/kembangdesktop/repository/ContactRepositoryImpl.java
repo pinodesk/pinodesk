@@ -3,6 +3,8 @@ package com.getkembang.kembangdesktop.repository;
 import java.util.List;
 
 import com.getkembang.kembangdesktop.domain.Contact;
+import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
+import com.getkembang.kembangdesktop.viewmodel.ContactEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
@@ -40,4 +42,48 @@ public class ContactRepositoryImpl extends AbstractRepository<Contact> implement
         return read(where);
     }
 
+    // @formatter:off
+    @Override
+    public Long createContact(ContactAddVM contactAdd) {
+        return executeInsert(new String[] {
+            Contact.C_NAME,
+            Contact.C_CODE,
+            Contact.C_PHONE,
+            Contact.C_EMAIL,
+            Contact.C_ADDRESS,
+            Contact.C_COMPANY_NAME,
+            Contact.C_CONTACT_TYPE
+        }, new Object[] {
+            contactAdd.getName(),
+            contactAdd.getCode(),
+            contactAdd.getPhone(),
+            contactAdd.getEmail(),
+            contactAdd.getAddress(),
+            contactAdd.getCompanyName(),
+            contactAdd.getContactType()
+        });
+    }
+
+    @Override
+    public Integer updateContact(ContactEditVM contactEdit) {
+        return update(new String[] {
+            Contact.C_NAME,
+            Contact.C_CODE,
+            Contact.C_PHONE,
+            Contact.C_EMAIL,
+            Contact.C_ADDRESS,
+            Contact.C_COMPANY_NAME,
+            Contact.C_CONTACT_TYPE
+        }, new Object[] {
+            contactEdit.getName(),
+            contactEdit.getCode(),
+            contactEdit.getPhone(),
+            contactEdit.getEmail(),
+            contactEdit.getAddress(),
+            contactEdit.getCompanyName(),
+            contactEdit.getContactType()
+        }, contactEdit.getId());
+    }
+    // @formatter:on
+    
 }
