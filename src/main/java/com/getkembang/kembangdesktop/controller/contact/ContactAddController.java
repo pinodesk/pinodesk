@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.controller.contact;
 
 import com.getkembang.kembangdesktop.constant.Page;
-import com.getkembang.kembangdesktop.controller.CommonParentVBoxWindowController;
+import com.getkembang.kembangdesktop.controller.CommonParentVBoxController;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 
 import org.springframework.context.ApplicationContext;
@@ -12,8 +12,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-// BaseSaveController
-public class ContactAddController extends CommonParentVBoxWindowController {
+public class ContactAddController extends CommonParentVBoxController {
 
     @FXML
     private TextField tfName;

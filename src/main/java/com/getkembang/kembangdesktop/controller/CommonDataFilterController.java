@@ -7,7 +7,7 @@ import javafx.scene.input.KeyCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public abstract class CommonDataFilterWindowController<T> extends CommonParentVBoxWindowController {
+public abstract class CommonDataFilterController<T> extends CommonParentVBoxController {
 
     protected T currentFilter;
 

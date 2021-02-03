@@ -1,16 +1,23 @@
 package com.getkembang.kembangdesktop.controller.contact;
 
+import java.util.Objects;
+
+import com.getkembang.kembangdesktop.constant.ContactType;
 import com.getkembang.kembangdesktop.constant.Page;
-import com.getkembang.kembangdesktop.controller.CommonDataFilterWindowController;
+import com.getkembang.kembangdesktop.constant.StringConstants;
+import com.getkembang.kembangdesktop.controller.CommonDataFilterController;
 import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
+import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
+import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 
 import org.springframework.context.ApplicationContext;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
-public class ContactFilterController extends CommonDataFilterWindowController<ContactFilterVM> {
+public class ContactFilterController extends CommonDataFilterController<ContactFilterVM> {
 
     @FXML
     private TextField tfName;
@@ -30,6 +37,9 @@ public class ContactFilterController extends CommonDataFilterWindowController<Co
     @FXML
     private TextField tfCompanyName;
 
+    @FXML
+    private ComboBox<BasicComboBoxVM> cbContactType;
+
     @Override
     protected void initFilterControlsValues() {
         if (currentFilter != null) {
@@ -39,6 +49,8 @@ public class ContactFilterController extends CommonDataFilterWindowController<Co
             tfEmail.setText(currentFilter.getEmail());
             tfAddress.setText(currentFilter.getAddress());
             tfCompanyName.setText(currentFilter.getCompanyName());
+            ComboBoxUtils.select(cbContactType, () -> cbContactType.getItems().stream()
+                    .filter(vm -> Objects.equals(currentFilter.getContactType(), vm.getValue())).findAny().get());
         }
     }
 
@@ -51,7 +63,7 @@ public class ContactFilterController extends CommonDataFilterWindowController<Co
         filter.setEmail(tfEmail.getText());
         filter.setAddress(tfAddress.getText());
         filter.setCompanyName(tfCompanyName.getText());
-        filter.setContactType(currentFilter.getContactType());
+        filter.setContactType(ComboBoxUtils.getSelectedItem(cbContactType).getValue());
         return filter;
     }
 
@@ -63,6 +75,7 @@ public class ContactFilterController extends CommonDataFilterWindowController<Co
         tfEmail.setText(null);
         tfAddress.setText(null);
         tfCompanyName.setText(null);
+        ComboBoxUtils.selectIndex(cbContactType, 0);
     }
 
     @Override
@@ -73,6 +86,9 @@ public class ContactFilterController extends CommonDataFilterWindowController<Co
     @Override
     protected void initControlsActions() {
         tfPhone.setTextFormatter(new DigitFormatter());
+        ComboBoxUtils.initBasic(cbContactType, new BasicComboBoxVM(null, StringConstants.EMPTY),
+                new BasicComboBoxVM(ContactType.CUSTOMER.toString(), translate("lbl.customer")),
+                new BasicComboBoxVM(ContactType.SUPPLIER.toString(), translate("lbl.supplier")));
     }
 
     @Override

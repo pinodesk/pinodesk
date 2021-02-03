@@ -6,7 +6,7 @@ import java.util.Date;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
-import com.getkembang.kembangdesktop.controller.CommonDataFilterWindowController;
+import com.getkembang.kembangdesktop.controller.CommonDataFilterController;
 import com.getkembang.kembangdesktop.javafx.control.MaskedTextField;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.RackComboBoxConverter;
@@ -36,7 +36,7 @@ import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProductFilterController extends CommonDataFilterWindowController<ProductFilterVM> {
+public class ProductFilterController extends CommonDataFilterController<ProductFilterVM> {
 
     @FXML
     private TextField tfName;

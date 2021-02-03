@@ -6,7 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
-public abstract class CommonDataSaveWindowController extends CommonParentVBoxWindowController {
+public abstract class CommonDataSaveController extends CommonParentVBoxController {
     
     @FXML
     protected Button btnCancel;

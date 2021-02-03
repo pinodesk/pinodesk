@@ -2,6 +2,7 @@ package com.getkembang.kembangdesktop.controller.contact;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Objects;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.ContactType;
@@ -98,7 +99,9 @@ public class ContactMainController extends BaseController {
         setNextPageData(nextPage, contactFilter);
         FXUtils.show(nextPage, false, we -> {
             contactFilter = getPageData();
-            searchContacts();
+            // It will trigger combobox's onActionCbContactType()
+            ComboBoxUtils.select(cbContactType, () -> cbContactType.getItems().stream()
+                    .filter(vm -> Objects.equals(contactFilter.getContactType(), vm.getValue())).findAny().get());
         });
     }
 
