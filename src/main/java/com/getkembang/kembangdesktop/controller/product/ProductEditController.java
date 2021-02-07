@@ -11,7 +11,7 @@ import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
-import com.getkembang.kembangdesktop.controller.BaseController;
+import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.javafx.control.MaskedTextField;
 import com.getkembang.kembangdesktop.javafx.converter.DrugCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
@@ -49,17 +49,15 @@ import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ProductEditController extends BaseController {
+public class ProductEditController extends CommonDataSaveController {
 
     @FXML
     private TextField tfName;
@@ -163,15 +161,6 @@ public class ProductEditController extends BaseController {
     @FXML
     private TextField tfSellingPriceBeforeTax3;
 
-    @FXML
-    private Button btnCancel;
-
-    @FXML
-    private Button btnSave;
-
-    @FXML
-    private VBox contentPane;
-
     private ProductVM currentProduct;
 
     private BigDecimal vatPercentage;
@@ -191,21 +180,6 @@ public class ProductEditController extends BaseController {
     private WholesaleService wholesaleService;
 
     private ConfigurationService configurationService;
-
-    @FXML
-    void onActionBtnSave(ActionEvent event) {
-        boolean updated = save();
-        if (updated) {
-            displayInfo(MessageCode.SUCCESS_EDIT_PRODUCT);
-            setPrevPageData(Boolean.TRUE);
-            close();
-        }
-    }
-
-    @FXML
-    void onActionBtnCancel(ActionEvent event) {
-        close();
-    }
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
@@ -309,11 +283,6 @@ public class ProductEditController extends BaseController {
         return Page.MASTER_PRODUCT_EDIT;
     }
 
-    @Override
-    protected Stage getCurrentStage() {
-        return (Stage) contentPane.getScene().getWindow();
-    }
-
     private void initDrugControlsValues() {
         DrugVM drug = drugService.getDrugByProductId(currentProduct.getId());
         if (drug != null) {
@@ -389,24 +358,26 @@ public class ProductEditController extends BaseController {
         }
     }
 
-    private ValidationResult validate() {
+    @Override
+    protected ValidationResult validateValues() {
+        ValidationResult result = new ValidationResult();
         if (StringUtils.isBlank(tfName.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_NAME);
+            result.addError(MessageCode.ERROR_EMPTY_NAME);
         }
         if (StringUtils.isBlank(tfCode.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_CODE);
+            result.addError(MessageCode.ERROR_EMPTY_CODE);
         }
         if (StringUtils.isBlank(tfPurchasePrice.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
+            result.addError(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
         }
         if (StringUtils.isBlank(tfSellingPrice.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_SELLING_PRICE);
+            result.addError(MessageCode.ERROR_EMPTY_SELLING_PRICE);
         }
         if (!ComboBoxUtils.hasItemSelected(cbCategory)) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_CATEGORY);
+            result.addError(MessageCode.ERROR_EMPTY_CATEGORY);
         }
         if (!ComboBoxUtils.hasItemSelected(cbUnit)) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_UNIT);
+            result.addError(MessageCode.ERROR_EMPTY_UNIT);
         }
         // @formatter:off
         if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) 
@@ -415,24 +386,20 @@ public class ProductEditController extends BaseController {
                         tfIndication.getText(), 
                         tfContraindication.getText())) {
         // @formatter:on
-            return new ValidationResult(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
+            result.addError(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
         }
         if (ComboBoxUtils.hasItemSelected(cbDrugCategory) && !isProductCategoryDrugs()) {
-            return new ValidationResult(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
+            result.addError(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
         }
-        return new ValidationResult();
+        return result;
     }
 
     private boolean isProductCategoryDrugs() {
         return ComboBoxUtils.getSelectedItem(cbCategory).getCode().equals(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
     }
 
-    private boolean save() {
-        ValidationResult result = validate();
-        if (result.isError()) {
-            displayError(result.getMessageCode());
-            return false;
-        }
+    @Override
+    protected boolean save() {
         ProductEditVM productEdit = new ProductEditVM();
         productEdit.setId(currentProduct.getId());
         productEdit.setName(tfName.getText());
@@ -462,7 +429,6 @@ public class ProductEditController extends BaseController {
         }
         productEdit.setWholesales(loadWholesales());
         return productService.updateProduct(productEdit);
-       
     }
 
     private List<WholesaleVM> loadWholesales() {

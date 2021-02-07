@@ -1,26 +1,30 @@
 package com.getkembang.kembangdesktop.viewmodel;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.getkembang.kembangdesktop.constant.MessageCode;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@AllArgsConstructor
 @NoArgsConstructor
 public class ValidationResult {
 
     @Getter
-    private MessageCode messageCode;
+    private Set<MessageCode> messageCodes;
 
-    public ValidationResult(MessageCode messageCode) {
-        this.messageCode = messageCode;
+    public void addError(MessageCode messageCode) {
+        if (messageCodes == null) {
+            messageCodes = new HashSet<>();
+        }
+        messageCodes.add(messageCode);
     }
 
-    public void setError(MessageCode messageCode) {
-        this.messageCode = messageCode;
-    }
-
-    public boolean isError() {
-        return this.messageCode != null;
+    public boolean hasError() {
+        return messageCodes != null && !messageCodes.isEmpty();
     }
 
 }

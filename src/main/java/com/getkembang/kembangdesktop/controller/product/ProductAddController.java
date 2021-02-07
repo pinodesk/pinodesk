@@ -37,7 +37,6 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -45,7 +44,6 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -176,23 +174,24 @@ public class ProductAddController extends CommonDataSaveController {
 
     @Override
     protected ValidationResult validateValues() {
+        ValidationResult result = new ValidationResult();
         if (StringUtils.isBlank(tfName.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_NAME);
+            result.addError(MessageCode.ERROR_EMPTY_NAME);
         }
         if (StringUtils.isBlank(tfCode.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_CODE);
+            result.addError(MessageCode.ERROR_EMPTY_CODE);
         }
         if (StringUtils.isBlank(tfPurchasePrice.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
+            result.addError(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
         }
         if (StringUtils.isBlank(tfSellingPrice.getText())) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_SELLING_PRICE);
+            result.addError(MessageCode.ERROR_EMPTY_SELLING_PRICE);
         }
         if (!ComboBoxUtils.hasItemSelected(cbCategory)) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_CATEGORY);
+            result.addError(MessageCode.ERROR_EMPTY_CATEGORY);
         }
         if (!ComboBoxUtils.hasItemSelected(cbUnit)) {
-            return new ValidationResult(MessageCode.ERROR_EMPTY_UNIT);
+            result.addError(MessageCode.ERROR_EMPTY_UNIT);
         }
         // @formatter:off
         if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) 
@@ -201,12 +200,12 @@ public class ProductAddController extends CommonDataSaveController {
                         tfIndication.getText(), 
                         tfContraindication.getText())) {
         // @formatter:on
-            return new ValidationResult(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
+            result.addError(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
         }
         if (ComboBoxUtils.hasItemSelected(cbDrugCategory) && !isProductCategoryDrugs()) {
-            return new ValidationResult(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
+            result.addError(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
         }
-        return new ValidationResult();
+        return result;
     }
 
     @Override

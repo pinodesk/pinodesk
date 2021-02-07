@@ -5,8 +5,11 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
@@ -19,6 +22,7 @@ import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.utility.PageData;
 import com.getkembang.kembangdesktop.viewmodel.AlertResult;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.ApplicationContext;
@@ -180,6 +184,12 @@ public abstract class BaseController {
         return displayError(translate(messageCode.toString()));
     }
 
+    protected AlertResult displayError(Collection<MessageCode> messageCodes) {
+        List<String> messages = messageCodes.stream().map(code -> "\u2022 " + translate(code)).collect(Collectors.toList());
+        String message = StringUtils.join(messages, "\n");
+        return displayError(message);
+    }
+
     protected AlertResult displayInfo(String message) {
         return displayAlert(AlertType.INFORMATION, message);
     }
@@ -221,7 +231,7 @@ public abstract class BaseController {
         textArea.setMaxHeight(Double.MAX_VALUE);
         GridPane.setVgrow(textArea, Priority.ALWAYS);
         GridPane.setHgrow(textArea, Priority.ALWAYS);
-        
+
         GridPane expContent = new GridPane();
         expContent.setMaxWidth(Double.MAX_VALUE);
         expContent.add(label, 0, 0);

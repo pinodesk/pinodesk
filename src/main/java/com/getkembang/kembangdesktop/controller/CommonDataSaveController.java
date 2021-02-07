@@ -40,8 +40,8 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
     protected void processDataSave() {
         dataSaved = false;
         ValidationResult result = validateValues();
-        if (result.isError()) {
-            displayError(result.getMessageCode());
+        if (result.hasError()) {
+            displayError(result.getMessageCodes());
             return;
         }
         dataSaved = save();

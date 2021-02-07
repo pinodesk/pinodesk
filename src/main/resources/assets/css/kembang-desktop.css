@@ -21,6 +21,7 @@
 }
 
 .btn-primary:hover,
+.btn-primary:focused,
 .btn-primary-active {
     -fx-background-color: #008167;
     background-color: #008167;
@@ -43,7 +44,8 @@
     -fx-text-fill: white;
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-secondary:focused {
     -fx-background-color: #727272;
     background-color: #727272;
     -fx-border-radius: 0 0 0 0;
@@ -316,6 +318,15 @@
     -fx-background-radius: 0 0 0 0;
 }
 
+.split-menu-button.btn-primary:hover,
+.split-menu-button.btn-primary:focused {
+    -fx-background-color: #008167;
+    background-color: #008167;
+    -fx-border-radius: 0 0 0 0;
+    border-radius: 0 0 0 0;
+    -fx-background-radius: 0 0 0 0;
+}
+
 .split-menu-button.btn-primary > .label {
     -fx-background-color: #009c7c;
     background-color: #009c7c;
@@ -327,6 +338,12 @@
     -fx-text-fill: white;
 }
 
+.split-menu-button.btn-primary:hover > .label,
+.split-menu-button.btn-primary:focused > .label {
+    -fx-background-color: #008167;
+    background-color: #008167;
+}
+
 .split-menu-button.btn-primary > .arrow-button {
     -fx-background-color: #009c7c;
     background-color: #009c7c;
@@ -336,6 +353,12 @@
     -fx-font-size: 13px;
     font-size: 13px;
     -fx-text-fill: white;
+}
+
+.split-menu-button.btn-primary:hover > .arrow-button,
+.split-menu-button.btn-primary:focused > .arrow-button {
+    -fx-background-color: #008167;
+    background-color: #008167;
 }
 
 .split-menu-button.btn-primary > .arrow-button > .arrow {

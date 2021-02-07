@@ -7,9 +7,9 @@ import com.getkembang.kembangdesktop.service.ContactService;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
-import com.getkembang.kembangdesktop.viewmodel.ProductAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ValidationResult;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
@@ -79,8 +79,17 @@ public class ContactAddController extends CommonDataSaveController {
 
     @Override
     protected ValidationResult validateValues() {
-        // TODO Auto-generated method stub
-        return null;
+        ValidationResult result = new ValidationResult();
+        if (StringUtils.isBlank(tfName.getText())) {
+            result.addError(MessageCode.ERROR_EMPTY_NAME);
+        }
+        if (StringUtils.isBlank(tfCode.getText())) {
+            result.addError(MessageCode.ERROR_EMPTY_CODE);
+        }
+        if (ComboBoxUtils.getSelectedItem(cbContactType).getValue() == null) {
+            result.addError(MessageCode.ERROR_EMPTY_CONTACT_TYPE);
+        }
+        return result;
     }
 
     @Override
