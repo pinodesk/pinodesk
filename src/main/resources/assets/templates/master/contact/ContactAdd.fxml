@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.getkembang.kembangdesktop.javafx.control.MaskedTextField?>
 <?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.contact.ContactAddController">
+<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.contact.ContactAddController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -41,6 +42,25 @@
                   <RowConstraints maxHeight="-Infinity" minHeight="0.0" />
                </rowConstraints>
                <children>
+                  <HBox spacing="10.0">
+                     <children>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl.contacttype">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="cbContactType" onAction="#onActionCbContactType" prefWidth="360.0">
+                                 <styleClass>
+                                    <String fx:value="combo-box-autocomplete" />
+                                    <String fx:value="border-primary" />
+                                 </styleClass>
+                              </ComboBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
                   <HBox spacing="10.0" GridPane.rowIndex="1">
                      <children>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
@@ -64,11 +84,11 @@
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfCode" styleClass="input-primary">
+                              <MaskedTextField fx:id="tfCode" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
-                              </TextField>
+                              </MaskedTextField>
                            </children>
                         </VBox>
                      </children>
@@ -133,25 +153,6 @@
                                     <Font size="13.0" />
                                  </font>
                               </TextField>
-                           </children>
-                        </VBox>
-                     </children>
-                  </HBox>
-                  <HBox spacing="10.0">
-                     <children>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl.contacttype">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="cbContactType" prefWidth="360.0">
-                                 <styleClass>
-                                    <String fx:value="combo-box-autocomplete" />
-                                    <String fx:value="border-primary" />
-                                 </styleClass>
-                              </ComboBox>
                            </children>
                         </VBox>
                      </children>

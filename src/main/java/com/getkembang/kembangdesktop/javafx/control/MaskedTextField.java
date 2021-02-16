@@ -449,7 +449,7 @@ public class MaskedTextField extends TextField {
         }
                
         public boolean accept(char value) {
-            return Character.isLetter(value);
+            return Character.isLetterOrDigit(value);
         }
     }
     
@@ -465,7 +465,7 @@ public class MaskedTextField extends TextField {
         }
         
         public boolean accept(char value) {
-            return Character.isLetter(value);
+            return Character.isLetterOrDigit(value);
         }
     }
     

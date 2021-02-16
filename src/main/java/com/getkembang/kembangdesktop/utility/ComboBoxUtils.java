@@ -61,11 +61,15 @@ public class ComboBoxUtils {
         if (!cb.getItems().contains(item)) {
             cb.getItems().add(item);
         }
-        cb.getSelectionModel().select(itemSupplier.get());
+        cb.getSelectionModel().select(item);
     }
 
     public static <T> void selectIndex(ComboBox<T> cb, int index) {
         cb.getSelectionModel().clearAndSelect(index);
+    }
+
+    public static <T> void clearSelection(ComboBox<T> cb) {
+        cb.getSelectionModel().clearSelection();
     }
 
     @SuppressWarnings("unchecked")

@@ -80,6 +80,7 @@ public class ContactMainController extends BaseController {
     private Label lblRows;
 
     private ContactService contactService;
+
     private ContactFilterVM contactFilter;
 
     @FXML
@@ -100,6 +101,7 @@ public class ContactMainController extends BaseController {
         FXUtils.show(nextPage, false, we -> {
             contactFilter = getPageData();
             // It will trigger combobox's onActionCbContactType()
+            ComboBoxUtils.clearSelection(cbContactType);
             ComboBoxUtils.select(cbContactType, () -> cbContactType.getItems().stream()
                     .filter(vm -> Objects.equals(contactFilter.getContactType(), vm.getValue())).findAny().get());
         });
@@ -112,10 +114,12 @@ public class ContactMainController extends BaseController {
 
     @FXML
     void onActionCbContactType(ActionEvent event) {
-        BasicComboBoxVM selected = ComboBoxUtils.getSelectedItem(cbContactType);
-        String value = selected.getValue();
-        contactFilter.setContactType(value);
-        searchContacts();
+        if (ComboBoxUtils.hasItemSelected(cbContactType)) {
+            BasicComboBoxVM selected = ComboBoxUtils.getSelectedItem(cbContactType);
+            String value = selected.getValue();
+            contactFilter.setContactType(value);
+            searchContacts();
+        }
     }
 
     @Override

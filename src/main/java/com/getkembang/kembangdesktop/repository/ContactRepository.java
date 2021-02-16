@@ -2,6 +2,7 @@ package com.getkembang.kembangdesktop.repository;
 
 import java.util.List;
 
+import com.getkembang.kembangdesktop.constant.ContactType;
 import com.getkembang.kembangdesktop.domain.Contact;
 import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactEditVM;
@@ -15,5 +16,9 @@ public interface ContactRepository extends CommonRepository<Contact> {
     Long createContact(ContactAddVM contactAdd);
 
     Integer updateContact(ContactEditVM contactEdit);
+
+    boolean existsByNameAndContactType(String name, ContactType ct);
+
+    boolean existsByCodeAndContactType(String code, ContactType ct);
 
 }

@@ -2,6 +2,7 @@ package com.getkembang.kembangdesktop.repository;
 
 import java.util.List;
 
+import com.getkembang.kembangdesktop.constant.ContactType;
 import com.getkembang.kembangdesktop.domain.Contact;
 import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactEditVM;
@@ -37,7 +38,7 @@ public class ContactRepositoryImpl extends AbstractRepository<Contact> implement
             where.containsIgnoreCase(Contact.C_COMPANY_NAME, filter.getCompanyName());
         }
         if (filter.getContactType() != null) {
-            where.equals(Contact.C_CONTACT_TYPE, filter.getContactType().toLowerCase());
+            where.equals(Contact.C_CONTACT_TYPE, filter.getContactType());
         }
         return read(where);
     }
@@ -85,5 +86,17 @@ public class ContactRepositoryImpl extends AbstractRepository<Contact> implement
         }, contactEdit.getId());
     }
     // @formatter:on
-    
+
+    @Override
+    public boolean existsByNameAndContactType(String name, ContactType ct) {
+        return exists(
+                new Where().equalsIgnoreCase(Contact.C_NAME, name).andEquals(Contact.C_CONTACT_TYPE, ct.toString()));
+    }
+
+    @Override
+    public boolean existsByCodeAndContactType(String code, ContactType ct) {
+        return exists(
+                new Where().equalsIgnoreCase(Contact.C_CODE, code).andEquals(Contact.C_CONTACT_TYPE, ct.toString()));
+    }
+
 }

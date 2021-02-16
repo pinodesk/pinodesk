@@ -26,7 +26,10 @@ public enum DomainError {
     RACK_NOT_FOUND_BY_ID("DE04001", MessageCode.ERROR_RACK_NOT_FOUND_BY_ID),
 
     // Drug category (05)
-    DRUG_CATEGORY_NOT_FOUND_BY_ID("DE05001", MessageCode.ERROR_DRUG_CATEGORY_NOT_FOUND_BY_ID);
+    DRUG_CATEGORY_NOT_FOUND_BY_ID("DE05001", MessageCode.ERROR_DRUG_CATEGORY_NOT_FOUND_BY_ID),
+
+    // Contact (06)
+    CONTACT_EXISTS_BY_CODE_AND_TYPE("DE06001", MessageCode.ERROR_CONTACT_EXISTS_BY_CODE_AND_TYPE);
 
     private final String code;
     private final MessageCode messageCode;

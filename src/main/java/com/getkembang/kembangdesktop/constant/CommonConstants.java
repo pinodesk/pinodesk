@@ -11,4 +11,7 @@ public interface CommonConstants {
     String YES = "yes";
     String NO = "no";
     String PRODUCT_CATEGORY_CODE_DRUGS = "000000518";
+    String CONTACT_MASK_SUPPLIER = "S-UUUU-UUUU";
+    String CONTACT_MASK_CUSTOMER = "C-UUUU-UUUU";
+    int CONTACT_CODE_PLAIN_TEXT_LENGTH = 8;
 }

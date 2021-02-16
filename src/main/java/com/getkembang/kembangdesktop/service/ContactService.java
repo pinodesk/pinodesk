@@ -2,6 +2,9 @@ package com.getkembang.kembangdesktop.service;
 
 import java.util.List;
 
+import com.getkembang.kembangdesktop.constant.ContactType;
+import com.getkembang.kembangdesktop.constant.DomainError;
+import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.repository.ContactRepository;
 import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactEditVM;
@@ -28,6 +31,10 @@ public class ContactService extends BaseService {
     @CacheEvict(value = "contactsByFilter", allEntries = true)
     @Transactional
     public Long createContact(ContactAddVM contact) {
+        ContactType ct = ContactType.of(contact.getContactType()).orElseThrow();
+        if (contactRepository.existsByCodeAndContactType(contact.getCode(), ct)) {
+            throw new DomainException(DomainError.CONTACT_EXISTS_BY_CODE_AND_TYPE);
+        }
         return contactRepository.createContact(contact);
     }
 

@@ -165,7 +165,7 @@ public class ProductAddController extends CommonDataSaveController {
     @FXML
     void onActionBtnSaveAndAdd(ActionEvent event) {
         processDataSave();
-        if (isDataSaved()) {
+        if (isLastDataSaved()) {
             displayInfo(MessageCode.SUCCESS_ADD_PRODUCT);
             resetControls();
             tfName.requestFocus();
@@ -317,7 +317,7 @@ public class ProductAddController extends CommonDataSaveController {
         btnSaveAndCopy = new MenuItem(translate("btn.saveandcopy"));
         btnSaveAndCopy.setOnAction(event -> {
             processDataSave();
-            if (isDataSaved()) {
+            if (isLastDataSaved()) {
                 displayInfo(MessageCode.SUCCESS_ADD_PRODUCT);
                 cbUnit.getSelectionModel().clearSelection();
                 cbUnit.requestFocus();

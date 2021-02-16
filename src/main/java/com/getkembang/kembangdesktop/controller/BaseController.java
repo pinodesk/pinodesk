@@ -112,7 +112,7 @@ public abstract class BaseController {
 
     private void handleDomainException(DomainException e) {
         DomainError err = e.getError();
-        displayError(err.code() + " - " + translate(err.messageCode()));
+        displayError(String.format("%s. (%s)", translate(err.messageCode()), err.code()));
     }
 
     protected String translate(String messageCode) {
@@ -185,7 +185,7 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayError(Collection<MessageCode> messageCodes) {
-        List<String> messages = messageCodes.stream().map(code -> "\u2022 " + translate(code)).collect(Collectors.toList());
+        List<String> messages = messageCodes.stream().map(this::translate).collect(Collectors.toList());
         String message = StringUtils.join(messages, "\n");
         return displayError(message);
     }
