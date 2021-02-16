@@ -131,13 +131,13 @@ public class ProductMainController extends BaseController {
     }
 
     @Override
-    protected void initControlsActions() {
+    protected void initControlActions() {
         initTableProduct();
         registerKeyListener();
     }
 
     @Override
-    protected void initControlsValues() {
+    protected void initControlValues() {
         productFilter = new ProductFilterVM();
         searchProducts();
     }

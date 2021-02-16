@@ -90,7 +90,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
     private UnitService unitService;
 
     @Override
-    protected void initFilterControlsValues() {
+    protected void initFilterControlValues() {
         if (currentFilter != null) {
             Integer quantityMin = currentFilter.getQuantityMin();
             Integer quantityMax = currentFilter.getQuantityMax();
@@ -218,7 +218,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
     }
 
     @Override
-    protected void initControlsActions() {
+    protected void initControlActions() {
         ComboBoxUtils.initAutoComplete(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
                 new ProductCategoryComboBoxConverter(cbCategory));
         ComboBoxUtils.initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit),

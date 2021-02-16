@@ -41,7 +41,7 @@ public class ContactFilterController extends CommonDataFilterController<ContactF
     private ComboBox<BasicComboBoxVM> cbContactType;
 
     @Override
-    protected void initFilterControlsValues() {
+    protected void initFilterControlValues() {
         if (currentFilter != null) {
             tfName.setText(currentFilter.getName());
             tfCode.setText(currentFilter.getCode());
@@ -84,7 +84,7 @@ public class ContactFilterController extends CommonDataFilterController<ContactF
     }
 
     @Override
-    protected void initControlsActions() {
+    protected void initControlActions() {
         tfPhone.setTextFormatter(new DigitFormatter());
         ComboBoxUtils.initBasic(cbContactType, new BasicComboBoxVM(null, StringConstants.EMPTY),
                 new BasicComboBoxVM(ContactType.CUSTOMER.toString(), translate("lbl.customer")),

@@ -55,15 +55,15 @@ public abstract class BaseController {
     void initialize() {
         setDefaultUncaughtExceptionHandler();
         initServices(ApplicationContextHolder.getApplicationContext());
-        initControlsActions();
-        initControlsValues();
+        initControlActions();
+        initControlValues();
     }
 
     protected abstract void initServices(ApplicationContext ctx);
 
-    protected abstract void initControlsActions();
+    protected abstract void initControlActions();
 
-    protected abstract void initControlsValues();
+    protected abstract void initControlValues();
 
     protected abstract Page getCurrentPage();
 

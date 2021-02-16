@@ -38,9 +38,9 @@ public abstract class CommonDataFilterController<T> extends CommonParentVBoxCont
     }
 
     @Override
-    protected void initControlsValues() {
+    protected void initControlValues() {
         currentFilter = getPageData();
-        initFilterControlsValues();
+        initFilterControlValues();
         contentPane.setOnKeyPressed(event -> {
             if (KeyCode.ENTER.equals(event.getCode())) {
                 btnFilter.fire();
@@ -48,7 +48,7 @@ public abstract class CommonDataFilterController<T> extends CommonParentVBoxCont
         });
     }
 
-    protected abstract void initFilterControlsValues();
+    protected abstract void initFilterControlValues();
 
     protected abstract T getFreshFilterValues();
 

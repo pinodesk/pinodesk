@@ -35,12 +35,12 @@ public class MainController extends BaseController {
     }
 
     @Override
-    protected void initControlsActions() {
+    protected void initControlActions() {
         // No controls to initialize
     }
 
     @Override
-    protected void initControlsValues() {
+    protected void initControlValues() {
         // No fields values to initialize
     }
 

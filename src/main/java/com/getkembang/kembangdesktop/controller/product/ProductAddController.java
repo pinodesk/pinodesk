@@ -246,7 +246,7 @@ public class ProductAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initControlsActions() {
+    protected void initControlActions() {
         tfPurchasePrice.setOnKeyTyped(event -> {
             calculateTaxAndProfit();
             calculateWholesaleTaxAndProfit();
@@ -303,7 +303,7 @@ public class ProductAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initControlsValues() {
+    protected void initControlValues() {
         String vatPercentageBase = configurationService.getConfiguration(ConfigurationConstants.VAT_PERCENTAGE);
         vatPercentage = NumberUtils.toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
     }

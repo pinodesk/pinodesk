@@ -124,7 +124,7 @@ public class ContactMainController extends BaseController {
     }
 
     @Override
-    protected void initControlsActions() {
+    protected void initControlActions() {
         tableContact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.setColumnValue(colCode, ContactVM::getCode);
         TableViewUtils.setColumnValue(colName, ContactVM::getName);
@@ -143,7 +143,7 @@ public class ContactMainController extends BaseController {
     }
 
     @Override
-    protected void initControlsValues() {
+    protected void initControlValues() {
         contactFilter = new ContactFilterVM();
         searchContacts();
     }

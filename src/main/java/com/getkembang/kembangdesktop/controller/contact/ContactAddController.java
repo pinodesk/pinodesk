@@ -61,13 +61,13 @@ public class ContactAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initControlsActions() {
+    protected void initControlActions() {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    protected void initControlsValues() {
+    protected void initControlValues() {
         // TODO Auto-generated method stub
 
     }
