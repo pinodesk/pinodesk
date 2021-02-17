@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.contact.ContactAddController">
+<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.contact.ContactAddController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -84,10 +84,14 @@
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <MaskedTextField fx:id="tfCode" styleClass="input-primary">
+                              <MaskedTextField fx:id="tfCode" editable="false">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
+                                 <styleClass>
+                                    <String fx:value="input-primary" />
+                                    <String fx:value="bg-disabled" />
+                                 </styleClass>
                               </MaskedTextField>
                            </children>
                         </VBox>

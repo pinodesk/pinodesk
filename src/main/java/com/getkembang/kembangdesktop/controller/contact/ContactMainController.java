@@ -3,9 +3,11 @@ package com.getkembang.kembangdesktop.controller.contact;
 import java.io.IOException;
 import java.util.Date;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.ContactType;
+import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.controller.BaseController;
@@ -15,14 +17,17 @@ import com.getkembang.kembangdesktop.utility.Async;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
 import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.utility.TableViewUtils;
+import com.getkembang.kembangdesktop.viewmodel.AlertResult;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactVM;
+import com.getkembang.kembangdesktop.viewmodel.ProductVM;
 
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -31,6 +36,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
@@ -109,7 +116,15 @@ public class ContactMainController extends BaseController {
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-        //
+        ObservableList<ContactVM> items = tableContact.getSelectionModel().getSelectedItems();
+        if (!items.isEmpty()) {
+            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_CONTACTS);
+            if (result.isConfirmed()) {
+                contactService.removeContacts(items.stream().map(ContactVM::getId).collect(Collectors.toList()));
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_CONTACTS);
+                searchContacts();
+            }
+        }
     }
 
     @FXML
@@ -129,7 +144,6 @@ public class ContactMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        tableContact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.setColumnValue(colCode, ContactVM::getCode);
         TableViewUtils.setColumnValue(colName, ContactVM::getName);
         TableViewUtils.setColumnValue(colPhone, ContactVM::getPhone);
@@ -140,6 +154,17 @@ public class ContactMainController extends BaseController {
                 ContactVM::getCreatedAt);
         TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 ContactVM::getUpdatedAt);
+        tableContact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tableContact.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                handleActionTableContact();
+            }
+        });
+        tableContact.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleActionTableContact();
+            }
+        });
         ComboBoxUtils.initBasic(cbContactType, new BasicComboBoxVM(null, StringConstants.EMPTY),
                 new BasicComboBoxVM(ContactType.CUSTOMER.toString(), translate("lbl.customer")),
                 new BasicComboBoxVM(ContactType.SUPPLIER.toString(), translate("lbl.supplier")));
@@ -176,6 +201,17 @@ public class ContactMainController extends BaseController {
                     tableContact.getSortOrder().setAll(colName); // Always sort by name after searching
                     lblRows.setText(contacts.size() + "");
                 }));
+    }
+
+    private void handleActionTableContact() {
+        ContactVM selected = tableContact.getSelectionModel().getSelectedItem();
+        Page nextPage = Page.MASTER_CONTACT_EDIT;
+        setNextPageData(nextPage, selected);
+        FXUtils.show(nextPage, false, event -> {
+            if (Boolean.TRUE.equals(getPageData())) {
+                searchContacts();
+            }
+        });
     }
 
 }

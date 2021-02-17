@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import com.getkembang.kembangdesktop.Kembang;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.Page;
+import com.getkembang.kembangdesktop.exception.FXException;
 import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 
 import javafx.scene.Scene;
@@ -31,30 +32,34 @@ public class FXUtils {
     public static final KeyCombination CTRL_SHIFT_C = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
     //@formatter:on
 
-    public static void show(Page page, boolean resizeable, Consumer<WindowEvent> onClose) throws IOException {
-        Pane container = PageLoader.load(page);
-        Scene scene = new Scene(container);
-        Stage stage = new Stage();
-        setDefaultIcons(stage);
-        stage.setResizable(resizeable);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle(CommonConstants.APP_TITLE);
-        stage.setScene(scene);
-        if (onClose != null) {
-            stage.setOnHidden(onClose::accept);
+    public static void show(Page page, boolean resizeable, Consumer<WindowEvent> onClose) {
+        try {
+            Pane container = PageLoader.load(page);
+            Scene scene = new Scene(container);
+            Stage stage = new Stage();
+            setDefaultIcons(stage);
+            stage.setResizable(resizeable);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle(CommonConstants.APP_TITLE);
+            stage.setScene(scene);
+            if (onClose != null) {
+                stage.setOnHidden(onClose::accept);
+            }
+            stage.show();
+        } catch (Exception e) {
+            throw new FXException(e);
         }
-        stage.show();
     }
 
-    public static void show(Page page, boolean resizeable) throws IOException {
+    public static void show(Page page, boolean resizeable) {
         show(page, resizeable, null);
     }
 
-    public static void show(Page page, Consumer<WindowEvent> onClose) throws IOException {
+    public static void show(Page page, Consumer<WindowEvent> onClose) {
         show(page, true, onClose);
     }
 
-    public static void show(Page page) throws IOException {
+    public static void show(Page page) {
         show(page, null);
     }
 

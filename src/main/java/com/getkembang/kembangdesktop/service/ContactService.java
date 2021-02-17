@@ -10,6 +10,8 @@ import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactVM;
+import com.gitlab.muhammadkholidb.sequel.model.DataModel;
+import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -42,6 +44,12 @@ public class ContactService extends BaseService {
     @Transactional
     public Integer updateContact(ContactEditVM contact) {
         return contactRepository.updateContact(contact);
+    }
+
+    @CacheEvict(value = "contactsByFilter", allEntries = true)
+    @Transactional
+    public void removeContacts(List<Long> ids) {
+        contactRepository.delete(ids);
     }
 
 }

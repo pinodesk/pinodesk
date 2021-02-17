@@ -196,15 +196,11 @@ public class ProductMainController extends BaseController {
         ProductVM selected = tableProduct.getSelectionModel().getSelectedItem();
         Page nextPage = Page.MASTER_PRODUCT_EDIT;
         setNextPageData(nextPage, selected);
-        try {
-            FXUtils.show(nextPage, false, event -> {
-                if (Boolean.TRUE.equals(getPageData())) {
-                    searchProducts();
-                }
-            });
-        } catch (IOException ex) {
-            log.error("Failed to show edit product window", ex);
-        }
+        FXUtils.show(nextPage, false, event -> {
+            if (Boolean.TRUE.equals(getPageData())) {
+                searchProducts();
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")

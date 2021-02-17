@@ -17,6 +17,7 @@ import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.exception.DomainException;
+import com.getkembang.kembangdesktop.exception.FXException;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
 import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.utility.PageData;
@@ -101,6 +102,10 @@ public abstract class BaseController {
                         handleDomainException((DomainException) rootCause);
                         return;
                     }
+                    if (rootCause instanceof FXException) {
+                        handleFXException((FXException) rootCause);
+                        return;
+                    }
                     log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
                     displayException(rootCause);
                 });
@@ -113,6 +118,11 @@ public abstract class BaseController {
     private void handleDomainException(DomainException e) {
         DomainError err = e.getError();
         displayError(String.format("%s. (%s)", translate(err.messageCode()), err.code()));
+    }
+
+    private void handleFXException(FXException e) {
+        log.error("FXException caught!", e);
+        displayException(e.getCause());
     }
 
     protected String translate(String messageCode) {
