@@ -84,7 +84,7 @@
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <MaskedTextField fx:id="tfCode" editable="false">
+                              <MaskedTextField fx:id="tfCode" disable="true" editable="false">
                                  <font>
                                     <Font size="13.0" />
                                  </font>

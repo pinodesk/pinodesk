@@ -1,10 +1,12 @@
 package com.getkembang.kembangdesktop.controller;
 
+import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.ValidationResult;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.input.KeyCode;
 
 public abstract class CommonDataSaveController extends CommonParentVBoxController {
     
@@ -47,8 +49,34 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
             return;
         }
         lastDataSaved = save();
-        hasDataSaved = true;
+        if (!hasDataSaved) {
+            hasDataSaved = true;
+        }
     }
+
+    @Override
+    protected void initParentVBoxControlActions() {
+        initDataSaveControlActions();
+        addContentPaneOnKeyPressedHandler(event -> {
+            if (KeyCode.ENTER.equals(event.getCode()) || FXUtils.CTRL_S.match(event)) {
+                btnSave.fire();
+                return;
+            }
+            if (KeyCode.ESCAPE.equals(event.getCode())) {
+                btnCancel.fire();
+                return;
+            }
+        });
+    }
+
+    @Override
+    protected void initControlValues() {
+        initDataSaveControlValues();
+    }
+
+    protected abstract void initDataSaveControlActions();
+
+    protected abstract void initDataSaveControlValues();
 
     protected abstract ValidationResult validateValues();
 

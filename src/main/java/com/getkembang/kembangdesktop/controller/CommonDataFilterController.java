@@ -1,5 +1,7 @@
 package com.getkembang.kembangdesktop.controller;
 
+import com.getkembang.kembangdesktop.utility.FXUtils;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -40,15 +42,31 @@ public abstract class CommonDataFilterController<T> extends CommonParentVBoxCont
     @Override
     protected void initControlValues() {
         currentFilter = getPageData();
-        initFilterControlValues();
-        contentPane.setOnKeyPressed(event -> {
-            if (KeyCode.ENTER.equals(event.getCode())) {
+        initDataFilterControlValues();
+    }
+
+    @Override
+    protected void initParentVBoxControlActions() {
+        initDataFilterControlActions();
+        addContentPaneOnKeyPressedHandler(event -> {
+            if (KeyCode.ENTER.equals(event.getCode()) || FXUtils.CTRL_S.match(event)) {
                 btnFilter.fire();
+                return;
+            }
+            if (KeyCode.ESCAPE.equals(event.getCode())) {
+                btnCancel.fire();
+                return;
+            }
+            if (FXUtils.CTRL_R.match(event)) {
+                btnReset.fire();
+                return;
             }
         });
     }
 
-    protected abstract void initFilterControlValues();
+    protected abstract void initDataFilterControlValues();
+
+    protected abstract void initDataFilterControlActions();
 
     protected abstract T getFreshFilterValues();
 

@@ -6,8 +6,8 @@ import com.getkembang.kembangdesktop.constant.ContactType;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.controller.CommonDataFilterController;
-import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
+import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 
@@ -41,7 +41,7 @@ public class ContactFilterController extends CommonDataFilterController<ContactF
     private ComboBox<BasicComboBoxVM> cbContactType;
 
     @Override
-    protected void initFilterControlValues() {
+    protected void initDataFilterControlValues() {
         if (currentFilter != null) {
             tfName.setText(currentFilter.getName());
             tfCode.setText(currentFilter.getCode());
@@ -84,8 +84,8 @@ public class ContactFilterController extends CommonDataFilterController<ContactF
     }
 
     @Override
-    protected void initControlActions() {
-        tfPhone.setTextFormatter(new DigitFormatter());
+    protected void initDataFilterControlActions() {
+        FXUtils.setDigitTextFields(tfPhone);
         ComboBoxUtils.initBasic(cbContactType, new BasicComboBoxVM(null, StringConstants.EMPTY),
                 new BasicComboBoxVM(ContactType.CUSTOMER.toString(), translate("lbl.customer")),
                 new BasicComboBoxVM(ContactType.SUPPLIER.toString(), translate("lbl.supplier")));

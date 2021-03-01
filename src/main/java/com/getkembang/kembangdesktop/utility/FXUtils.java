@@ -10,6 +10,8 @@ import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.exception.FXException;
 import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -28,6 +30,7 @@ public class FXUtils {
 
     //@formatter:off
     public static final KeyCombination CTRL_S = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+    public static final KeyCombination CTRL_R = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
     public static final KeyCombination CTRL_SHIFT_S = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
     public static final KeyCombination CTRL_SHIFT_C = new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN, KeyCombination.SHIFT_DOWN);
     //@formatter:on
@@ -68,8 +71,12 @@ public class FXUtils {
                 .forEach(path -> stage.getIcons().add(new Image(FXUtils.class.getResourceAsStream(path))));
     }
 
-    public static void setDigitFormatter(TextField... controls) {
-        Arrays.asList(controls).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
+    public static void setDigitTextFields(TextField... textFields) {
+        Arrays.asList(textFields).forEach(tf -> tf.textProperty().addListener((o, ov, nv) -> {
+            if (!StringUtils.isNumeric(nv)) {
+                tf.setText(ov);
+            }
+        }));
     }
 
 }

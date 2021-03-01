@@ -52,8 +52,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -205,7 +203,7 @@ public class ProductEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initControlActions() {
+    protected void initDataSaveControlActions() {
         tfPurchasePrice.setOnKeyTyped(event -> {
             calculateTaxAndProfit();
             calculateWholesaleTaxAndProfit();
@@ -227,7 +225,7 @@ public class ProductEditController extends CommonDataSaveController {
         tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         // @formatter:off
-        FXUtils.setDigitFormatter(
+        FXUtils.setDigitTextFields(
                 tfBarcode,
                 tfSellingPrice, 
                 tfPurchasePrice, 
@@ -240,15 +238,10 @@ public class ProductEditController extends CommonDataSaveController {
                 tfSellingPrice2,
                 tfSellingPrice3);
         // @formatter:on
-        contentPane.setOnKeyPressed(event -> {
-            if (KeyCode.ENTER.equals(event.getCode())) {
-                btnSave.fire();
-            }
-        });
     }
 
     @Override
-    protected void initControlValues() {
+    protected void initDataSaveControlValues() {
         String vatPercentageBase = configurationService.getConfiguration(ConfigurationConstants.VAT_PERCENTAGE);
         vatPercentage = NumberUtils.toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
         currentProduct = getPageData();

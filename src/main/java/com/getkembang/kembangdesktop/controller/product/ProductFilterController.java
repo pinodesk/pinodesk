@@ -90,7 +90,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
     private UnitService unitService;
 
     @Override
-    protected void initFilterControlValues() {
+    protected void initDataFilterControlValues() {
         if (currentFilter != null) {
             Integer quantityMin = currentFilter.getQuantityMin();
             Integer quantityMax = currentFilter.getQuantityMax();
@@ -218,7 +218,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
     }
 
     @Override
-    protected void initControlActions() {
+    protected void initDataFilterControlActions() {
         ComboBoxUtils.initAutoComplete(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
                 new ProductCategoryComboBoxConverter(cbCategory));
         ComboBoxUtils.initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit),
@@ -229,7 +229,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
                 new BasicComboBoxVM(CommonConstants.YES, translate("lbl.yes")),
                 new BasicComboBoxVM(CommonConstants.NO, translate("lbl.no")));
         // @formatter:off
-        FXUtils.setDigitFormatter(
+        FXUtils.setDigitTextFields(
                 tfBarcode,
                 tfSellingPriceMin,
                 tfSellingPriceMax,  

@@ -43,7 +43,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -246,7 +245,7 @@ public class ProductAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initControlActions() {
+    protected void initDataSaveControlActions() {
         tfPurchasePrice.setOnKeyTyped(event -> {
             calculateTaxAndProfit();
             calculateWholesaleTaxAndProfit();
@@ -268,7 +267,7 @@ public class ProductAddController extends CommonDataSaveController {
         tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         // @formatter:off
-        FXUtils.setDigitFormatter(
+        FXUtils.setDigitTextFields(
                 tfBarcode,
                 tfSellingPrice, 
                 tfPurchasePrice, 
@@ -282,15 +281,7 @@ public class ProductAddController extends CommonDataSaveController {
                 tfSellingPrice3);
         // @formatter:on
         initBtnSaveAndAdd();
-        contentPane.setOnKeyPressed(event -> {
-            if (KeyCode.ENTER.equals(event.getCode())) {
-                btnSave.fire();
-                return;
-            }
-            if (FXUtils.CTRL_S.match(event)) {
-                btnSave.fire();
-                return;
-            }
+        addContentPaneOnKeyPressedHandler(event -> {
             if (FXUtils.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();
                 return;
@@ -303,7 +294,7 @@ public class ProductAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initControlValues() {
+    protected void initDataSaveControlValues() {
         String vatPercentageBase = configurationService.getConfiguration(ConfigurationConstants.VAT_PERCENTAGE);
         vatPercentage = NumberUtils.toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
     }

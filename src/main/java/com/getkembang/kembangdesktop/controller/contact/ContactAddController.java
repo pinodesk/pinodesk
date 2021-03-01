@@ -6,9 +6,9 @@ import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.javafx.control.MaskedTextField;
-import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
 import com.getkembang.kembangdesktop.service.ContactService;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
+import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ValidationResult;
@@ -86,15 +86,15 @@ public class ContactAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initControlActions() {
-        tfPhone.setTextFormatter(new DigitFormatter());
+    protected void initDataSaveControlActions() {
+        FXUtils.setDigitTextFields(tfPhone);
         ComboBoxUtils.initBasic(cbContactType,
                 new BasicComboBoxVM(ContactType.CUSTOMER.toString(), translate("lbl.customer")),
                 new BasicComboBoxVM(ContactType.SUPPLIER.toString(), translate("lbl.supplier")));
     }
 
     @Override
-    protected void initControlValues() {
+    protected void initDataSaveControlValues() {
         generatedCode = RandomStringUtils.randomAlphanumeric(CommonConstants.CONTACT_CODE_PLAIN_TEXT_LENGTH);
     }
 
