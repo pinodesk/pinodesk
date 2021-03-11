@@ -56,6 +56,10 @@ public class ProductService extends BaseService {
         String code = productEdit.getCode();
         String barcode = productEdit.getBarcode();
 
+        if (!productRepository.exists(productId)) {
+            throw new DomainException(DomainError.PRODUCT_NOT_FOUND_BY_ID);
+        }
+
         if (productRepository.existsByCode(code, productId)) {
             throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_CODE);
         }
