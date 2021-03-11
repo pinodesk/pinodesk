@@ -2,15 +2,15 @@ package com.getkembang.kembangdesktop.constant;
 
 public enum Page {
     
-    MAIN("Main"),
-    MASTER_PRODUCT_MAIN("master/product/ProductMain"),
-    MASTER_PRODUCT_ADD("master/product/ProductAdd"),
-    MASTER_PRODUCT_EDIT("master/product/ProductEdit"),
-    MASTER_PRODUCT_FILTER("master/product/ProductFilter"),
-    MASTER_CONTACT_MAIN("master/contact/ContactMain"), 
-    MASTER_CONTACT_FILTER("master/contact/ContactFilter"), 
-    MASTER_CONTACT_ADD("master/contact/ContactAdd"), 
-    MASTER_CONTACT_EDIT("master/contact/ContactEdit");
+    MAIN("main"),
+    MASTER_PRODUCT_MAIN("master/product/main"),
+    MASTER_PRODUCT_ADD("master/product/add"),
+    MASTER_PRODUCT_EDIT("master/product/edit"),
+    MASTER_PRODUCT_FILTER("master/product/filter"),
+    MASTER_CONTACT_MAIN("master/contact/main"), 
+    MASTER_CONTACT_FILTER("master/contact/filter"), 
+    MASTER_CONTACT_ADD("master/contact/add"), 
+    MASTER_CONTACT_EDIT("master/contact/edit");
     
     private final String templateName;
     
