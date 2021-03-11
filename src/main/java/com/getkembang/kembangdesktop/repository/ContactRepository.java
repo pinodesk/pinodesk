@@ -17,8 +17,8 @@ public interface ContactRepository extends CommonRepository<Contact> {
 
     Integer updateContact(ContactEditVM contactEdit);
 
-    boolean existsByNameAndContactType(String name, ContactType ct);
+    boolean existsByNameAndContactType(String name, ContactType ct, Long... excludedIds);
 
-    boolean existsByCodeAndContactType(String code, ContactType ct);
+    boolean existsByCodeAndContactType(String code, ContactType ct, Long... excludedIds);
 
 }

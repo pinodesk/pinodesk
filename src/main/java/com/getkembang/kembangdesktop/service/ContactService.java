@@ -10,8 +10,6 @@ import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactVM;
-import com.gitlab.muhammadkholidb.sequel.model.DataModel;
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -42,8 +40,15 @@ public class ContactService extends BaseService {
 
     @CacheEvict(value = "contactsByFilter", allEntries = true)
     @Transactional
-    public Integer updateContact(ContactEditVM contact) {
-        return contactRepository.updateContact(contact);
+    public boolean updateContact(ContactEditVM contact) {
+        ContactType ct = ContactType.of(contact.getContactType()).orElseThrow();
+        if (!contactRepository.exists(contact.getId())) {
+            throw new DomainException(DomainError.CONTACT_EXISTS_BY_CODE_AND_TYPE);
+        }
+        if (contactRepository.existsByCodeAndContactType(contact.getCode(), ct, contact.getId())) {
+            throw new DomainException(DomainError.CONTACT_EXISTS_BY_CODE_AND_TYPE);
+        }
+        return contactRepository.updateContact(contact) == 1;
     }
 
     @CacheEvict(value = "contactsByFilter", allEntries = true)

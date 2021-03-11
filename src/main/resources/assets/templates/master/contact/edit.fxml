@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.contact.ContactAddController">
+<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.contact.ContactEditController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -176,7 +176,7 @@
             <HBox layoutX="644.0" layoutY="7.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
                   <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn.cancel" textFill="WHITE" />
-                  <Button fx:id="btnSaveAndAdd" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSaveAndAdd" styleClass="btn-primary" text="%btn.saveandadd" textFill="WHITE" />
+                  <Button fx:id="btnRemove" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemove" styleClass="btn-danger" text="%btn.remove" textFill="WHITE" />
                   <Button fx:id="btnSave" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSave" styleClass="btn-primary" text="%btn.save" textFill="WHITE" />
                </children>
             </HBox>

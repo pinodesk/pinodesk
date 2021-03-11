@@ -1,5 +1,6 @@
 package com.getkembang.kembangdesktop.repository;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.getkembang.kembangdesktop.constant.ContactType;
@@ -7,9 +8,11 @@ import com.getkembang.kembangdesktop.domain.Contact;
 import com.getkembang.kembangdesktop.viewmodel.ContactAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
+import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
@@ -88,15 +91,23 @@ public class ContactRepositoryImpl extends AbstractRepository<Contact> implement
     // @formatter:on
 
     @Override
-    public boolean existsByNameAndContactType(String name, ContactType ct) {
-        return exists(
-                new Where().equalsIgnoreCase(Contact.C_NAME, name).andEquals(Contact.C_CONTACT_TYPE, ct.toString()));
+    public boolean existsByNameAndContactType(String name, ContactType ct, Long... excludedIds) {
+        Where where = new Where().equalsIgnoreCase(Contact.C_NAME, name).andEquals(Contact.C_CONTACT_TYPE,
+                ct.toString());
+        if (ArrayUtils.isNotEmpty(excludedIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
+        }
+        return exists(where);
     }
 
     @Override
-    public boolean existsByCodeAndContactType(String code, ContactType ct) {
-        return exists(
-                new Where().equalsIgnoreCase(Contact.C_CODE, code).andEquals(Contact.C_CONTACT_TYPE, ct.toString()));
+    public boolean existsByCodeAndContactType(String code, ContactType ct, Long... excludedIds) {
+        Where where = new Where().equalsIgnoreCase(Contact.C_CODE, code).andEquals(Contact.C_CONTACT_TYPE,
+                ct.toString());
+        if (ArrayUtils.isNotEmpty(excludedIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
+        }
+        return exists(where);
     }
 
 }

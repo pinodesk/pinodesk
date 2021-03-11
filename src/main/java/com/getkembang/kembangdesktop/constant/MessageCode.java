@@ -49,6 +49,7 @@ public enum MessageCode {
     ERROR_RACK_NOT_FOUND_BY_ID,
 
     // Contact
+    ERROR_CONTACT_NOT_FOUND_BY_ID,
     ERROR_CONTACT_EXISTS_BY_CODE_AND_TYPE,
 
 }
