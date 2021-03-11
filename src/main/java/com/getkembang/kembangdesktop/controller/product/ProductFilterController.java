@@ -33,9 +33,7 @@ import org.springframework.context.ApplicationContext;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ProductFilterController extends CommonDataFilterController<ProductFilterVM> {
 
     @FXML

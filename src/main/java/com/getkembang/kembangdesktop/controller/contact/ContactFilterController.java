@@ -50,7 +50,7 @@ public class ContactFilterController extends CommonDataFilterController<ContactF
             tfAddress.setText(currentFilter.getAddress());
             tfCompanyName.setText(currentFilter.getCompanyName());
             ComboBoxUtils.select(cbContactType, () -> cbContactType.getItems().stream()
-                    .filter(vm -> Objects.equals(currentFilter.getContactType(), vm.getValue())).findAny().get());
+                    .filter(vm -> Objects.equals(currentFilter.getContactType(), vm.getValue())).findAny().orElseThrow());
         }
     }
 

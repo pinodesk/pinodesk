@@ -23,9 +23,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ContactAddController extends CommonDataSaveController {
 
     @FXML
@@ -70,7 +68,7 @@ public class ContactAddController extends CommonDataSaveController {
     @FXML
     void onActionCbContactType(ActionEvent event) {
         if (ComboBoxUtils.hasItemSelected(cbContactType)) {
-            ContactType ct = ContactType.of(ComboBoxUtils.getSelectedItem(cbContactType).getValue()).get();
+            ContactType ct = ContactType.of(ComboBoxUtils.getSelectedItem(cbContactType).getValue()).orElseThrow();
             if (ContactType.SUPPLIER.equals(ct)) {
                 tfCode.setMask(CommonConstants.CONTACT_MASK_SUPPLIER);
             } else if (ContactType.CUSTOMER.equals(ct)) {

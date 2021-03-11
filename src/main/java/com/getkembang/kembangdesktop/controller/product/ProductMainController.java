@@ -38,9 +38,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ProductMainController extends BaseController {
 
     @FXML

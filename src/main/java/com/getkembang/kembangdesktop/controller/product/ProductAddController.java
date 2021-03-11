@@ -43,9 +43,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.TextField;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ProductAddController extends CommonDataSaveController {
 
     @FXML

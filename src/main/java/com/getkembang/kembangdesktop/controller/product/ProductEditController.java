@@ -52,9 +52,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ProductEditController extends CommonDataSaveController {
 
     @FXML

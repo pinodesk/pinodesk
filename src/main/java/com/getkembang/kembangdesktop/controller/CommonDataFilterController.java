@@ -6,9 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public abstract class CommonDataFilterController<T> extends CommonParentVBoxController {
 
     protected T currentFilter;

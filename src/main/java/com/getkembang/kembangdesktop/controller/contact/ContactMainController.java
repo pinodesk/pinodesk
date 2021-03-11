@@ -38,9 +38,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class ContactMainController extends BaseController {
 
     @FXML
@@ -112,7 +110,7 @@ public class ContactMainController extends BaseController {
             // It will trigger combobox's onActionCbContactType()
             ComboBoxUtils.clearSelection(cbContactType);
             ComboBoxUtils.select(cbContactType, () -> cbContactType.getItems().stream()
-                    .filter(vm -> Objects.equals(contactFilter.getContactType(), vm.getValue())).findAny().get());
+                    .filter(vm -> Objects.equals(contactFilter.getContactType(), vm.getValue())).findAny().orElseThrow());
         });
     }
 
@@ -149,7 +147,7 @@ public class ContactMainController extends BaseController {
         TableViewUtils.setColumnValue(colCode, ContactVM::getCode);
         TableViewUtils.setColumnValue(colName, ContactVM::getName);
         TableViewUtils.setColumnValue(colContactType, contact -> {
-            ContactType ct = ContactType.of(contact.getContactType()).get();
+            ContactType ct = ContactType.of(contact.getContactType()).orElseThrow();
             switch (ct) {
             case CUSTOMER:
                 return translate("lbl.customer");
