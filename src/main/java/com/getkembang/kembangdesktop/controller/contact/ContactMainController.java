@@ -21,7 +21,6 @@ import com.getkembang.kembangdesktop.viewmodel.AlertResult;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactVM;
-import com.getkembang.kembangdesktop.viewmodel.ProductVM;
 
 import org.springframework.context.ApplicationContext;
 
@@ -64,6 +63,9 @@ public class ContactMainController extends BaseController {
 
     @FXML
     private TableColumn<ContactVM, String> colName;
+
+    @FXML
+    private TableColumn<ContactVM, String> colContactType;
 
     @FXML
     private TableColumn<ContactVM, String> colPhone;
@@ -146,6 +148,16 @@ public class ContactMainController extends BaseController {
     protected void initControlActions() {
         TableViewUtils.setColumnValue(colCode, ContactVM::getCode);
         TableViewUtils.setColumnValue(colName, ContactVM::getName);
+        TableViewUtils.setColumnValue(colContactType, contact -> {
+            ContactType ct = ContactType.of(contact.getContactType()).get();
+            switch (ct) {
+            case CUSTOMER:
+                return translate("lbl.customer");
+            case SUPPLIER:
+                return translate("lbl.supplier");
+            }
+            return null;
+        });
         TableViewUtils.setColumnValue(colPhone, ContactVM::getPhone);
         TableViewUtils.setColumnValue(colEmail, ContactVM::getEmail);
         TableViewUtils.setColumnValue(colAddress, ContactVM::getAddress);

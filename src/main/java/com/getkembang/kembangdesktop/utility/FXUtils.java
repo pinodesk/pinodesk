@@ -1,6 +1,5 @@
 package com.getkembang.kembangdesktop.utility;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.function.Consumer;
 
@@ -9,8 +8,6 @@ import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.exception.FXException;
 import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
-
-import org.apache.commons.lang3.StringUtils;
 
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
@@ -72,11 +69,7 @@ public class FXUtils {
     }
 
     public static void setDigitTextFields(TextField... textFields) {
-        Arrays.asList(textFields).forEach(tf -> tf.textProperty().addListener((o, ov, nv) -> {
-            if (!StringUtils.isNumeric(nv)) {
-                tf.setText(ov);
-            }
-        }));
+        Arrays.asList(textFields).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
     }
 
 }
