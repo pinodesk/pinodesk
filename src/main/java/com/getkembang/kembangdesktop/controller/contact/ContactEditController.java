@@ -1,5 +1,6 @@
 package com.getkembang.kembangdesktop.controller.contact;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
@@ -11,6 +12,7 @@ import com.getkembang.kembangdesktop.javafx.control.MaskedTextField;
 import com.getkembang.kembangdesktop.service.ContactService;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
 import com.getkembang.kembangdesktop.utility.FXUtils;
+import com.getkembang.kembangdesktop.viewmodel.AlertResult;
 import com.getkembang.kembangdesktop.viewmodel.BasicComboBoxVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactEditVM;
 import com.getkembang.kembangdesktop.viewmodel.ContactVM;
@@ -60,7 +62,13 @@ public class ContactEditController extends CommonDataSaveController {
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_CONTACT);
+        if (result.isConfirmed()) {
+            contactService.removeContacts(Arrays.asList(currentContact.getId()));
+            displayInfo(MessageCode.SUCCESS_REMOVE_CONTACT);
+            setPrevPageData(Boolean.TRUE);
+            close();
+        }
     }
 
     @FXML
