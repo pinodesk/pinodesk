@@ -81,7 +81,7 @@ public class ComboBoxUtils {
     }
 
     public static void initBasic(ComboBox<BasicComboBoxVM> cb, BasicComboBoxVM... data) {
-        init(cb, new DefaultStringConverterAdapter<BasicComboBoxVM>(cb) {
+        init(cb, new DefaultStringConverterAdapter<>(cb) {
 
             @Override
             protected String getDisplayText(BasicComboBoxVM vm) {

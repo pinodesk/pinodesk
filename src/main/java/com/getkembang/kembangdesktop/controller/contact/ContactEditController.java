@@ -103,7 +103,7 @@ public class ContactEditController extends CommonDataSaveController {
         tfCompanyName.setText(currentContact.getCompanyName());
         ComboBoxUtils.select(cbContactType, () -> cbContactType.getItems().stream()
                 .filter(vm -> Objects.equals(currentContact.getContactType(), vm.getValue())).findAny().orElseThrow());
-        generatedCode = currentContact.getCode().substring(1).replaceAll("-", "");
+        generatedCode = currentContact.getCode().substring(1).replace("-", "");
     }
 
     @Override

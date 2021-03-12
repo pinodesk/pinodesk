@@ -89,6 +89,12 @@ public class ContactAddController extends CommonDataSaveController {
         ComboBoxUtils.initBasic(cbContactType,
                 new BasicComboBoxVM(ContactType.CUSTOMER.toString(), translate("lbl.customer")),
                 new BasicComboBoxVM(ContactType.SUPPLIER.toString(), translate("lbl.supplier")));
+        addContentPaneOnKeyPressedHandler(event -> {
+            if (FXUtils.CTRL_SHIFT_S.match(event)) {
+                btnSaveAndAdd.fire();
+                return;
+            }
+        });
     }
 
     @Override
