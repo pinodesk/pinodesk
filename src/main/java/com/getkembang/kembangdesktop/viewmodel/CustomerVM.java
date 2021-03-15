@@ -5,7 +5,7 @@ import java.util.Date;
 import lombok.Data;
 
 @Data
-public class ContactVM {
+public class CustomerVM {
     private Long id;
     private Date createdAt;
     private Date updatedAt;
@@ -15,6 +15,4 @@ public class ContactVM {
     public String phone;
     private String email;
     private String address;
-    private String companyName;
-    private String contactType;
 }

@@ -58,8 +58,8 @@ public class MainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnMenuContact(ActionEvent event) {
-        changeContent(Page.MASTER_CONTACT_MAIN, (Button) event.getSource());
+    void onActionBtnMenuCustomers(ActionEvent event) {
+        changeContent(Page.MASTER_CUSTOMER_MAIN, (Button) event.getSource());
     }
 
     private void changeContent(Page page, Button btn) {

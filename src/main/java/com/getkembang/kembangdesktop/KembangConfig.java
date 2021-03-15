@@ -60,7 +60,7 @@ public class KembangConfig {
                 "unitsAll",
                 "unitsByKeyword",
                 "drugCategoriesByKeyword",
-                "contactsByFilter");
+                "customersByFilter");
     }
 
     @Bean

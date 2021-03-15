@@ -15,6 +15,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -70,6 +73,14 @@ public class FXUtils {
 
     public static void setDigitTextFields(TextField... textFields) {
         Arrays.asList(textFields).forEach(tf -> tf.setTextFormatter(new DigitFormatter()));
+    }
+
+    public static boolean isDoubleClick(MouseEvent event) {
+        return event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2;
+    }
+
+    public static boolean isEnter(KeyEvent event) {
+        return event.getCode() == KeyCode.ENTER;
     }
 
 }
