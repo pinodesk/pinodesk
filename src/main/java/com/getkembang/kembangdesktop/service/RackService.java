@@ -2,6 +2,7 @@ package com.getkembang.kembangdesktop.service;
 
 import java.util.List;
 
+import com.getkembang.kembangdesktop.constant.CacheName;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.repository.RackRepository;
@@ -17,12 +18,12 @@ public class RackService extends BaseService {
     @Autowired
     private RackRepository rackRepository;
 
-    @Cacheable("racksAll")
+    @Cacheable(CacheName.Keys.RACKS_ALL)
     public List<RackVM> getAllRacks() {
         return convertList(rackRepository.read(), RackVM.class);
     }
 
-    @Cacheable("racksByKeyword")
+    @Cacheable(CacheName.Keys.RACKS_BY_KEYWORD)
     public List<RackVM> searchRackByKeyword(String keyword) {
         return convertList(rackRepository.filter(keyword, 10), RackVM.class);
     }

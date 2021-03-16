@@ -2,6 +2,7 @@ package com.getkembang.kembangdesktop.service;
 
 import java.util.List;
 
+import com.getkembang.kembangdesktop.constant.CacheName;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.domain.Drug;
@@ -42,13 +43,13 @@ public class ProductService extends BaseService {
     @Autowired
     private WholesaleRepository wholesaleRepository;
 
-    @Cacheable("productsByFilter")
+    @Cacheable(CacheName.Keys.PRODUCTS_BY_FILTER)
     public List<ProductVM> searchProduct(ProductFilterVM param) {
         String languageId = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
         return productRepository.filter(param, Long.valueOf(languageId));
     }
 
-    @CacheEvict(value = "productsByFilter", allEntries = true)
+    @CacheEvict(value = CacheName.Keys.PRODUCTS_BY_FILTER, allEntries = true)
     @Transactional
     public boolean updateProduct(ProductEditVM productEdit) {
 
@@ -89,13 +90,13 @@ public class ProductService extends BaseService {
         return countUpdated > 0;
     }
 
-    @CacheEvict(value = "productsByFilter", allEntries = true)
+    @CacheEvict(value = CacheName.Keys.PRODUCTS_BY_FILTER, allEntries = true)
     @Transactional
     public void removeProducts(List<Long> ids) {
         productRepository.delete(new Where().in(DataModel.C_ID, ids));
     }
 
-    @CacheEvict(value = "productsByFilter", allEntries = true)
+    @CacheEvict(value = CacheName.Keys.PRODUCTS_BY_FILTER, allEntries = true)
     @Transactional
     public Long createProduct(ProductAddVM productAdd) {
 

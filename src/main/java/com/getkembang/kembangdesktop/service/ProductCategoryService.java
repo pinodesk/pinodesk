@@ -2,6 +2,7 @@ package com.getkembang.kembangdesktop.service;
 
 import java.util.List;
 
+import com.getkembang.kembangdesktop.constant.CacheName;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.domain.ProductCategory;
@@ -27,7 +28,7 @@ public class ProductCategoryService extends BaseService {
                 new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_ID));
     }
 
-    @Cacheable("productCategoriesByKeyword")
+    @Cacheable(CacheName.Keys.PRODUCT_CATEGORIES_BY_KEYWORD)
     public List<ProductCategoryVM> searchProductCategoryByKeyword(String keyword) {
         String languageId = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
         List<ProductCategory> categories = productCategoryRepository.filter(keyword, Long.valueOf(languageId));

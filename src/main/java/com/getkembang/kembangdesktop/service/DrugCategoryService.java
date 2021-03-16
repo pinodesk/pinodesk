@@ -2,6 +2,7 @@ package com.getkembang.kembangdesktop.service;
 
 import java.util.List;
 
+import com.getkembang.kembangdesktop.constant.CacheName;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.exception.DomainException;
@@ -21,7 +22,7 @@ public class DrugCategoryService extends BaseService {
     @Autowired
     private DrugCategoryRepository drugCategoryRepository;
 
-    @Cacheable("drugCategoriesByKeyword")
+    @Cacheable(CacheName.Keys.DRUG_CATEGORIES_BY_KEYWORD)
     public List<DrugCategoryVM> searchDrugCategoriesByKeyword(String keyword) {
         String drugCategoryBaseId = configurationService.getConfiguration(ConfigurationConstants.DRUG_CATEGORY_BASE_ID);
         return convertList(drugCategoryRepository.filter(keyword, Long.valueOf(drugCategoryBaseId)), DrugCategoryVM.class);

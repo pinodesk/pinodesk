@@ -2,6 +2,7 @@ package com.getkembang.kembangdesktop.service;
 
 import java.util.List;
 
+import com.getkembang.kembangdesktop.constant.CacheName;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.repository.UnitRepository;
@@ -17,12 +18,12 @@ public class UnitService extends BaseService {
     @Autowired
     private UnitRepository unitRepository;
 
-    @Cacheable("unitsAll")
+    @Cacheable(CacheName.Keys.UNITS_ALL)
     public List<UnitVM> getAllUnits() {
         return convertList(unitRepository.read(), UnitVM.class);
     }
 
-    @Cacheable("unitsByKeyword")
+    @Cacheable(CacheName.Keys.UNITS_BY_KEYWORD)
     public List<UnitVM> searchUnitByKeyword(String keyword) {
         return convertList(unitRepository.filter(keyword, 10), UnitVM.class);
     }

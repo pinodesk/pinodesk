@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.getkembang.kembangdesktop.constant.CacheName;
 import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -51,16 +52,7 @@ public class KembangConfig {
     
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager(
-                "configurationByCode",
-                "productsByFilter", 
-                "productCategoriesByKeyword", 
-                "racksAll",
-                "racksByKeyword", 
-                "unitsAll",
-                "unitsByKeyword",
-                "drugCategoriesByKeyword",
-                "customersByFilter");
+        return new ConcurrentMapCacheManager(CacheName.keys());
     }
 
     @Bean

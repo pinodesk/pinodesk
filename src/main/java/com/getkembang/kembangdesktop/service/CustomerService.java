@@ -3,6 +3,7 @@ package com.getkembang.kembangdesktop.service;
 import java.util.Date;
 import java.util.List;
 
+import com.getkembang.kembangdesktop.constant.CacheName;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.exception.DomainException;
@@ -26,18 +27,18 @@ public class CustomerService extends BaseService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @Cacheable("customersByFilter")
+    @Cacheable(CacheName.Keys.CUSTOMERS_BY_FILTER)
     public List<CustomerVM> searchContacts(CustomerFilterVM filter) {
         return convertList(customerRepository.filter(filter), CustomerVM.class);
     }
 
-    @CacheEvict(value = "customersByFilter", allEntries = true)
+    @CacheEvict(value = CacheName.Keys.CUSTOMERS_BY_FILTER, allEntries = true)
     @Transactional
     public void removeCustomers(List<Long> ids) {
         customerRepository.delete(ids);
     }
 
-    @CacheEvict(value = "customersByFilter", allEntries = true)
+    @CacheEvict(value = CacheName.Keys.CUSTOMERS_BY_FILTER, allEntries = true)
     @Transactional
     public Long createCustomer(CustomerAddVM customer) {
         if (customerRepository.existsByCode(customer.getCode())) {
@@ -54,7 +55,7 @@ public class CustomerService extends BaseService {
         return customerRepository.createCustomer(customer);
     }
 
-    @CacheEvict(value = "customersByFilter", allEntries = true)
+    @CacheEvict(value = CacheName.Keys.CUSTOMERS_BY_FILTER, allEntries = true)
     @Transactional
     public boolean updateCustomer(CustomerEditVM customer) {
         Long customerId = customer.getId();
