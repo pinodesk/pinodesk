@@ -100,7 +100,7 @@ public class CustomerMainController extends BaseController {
             AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_CUSTOMERS);
             if (result.isConfirmed()) {
                 customerService.removeCustomers(items.stream().map(CustomerVM::getId).collect(Collectors.toList()));
-                displayInfo(MessageCode.CONFIRMATION_REMOVE_SELECTED_CUSTOMERS);
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_CUSTOMERS);
                 searchCustomers();
             }
         }

@@ -62,7 +62,7 @@
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfCode">
+                              <TextField fx:id="tfCode" disable="true">
                                  <font>
                                     <Font size="13.0" />
                                  </font>

@@ -45,6 +45,7 @@ public class CustomerAddController extends CommonDataSaveController {
         if (isLastDataSaved()) {
             displayInfo(MessageCode.SUCCESS_ADD_CUSTOMER);
             resetControls();
+            initDataSaveControlValues();
         }
     }
 
@@ -66,7 +67,8 @@ public class CustomerAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
-        // TODO
+        String nextCustomerCode = customerService.getNextCustomerCode();
+        tfCode.setText(nextCustomerCode);
     }
 
     @Override

@@ -9,6 +9,8 @@ import com.getkembang.kembangdesktop.viewmodel.CustomerEditVM;
 import com.getkembang.kembangdesktop.viewmodel.CustomerFilterVM;
 import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
+import com.gitlab.muhammadkholidb.sequel.sql.Order;
+import com.gitlab.muhammadkholidb.sequel.sql.Order.Direction;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -82,6 +84,30 @@ public class CustomerRepositoryImpl extends AbstractRepository<Customer> impleme
             where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
         }
         return exists(where);
+    }
+
+    @Override
+    public boolean existsByEmail(String email, Long... excludeIds) {
+        Where where = new Where().equalsIgnoreCase(Customer.C_EMAIL, email);
+        if (ArrayUtils.isNotEmpty(excludeIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludeIds));
+        }
+        return exists(where);
+    }
+
+    @Override
+    public boolean existsByPhone(String phone, Long... excludeIds) {
+        Where where = new Where().equalsIgnoreCase(Customer.C_PHONE, phone);
+        if (ArrayUtils.isNotEmpty(excludeIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludeIds));
+        }
+        return exists(where);
+    }
+
+    @Override
+    public String findMaxCodeByPrefix(String prefix) {
+        return readOne(new Where().startsWith(Customer.C_CODE, prefix),
+                new Order().by(Customer.C_CODE, Direction.DESCENDING), true).map(Customer::getCode).orElse(null);
     }
 
 }

@@ -18,4 +18,9 @@ public interface CustomerRepository extends CommonRepository<Customer> {
 
     boolean existsByCode(String code, Long... excludedIds);
 
+    boolean existsByEmail(String email, Long... excludeIds);
+
+    boolean existsByPhone(String phone, Long... excludeIds);
+
+    String findMaxCodeByPrefix(String prefix);
 }
