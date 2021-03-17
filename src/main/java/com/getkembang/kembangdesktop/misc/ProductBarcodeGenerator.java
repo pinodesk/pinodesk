@@ -1,4 +1,4 @@
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+package com.getkembang.kembangdesktop.misc;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,9 +9,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import lombok.extern.slf4j.Slf4j;
 
-public class ProductBarcodeTest {
+@Slf4j
+public class ProductBarcodeGenerator {
 
     private void addLine(List<String> result, FileWriter writer) throws IOException {
         writer.append("CURRENT_TIMESTAMP");
@@ -28,18 +29,18 @@ public class ProductBarcodeTest {
         writer.append("\n");
     }
 
-    @Test
     public void parseProductCategoriesToChangeSetData() throws IOException {
         String path = getClass().getResource("product-barcode.txt").getFile();
         List<List<String>> parsed = parseTxt(path);
-        assertNotNull(parsed);
-        FileWriter writer = new FileWriter(new File("t_product.csv"));
-        writer.append("created_at,updated_at,code,name,unit_id,unit_label\n");
-        for (List<String> result : parsed) {
-            addLine(result, writer);
+        try (FileWriter writer = new FileWriter(new File("t_product.csv"))) {
+            writer.append("created_at,updated_at,code,name,unit_id,unit_label\n");
+            for (List<String> result : parsed) {
+                addLine(result, writer);
+            }
+            writer.flush();
+        } catch (Exception e) {
+            log.error("Failed to parse product categories: " + e.getMessage(), e);
         }
-        writer.flush();
-        writer.close();
     }
 
     private List<List<String>> parseTxt(String path) throws IOException {
