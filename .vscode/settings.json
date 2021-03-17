@@ -1,13 +1,3 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic",
-    "maven.terminal.favorites": [
-        {
-            "alias": "Run JavaFX",
-            "command": "clean javafx:run -DskipTests"
-        },
-        {
-            "alias": "Package",
-            "command": "clean package -DskipTests"
-        }
-    ]
+    "java.configuration.updateBuildConfiguration": "automatic"
 }
