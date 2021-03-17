@@ -17,7 +17,7 @@ public class Rack extends DataModel {
     public static final String C_DESCRIPTION = "description";
 
     @DataColumn(C_CODE)
-    public String code;
+    private String code;
 
     @DataColumn(C_NAME)
     private String name;

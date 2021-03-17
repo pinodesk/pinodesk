@@ -18,13 +18,13 @@ public class SupplierContact extends DataModel {
     public static final String C_EMAIL = "email";
 
     @DataColumn(C_SUPPLIER_ID)
-    public Long supplierId;
+    private Long supplierId;
 
     @DataColumn(C_NAME)
-    public String name;
+    private String name;
 
     @DataColumn(C_PHONE)
-    public String phone;
+    private String phone;
 
     @DataColumn(C_EMAIL)
     private String email;

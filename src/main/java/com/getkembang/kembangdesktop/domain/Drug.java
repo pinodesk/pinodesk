@@ -21,13 +21,13 @@ public class Drug extends DataModel {
     public static final String C_PRESCRIPTION_PRICE = "prescription_price";
 
     @DataColumn(C_PRODUCT_ID)
-    public Long productId;
+    private Long productId;
 
     @DataColumn(C_DRUG_CATEGORY_ID)
-    public Long drugCategoryId;
+    private Long drugCategoryId;
 
     @DataColumn(C_DRUG_CATEGORY_CODE)
-    public String drugCategoryCode;
+    private String drugCategoryCode;
 
     @DataColumn(C_DRUG_CATEGORY_NAME)
     private String drugCategoryName;

@@ -16,7 +16,7 @@ public class Configuration extends DataModel {
     public static final String C_VALUE = "value";
 
     @DataColumn(C_CODE)
-    public String code;
+    private String code;
 
     @DataColumn(C_VALUE)
     private String value;

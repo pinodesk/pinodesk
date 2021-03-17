@@ -21,16 +21,16 @@ public class Supplier extends DataModel {
     public static final String C_ADDRESS = "address";
 
     @DataColumn(C_CODE)
-    public String code;
+    private String code;
 
     @DataColumn(C_NAME)
-    public String name;
+    private String name;
 
     @DataColumn(C_PHONE)
-    public String phone;
+    private String phone;
 
     @DataColumn(C_FAX)
-    public String fax;
+    private String fax;
 
     @DataColumn(C_EMAIL)
     private String email;
