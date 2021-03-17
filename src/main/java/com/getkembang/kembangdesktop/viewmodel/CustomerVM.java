@@ -10,9 +10,9 @@ public class CustomerVM {
     private Date createdAt;
     private Date updatedAt;
     private Date deletedAt;
-    public String code;
-    public String name;
-    public String phone;
+    private String code;
+    private String name;
+    private String phone;
     private String email;
     private String address;
 }
