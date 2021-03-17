@@ -28,7 +28,7 @@ public class CustomerService extends BaseService {
     private CustomerRepository customerRepository;
 
     @Cacheable(CacheName.Keys.CUSTOMERS_BY_FILTER)
-    public List<CustomerVM> searchContacts(CustomerFilterVM filter) {
+    public List<CustomerVM> searchCustomers(CustomerFilterVM filter) {
         return convertList(customerRepository.filter(filter), CustomerVM.class);
     }
 

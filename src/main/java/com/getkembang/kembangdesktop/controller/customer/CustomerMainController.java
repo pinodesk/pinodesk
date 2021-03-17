@@ -155,7 +155,7 @@ public class CustomerMainController extends BaseController {
     private void searchCustomers() {
         tableCustomer.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableCustomer.setItems(FXCollections.observableArrayList());
-        Async.supply(() -> customerService.searchContacts(customerFilter))
+        Async.supply(() -> customerService.searchCustomers(customerFilter))
                 .thenAccept(customers -> Platform.runLater(() -> {
                     if (customers.isEmpty()) {
                         tableCustomer.setPlaceholder(new Label(translate("lbl.nodata")));
