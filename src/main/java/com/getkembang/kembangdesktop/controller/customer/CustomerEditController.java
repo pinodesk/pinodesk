@@ -6,11 +6,11 @@ import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.service.CustomerService;
+import com.getkembang.kembangdesktop.utility.AlertResult;
 import com.getkembang.kembangdesktop.utility.FXUtils;
-import com.getkembang.kembangdesktop.viewmodel.AlertResult;
+import com.getkembang.kembangdesktop.utility.ValidationResult;
 import com.getkembang.kembangdesktop.viewmodel.CustomerEditVM;
 import com.getkembang.kembangdesktop.viewmodel.CustomerVM;
-import com.getkembang.kembangdesktop.viewmodel.ValidationResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.validator.GenericValidator;

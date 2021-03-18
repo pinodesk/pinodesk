@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.controller;
 
 import com.getkembang.kembangdesktop.utility.FXUtils;
-import com.getkembang.kembangdesktop.viewmodel.ValidationResult;
+import com.getkembang.kembangdesktop.utility.ValidationResult;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

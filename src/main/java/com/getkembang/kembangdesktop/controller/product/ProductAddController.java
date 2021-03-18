@@ -23,13 +23,13 @@ import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.getkembang.kembangdesktop.service.ProductService;
 import com.getkembang.kembangdesktop.utility.ComboBoxUtils;
 import com.getkembang.kembangdesktop.utility.FXUtils;
+import com.getkembang.kembangdesktop.utility.ValidationResult;
 import com.getkembang.kembangdesktop.viewmodel.DrugCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.DrugVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductAddVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.RackVM;
 import com.getkembang.kembangdesktop.viewmodel.UnitVM;
-import com.getkembang.kembangdesktop.viewmodel.ValidationResult;
 import com.getkembang.kembangdesktop.viewmodel.WholesaleVM;
 
 import org.apache.commons.lang3.StringUtils;

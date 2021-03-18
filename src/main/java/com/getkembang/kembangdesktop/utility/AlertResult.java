@@ -1,4 +1,4 @@
-package com.getkembang.kembangdesktop.viewmodel;
+package com.getkembang.kembangdesktop.utility;
 
 import java.util.Optional;
 

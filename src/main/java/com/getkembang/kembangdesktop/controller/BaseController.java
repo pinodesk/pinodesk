@@ -18,10 +18,10 @@ import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.exception.FXException;
+import com.getkembang.kembangdesktop.utility.AlertResult;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
 import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.utility.PageData;
-import com.getkembang.kembangdesktop.viewmodel.AlertResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
