@@ -1,20 +1,34 @@
 package com.getkembang.kembangdesktop.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.domain.Customer;
 import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.repository.CustomerRepository;
 import com.getkembang.kembangdesktop.viewmodel.CustomerAddVM;
+import com.getkembang.kembangdesktop.viewmodel.CustomerEditVM;
+import com.getkembang.kembangdesktop.viewmodel.CustomerFilterVM;
+import com.getkembang.kembangdesktop.viewmodel.CustomerVM;
 
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +57,22 @@ class CustomerServiceTest extends BaseServiceTest {
     @AfterEach
     void tearDown() {
         verifyNoMoreInteractions(customerRepository);
+    }
+
+    @Test
+    void testSearchCustomers_shouldSucceed() {
+        when(customerRepository.filter(any(CustomerFilterVM.class))).thenReturn(new ArrayList<>());
+        List<CustomerVM> customers = customerService.searchCustomers(new CustomerFilterVM());
+        assertNotNull(customers);
+        assertEquals(0, customers.size());
+        verify(customerRepository).filter(any(CustomerFilterVM.class));
+    }
+
+    @Test
+    void testRemoveCustomers_shouldSucceed() {
+        when(customerRepository.delete(anyList())).thenReturn(0);
+        customerService.removeCustomers(Collections.singletonList(1L));
+        verify(customerRepository).delete(anyList());
     }
 
     @Test
@@ -142,6 +172,157 @@ class CustomerServiceTest extends BaseServiceTest {
         assertEquals(DomainError.CUSTOMER_EXISTS_BY_PHONE, ex.getError());
         verify(customerRepository).existsByCode(anyString());
         verify(customerRepository, never()).createCustomer(any(CustomerAddVM.class));
+    }
+
+    @Test
+    void testUpdateCustomer_allConditionsSatisfied_shouldSucceed() {
+        CustomerEditVM customerEdit = new CustomerEditVM();
+        customerEdit.setId(1L);
+        customerEdit.setCode("code");
+        customerEdit.setEmail("email");
+        customerEdit.setPhone("phone");
+        when(customerRepository.exists(anyLong())).thenReturn(true);
+        when(customerRepository.existsByCode(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.existsByEmail(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.existsByPhone(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.updateCustomer(any(CustomerEditVM.class))).thenReturn(1);
+        boolean success = customerService.updateCustomer(customerEdit);
+        assertTrue(success);
+        verify(customerRepository).exists(anyLong());
+        verify(customerRepository).existsByCode(anyString(), anyLong());
+        verify(customerRepository).existsByEmail(anyString(), anyLong());
+        verify(customerRepository).existsByPhone(anyString(), anyLong());
+        verify(customerRepository).updateCustomer(any(CustomerEditVM.class));
+    }
+
+    @Test
+    void testUpdateCustomer_emptyEmail_shouldSucceed() {
+        CustomerEditVM customerEdit = new CustomerEditVM();
+        customerEdit.setId(1L);
+        customerEdit.setCode("code");
+        customerEdit.setPhone("phone");
+        when(customerRepository.exists(anyLong())).thenReturn(true);
+        when(customerRepository.existsByCode(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.existsByPhone(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.updateCustomer(any(CustomerEditVM.class))).thenReturn(1);
+        boolean success = customerService.updateCustomer(customerEdit);
+        assertTrue(success);
+        verify(customerRepository).exists(anyLong());
+        verify(customerRepository).existsByCode(anyString(), anyLong());
+        verify(customerRepository).existsByPhone(anyString(), anyLong());
+        verify(customerRepository).updateCustomer(any(CustomerEditVM.class));
+    }
+
+    @Test
+    void testUpdateCustomer_emptyPhone_shouldSucceed() {
+        CustomerEditVM customerEdit = new CustomerEditVM();
+        customerEdit.setId(1L);
+        customerEdit.setCode("code");
+        customerEdit.setEmail("email");
+        when(customerRepository.exists(anyLong())).thenReturn(true);
+        when(customerRepository.existsByCode(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.existsByEmail(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.updateCustomer(any(CustomerEditVM.class))).thenReturn(1);
+        boolean success = customerService.updateCustomer(customerEdit);
+        assertTrue(success);
+        verify(customerRepository).exists(anyLong());
+        verify(customerRepository).existsByCode(anyString(), anyLong());
+        verify(customerRepository).existsByEmail(anyString(), anyLong());
+        verify(customerRepository).updateCustomer(any(CustomerEditVM.class));
+    }
+
+    @Test
+    void testUpdateCustomer_emptyEmailAndPhone_shouldSucceed() {
+        CustomerEditVM customerEdit = new CustomerEditVM();
+        customerEdit.setId(1L);
+        customerEdit.setCode("code");
+        when(customerRepository.exists(anyLong())).thenReturn(true);
+        when(customerRepository.existsByCode(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.updateCustomer(any(CustomerEditVM.class))).thenReturn(1);
+        boolean success = customerService.updateCustomer(customerEdit);
+        assertTrue(success);
+        verify(customerRepository).exists(anyLong());
+        verify(customerRepository).existsByCode(anyString(), anyLong());
+        verify(customerRepository).updateCustomer(any(CustomerEditVM.class));
+    }
+
+    @Test
+    void testUpdateCustomer_idNotExists_shouldThrowDomainException() {
+        CustomerEditVM customerEdit = new CustomerEditVM();
+        customerEdit.setId(2L);
+        customerEdit.setCode("code");
+        when(customerRepository.exists(anyLong())).thenReturn(false);
+        DomainException ex = assertThrows(DomainException.class, () -> customerService.updateCustomer(customerEdit));
+        assertEquals(DomainError.CUSTOMER_NOT_FOUND_BY_ID, ex.getError());
+        verify(customerRepository).exists(anyLong());
+        verify(customerRepository, never()).updateCustomer(any(CustomerEditVM.class));
+    }
+
+    @Test
+    void testUpdateCustomer_existsByCodeOthers_shouldThrowDomainException() {
+        CustomerEditVM customerEdit = new CustomerEditVM();
+        customerEdit.setId(2L);
+        customerEdit.setCode("code");
+        when(customerRepository.exists(anyLong())).thenReturn(true);
+        when(customerRepository.existsByCode(anyString(), anyLong())).thenReturn(true);
+        DomainException ex = assertThrows(DomainException.class, () -> customerService.updateCustomer(customerEdit));
+        assertEquals(DomainError.CUSTOMER_OTHER_EXISTS_BY_CODE, ex.getError());
+        verify(customerRepository).exists(anyLong());
+        verify(customerRepository).existsByCode(anyString(), anyLong());
+        verify(customerRepository, never()).updateCustomer(any(CustomerEditVM.class));
+    }
+
+    @Test
+    void testUpdateCustomer_existsByEmailOthers_shouldThrowDomainException() {
+        CustomerEditVM customerEdit = new CustomerEditVM();
+        customerEdit.setId(2L);
+        customerEdit.setCode("code");
+        customerEdit.setEmail("email");
+        when(customerRepository.exists(anyLong())).thenReturn(true);
+        when(customerRepository.existsByCode(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.existsByEmail(anyString(), anyLong())).thenReturn(true);
+        DomainException ex = assertThrows(DomainException.class, () -> customerService.updateCustomer(customerEdit));
+        assertEquals(DomainError.CUSTOMER_OTHER_EXISTS_BY_EMAIL, ex.getError());
+        verify(customerRepository).exists(anyLong());
+        verify(customerRepository).existsByCode(anyString(), anyLong());
+        verify(customerRepository).existsByEmail(anyString(), anyLong());
+        verify(customerRepository, never()).updateCustomer(any(CustomerEditVM.class));
+    }
+
+    @Test
+    void testUpdateCustomer_existsByPhoneOthers_shouldThrowDomainException() {
+        CustomerEditVM customerEdit = new CustomerEditVM();
+        customerEdit.setId(2L);
+        customerEdit.setCode("code");
+        customerEdit.setEmail("email");
+        customerEdit.setPhone("phone");
+        when(customerRepository.exists(anyLong())).thenReturn(true);
+        when(customerRepository.existsByCode(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.existsByEmail(anyString(), anyLong())).thenReturn(false);
+        when(customerRepository.existsByPhone(anyString(), anyLong())).thenReturn(true);
+        DomainException ex = assertThrows(DomainException.class, () -> customerService.updateCustomer(customerEdit));
+        assertEquals(DomainError.CUSTOMER_OTHER_EXISTS_BY_PHONE, ex.getError());
+        verify(customerRepository).exists(anyLong());
+        verify(customerRepository).existsByCode(anyString(), anyLong());
+        verify(customerRepository).existsByEmail(anyString(), anyLong());
+        verify(customerRepository).existsByPhone(anyString(), anyLong());
+        verify(customerRepository, never()).updateCustomer(any(CustomerEditVM.class));
+    }
+
+    @Test
+    void testGetNextCustomerCode_emptyMaxCode_shouldSucceed() {
+        String prefix = DateFormatUtils.format(new Date(), CommonConstants.CODE_PREFIX_DATE_PATTERN);
+        when(customerRepository.findMaxCodeByPrefix(anyString())).thenReturn(null);
+        String nextCode = customerService.getNextCustomerCode();
+        assertEquals(prefix + "0000", nextCode);
+    }
+
+    @Test
+    void testGetNextCustomerCode_notEmptyMaxCode_shouldSucceed() {
+        String prefix = DateFormatUtils.format(new Date(), CommonConstants.CODE_PREFIX_DATE_PATTERN);
+        when(customerRepository.findMaxCodeByPrefix(anyString())).thenReturn(prefix + "1000");
+        String nextCode = customerService.getNextCustomerCode();
+        assertEquals(prefix + "1001", nextCode);
     }
 
 }

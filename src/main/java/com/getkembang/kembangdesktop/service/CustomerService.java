@@ -67,11 +67,11 @@ public class CustomerService extends BaseService {
         }
         String email = customer.getEmail();
         if (StringUtils.isNotBlank(email) && customerRepository.existsByEmail(email, customerId)) {
-            throw new DomainException(DomainError.CUSTOMER_EXISTS_BY_EMAIL);
+            throw new DomainException(DomainError.CUSTOMER_OTHER_EXISTS_BY_EMAIL);
         }
         String phone = customer.getPhone();
         if (StringUtils.isNotBlank(phone) && customerRepository.existsByPhone(phone, customerId)) {
-            throw new DomainException(DomainError.CUSTOMER_EXISTS_BY_PHONE);
+            throw new DomainException(DomainError.CUSTOMER_OTHER_EXISTS_BY_PHONE);
         }
         return customerRepository.updateCustomer(customer) == 1;
     }
