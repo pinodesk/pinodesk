@@ -25,6 +25,7 @@
 /.nb-gradle/
 
 ### VSCode ###
+.vscode/
 .history/
 
 .DS_Store
