@@ -106,7 +106,7 @@ class CustomerServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void testCreateCustomer_existsByCode_shouldFail() {
+    void testCreateCustomer_existsByCode_shouldThrowDomainException() {
         CustomerAddVM customerAdd = new CustomerAddVM();
         customerAdd.setCode("code");
         when(customerRepository.existsByCode(anyString())).thenReturn(true);
@@ -117,7 +117,7 @@ class CustomerServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void testCreateCustomer_existsByEmail_shouldFail() {
+    void testCreateCustomer_existsByEmail_shouldThrowDomainException() {
         CustomerAddVM customerAdd = new CustomerAddVM();
         customerAdd.setCode("code");
         customerAdd.setEmail("email");
@@ -130,7 +130,7 @@ class CustomerServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void testCreateCustomer_existsByPhone_shouldFail() {
+    void testCreateCustomer_existsByPhone_shouldThrowDomainException() {
         CustomerAddVM customerAdd = new CustomerAddVM();
         customerAdd.setCode("code");
         customerAdd.setEmail("email");
