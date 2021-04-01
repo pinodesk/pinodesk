@@ -23,12 +23,9 @@ import com.getkembang.kembangdesktop.viewmodel.RackVM;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class RackServiceTest extends BaseServiceTest {
 
     @Mock
@@ -72,7 +69,7 @@ class RackServiceTest extends BaseServiceTest {
         when(rackRepository.readOne(anyLong())).thenReturn(Optional.of(rack));
         RackVM result = rackService.getRackById(1L);
         assertNotNull(result);
-        assertEquals(1L, result.getId());
+        assertEquals(1L, result.getId().longValue());
         verify(rackRepository).readOne(anyLong());
     }
 
