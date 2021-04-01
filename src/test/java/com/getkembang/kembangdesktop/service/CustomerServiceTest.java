@@ -32,12 +32,9 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)     
 class CustomerServiceTest extends BaseServiceTest {
     
     @Mock
@@ -86,7 +83,7 @@ class CustomerServiceTest extends BaseServiceTest {
         when(customerRepository.existsByPhone(anyString())).thenReturn(false);
         when(customerRepository.createCustomer(any(CustomerAddVM.class))).thenReturn(1L);
         Long id = customerService.createCustomer(customerAdd);
-        assertEquals(1L, id);
+        assertEquals(1L, id.longValue());
         verify(customerRepository).existsByCode(anyString());
         verify(customerRepository).existsByEmail(anyString());
         verify(customerRepository).existsByPhone(anyString());
@@ -102,7 +99,7 @@ class CustomerServiceTest extends BaseServiceTest {
         when(customerRepository.existsByPhone(anyString())).thenReturn(false);
         when(customerRepository.createCustomer(any(CustomerAddVM.class))).thenReturn(1L);
         Long id = customerService.createCustomer(customerAdd);
-        assertEquals(1L, id);
+        assertEquals(1L, id.longValue());
         verify(customerRepository).existsByCode(anyString());
         verify(customerRepository).existsByPhone(anyString());
         verify(customerRepository).createCustomer(any(CustomerAddVM.class));
@@ -117,7 +114,7 @@ class CustomerServiceTest extends BaseServiceTest {
         when(customerRepository.existsByEmail(anyString())).thenReturn(false);
         when(customerRepository.createCustomer(any(CustomerAddVM.class))).thenReturn(1L);
         Long id = customerService.createCustomer(customerAdd);
-        assertEquals(1L, id);
+        assertEquals(1L, id.longValue());
         verify(customerRepository).existsByCode(anyString());
         verify(customerRepository).existsByEmail(anyString());
         verify(customerRepository).createCustomer(any(CustomerAddVM.class));
@@ -130,7 +127,7 @@ class CustomerServiceTest extends BaseServiceTest {
         when(customerRepository.existsByCode(anyString())).thenReturn(false);
         when(customerRepository.createCustomer(any(CustomerAddVM.class))).thenReturn(1L);
         Long id = customerService.createCustomer(customerAdd);
-        assertEquals(1L, id);
+        assertEquals(1L, id.longValue());
         verify(customerRepository).existsByCode(anyString());
         verify(customerRepository).createCustomer(any(CustomerAddVM.class));
     }

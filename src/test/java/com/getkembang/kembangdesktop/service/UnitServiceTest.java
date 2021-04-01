@@ -23,12 +23,9 @@ import com.getkembang.kembangdesktop.viewmodel.UnitVM;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith(MockitoExtension.class)
 class UnitServiceTest extends BaseServiceTest {
 
     @Mock
@@ -72,7 +69,7 @@ class UnitServiceTest extends BaseServiceTest {
         when(unitRepository.readOne(anyLong())).thenReturn(Optional.of(unit));
         UnitVM result = unitService.getUnitById(1L);
         assertNotNull(result);
-        assertEquals(1L, result.getId());
+        assertEquals(1L, result.getId().longValue());
         verify(unitRepository).readOne(anyLong());
     }
 
