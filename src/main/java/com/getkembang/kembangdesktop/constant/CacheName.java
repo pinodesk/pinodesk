@@ -13,7 +13,8 @@ public enum CacheName {
     UNITS_ALL(Keys.UNITS_ALL),
     UNITS_BY_KEYWORD(Keys.UNITS_BY_KEYWORD),
     DRUG_CATEGORIES_BY_KEYWORD(Keys.DRUG_CATEGORIES_BY_KEYWORD),
-    CUSTOMERS_BY_FILTER(Keys.CUSTOMERS_BY_FILTER);
+    CUSTOMERS_BY_FILTER(Keys.CUSTOMERS_BY_FILTER),
+    SUPPLIERS_BY_FILTER(Keys.SUPPLIERS_BY_FILTER);
     // @formatter:on
 
     private String key;
@@ -40,6 +41,7 @@ public enum CacheName {
         String UNITS_BY_KEYWORD = "unitsByKeyword";
         String DRUG_CATEGORIES_BY_KEYWORD = "drugCategoriesByKeyword";
         String CUSTOMERS_BY_FILTER = "customersByFilter";
+        String SUPPLIERS_BY_FILTER = "suppliersByFilter";
     }
 
 }

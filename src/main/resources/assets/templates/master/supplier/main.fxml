@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.supplier.SupplierMainController">
+   <children>
+      <AnchorPane prefWidth="774.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: #009c7c;" text="%lbl.title.customers" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <padding>
+                  <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
+               </padding>
+            </Label>
+         </children>
+      </AnchorPane>
+      <HBox alignment="TOP_RIGHT" spacing="10.0">
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+         <children>
+            <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" prefHeight="30.0" prefWidth="73.0" styleClass="btn-secondary" text="%btn.filter" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnRemove" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemove" prefHeight="30.0" prefWidth="73.0" styleClass="btn-danger" text="%btn.remove" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+            <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onActionBtnAdd" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn.add" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+      <TableView fx:id="tableCustomer" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl.code" />
+          <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="200.0" text="%lbl.name" />
+            <TableColumn fx:id="colPhone" minWidth="-Infinity" prefWidth="200.0" text="%lbl.phone" />
+            <TableColumn fx:id="colEmail" minWidth="-Infinity" prefWidth="200.0" text="%lbl.email" />
+            <TableColumn fx:id="colAddress" minWidth="-Infinity" prefWidth="300.0" text="%lbl.address" />
+            <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl.createdat" />
+            <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl.updatedat" />
+        </columns>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </TableView>
+      <HBox alignment="TOP_RIGHT" prefHeight="30.0" prefWidth="200.0" spacing="5.0">
+         <children>
+            <Label fx:id="lblRows" text="0" />
+            <Label text="%lbl.rows" />
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </padding>
+      </HBox>
+   </children>
+</VBox>
