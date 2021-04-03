@@ -12,9 +12,9 @@ public interface SupplierRepository extends CommonRepository<Supplier> {
     
 	List<Supplier> filter(SupplierFilterVM filter);
     
-    Long createSupplier(SupplierAddVM customerAdd);
+    Long createSupplier(SupplierAddVM supplierAdd);
 
-    Integer updateSupplier(SupplierEditVM customerEdit);
+    Integer updateSupplier(SupplierEditVM supplierEdit);
 
     boolean existsByCode(String code, Long... excludedIds);
 
