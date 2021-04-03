@@ -10,6 +10,7 @@ public class DrugVM {
     private Long id;
     private Date createdAt;
     private Date updatedAt;
+    private Date deletedAt;
     private Long productId;
     private Long drugCategoryId;
     private String drugCategoryCode;
