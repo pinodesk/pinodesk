@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<actions>
+        <action>
+            <actionName>CUSTOM-clean package javafx:run -DskipTests --show-version</actionName>
+            <displayName>clean package javafx:run -DskipTests --show-version</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>package</goal>
+                <goal>javafx:run</goal>
+                <goal>-DskipTests</goal>
+                <goal>--show-version</goal>
+            </goals>
+        </action>
+        <action>
+            <actionName>CUSTOM-clean javafx:run --show-version</actionName>
+            <displayName>clean javafx:run --show-version</displayName>
+            <goals>
+                <goal>clean</goal>
+                <goal>javafx:run</goal>
+                <goal>--show-version</goal>
+            </goals>
+        </action>
+    </actions>

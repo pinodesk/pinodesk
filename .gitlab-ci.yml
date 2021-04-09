@@ -1,0 +1,38 @@
+# References: 
+# https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Maven.gitlab-ci.yml
+# https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
+
+image: maven:3.6.3-jdk-11-openj9
+
+variables:
+  MAVEN_CLI_OPTS: "--show-version \
+                   --batch-mode \
+                   -Duser.timezone=Asia/Jakarta \
+                   -Dhttps.protocols=TLSv1.2 \
+                   -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository \
+                   -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN \
+                   -Dorg.slf4j.simpleLogger.showDateTime=true \
+                   -Djava.awt.headless=true"
+
+cache:
+ paths:
+   - .m2/repository/
+
+build:
+  stage: build
+  script: mvn $MAVEN_CLI_OPTS test-compile
+  allow_failure: false
+
+test:
+  variables:
+    JACOCO_REPORT_HTML: $CI_PROJECT_DIR/target/site/jacoco/index.html
+  stage: test
+  script: 
+    - mvn $MAVEN_CLI_OPTS verify 
+    - if [ -f $JACOCO_REPORT_HTML ]; then cat $JACOCO_REPORT_HTML | grep -o "Total[^%]*%"; fi
+  allow_failure: false
+  coverage: "/Total.*?([0-9]{1,3})%/"
+  artifacts:
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml

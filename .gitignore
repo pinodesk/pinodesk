@@ -23,3 +23,10 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+
+### VSCode ###
+.vscode/
+.history/
+
+.DS_Store
+logs/

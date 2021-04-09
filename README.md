@@ -1,11 +1,8 @@
-### Java Spring template project
+# Kembang
 
-This project is based on a GitLab [Project Template](https://docs.gitlab.com/ee/gitlab-basics/create-project.html).
+Kembang POS (Point-of-Sale) Desktop App
 
-Improvements can be proposed in the [original project](https://gitlab.com/gitlab-org/project-templates/spring).
 
-### CI/CD with Auto DevOps
+[![pipeline status](https://gitlab.com/muhammadkholidb/kembang-desktop/badges/develop/pipeline.svg)](https://gitlab.com/muhammadkholidb/kembang-desktop/-/commits/develop)
+[![coverage report](https://gitlab.com/muhammadkholidb/kembang-desktop/badges/develop/coverage.svg)](https://gitlab.com/muhammadkholidb/kembang-desktop/-/commits/develop)
 
-This template is compatible with [Auto DevOps](https://docs.gitlab.com/ee/topics/autodevops/).
-
-If Auto DevOps is not already enabled for this project, you can [turn it on](https://docs.gitlab.com/ee/topics/autodevops/#enabling-auto-devops) in the project settings.
