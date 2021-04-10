@@ -130,6 +130,11 @@
             <version>master-SNAPSHOT</version>
         </dependency>
         <dependency>
+            <groupId>com.gitlab.muhammadkholidb</groupId>
+            <artifactId>dior</artifactId>
+            <version>master-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
             <version>7.0.2</version>

@@ -13,15 +13,15 @@ import java.util.stream.Collectors;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
-import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.exception.FXException;
-import com.getkembang.kembangdesktop.utility.AlertResult;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
 import com.getkembang.kembangdesktop.utility.FXUtils;
-import com.getkembang.kembangdesktop.utility.PageData;
+import com.gitlab.muhammadkholidb.dior.utility.AlertResult;
+import com.gitlab.muhammadkholidb.dior.utility.IMessage;
+import com.gitlab.muhammadkholidb.dior.utility.PageData;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -134,7 +134,7 @@ public abstract class BaseController {
         }
     }
 
-    protected String translate(MessageCode messageCode) {
+    protected String translate(IMessage messageCode) {
         return translate(messageCode.toString());
     }
 
@@ -190,11 +190,11 @@ public abstract class BaseController {
         return displayAlert(AlertType.ERROR, message);
     }
 
-    protected AlertResult displayError(MessageCode messageCode) {
+    protected AlertResult displayError(IMessage messageCode) {
         return displayError(translate(messageCode.toString()));
     }
 
-    protected AlertResult displayError(Collection<MessageCode> messageCodes) {
+    protected AlertResult displayError(Collection<IMessage> messageCodes) {
         List<String> messages = messageCodes.stream().map(this::translate).collect(Collectors.toList());
         String message = StringUtils.join(messages, "\n");
         return displayError(message);
@@ -204,7 +204,7 @@ public abstract class BaseController {
         return displayAlert(AlertType.INFORMATION, message);
     }
 
-    protected AlertResult displayInfo(MessageCode messageCode) {
+    protected AlertResult displayInfo(IMessage messageCode) {
         return displayInfo(translate(messageCode.toString()));
     }
 
@@ -212,7 +212,7 @@ public abstract class BaseController {
         return displayAlert(AlertType.CONFIRMATION, message);
     }
 
-    protected AlertResult displayConfirmation(MessageCode messageCode) {
+    protected AlertResult displayConfirmation(IMessage messageCode) {
         return displayConfirmation(translate(messageCode.toString()));
     }
 

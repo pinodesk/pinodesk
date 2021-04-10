@@ -14,4 +14,6 @@ public interface CommonConstants {
     String CONTACT_MASK_SUPPLIER = "S-UUUU-UUUU";
     String CONTACT_MASK_CUSTOMER = "C-UUUU-UUUU";
     String CODE_PREFIX_DATE_PATTERN = "yyyyMMdd";
+    String PAGE_TEMPLATE_DIR = "/assets/templates/";
+    String RESOURCE_BUNDLE_PACKAGE = "com.getkembang.kembangdesktop.lang";
 }

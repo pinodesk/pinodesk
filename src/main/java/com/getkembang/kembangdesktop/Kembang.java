@@ -1,11 +1,17 @@
 package com.getkembang.kembangdesktop;
 
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
+import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.Page;
+import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
-import com.getkembang.kembangdesktop.utility.PageLoader;
+import com.gitlab.muhammadkholidb.dior.utility.PageLoader;
+
+import org.apache.commons.lang3.StringUtils;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -24,6 +30,7 @@ public class Kembang extends Application {
     public void init() throws Exception {
         super.init();
         ApplicationContextHolder.init();
+        PageLoader.init(CommonConstants.PAGE_TEMPLATE_DIR, this::getDefaultResourceBundle);
     }
 
     @Override
@@ -42,6 +49,14 @@ public class Kembang extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private ResourceBundle getDefaultResourceBundle() {
+        ConfigurationService configurationService = ApplicationContextHolder.getApplicationContext()
+                .getBean(ConfigurationService.class);
+        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
+        Locale locale = StringUtils.isBlank(languageCode) ? CommonConstants.ENGLISH : new Locale(languageCode);
+        return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, locale);
     }
 
 }

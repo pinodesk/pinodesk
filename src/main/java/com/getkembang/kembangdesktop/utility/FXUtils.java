@@ -7,7 +7,8 @@ import com.getkembang.kembangdesktop.Kembang;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.exception.FXException;
-import com.getkembang.kembangdesktop.javafx.formatter.DigitFormatter;
+import com.gitlab.muhammadkholidb.dior.formatter.DigitFormatter;
+import com.gitlab.muhammadkholidb.dior.utility.PageLoader;
 
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;

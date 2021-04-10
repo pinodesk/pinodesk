@@ -1,6 +1,8 @@
 package com.getkembang.kembangdesktop.constant;
 
-public enum MessageCode {
+import com.gitlab.muhammadkholidb.dior.utility.IMessage;
+
+public enum MessageCode implements IMessage {
     
     ERROR_EMPTY_NAME,
     ERROR_EMPTY_CODE,

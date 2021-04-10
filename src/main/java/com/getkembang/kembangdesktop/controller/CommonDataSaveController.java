@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.controller;
 
 import com.getkembang.kembangdesktop.utility.FXUtils;
-import com.getkembang.kembangdesktop.utility.ValidationResult;
+import com.gitlab.muhammadkholidb.dior.utility.ValidationResult;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,7 +45,7 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
         lastDataSaved = false;
         ValidationResult result = validateValues();
         if (result.hasError()) {
-            displayError(result.getMessageCodes());
+            displayError(result.getMessages());
             return;
         }
         lastDataSaved = save();

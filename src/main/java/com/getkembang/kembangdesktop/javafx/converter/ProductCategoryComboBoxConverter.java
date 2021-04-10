@@ -1,6 +1,7 @@
 package com.getkembang.kembangdesktop.javafx.converter;
 
 import com.getkembang.kembangdesktop.viewmodel.ProductCategoryVM;
+import com.gitlab.muhammadkholidb.dior.converter.DefaultStringConverterAdapter;
 
 import javafx.scene.control.ComboBox;
 

@@ -1,6 +1,8 @@
 package com.getkembang.kembangdesktop.constant;
 
-public enum Page {
+import com.gitlab.muhammadkholidb.dior.utility.IPage;
+
+public enum Page implements IPage {
     
     MAIN("main"),
 

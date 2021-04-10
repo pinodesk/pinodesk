@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StyleConstants;
-import com.getkembang.kembangdesktop.utility.PageLoader;
+import com.gitlab.muhammadkholidb.dior.utility.PageLoader;
 
 import org.springframework.context.ApplicationContext;
 
