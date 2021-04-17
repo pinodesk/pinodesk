@@ -37,10 +37,10 @@ import com.getkembang.kembangdesktop.viewmodel.ProductVM;
 import com.getkembang.kembangdesktop.viewmodel.RackVM;
 import com.getkembang.kembangdesktop.viewmodel.UnitVM;
 import com.getkembang.kembangdesktop.viewmodel.WholesaleVM;
-import com.gitlab.muhammadkholidb.dior.control.MaskedTextField;
-import com.gitlab.muhammadkholidb.dior.utility.AlertResult;
-import com.gitlab.muhammadkholidb.dior.utility.ComboBoxUtils;
-import com.gitlab.muhammadkholidb.dior.utility.ValidationResult;
+import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;

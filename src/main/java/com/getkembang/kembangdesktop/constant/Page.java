@@ -1,6 +1,6 @@
 package com.getkembang.kembangdesktop.constant;
 
-import com.gitlab.muhammadkholidb.dior.utility.IPage;
+import com.gitlab.muhammadkholidb.pandora.utility.IPage;
 
 public enum Page implements IPage {
     

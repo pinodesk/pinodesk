@@ -9,7 +9,7 @@ import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
-import com.gitlab.muhammadkholidb.dior.utility.PageLoader;
+import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
 
 import org.apache.commons.lang3.StringUtils;
 

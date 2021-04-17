@@ -18,11 +18,11 @@ import com.getkembang.kembangdesktop.utility.Async;
 import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductVM;
-import com.gitlab.muhammadkholidb.dior.factory.BooleanImageCellFactory;
-import com.gitlab.muhammadkholidb.dior.factory.DateCellFactory;
-import com.gitlab.muhammadkholidb.dior.factory.NumberCellFactory;
-import com.gitlab.muhammadkholidb.dior.utility.AlertResult;
-import com.gitlab.muhammadkholidb.dior.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.pandora.factory.BooleanImageCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 
 import org.springframework.context.ApplicationContext;
 

@@ -21,9 +21,9 @@ import com.getkembang.kembangdesktop.viewmodel.ProductCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.RackVM;
 import com.getkembang.kembangdesktop.viewmodel.UnitVM;
-import com.gitlab.muhammadkholidb.dior.control.MaskedTextField;
-import com.gitlab.muhammadkholidb.dior.model.BasicComboBoxModel;
-import com.gitlab.muhammadkholidb.dior.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
+import com.gitlab.muhammadkholidb.pandora.model.BasicComboBoxModel;
+import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;

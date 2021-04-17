@@ -131,7 +131,7 @@
         </dependency>
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
-            <artifactId>dior</artifactId>
+            <artifactId>pandora</artifactId>
             <version>master-SNAPSHOT</version>
         </dependency>
         <dependency>

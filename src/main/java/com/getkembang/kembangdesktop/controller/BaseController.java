@@ -19,9 +19,9 @@ import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.exception.FXException;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
 import com.getkembang.kembangdesktop.utility.FXUtils;
-import com.gitlab.muhammadkholidb.dior.utility.AlertResult;
-import com.gitlab.muhammadkholidb.dior.utility.IMessage;
-import com.gitlab.muhammadkholidb.dior.utility.PageData;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
+import com.gitlab.muhammadkholidb.pandora.utility.PageData;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;

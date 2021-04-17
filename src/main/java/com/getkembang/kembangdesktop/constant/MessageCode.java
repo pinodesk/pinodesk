@@ -1,6 +1,6 @@
 package com.getkembang.kembangdesktop.constant;
 
-import com.gitlab.muhammadkholidb.dior.utility.IMessage;
+import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
 
 public enum MessageCode implements IMessage {
     
