@@ -6,7 +6,6 @@ create table if not exists t_supplier (
 	code varchar(12) not null, -- e.g. 202103110001
 	name varchar(256) not null,
 	phone varchar(16),
-	fax varchar(16),
 	email varchar(256),
 	website varchar(256),
 	address varchar(512),

@@ -32,9 +32,6 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
         if (StringUtils.isNotBlank(filter.getPhone())) {
             where.contains(Supplier.C_PHONE, filter.getPhone());
         }
-        if (StringUtils.isNotBlank(filter.getFax())) {
-            where.contains(Supplier.C_FAX, filter.getFax());
-        }
         if (StringUtils.isNotBlank(filter.getEmail())) {
             where.containsIgnoreCase(Supplier.C_EMAIL, filter.getEmail());
         }
@@ -54,7 +51,6 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
             Supplier.C_NAME,
             Supplier.C_CODE,
             Supplier.C_PHONE,
-            Supplier.C_FAX,
             Supplier.C_EMAIL,
             Supplier.C_WEBSITE,
             Supplier.C_ADDRESS
@@ -62,7 +58,6 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
             supplierAdd.getName(),
             supplierAdd.getCode(),
             supplierAdd.getPhone(),
-            supplierAdd.getFax(),
             supplierAdd.getEmail(),
             supplierAdd.getWebsite(),
             supplierAdd.getAddress()
@@ -75,7 +70,6 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
             Supplier.C_NAME,
             Supplier.C_CODE,
             Supplier.C_PHONE,
-            Supplier.C_FAX,
             Supplier.C_EMAIL,
             Supplier.C_WEBSITE,
             Supplier.C_ADDRESS
@@ -83,7 +77,6 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
             supplierEdit.getName(),
             supplierEdit.getCode(),
             supplierEdit.getPhone(),
-            supplierEdit.getFax(),
             supplierEdit.getEmail(),
             supplierEdit.getWebsite(),
             supplierEdit.getAddress()

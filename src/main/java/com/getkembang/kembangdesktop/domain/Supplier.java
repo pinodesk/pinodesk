@@ -15,7 +15,6 @@ public class Supplier extends DataModel {
     public static final String C_CODE = "code";
     public static final String C_NAME = "name";
     public static final String C_PHONE = "phone";
-    public static final String C_FAX = "fax";
     public static final String C_EMAIL = "email";
     public static final String C_WEBSITE = "website";
     public static final String C_ADDRESS = "address";
@@ -28,9 +27,6 @@ public class Supplier extends DataModel {
 
     @DataColumn(C_PHONE)
     private String phone;
-
-    @DataColumn(C_FAX)
-    private String fax;
 
     @DataColumn(C_EMAIL)
     private String email;

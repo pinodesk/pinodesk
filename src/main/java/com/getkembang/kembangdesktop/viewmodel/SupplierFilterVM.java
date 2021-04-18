@@ -7,7 +7,6 @@ public class SupplierFilterVM {
     private String code;
     private String name;
     private String phone;
-    private String fax;
     private String email;
     private String website;
     private String address;
