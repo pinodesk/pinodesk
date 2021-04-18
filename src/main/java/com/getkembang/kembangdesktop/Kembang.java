@@ -10,6 +10,7 @@ import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
 import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -31,6 +32,7 @@ public class Kembang extends Application {
         super.init();
         ApplicationContextHolder.init();
         PageLoader.init(CommonConstants.PAGE_TEMPLATE_DIR, this::getDefaultResourceBundle);
+        StageUtils.init(CommonConstants.APP_TITLE, ICON_PATHS);
     }
 
     @Override

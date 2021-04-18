@@ -6,10 +6,10 @@ import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.service.CustomerService;
-import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.CustomerEditVM;
 import com.getkembang.kembangdesktop.viewmodel.CustomerVM;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
 import org.apache.commons.lang3.StringUtils;
@@ -58,7 +58,7 @@ public class SupplierEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        FXUtils.setDigitTextFields(tfPhone);
+        TextFieldUtils.setDigitTextFields(tfPhone);
     }
 
     @Override

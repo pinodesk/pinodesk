@@ -7,13 +7,14 @@ import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.BaseController;
-import com.getkembang.kembangdesktop.service.CustomerService;
+import com.getkembang.kembangdesktop.service.SupplierService;
 import com.getkembang.kembangdesktop.utility.Async;
-import com.getkembang.kembangdesktop.utility.FXUtils;
-import com.getkembang.kembangdesktop.viewmodel.CustomerFilterVM;
-import com.getkembang.kembangdesktop.viewmodel.CustomerVM;
+import com.getkembang.kembangdesktop.viewmodel.SupplierFilterVM;
+import com.getkembang.kembangdesktop.viewmodel.SupplierVM;
 import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 
 import org.springframework.context.ApplicationContext;
@@ -42,103 +43,107 @@ public class SupplierMainController extends BaseController {
     private Button btnFilter;
 
     @FXML
-    private TableView<CustomerVM> tableCustomer;
+    private TableView<SupplierVM> tableSupplier;
 
     @FXML
-    private TableColumn<CustomerVM, String> colCode;
+    private TableColumn<SupplierVM, String> colCode;
 
     @FXML
-    private TableColumn<CustomerVM, String> colName;
+    private TableColumn<SupplierVM, String> colName;
 
     @FXML
-    private TableColumn<CustomerVM, String> colPhone;
+    private TableColumn<SupplierVM, String> colPhone;
 
     @FXML
-    private TableColumn<CustomerVM, String> colEmail;
+    private TableColumn<SupplierVM, String> colEmail;
 
     @FXML
-    private TableColumn<CustomerVM, String> colAddress;
+    private TableColumn<SupplierVM, String> colAddress;
 
     @FXML
-    private TableColumn<CustomerVM, Date> colCreatedAt;
+    private TableColumn<SupplierVM, String> colWebsite;
 
     @FXML
-    private TableColumn<CustomerVM, Date> colUpdatedAt;
+    private TableColumn<SupplierVM, Date> colCreatedAt;
+
+    @FXML
+    private TableColumn<SupplierVM, Date> colUpdatedAt;
 
     @FXML
     private Label lblRows;
 
-    private CustomerService customerService;
+    private SupplierService supplierService;
 
-    private CustomerFilterVM customerFilter;
+    private SupplierFilterVM supplierFilter;
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
         Page nextPage = Page.MASTER_CUSTOMER_ADD;
         setNextPage(nextPage);
-        FXUtils.show(nextPage, false, we -> {
+        StageUtils.show(nextPage, false, we -> {
             if (Boolean.TRUE.equals(getPageData())) {
-                searchCustomers();
+                searchSuppliers();
             }
         });
     }
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        Page nextPage = Page.MASTER_CUSTOMER_FILTER;
-        setNextPageData(nextPage, customerFilter);
-        FXUtils.show(nextPage, false, we -> {
-            customerFilter = getPageData();
-            searchCustomers();
+        Page nextPage = Page.MASTER_SUPPLIER_FILTER;
+        setNextPageData(nextPage, supplierFilter);
+        StageUtils.show(nextPage, false, we -> {
+            supplierFilter = getPageData();
+            searchSuppliers();
         });
     }
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-        ObservableList<CustomerVM> items = tableCustomer.getSelectionModel().getSelectedItems();
+        ObservableList<SupplierVM> items = tableSupplier.getSelectionModel().getSelectedItems();
         if (!items.isEmpty()) {
             AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_CUSTOMERS);
             if (result.isConfirmed()) {
-                customerService.removeCustomers(items.stream().map(CustomerVM::getId).collect(Collectors.toList()));
+                supplierService.removeSuppliers(items.stream().map(SupplierVM::getId).collect(Collectors.toList()));
                 displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_CUSTOMERS);
-                searchCustomers();
+                searchSuppliers();
             }
         }
     }
 
     @Override
     protected void initServices(ApplicationContext ctx) {
-        customerService = ctx.getBean(CustomerService.class);
+        supplierService = ctx.getBean(SupplierService.class);
     }
 
     @Override
     protected void initControlActions() {
-        TableViewUtils.setColumnValue(colCode, CustomerVM::getCode);
-        TableViewUtils.setColumnValue(colName, CustomerVM::getName);
-        TableViewUtils.setColumnValue(colPhone, CustomerVM::getPhone);
-        TableViewUtils.setColumnValue(colEmail, CustomerVM::getEmail);
-        TableViewUtils.setColumnValue(colAddress, CustomerVM::getAddress);
+        TableViewUtils.setColumnValue(colCode, SupplierVM::getCode);
+        TableViewUtils.setColumnValue(colName, SupplierVM::getName);
+        TableViewUtils.setColumnValue(colPhone, SupplierVM::getPhone);
+        TableViewUtils.setColumnValue(colEmail, SupplierVM::getEmail);
+        TableViewUtils.setColumnValue(colAddress, SupplierVM::getAddress);
+        TableViewUtils.setColumnValue(colWebsite, SupplierVM::getWebsite);
         TableViewUtils.initTableColumn(colCreatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
-                CustomerVM::getCreatedAt);
+                SupplierVM::getCreatedAt);
         TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
-                CustomerVM::getUpdatedAt);
-        tableCustomer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        tableCustomer.setOnMouseClicked(event -> {
-            if (FXUtils.isDoubleClick(event)) {
-                handleActionTableCustomer();
+                SupplierVM::getUpdatedAt);
+        tableSupplier.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tableSupplier.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                handleActionTableSupplier();
             }
         });
-        tableCustomer.setOnKeyPressed(event -> {
-            if (FXUtils.isEnter(event)) {
-                handleActionTableCustomer();
+        tableSupplier.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                handleActionTableSupplier();
             }
         });
     }
 
     @Override
     protected void initControlValues() {
-        customerFilter = new CustomerFilterVM();
-        searchCustomers();
+        supplierFilter = new SupplierFilterVM();
+        searchSuppliers();
     }
 
     @Override
@@ -152,28 +157,28 @@ public class SupplierMainController extends BaseController {
     }
 
     @SuppressWarnings("unchecked")
-    private void searchCustomers() {
-        tableCustomer.setPlaceholder(new Label(translate("lbl.loadingdata")));
-        tableCustomer.setItems(FXCollections.observableArrayList());
-        Async.supply(() -> customerService.searchCustomers(customerFilter))
+    private void searchSuppliers() {
+        tableSupplier.setPlaceholder(new Label(translate("lbl.loadingdata")));
+        tableSupplier.setItems(FXCollections.observableArrayList());
+        Async.supply(() -> supplierService.searchSuppliers(supplierFilter))
                 .thenAccept(customers -> Platform.runLater(() -> {
                     if (customers.isEmpty()) {
-                        tableCustomer.setPlaceholder(new Label(translate("lbl.nodata")));
+                        tableSupplier.setPlaceholder(new Label(translate("lbl.nodata")));
                         lblRows.setText("0");
                     }
-                    tableCustomer.setItems(FXCollections.observableList(customers));
-                    tableCustomer.getSortOrder().setAll(colName); // Always sort by name after searching
+                    tableSupplier.setItems(FXCollections.observableList(customers));
+                    tableSupplier.getSortOrder().setAll(colName); // Always sort by name after searching
                     lblRows.setText(customers.size() + "");
                 }));
     }
 
-    private void handleActionTableCustomer() {
-        CustomerVM selected = tableCustomer.getSelectionModel().getSelectedItem();
+    private void handleActionTableSupplier() {
+        SupplierVM selected = tableSupplier.getSelectionModel().getSelectedItem();
         Page nextPage = Page.MASTER_CUSTOMER_EDIT;
         setNextPageData(nextPage, selected);
-        FXUtils.show(nextPage, false, event -> {
+        StageUtils.show(nextPage, false, event -> {
             if (Boolean.TRUE.equals(getPageData())) {
-                searchCustomers();
+                searchSuppliers();
             }
         });
     }

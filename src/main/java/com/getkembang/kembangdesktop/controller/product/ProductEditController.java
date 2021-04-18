@@ -28,7 +28,6 @@ import com.getkembang.kembangdesktop.service.ProductService;
 import com.getkembang.kembangdesktop.service.RackService;
 import com.getkembang.kembangdesktop.service.UnitService;
 import com.getkembang.kembangdesktop.service.WholesaleService;
-import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.DrugCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.DrugVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductCategoryVM;
@@ -40,6 +39,7 @@ import com.getkembang.kembangdesktop.viewmodel.WholesaleVM;
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
 import org.apache.commons.lang3.StringUtils;
@@ -223,7 +223,7 @@ public class ProductEditController extends CommonDataSaveController {
         tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         // @formatter:off
-        FXUtils.setDigitTextFields(
+        TextFieldUtils.setDigitTextFields(
                 tfBarcode,
                 tfSellingPrice, 
                 tfPurchasePrice, 

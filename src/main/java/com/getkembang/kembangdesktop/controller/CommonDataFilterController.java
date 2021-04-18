@@ -1,6 +1,6 @@
 package com.getkembang.kembangdesktop.controller;
 
-import com.getkembang.kembangdesktop.utility.FXUtils;
+import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -47,7 +47,7 @@ public abstract class CommonDataFilterController<T> extends CommonParentVBoxCont
     protected void initParentVBoxControlActions() {
         initDataFilterControlActions();
         addContentPaneOnKeyPressedHandler(event -> {
-            if (KeyCode.ENTER.equals(event.getCode()) || FXUtils.CTRL_S.match(event)) {
+            if (KeyCode.ENTER.equals(event.getCode()) || KeyConstants.CTRL_S.match(event)) {
                 btnFilter.fire();
                 return;
             }
@@ -55,7 +55,7 @@ public abstract class CommonDataFilterController<T> extends CommonParentVBoxCont
                 btnCancel.fire();
                 return;
             }
-            if (FXUtils.CTRL_R.match(event)) {
+            if (KeyConstants.CTRL_R.match(event)) {
                 btnReset.fire();
                 return;
             }

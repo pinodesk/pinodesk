@@ -1,6 +1,5 @@
 package com.getkembang.kembangdesktop.controller.product;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Locale;
@@ -15,13 +14,13 @@ import com.getkembang.kembangdesktop.controller.BaseController;
 import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.getkembang.kembangdesktop.service.ProductService;
 import com.getkembang.kembangdesktop.utility.Async;
-import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductVM;
 import com.gitlab.muhammadkholidb.pandora.factory.BooleanImageCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 
 import org.springframework.context.ApplicationContext;
@@ -90,9 +89,9 @@ public class ProductMainController extends BaseController {
     private ConfigurationService configurationService;
 
     @FXML
-    void onActionBtnAdd(ActionEvent event) throws IOException {
+    void onActionBtnAdd(ActionEvent event) {
         setNextPage(Page.MASTER_PRODUCT_ADD);
-        FXUtils.show(Page.MASTER_PRODUCT_ADD, false, we -> {
+        StageUtils.show(Page.MASTER_PRODUCT_ADD, false, we -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchProducts();
             }
@@ -100,10 +99,10 @@ public class ProductMainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnFilter(ActionEvent event) throws IOException {
+    void onActionBtnFilter(ActionEvent event) {
         Page nextPage = Page.MASTER_PRODUCT_FILTER;
         setNextPageData(nextPage, productFilter);
-        FXUtils.show(nextPage, false, we -> {
+        StageUtils.show(nextPage, false, we -> {
             productFilter = getPageData();
             searchProducts();
         });
@@ -194,7 +193,7 @@ public class ProductMainController extends BaseController {
         ProductVM selected = tableProduct.getSelectionModel().getSelectedItem();
         Page nextPage = Page.MASTER_PRODUCT_EDIT;
         setNextPageData(nextPage, selected);
-        FXUtils.show(nextPage, false, event -> {
+        StageUtils.show(nextPage, false, event -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchProducts();
             }

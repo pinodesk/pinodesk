@@ -4,8 +4,9 @@ import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.service.CustomerService;
-import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.CustomerAddVM;
+import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
+import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
 import org.apache.commons.lang3.StringUtils;
@@ -56,9 +57,9 @@ public class CustomerAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        FXUtils.setDigitTextFields(tfPhone);
+        TextFieldUtils.setDigitTextFields(tfPhone);
         addContentPaneOnKeyPressedHandler(event -> {
-            if (FXUtils.CTRL_SHIFT_S.match(event)) {
+            if (KeyConstants.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();
                 return;
             }

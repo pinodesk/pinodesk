@@ -62,6 +62,11 @@ public class MainController extends BaseController {
         changeContent(Page.MASTER_CUSTOMER_MAIN, (Button) event.getSource());
     }
 
+    @FXML
+    void onActionBtnMenuSuppliers(ActionEvent event) {
+        changeContent(Page.MASTER_SUPPLIER_MAIN, (Button) event.getSource());
+    }
+
     private void changeContent(Page page, Button btn) {
         Platform.runLater(() -> {
             try {

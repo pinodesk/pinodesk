@@ -20,7 +20,6 @@ import com.getkembang.kembangdesktop.javafx.listener.RackComboBoxKeyEventHandler
 import com.getkembang.kembangdesktop.javafx.listener.UnitComboBoxKeyEventHandler;
 import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.getkembang.kembangdesktop.service.ProductService;
-import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.DrugCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.DrugVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductAddVM;
@@ -28,8 +27,10 @@ import com.getkembang.kembangdesktop.viewmodel.ProductCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.RackVM;
 import com.getkembang.kembangdesktop.viewmodel.UnitVM;
 import com.getkembang.kembangdesktop.viewmodel.WholesaleVM;
+import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
 import org.apache.commons.lang3.StringUtils;
@@ -265,7 +266,7 @@ public class ProductAddController extends CommonDataSaveController {
         tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         // @formatter:off
-        FXUtils.setDigitTextFields(
+        TextFieldUtils.setDigitTextFields(
                 tfBarcode,
                 tfSellingPrice, 
                 tfPurchasePrice, 
@@ -280,11 +281,11 @@ public class ProductAddController extends CommonDataSaveController {
         // @formatter:on
         initBtnSaveAndAdd();
         addContentPaneOnKeyPressedHandler(event -> {
-            if (FXUtils.CTRL_SHIFT_S.match(event)) {
+            if (KeyConstants.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();
                 return;
             }
-            if (FXUtils.CTRL_SHIFT_C.match(event)) {
+            if (KeyConstants.CTRL_SHIFT_C.match(event)) {
                 btnSaveAndCopy.fire();
                 return;
             }

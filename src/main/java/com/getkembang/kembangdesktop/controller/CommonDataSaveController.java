@@ -1,6 +1,6 @@
 package com.getkembang.kembangdesktop.controller;
 
-import com.getkembang.kembangdesktop.utility.FXUtils;
+import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
 import javafx.event.ActionEvent;
@@ -58,7 +58,7 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
     protected void initParentVBoxControlActions() {
         initDataSaveControlActions();
         addContentPaneOnKeyPressedHandler(event -> {
-            if (KeyCode.ENTER.equals(event.getCode()) || FXUtils.CTRL_S.match(event)) {
+            if (KeyCode.ENTER.equals(event.getCode()) || KeyConstants.CTRL_S.match(event)) {
                 btnSave.fire();
                 return;
             }

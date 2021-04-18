@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import com.getkembang.kembangdesktop.Kembang;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.constant.Page;
@@ -18,10 +19,10 @@ import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.exception.FXException;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
-import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
 import com.gitlab.muhammadkholidb.pandora.utility.PageData;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -159,7 +160,7 @@ public abstract class BaseController {
         alert.setTitle(CommonConstants.APP_TITLE);
         alert.setHeaderText(translate(getAlertHeaderMessageCode(type)));
         DialogPane dialogPane = alert.getDialogPane();
-        FXUtils.setDefaultIcons((Stage) dialogPane.getScene().getWindow());
+        StageUtils.setIcons((Stage) dialogPane.getScene().getWindow(), Kembang.ICON_PATHS);
         Text text = new Text(message);
         text.setWrappingWidth(dialogPane.getWidth());
         text.setStyle("-fx-font-size: 13px");
@@ -226,7 +227,7 @@ public abstract class BaseController {
         dialogPane.setMinWidth(600);
         dialogPane.setPrefWidth(600);
 
-        FXUtils.setDefaultIcons((Stage) dialogPane.getScene().getWindow());
+        StageUtils.setIcons((Stage) dialogPane.getScene().getWindow(), Kembang.ICON_PATHS);
 
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);

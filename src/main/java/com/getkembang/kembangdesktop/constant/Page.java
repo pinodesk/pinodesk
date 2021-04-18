@@ -14,7 +14,12 @@ public enum Page implements IPage {
     MASTER_CUSTOMER_MAIN("master/customer/main"), 
     MASTER_CUSTOMER_FILTER("master/customer/filter"), 
     MASTER_CUSTOMER_ADD("master/customer/add"), 
-    MASTER_CUSTOMER_EDIT("master/customer/edit");
+    MASTER_CUSTOMER_EDIT("master/customer/edit"),
+    
+    MASTER_SUPPLIER_MAIN("master/supplier/main"), 
+    MASTER_SUPPLIER_FILTER("master/supplier/filter"), 
+    MASTER_SUPPLIER_ADD("master/supplier/add"), 
+    MASTER_SUPPLIER_EDIT("master/supplier/edit");
     
     private final String templateName;
     

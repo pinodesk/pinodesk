@@ -16,7 +16,6 @@ import com.getkembang.kembangdesktop.javafx.listener.UnitComboBoxKeyEventHandler
 import com.getkembang.kembangdesktop.service.ProductCategoryService;
 import com.getkembang.kembangdesktop.service.RackService;
 import com.getkembang.kembangdesktop.service.UnitService;
-import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.ProductCategoryVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.RackVM;
@@ -24,6 +23,7 @@ import com.getkembang.kembangdesktop.viewmodel.UnitVM;
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -227,7 +227,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
                 new SimpleComboBoxModel(CommonConstants.YES, translate("lbl.yes")),
                 new SimpleComboBoxModel(CommonConstants.NO, translate("lbl.no")));
         // @formatter:off
-        FXUtils.setDigitTextFields(
+        TextFieldUtils.setDigitTextFields(
                 tfBarcode,
                 tfSellingPriceMin,
                 tfSellingPriceMax,  

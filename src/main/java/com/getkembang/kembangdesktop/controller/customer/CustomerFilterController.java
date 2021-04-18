@@ -2,8 +2,8 @@ package com.getkembang.kembangdesktop.controller.customer;
 
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataFilterController;
-import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.CustomerFilterVM;
+import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -65,7 +65,7 @@ public class CustomerFilterController extends CommonDataFilterController<Custome
 
     @Override
     protected void initDataFilterControlActions() {
-        FXUtils.setDigitTextFields(tfPhone);
+        TextFieldUtils.setDigitTextFields(tfPhone);
     }
 
     @Override

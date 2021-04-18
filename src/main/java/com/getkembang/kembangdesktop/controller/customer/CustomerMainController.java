@@ -9,11 +9,12 @@ import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.BaseController;
 import com.getkembang.kembangdesktop.service.CustomerService;
 import com.getkembang.kembangdesktop.utility.Async;
-import com.getkembang.kembangdesktop.utility.FXUtils;
 import com.getkembang.kembangdesktop.viewmodel.CustomerFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.CustomerVM;
 import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 
 import org.springframework.context.ApplicationContext;
@@ -76,7 +77,7 @@ public class CustomerMainController extends BaseController {
     void onActionBtnAdd(ActionEvent event) {
         Page nextPage = Page.MASTER_CUSTOMER_ADD;
         setNextPage(nextPage);
-        FXUtils.show(nextPage, false, we -> {
+        StageUtils.show(nextPage, false, we -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchCustomers();
             }
@@ -87,7 +88,7 @@ public class CustomerMainController extends BaseController {
     void onActionBtnFilter(ActionEvent event) {
         Page nextPage = Page.MASTER_CUSTOMER_FILTER;
         setNextPageData(nextPage, customerFilter);
-        FXUtils.show(nextPage, false, we -> {
+        StageUtils.show(nextPage, false, we -> {
             customerFilter = getPageData();
             searchCustomers();
         });
@@ -124,12 +125,12 @@ public class CustomerMainController extends BaseController {
                 CustomerVM::getUpdatedAt);
         tableCustomer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableCustomer.setOnMouseClicked(event -> {
-            if (FXUtils.isDoubleClick(event)) {
+            if (EventUtils.isDoubleClick(event)) {
                 handleActionTableCustomer();
             }
         });
         tableCustomer.setOnKeyPressed(event -> {
-            if (FXUtils.isEnter(event)) {
+            if (EventUtils.isEnter(event)) {
                 handleActionTableCustomer();
             }
         });
@@ -171,7 +172,7 @@ public class CustomerMainController extends BaseController {
         CustomerVM selected = tableCustomer.getSelectionModel().getSelectedItem();
         Page nextPage = Page.MASTER_CUSTOMER_EDIT;
         setNextPageData(nextPage, selected);
-        FXUtils.show(nextPage, false, event -> {
+        StageUtils.show(nextPage, false, event -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchCustomers();
             }
