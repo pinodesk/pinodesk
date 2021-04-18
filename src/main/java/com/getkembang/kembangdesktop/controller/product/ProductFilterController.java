@@ -22,7 +22,7 @@ import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.RackVM;
 import com.getkembang.kembangdesktop.viewmodel.UnitVM;
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
-import com.gitlab.muhammadkholidb.pandora.model.BasicComboBoxModel;
+import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -79,7 +79,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
     private ComboBox<RackVM> cbRack;
 
     @FXML
-    private ComboBox<BasicComboBoxModel> cbIncludesVat;
+    private ComboBox<SimpleComboBoxModel> cbIncludesVat;
 
     private ProductCategoryService productCategoryService;
 
@@ -144,7 +144,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         ProductCategoryVM selectedCategory = ComboBoxUtils.getSelectedItem(cbCategory);
         UnitVM selectedUnit = ComboBoxUtils.getSelectedItem(cbUnit);
         RackVM selectedRack = ComboBoxUtils.getSelectedItem(cbRack);
-        BasicComboBoxModel selectedIncludesVat = ComboBoxUtils.getSelectedItem(cbIncludesVat);
+        SimpleComboBoxModel selectedIncludesVat = ComboBoxUtils.getSelectedItem(cbIncludesVat);
         ProductFilterVM filter = new ProductFilterVM();
         filter.setName(tfName.getText());
         filter.setCode(tfCode.getText());
@@ -223,9 +223,9 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
                 new UnitComboBoxConverter(cbUnit));
         ComboBoxUtils.initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack),
                 new RackComboBoxConverter(cbRack));
-        ComboBoxUtils.initBasic(cbIncludesVat, new BasicComboBoxModel(null, StringConstants.EMPTY),
-                new BasicComboBoxModel(CommonConstants.YES, translate("lbl.yes")),
-                new BasicComboBoxModel(CommonConstants.NO, translate("lbl.no")));
+        ComboBoxUtils.initSimple(cbIncludesVat, new SimpleComboBoxModel(null, StringConstants.EMPTY),
+                new SimpleComboBoxModel(CommonConstants.YES, translate("lbl.yes")),
+                new SimpleComboBoxModel(CommonConstants.NO, translate("lbl.no")));
         // @formatter:off
         FXUtils.setDigitTextFields(
                 tfBarcode,
