@@ -2,8 +2,8 @@ package com.getkembang.kembangdesktop.javafx.listener;
 
 import com.getkembang.kembangdesktop.service.DrugCategoryService;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
-import com.getkembang.kembangdesktop.utility.Async;
 import com.getkembang.kembangdesktop.viewmodel.DrugCategoryVM;
+import com.gitlab.muhammadkholidb.gearbox.future.Async;
 
 import org.apache.commons.lang3.StringUtils;
 
