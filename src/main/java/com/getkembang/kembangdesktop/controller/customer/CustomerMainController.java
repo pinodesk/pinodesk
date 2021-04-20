@@ -10,7 +10,6 @@ import com.getkembang.kembangdesktop.controller.BaseController;
 import com.getkembang.kembangdesktop.service.CustomerService;
 import com.getkembang.kembangdesktop.viewmodel.CustomerFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.CustomerVM;
-import com.gitlab.muhammadkholidb.gearbox.future.Async;
 import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
@@ -18,6 +17,7 @@ import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 
 import org.springframework.context.ApplicationContext;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -156,7 +156,7 @@ public class CustomerMainController extends BaseController {
     private void searchCustomers() {
         tableCustomer.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableCustomer.setItems(FXCollections.observableArrayList());
-        Async.supply(() -> customerService.searchCustomers(customerFilter))
+        AsyncUtils.supply(() -> customerService.searchCustomers(customerFilter))
                 .thenAccept(customers -> Platform.runLater(() -> {
                     if (customers.isEmpty()) {
                         tableCustomer.setPlaceholder(new Label(translate("lbl.nodata")));

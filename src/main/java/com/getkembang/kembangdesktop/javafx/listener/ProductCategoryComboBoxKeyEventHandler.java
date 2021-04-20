@@ -3,7 +3,7 @@ package com.getkembang.kembangdesktop.javafx.listener;
 import com.getkembang.kembangdesktop.service.ProductCategoryService;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
 import com.getkembang.kembangdesktop.viewmodel.ProductCategoryVM;
-import com.gitlab.muhammadkholidb.gearbox.future.Async;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,7 +32,7 @@ public class ProductCategoryComboBoxKeyEventHandler implements EventHandler<KeyE
         }
         comboBox.hide();
         if (StringUtils.isNotBlank(value) && value.length() >= 3) {
-            Async.supply(() -> productCategoryService.searchProductCategoryByKeyword(value)).thenAccept(list -> {
+            AsyncUtils.supply(() -> productCategoryService.searchProductCategoryByKeyword(value)).thenAccept(list -> {
                 if (!list.isEmpty()) {
                     Platform.runLater(() -> {
                         comboBox.setItems(FXCollections.observableList(list));

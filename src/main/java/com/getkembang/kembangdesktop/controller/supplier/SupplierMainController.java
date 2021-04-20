@@ -10,12 +10,12 @@ import com.getkembang.kembangdesktop.controller.BaseController;
 import com.getkembang.kembangdesktop.service.SupplierService;
 import com.getkembang.kembangdesktop.viewmodel.SupplierFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.SupplierVM;
-import com.gitlab.muhammadkholidb.gearbox.future.Async;
 import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -160,7 +160,7 @@ public class SupplierMainController extends BaseController {
     private void searchSuppliers() {
         tableSupplier.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableSupplier.setItems(FXCollections.observableArrayList());
-        Async.supply(() -> supplierService.searchSuppliers(supplierFilter))
+        AsyncUtils.supply(() -> supplierService.searchSuppliers(supplierFilter))
                 .thenAccept(customers -> Platform.runLater(() -> {
                     if (customers.isEmpty()) {
                         tableSupplier.setPlaceholder(new Label(translate("lbl.nodata")));

@@ -15,13 +15,13 @@ import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.getkembang.kembangdesktop.service.ProductService;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductVM;
-import com.gitlab.muhammadkholidb.gearbox.future.Async;
 import com.gitlab.muhammadkholidb.pandora.factory.BooleanImageCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -204,7 +204,7 @@ public class ProductMainController extends BaseController {
     private void searchProducts() {
         tableProduct.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableProduct.setItems(FXCollections.observableArrayList());
-        Async.supply(() -> productService.searchProduct(productFilter)).thenAccept(products -> Platform.runLater(() -> {
+        AsyncUtils.supply(() -> productService.searchProduct(productFilter)).thenAccept(products -> Platform.runLater(() -> {
             if (products.isEmpty()) {
                 tableProduct.setPlaceholder(new Label(translate("lbl.nodata")));
                 lblRows.setText("0");

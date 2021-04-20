@@ -136,7 +136,7 @@
         </dependency>
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
-            <artifactId>gearbox</artifactId>
+            <artifactId>toolbox</artifactId>
             <version>master-SNAPSHOT</version>
         </dependency>
         <dependency>

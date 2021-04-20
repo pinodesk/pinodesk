@@ -3,7 +3,7 @@ package com.getkembang.kembangdesktop.javafx.listener;
 import com.getkembang.kembangdesktop.service.RackService;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
 import com.getkembang.kembangdesktop.viewmodel.RackVM;
-import com.gitlab.muhammadkholidb.gearbox.future.Async;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,7 +32,7 @@ public class RackComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
         }
         cb.hide();
         if (StringUtils.isNotBlank(value) && value.length() >= 3) {
-            Async.supply(() -> rackService.searchRackByKeyword(value)).thenAccept(list -> {
+            AsyncUtils.supply(() -> rackService.searchRackByKeyword(value)).thenAccept(list -> {
                 if (!list.isEmpty()) {
                     Platform.runLater(() -> {
                         cb.setItems(FXCollections.observableList(list));

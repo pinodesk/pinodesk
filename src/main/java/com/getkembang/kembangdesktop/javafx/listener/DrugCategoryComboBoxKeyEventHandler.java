@@ -3,7 +3,7 @@ package com.getkembang.kembangdesktop.javafx.listener;
 import com.getkembang.kembangdesktop.service.DrugCategoryService;
 import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
 import com.getkembang.kembangdesktop.viewmodel.DrugCategoryVM;
-import com.gitlab.muhammadkholidb.gearbox.future.Async;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,7 +32,7 @@ public class DrugCategoryComboBoxKeyEventHandler implements EventHandler<KeyEven
         }
         cb.hide();
         if (StringUtils.isNotBlank(value) && value.length() >= 3) {
-            Async.supply(() -> drugCategoryService.searchDrugCategoriesByKeyword(value)).thenAccept(list -> {
+            AsyncUtils.supply(() -> drugCategoryService.searchDrugCategoriesByKeyword(value)).thenAccept(list -> {
                 if (!list.isEmpty()) {
                     Platform.runLater(() -> {
                         cb.setItems(FXCollections.observableList(list));
