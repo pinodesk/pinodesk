@@ -20,7 +20,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
-                <version>5.2.9.RELEASE</version>
+                <version>5.3.6</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -253,7 +253,7 @@
 
     <profiles>
         <profile>
-            <id>javapackager</id>
+            <id>dist</id>
             <build>
                 <plugins>
                     <plugin>
