@@ -114,7 +114,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
             params.add(includesVat);
         }
         log.debug("Formatted SQL: \n{}", SQLUtils.format(sb.toString()));
-        return jdbcTemplate.query(sb.toString(), params.toArray(), BeanPropertyRowMapper.newInstance(ProductVM.class));
+        return jdbcTemplate.query(sb.toString(), BeanPropertyRowMapper.newInstance(ProductVM.class), params.toArray());
     }
 
     // @formatter:off

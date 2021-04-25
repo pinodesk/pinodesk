@@ -18,7 +18,7 @@ import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.exception.FXException;
-import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
+import com.getkembang.kembangdesktop.utility.SpringUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
 import com.gitlab.muhammadkholidb.pandora.utility.PageData;
@@ -56,7 +56,7 @@ public abstract class BaseController {
     @FXML
     void initialize() {
         setDefaultUncaughtExceptionHandler();
-        initServices(ApplicationContextHolder.getApplicationContext());
+        initServices(SpringUtils.getApplicationContext());
         initControlActions();
         initControlValues();
     }

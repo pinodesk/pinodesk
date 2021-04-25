@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.javafx.listener;
 
 import com.getkembang.kembangdesktop.service.ProductCategoryService;
-import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
+import com.getkembang.kembangdesktop.utility.SpringUtils;
 import com.getkembang.kembangdesktop.viewmodel.ProductCategoryVM;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
@@ -20,7 +20,7 @@ public class ProductCategoryComboBoxKeyEventHandler implements EventHandler<KeyE
 
     public ProductCategoryComboBoxKeyEventHandler(ComboBox<ProductCategoryVM> comboBox) {
         this.comboBox = comboBox;
-        this.productCategoryService = ApplicationContextHolder.getApplicationContext().getBean(ProductCategoryService.class);
+        this.productCategoryService = SpringUtils.getBean(ProductCategoryService.class);
     }
 
     @Override

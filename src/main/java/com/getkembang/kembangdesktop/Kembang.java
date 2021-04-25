@@ -8,7 +8,7 @@ import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.service.ConfigurationService;
-import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
+import com.getkembang.kembangdesktop.utility.SpringUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
@@ -30,7 +30,7 @@ public class Kembang extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-        ApplicationContextHolder.init();
+        SpringUtils.init(KembangConfig.class);
         PageLoader.init(CommonConstants.PAGE_TEMPLATE_DIR, this::getDefaultResourceBundle);
         StageUtils.init(CommonConstants.APP_TITLE, ICON_PATHS);
     }
@@ -54,8 +54,7 @@ public class Kembang extends Application {
     }
 
     private ResourceBundle getDefaultResourceBundle() {
-        ConfigurationService configurationService = ApplicationContextHolder.getApplicationContext()
-                .getBean(ConfigurationService.class);
+        ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
         Locale locale = StringUtils.isBlank(languageCode) ? CommonConstants.ENGLISH : new Locale(languageCode);
         return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, locale);

@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.javafx.listener;
 
 import com.getkembang.kembangdesktop.service.DrugCategoryService;
-import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
+import com.getkembang.kembangdesktop.utility.SpringUtils;
 import com.getkembang.kembangdesktop.viewmodel.DrugCategoryVM;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
@@ -20,7 +20,7 @@ public class DrugCategoryComboBoxKeyEventHandler implements EventHandler<KeyEven
 
     public DrugCategoryComboBoxKeyEventHandler(ComboBox<DrugCategoryVM> cb) {
         this.cb = cb;
-        this.drugCategoryService = ApplicationContextHolder.getApplicationContext().getBean(DrugCategoryService.class);
+        this.drugCategoryService = SpringUtils.getBean(DrugCategoryService.class);
     }
 
     @Override

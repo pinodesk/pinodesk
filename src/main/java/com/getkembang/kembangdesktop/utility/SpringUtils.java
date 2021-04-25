@@ -1,26 +1,27 @@
 package com.getkembang.kembangdesktop.utility;
 
-import com.getkembang.kembangdesktop.KembangConfig;
-
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public class ApplicationContextHolder {
+public class SpringUtils {
 
-    private ApplicationContextHolder() {
+    private SpringUtils() {
     }
 
     private static ApplicationContext applicationContext;
 
-    public static void init() {
-        if (applicationContext != null) {
-            throw new UnsupportedOperationException("Initialized already");
+    public static void init(Class<?> configurationClass) {
+        if (applicationContext == null) {
+            applicationContext = new AnnotationConfigApplicationContext(configurationClass);
         }
-        applicationContext = new AnnotationConfigApplicationContext(KembangConfig.class);
     }
 
     public static ApplicationContext getApplicationContext() {
         return applicationContext;
+    }
+
+    public static <T> T getBean(Class<T> type) {
+        return applicationContext.getBean(type);
     }
 
 }

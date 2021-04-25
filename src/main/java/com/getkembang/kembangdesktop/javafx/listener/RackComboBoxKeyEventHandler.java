@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.javafx.listener;
 
 import com.getkembang.kembangdesktop.service.RackService;
-import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
+import com.getkembang.kembangdesktop.utility.SpringUtils;
 import com.getkembang.kembangdesktop.viewmodel.RackVM;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
@@ -20,7 +20,7 @@ public class RackComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
 
     public RackComboBoxKeyEventHandler(ComboBox<RackVM> cb) {
         this.cb = cb;
-        this.rackService = ApplicationContextHolder.getApplicationContext().getBean(RackService.class);
+        this.rackService = SpringUtils.getBean(RackService.class);
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.javafx.listener;
 
 import com.getkembang.kembangdesktop.service.UnitService;
-import com.getkembang.kembangdesktop.utility.ApplicationContextHolder;
+import com.getkembang.kembangdesktop.utility.SpringUtils;
 import com.getkembang.kembangdesktop.viewmodel.UnitVM;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
@@ -20,7 +20,7 @@ public class UnitComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
 
     public UnitComboBoxKeyEventHandler(ComboBox<UnitVM> cb) {
         this.cb = cb;
-        this.unitService = ApplicationContextHolder.getApplicationContext().getBean(UnitService.class);
+        this.unitService = SpringUtils.getBean(UnitService.class);
     }
 
     @Override
