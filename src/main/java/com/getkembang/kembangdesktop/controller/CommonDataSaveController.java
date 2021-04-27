@@ -3,32 +3,37 @@ package com.getkembang.kembangdesktop.controller;
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 
 public abstract class CommonDataSaveController extends CommonParentVBoxController {
-    
+
     @FXML
     protected Button btnCancel;
 
     @FXML
     protected Button btnSave;
 
+    /**
+     * A flag indicating the controller has done at least once successful data saving.
+     */
     private boolean hasDataSaved;
 
-    private boolean lastDataSaved;
+    private Object lastDataSaved;
 
     protected boolean isLastDataSaved() {
-        return lastDataSaved;
+        return Boolean.TRUE.equals(lastDataSaved) || ObjectUtils.isNotEmpty(lastDataSaved);
     }
 
     @FXML
     void onActionBtnSave(ActionEvent event) {
         processDataSave();
         if (hasDataSaved) {
-            setPrevPageData(Boolean.TRUE);
+            setPageData(lastDataSaved);
             close();
         }
     }
@@ -36,17 +41,16 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
     @FXML
     void onActionBtnCancel(ActionEvent event) {
         if (hasDataSaved) {
-            setPrevPageData(Boolean.TRUE);
+            setPageData(lastDataSaved);
         }
         close();
     }
 
     protected void processDataSave() {
-        lastDataSaved = false;
+        lastDataSaved = null;
         ValidationResult result = validateValues();
         if (result.hasError()) {
             displayError(result.getMessages());
-            return;
         }
         lastDataSaved = save();
         if (!hasDataSaved) {
@@ -80,6 +84,11 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
 
     protected abstract ValidationResult validateValues();
 
-    protected abstract boolean save();
+    /**
+     * Handles the process of storing and returns true or non empty object for successful operation.
+     * 
+     * @return the saved object.
+     */
+    protected abstract Object save();
 
 }

@@ -21,8 +21,8 @@ import com.getkembang.kembangdesktop.exception.FXException;
 import com.getkembang.kembangdesktop.utility.SpringUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
-import com.gitlab.muhammadkholidb.pandora.utility.PageData;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -75,22 +75,21 @@ public abstract class BaseController {
         getCurrentStage().close();
     }
 
+    /**
+     * Returns the topmost (last) data set for a page.
+     */
     protected <T> T getPageData() {
-        PageData pageData = PageData.INSTANCE;
-        return pageData.get(pageData.getPageSet());
+        return SingletonStack.INSTANCE.pop();
     }
 
-    protected <T> void setPrevPageData(T data) {
-        PageData pageData = PageData.INSTANCE;
-        pageData.set(pageData.getPageSet().swap(), data);
-    }
-
-    protected <T> void setNextPageData(Page to, T data) {
-        PageData.INSTANCE.set(getCurrentPage(), to, data);
-    }
-
-    protected void setNextPage(Page to) {
-        setNextPageData(to, null);
+    /**
+     * Sets data for a page on the topmost order of the data stack.
+     * 
+     * @param <T> type of the data.
+     * @param data the data for a page.
+     */
+    protected <T> void setPageData(T data) {
+        SingletonStack.INSTANCE.push(data);
     }
 
     // https://stackoverflow.com/questions/12409638/java-exception-handling-catching-superclass-exception
@@ -141,14 +140,14 @@ public abstract class BaseController {
 
     private String getAlertHeaderMessageCode(AlertType type) {
         switch (type) {
-            case INFORMATION:
-                return "lbl.information";
-            case ERROR:
-                return "lbl.error";
-            case CONFIRMATION:
-                return "lbl.confirmation";
-            default:
-                return "";
+        case INFORMATION:
+            return "lbl.information";
+        case ERROR:
+            return "lbl.error";
+        case CONFIRMATION:
+            return "lbl.confirmation";
+        default:
+            return "";
         }
     }
 
@@ -171,18 +170,18 @@ public abstract class BaseController {
         dialogPane.getButtonTypes().clear();
         dialogPane.getStylesheets().add(getClass().getResource("/assets/css/kembang-desktop.css").toExternalForm());
         switch (type) {
-            case INFORMATION:
-            case ERROR:
-                dialogPane.getButtonTypes().add(btnTypeOk);
-                dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
-                break;
-            case CONFIRMATION:
-                dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
-                dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
-                dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
-                break;
-            default:
-                break;
+        case INFORMATION:
+        case ERROR:
+            dialogPane.getButtonTypes().add(btnTypeOk);
+            dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
+            break;
+        case CONFIRMATION:
+            dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
+            dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
+            dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
+            break;
+        default:
+            break;
         }
         return new AlertResult(alert.showAndWait());
     }

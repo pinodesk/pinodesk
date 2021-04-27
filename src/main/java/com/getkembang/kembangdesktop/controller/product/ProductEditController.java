@@ -183,7 +183,7 @@ public class ProductEditController extends CommonDataSaveController {
         if (result.isConfirmed()) {
             productService.removeProducts(Arrays.asList(currentProduct.getId()));
             displayInfo(MessageCode.SUCCESS_REMOVE_PRODUCT);
-            setPrevPageData(Boolean.TRUE);
+            setPageData(Boolean.TRUE);
             close();
         }
     }
@@ -390,7 +390,7 @@ public class ProductEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected boolean save() {
+    protected Object save() {
         ProductEditVM productEdit = new ProductEditVM();
         productEdit.setId(currentProduct.getId());
         productEdit.setName(tfName.getText());

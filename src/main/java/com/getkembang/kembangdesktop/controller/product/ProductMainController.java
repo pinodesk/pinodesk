@@ -90,8 +90,7 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        setNextPage(Page.MASTER_PRODUCT_ADD);
-        StageUtils.show(Page.MASTER_PRODUCT_ADD, false, we -> {
+        StageUtils.modal(Page.MASTER_PRODUCT_ADD, false, we -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchProducts();
             }
@@ -100,9 +99,8 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        Page nextPage = Page.MASTER_PRODUCT_FILTER;
-        setNextPageData(nextPage, productFilter);
-        StageUtils.show(nextPage, false, we -> {
+        setPageData(productFilter);
+        StageUtils.modal(Page.MASTER_PRODUCT_FILTER, false, we -> {
             productFilter = getPageData();
             searchProducts();
         });
@@ -191,9 +189,8 @@ public class ProductMainController extends BaseController {
 
     private void handleActionTableProduct() {
         ProductVM selected = tableProduct.getSelectionModel().getSelectedItem();
-        Page nextPage = Page.MASTER_PRODUCT_EDIT;
-        setNextPageData(nextPage, selected);
-        StageUtils.show(nextPage, false, event -> {
+        setPageData(selected);
+        StageUtils.modal(Page.MASTER_PRODUCT_EDIT, false, event -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchProducts();
             }

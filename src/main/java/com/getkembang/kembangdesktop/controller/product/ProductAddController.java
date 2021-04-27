@@ -207,7 +207,7 @@ public class ProductAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected boolean save() {
+    protected Object save() {
         ProductAddVM productAdd = new ProductAddVM();
         productAdd.setName(tfName.getText());
         productAdd.setCode(tfCode.getText());

@@ -22,13 +22,13 @@ public abstract class CommonDataFilterController<T> extends CommonParentVBoxCont
 
     @FXML
     void onActionBtnCancel(ActionEvent event) {
-        setPrevPageData(currentFilter);
+        setPageData(currentFilter);
         close();
     }
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        setPrevPageData(getFreshFilterValues());
+        setPageData(getFreshFilterValues());
         close();
     }
 

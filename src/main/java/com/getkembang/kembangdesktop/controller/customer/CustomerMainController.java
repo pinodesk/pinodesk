@@ -75,9 +75,7 @@ public class CustomerMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        Page nextPage = Page.MASTER_CUSTOMER_ADD;
-        setNextPage(nextPage);
-        StageUtils.show(nextPage, false, we -> {
+        StageUtils.modal(Page.MASTER_CUSTOMER_ADD, false, we -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchCustomers();
             }
@@ -86,9 +84,8 @@ public class CustomerMainController extends BaseController {
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        Page nextPage = Page.MASTER_CUSTOMER_FILTER;
-        setNextPageData(nextPage, customerFilter);
-        StageUtils.show(nextPage, false, we -> {
+        setPageData(customerFilter);
+        StageUtils.modal(Page.MASTER_CUSTOMER_FILTER, false, we -> {
             customerFilter = getPageData();
             searchCustomers();
         });
@@ -170,9 +167,8 @@ public class CustomerMainController extends BaseController {
 
     private void handleActionTableCustomer() {
         CustomerVM selected = tableCustomer.getSelectionModel().getSelectedItem();
-        Page nextPage = Page.MASTER_CUSTOMER_EDIT;
-        setNextPageData(nextPage, selected);
-        StageUtils.show(nextPage, false, event -> {
+        setPageData(selected);
+        StageUtils.modal(Page.MASTER_CUSTOMER_EDIT, false, event -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchCustomers();
             }

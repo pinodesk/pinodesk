@@ -3,9 +3,12 @@ package com.getkembang.kembangdesktop.controller.supplier;
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
-import com.getkembang.kembangdesktop.service.CustomerService;
-import com.getkembang.kembangdesktop.viewmodel.CustomerAddVM;
+import com.getkembang.kembangdesktop.service.SupplierService;
+import com.getkembang.kembangdesktop.viewmodel.SupplierAddVM;
+import com.getkembang.kembangdesktop.viewmodel.SupplierContactAddVM;
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
@@ -16,6 +19,8 @@ import org.springframework.context.ApplicationContext;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
 public class SupplierAddController extends CommonDataSaveController {
@@ -36,9 +41,27 @@ public class SupplierAddController extends CommonDataSaveController {
     private TextField tfAddress;
 
     @FXML
+    private TextField tfWebsite;
+
+    @FXML
     private Button btnSaveAndAdd;
 
-    private CustomerService customerService;
+    @FXML
+    private Button btnAddContact;
+
+    @FXML
+    private TableView<SupplierContactAddVM> tblSupplierContact;
+
+    @FXML
+    private TableColumn<SupplierContactAddVM, String> colName;
+
+    @FXML
+    private TableColumn<SupplierContactAddVM, String> colPhone;
+
+    @FXML
+    private TableColumn<SupplierContactAddVM, String> colEmail;
+
+    private SupplierService supplierService;
 
     @FXML
     void onActionBtnSaveAndAdd(ActionEvent event) {
@@ -50,13 +73,26 @@ public class SupplierAddController extends CommonDataSaveController {
         }
     }
 
+    @FXML
+    void onActionBtnAddContact(ActionEvent event) {
+        StageUtils.modal(Page.MASTER_SUPPLIER_CONTACT_ADD, false, we -> {
+            SupplierContactAddVM contact = getPageData();
+            if (contact != null) {
+                tblSupplierContact.getItems().add(contact);
+            }
+        });
+    }
+
     @Override
     protected void initServices(ApplicationContext ctx) {
-        customerService = ctx.getBean(CustomerService.class);
+        supplierService = ctx.getBean(SupplierService.class);
     }
 
     @Override
     protected void initDataSaveControlActions() {
+        TableViewUtils.setColumnValue(colName, SupplierContactAddVM::getName);
+        TableViewUtils.setColumnValue(colPhone, SupplierContactAddVM::getPhone);
+        TableViewUtils.setColumnValue(colEmail, SupplierContactAddVM::getEmail);
         TextFieldUtils.setDigitTextFields(tfPhone);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyConstants.CTRL_SHIFT_S.match(event)) {
@@ -64,17 +100,18 @@ public class SupplierAddController extends CommonDataSaveController {
                 return;
             }
         });
+
     }
 
     @Override
     protected void initDataSaveControlValues() {
-        String nextCustomerCode = customerService.getNextCustomerCode();
-        tfCode.setText(nextCustomerCode);
+        String nextSupplierCode = supplierService.getNextSupplierCode();
+        tfCode.setText(nextSupplierCode);
     }
 
     @Override
     protected Page getCurrentPage() {
-        return Page.MASTER_CUSTOMER_ADD;
+        return Page.MASTER_SUPPLIER_ADD;
     }
 
     @Override
@@ -93,14 +130,15 @@ public class SupplierAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected boolean save() {
-        CustomerAddVM customer = new CustomerAddVM();
-        customer.setName(tfName.getText());
-        customer.setCode(tfCode.getText());
-        customer.setPhone(tfPhone.getText());
-        customer.setEmail(tfEmail.getText());
-        customer.setAddress(tfAddress.getText());
-        return customerService.createCustomer(customer) > 0;
+    protected Object save() {
+        SupplierAddVM supplier = new SupplierAddVM();
+        supplier.setName(tfName.getText());
+        supplier.setCode(tfCode.getText());
+        supplier.setPhone(tfPhone.getText());
+        supplier.setEmail(tfEmail.getText());
+        supplier.setAddress(tfAddress.getText());
+        supplier.setWebsite(tfWebsite.getText());
+        return supplierService.createSupplier(supplier, tblSupplierContact.getItems());
     }
 
     private void resetControls() {

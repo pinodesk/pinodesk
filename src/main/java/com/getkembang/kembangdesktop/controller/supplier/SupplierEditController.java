@@ -51,7 +51,7 @@ public class SupplierEditController extends CommonDataSaveController {
         if (result.isConfirmed()) {
             customerService.removeCustomers(Arrays.asList(currentCustomer.getId()));
             displayInfo(MessageCode.SUCCESS_REMOVE_CUSTOMER);
-            setPrevPageData(Boolean.TRUE);
+            setPageData(Boolean.TRUE);
             close();
         }
     }
@@ -87,7 +87,7 @@ public class SupplierEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected boolean save() {
+    protected Object save() {
         CustomerEditVM customer = new CustomerEditVM();
         customer.setId(currentCustomer.getId());
         customer.setName(tfName.getText());

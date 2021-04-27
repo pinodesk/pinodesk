@@ -1,10 +1,9 @@
-package com.getkembang.kembangdesktop.controller.customer;
+package com.getkembang.kembangdesktop.controller.supplier;
 
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
-import com.getkembang.kembangdesktop.service.CustomerService;
-import com.getkembang.kembangdesktop.viewmodel.CustomerAddVM;
+import com.getkembang.kembangdesktop.viewmodel.SupplierContactAddVM;
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
@@ -18,13 +17,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
-public class CustomerAddController extends CommonDataSaveController {
+public class SupplierContactAddController extends CommonDataSaveController {
 
     @FXML
     private TextField tfName;
-
-    @FXML
-    private TextField tfCode;
 
     @FXML
     private TextField tfPhone;
@@ -33,12 +29,7 @@ public class CustomerAddController extends CommonDataSaveController {
     private TextField tfEmail;
 
     @FXML
-    private TextField tfAddress;
-
-    @FXML
     private Button btnSaveAndAdd;
-
-    private CustomerService customerService;
 
     @FXML
     void onActionBtnSaveAndAdd(ActionEvent event) {
@@ -48,11 +39,6 @@ public class CustomerAddController extends CommonDataSaveController {
             resetControls();
             initDataSaveControlValues();
         }
-    }
-
-    @Override
-    protected void initServices(ApplicationContext ctx) {
-        customerService = ctx.getBean(CustomerService.class);
     }
 
     @Override
@@ -68,13 +54,7 @@ public class CustomerAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
-        String nextCustomerCode = customerService.getNextCustomerCode();
-        tfCode.setText(nextCustomerCode);
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_CUSTOMER_ADD;
+        // Nothing to do here
     }
 
     @Override
@@ -82,9 +62,6 @@ public class CustomerAddController extends CommonDataSaveController {
         ValidationResult result = new ValidationResult();
         if (StringUtils.isBlank(tfName.getText())) {
             result.addError(MessageCode.ERROR_EMPTY_NAME);
-        }
-        if (StringUtils.isBlank(tfCode.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_CODE);
         }
         if (StringUtils.isNotBlank(tfEmail.getText()) && !GenericValidator.isEmail(tfEmail.getText())) {
             result.addError(MessageCode.ERROR_INVALID_EMAIL_FORMAT);
@@ -94,21 +71,27 @@ public class CustomerAddController extends CommonDataSaveController {
 
     @Override
     protected Object save() {
-        CustomerAddVM customer = new CustomerAddVM();
-        customer.setName(tfName.getText());
-        customer.setCode(tfCode.getText());
-        customer.setPhone(tfPhone.getText());
-        customer.setEmail(tfEmail.getText());
-        customer.setAddress(tfAddress.getText());
-        return customerService.createCustomer(customer) > 0;
+        SupplierContactAddVM contact = new SupplierContactAddVM();
+        contact.setName(tfName.getText());
+        contact.setPhone(tfPhone.getText());
+        contact.setEmail(tfEmail.getText());
+        return contact;
+    }
+
+    @Override
+    protected void initServices(ApplicationContext ctx) {
+        // Nothing to do here
+    }
+
+    @Override
+    protected Page getCurrentPage() {
+        return Page.MASTER_SUPPLIER_CONTACT_ADD;
     }
 
     private void resetControls() {
         tfName.setText(null);
-        tfCode.setText(null);
         tfPhone.setText(null);
         tfEmail.setText(null);
-        tfAddress.setText(null);
     }
 
 }

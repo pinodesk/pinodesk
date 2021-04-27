@@ -78,10 +78,8 @@ public class SupplierMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        Page nextPage = Page.MASTER_CUSTOMER_ADD;
-        setNextPage(nextPage);
-        StageUtils.show(nextPage, false, we -> {
-            if (Boolean.TRUE.equals(getPageData())) {
+        StageUtils.modal(Page.MASTER_SUPPLIER_ADD, false, we -> {
+            if (getPageData() != null) {
                 searchSuppliers();
             }
         });
@@ -89,9 +87,8 @@ public class SupplierMainController extends BaseController {
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        Page nextPage = Page.MASTER_SUPPLIER_FILTER;
-        setNextPageData(nextPage, supplierFilter);
-        StageUtils.show(nextPage, false, we -> {
+        setPageData(supplierFilter);
+        StageUtils.modal(Page.MASTER_SUPPLIER_FILTER, false, we -> {
             supplierFilter = getPageData();
             searchSuppliers();
         });
@@ -174,9 +171,8 @@ public class SupplierMainController extends BaseController {
 
     private void handleActionTableSupplier() {
         SupplierVM selected = tableSupplier.getSelectionModel().getSelectedItem();
-        Page nextPage = Page.MASTER_CUSTOMER_EDIT;
-        setNextPageData(nextPage, selected);
-        StageUtils.show(nextPage, false, event -> {
+        setPageData(selected);
+        StageUtils.modal(Page.MASTER_SUPPLIER_EDIT, false, event -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchSuppliers();
             }
