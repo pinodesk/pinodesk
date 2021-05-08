@@ -46,6 +46,11 @@
             <version>15.0.1</version>
         </dependency>
         <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>3.11</version>
@@ -80,7 +85,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.3.2</version>    <!-- Last version supported for rider-junit5 to work  -->
+            <version>5.3.2</version> <!-- Last version supported for rider-junit5 to work  -->
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -198,6 +203,9 @@
                 <configuration>
                     <mainClass>${project.mainClass}</mainClass>
                     <includePathExceptionsInClasspath>true</includePathExceptionsInClasspath>
+                    <options>
+                        <option>--add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
             </plugin>
             <plugin>

@@ -9,6 +9,7 @@ import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.getkembang.kembangdesktop.utility.SpringUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.PageContext;
 import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
@@ -17,7 +18,6 @@ import org.apache.commons.lang3.StringUtils;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 public class Kembang extends Application {
@@ -37,8 +37,8 @@ public class Kembang extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        AnchorPane page = PageLoader.load(Page.MAIN);
-        Scene scene = new Scene(page);
+        PageContext pageContext = PageLoader.load(Page.MAIN);
+        Scene scene = new Scene(pageContext.getRoot());
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
         primaryStage.show();

@@ -1,5 +1,7 @@
 package com.getkembang.kembangdesktop.controller.supplier;
 
+import java.util.List;
+
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
@@ -10,15 +12,16 @@ import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.validator.GenericValidator;
+import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -76,11 +79,22 @@ public class SupplierAddController extends CommonDataSaveController {
     @FXML
     void onActionBtnAddContact(ActionEvent event) {
         StageUtils.modal(Page.MASTER_SUPPLIER_CONTACT_ADD, false, we -> {
-            SupplierContactAddVM contact = getPageData();
-            if (contact != null) {
-                tblSupplierContact.getItems().add(contact);
+            List<SupplierContactAddVM> contacts = getPageData();
+            if (!contacts.isEmpty()) {
+                tblSupplierContact.getItems().addAll(contacts);
             }
         });
+    }
+
+    @FXML
+    void onActionBtnRemoveContact(ActionEvent event) {
+        ObservableList<SupplierContactAddVM> items = tblSupplierContact.getSelectionModel().getSelectedItems();
+        if (!items.isEmpty()) {
+            tblSupplierContact.getItems().removeAll(items);
+        }
+        if (tblSupplierContact.getItems().isEmpty()) {
+            tblSupplierContact.setPlaceholder(new Label(translate("lbl.nodata")));
+        }
     }
 
     @Override
@@ -90,6 +104,8 @@ public class SupplierAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        tblSupplierContact.setPlaceholder(new Label(translate("lbl.nodata")));
+        tblSupplierContact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.setColumnValue(colName, SupplierContactAddVM::getName);
         TableViewUtils.setColumnValue(colPhone, SupplierContactAddVM::getPhone);
         TableViewUtils.setColumnValue(colEmail, SupplierContactAddVM::getEmail);
@@ -100,7 +116,6 @@ public class SupplierAddController extends CommonDataSaveController {
                 return;
             }
         });
-
     }
 
     @Override
@@ -115,18 +130,13 @@ public class SupplierAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected ValidationResult validateValues() {
-        ValidationResult result = new ValidationResult();
-        if (StringUtils.isBlank(tfName.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_NAME);
-        }
-        if (StringUtils.isBlank(tfCode.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_CODE);
-        }
-        if (StringUtils.isNotBlank(tfEmail.getText()) && !GenericValidator.isEmail(tfEmail.getText())) {
-            result.addError(MessageCode.ERROR_INVALID_EMAIL_FORMAT);
-        }
-        return result;
+    protected void registerValidator(ValidationSupport vs) {
+        registerBlankValidator(tfName);
+        registerBlankValidator(tfCode);
+        registerEmailValidator(tfEmail, false);
+        registerDomainValidator(tfWebsite, false);
+        // vs.registerValidator(tfName, Validator.createEmptyValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
+        // vs.registerValidator(tfEmail, Validator.createEmptyValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
     }
 
     @Override

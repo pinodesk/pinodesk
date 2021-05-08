@@ -1,15 +1,16 @@
 package com.getkembang.kembangdesktop.controller.supplier;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.viewmodel.SupplierContactAddVM;
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.validator.GenericValidator;
+import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
@@ -31,11 +32,13 @@ public class SupplierContactAddController extends CommonDataSaveController {
     @FXML
     private Button btnSaveAndAdd;
 
+    private List<SupplierContactAddVM> contacts = new ArrayList<>();
+
     @FXML
     void onActionBtnSaveAndAdd(ActionEvent event) {
         processDataSave();
         if (isLastDataSaved()) {
-            displayInfo(MessageCode.SUCCESS_ADD_CUSTOMER);
+            displayInfo(MessageCode.SUCCESS_ADD_SUPPLIER_CONTACT);
             resetControls();
             initDataSaveControlValues();
         }
@@ -58,15 +61,9 @@ public class SupplierContactAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected ValidationResult validateValues() {
-        ValidationResult result = new ValidationResult();
-        if (StringUtils.isBlank(tfName.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_NAME);
-        }
-        if (StringUtils.isNotBlank(tfEmail.getText()) && !GenericValidator.isEmail(tfEmail.getText())) {
-            result.addError(MessageCode.ERROR_INVALID_EMAIL_FORMAT);
-        }
-        return result;
+    protected void registerValidator(ValidationSupport vs) {
+        registerBlankValidator(tfName);
+        registerEmailValidator(tfEmail, false);
     }
 
     @Override
@@ -75,7 +72,8 @@ public class SupplierContactAddController extends CommonDataSaveController {
         contact.setName(tfName.getText());
         contact.setPhone(tfPhone.getText());
         contact.setEmail(tfEmail.getText());
-        return contact;
+        contacts.add(contact);
+        return contacts;
     }
 
     @Override

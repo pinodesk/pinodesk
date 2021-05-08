@@ -150,7 +150,12 @@
             </AnchorPane>
             <VBox alignment="TOP_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="btnAddContact" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnAddContact" styleClass="btn-primary" text="%btn.addcontact" textFill="WHITE" />
+                  <HBox alignment="TOP_RIGHT" spacing="10.0">
+                     <children>
+                        <Button fx:id="btnRemoveContact" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemoveContact" styleClass="btn-danger" text="%btn.removecontact" textFill="WHITE" />
+                        <Button fx:id="btnAddContact1" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnAddContact" styleClass="btn-primary" text="%btn.addcontact" textFill="WHITE" />
+                     </children>
+                  </HBox>
                   <TableView fx:id="tblSupplierContact" prefHeight="164.0" prefWidth="509.0">
                     <columns>
                       <TableColumn fx:id="colName" minWidth="150.0" prefWidth="75.0" text="%lbl.name" />

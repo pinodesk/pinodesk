@@ -88,7 +88,7 @@ public class MainController extends BaseController {
     }
 
     private void swapContentPane(Page page) throws IOException {
-        VBox content = PageLoader.load(page);
+        VBox content = (VBox) PageLoader.load(page).getRoot();
         AnchorPane.setTopAnchor(content, 0.0);
         AnchorPane.setBottomAnchor(content, 0.0);
         AnchorPane.setLeftAnchor(content, 0.0);

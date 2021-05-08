@@ -40,11 +40,12 @@ import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.controlsfx.validation.ValidationResult;
+import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
@@ -350,43 +351,32 @@ public class ProductEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected ValidationResult validateValues() {
-        ValidationResult result = new ValidationResult();
-        if (StringUtils.isBlank(tfName.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_NAME);
-        }
-        if (StringUtils.isBlank(tfCode.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_CODE);
-        }
-        if (StringUtils.isBlank(tfPurchasePrice.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_PURCHASE_PRICE);
-        }
-        if (StringUtils.isBlank(tfSellingPrice.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_SELLING_PRICE);
-        }
-        if (!ComboBoxUtils.hasItemSelected(cbCategory)) {
-            result.addError(MessageCode.ERROR_EMPTY_CATEGORY);
-        }
-        if (!ComboBoxUtils.hasItemSelected(cbUnit)) {
-            result.addError(MessageCode.ERROR_EMPTY_UNIT);
-        }
-        // @formatter:off
-        if (!ComboBoxUtils.hasItemSelected(cbDrugCategory) 
-                && !StringUtils.isAllBlank(
-                        tfPrescriptionPrice.getText(),
-                        tfIndication.getText(), 
-                        tfContraindication.getText())) {
-        // @formatter:on
-            result.addError(MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
-        }
-        if (ComboBoxUtils.hasItemSelected(cbDrugCategory) && !isProductCategoryDrugs()) {
-            result.addError(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS);
-        }
-        return result;
+    protected void registerValidator(ValidationSupport vs) {
+        registerBlankValidator(tfName);
+        registerBlankValidator(tfCode);
+        registerBlankValidator(tfPurchasePrice);
+        registerBlankValidator(tfSellingPrice);
+        registerEmptyValidator(cbCategory);
+        registerEmptyValidator(cbUnit);
+        vs.registerValidator(cbDrugCategory, false, (c, v) -> {
+            // @formatter:off
+            boolean condition = v == null && !StringUtils.isAllBlank(
+                    tfPrescriptionPrice.getText(),
+                    tfIndication.getText(), 
+                    tfContraindication.getText());
+            // @formatter:on
+            return ValidationResult.fromErrorIf(c, translate(MessageCode.ERROR_EMPTY_OR_BLANK), condition);
+        });
+        vs.registerValidator(cbDrugCategory, false, (c, v) -> {
+            boolean condition = v != null && !isProductCategoryDrugs();
+            return ValidationResult.fromErrorIf(c, translate(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS),
+                    condition);
+        });
     }
 
     private boolean isProductCategoryDrugs() {
-        return ComboBoxUtils.getSelectedItem(cbCategory).getCode().equals(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
+        ProductCategoryVM category = ComboBoxUtils.getSelectedItem(cbCategory);
+        return category != null && category.getCode().equals(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
     }
 
     @Override

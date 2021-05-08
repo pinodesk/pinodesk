@@ -7,10 +7,8 @@ import com.getkembang.kembangdesktop.service.CustomerService;
 import com.getkembang.kembangdesktop.viewmodel.CustomerAddVM;
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.validator.GenericValidator;
+import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
@@ -78,18 +76,10 @@ public class CustomerAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected ValidationResult validateValues() {
-        ValidationResult result = new ValidationResult();
-        if (StringUtils.isBlank(tfName.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_NAME);
-        }
-        if (StringUtils.isBlank(tfCode.getText())) {
-            result.addError(MessageCode.ERROR_EMPTY_CODE);
-        }
-        if (StringUtils.isNotBlank(tfEmail.getText()) && !GenericValidator.isEmail(tfEmail.getText())) {
-            result.addError(MessageCode.ERROR_INVALID_EMAIL_FORMAT);
-        }
-        return result;
+    protected void registerValidator(ValidationSupport vs) {
+        registerBlankValidator(tfName);
+        registerBlankValidator(tfCode);
+        registerEmailValidator(tfEmail, false);
     }
 
     @Override
