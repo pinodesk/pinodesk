@@ -2,7 +2,9 @@ package com.getkembang.kembangdesktop.controller;
 
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
-import com.gitlab.muhammadkholidb.pandora.utility.CommonValidator;
+import com.gitlab.muhammadkholidb.pandora.validator.BlankValidator;
+import com.gitlab.muhammadkholidb.pandora.validator.EmailValidator;
+import com.gitlab.muhammadkholidb.pandora.validator.WebsiteDomainValidator;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.controlsfx.validation.ValidationSupport;
@@ -117,7 +119,7 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
 
     protected void registerBlankValidator(Control control, boolean required) {
         validationSupport.registerValidator(control, required,
-                CommonValidator.createBlankValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
+                new BlankValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
     }
 
     protected void registerBlankValidator(Control control) {
@@ -126,7 +128,7 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
 
     protected void registerEmailValidator(Control control, boolean required) {
         validationSupport.registerValidator(control, required,
-                CommonValidator.createEmailValidator(translate(MessageCode.ERROR_INVALID_EMAIL_FORMAT)));
+                new EmailValidator(translate(MessageCode.ERROR_INVALID_EMAIL_FORMAT)));
     }
 
     protected void registerEmailValidator(Control control) {
@@ -135,7 +137,7 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
 
     protected void registerDomainValidator(Control control, boolean required) {
         validationSupport.registerValidator(control, required,
-                CommonValidator.createDomainValidator(translate(MessageCode.ERROR_INVALID_DOMAIN_FORMAT)));
+                new WebsiteDomainValidator(translate(MessageCode.ERROR_INVALID_DOMAIN_FORMAT)));
     }
 
     protected void registerDomainValidator(Control control) {
