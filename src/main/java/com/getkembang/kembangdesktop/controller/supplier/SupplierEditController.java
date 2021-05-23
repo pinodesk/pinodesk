@@ -72,7 +72,6 @@ public class SupplierEditController extends CommonDataSaveController {
     @Override
     protected void registerValidator(ValidationSupport vs) {
         registerBlankValidator(tfName);
-        registerBlankValidator(tfCode);
         registerEmailValidator(tfEmail, false);
     }
 

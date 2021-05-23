@@ -110,6 +110,7 @@ public class SupplierAddController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colPhone, SupplierContactAddVM::getPhone);
         TableViewUtils.setColumnValue(colEmail, SupplierContactAddVM::getEmail);
         TextFieldUtils.setDigitTextFields(tfPhone);
+        disableOnValidationError(btnSaveAndAdd);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyConstants.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();
@@ -132,11 +133,8 @@ public class SupplierAddController extends CommonDataSaveController {
     @Override
     protected void registerValidator(ValidationSupport vs) {
         registerBlankValidator(tfName);
-        registerBlankValidator(tfCode);
         registerEmailValidator(tfEmail, false);
         registerDomainValidator(tfWebsite, false);
-        // vs.registerValidator(tfName, Validator.createEmptyValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
-        // vs.registerValidator(tfEmail, Validator.createEmptyValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
     }
 
     @Override

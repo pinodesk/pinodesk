@@ -56,6 +56,7 @@ public class CustomerAddController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlActions() {
         TextFieldUtils.setDigitTextFields(tfPhone);
+        disableOnValidationError(btnSaveAndAdd);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyConstants.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();
@@ -78,7 +79,6 @@ public class CustomerAddController extends CommonDataSaveController {
     @Override
     protected void registerValidator(ValidationSupport vs) {
         registerBlankValidator(tfName);
-        registerBlankValidator(tfCode);
         registerEmailValidator(tfEmail, false);
     }
 

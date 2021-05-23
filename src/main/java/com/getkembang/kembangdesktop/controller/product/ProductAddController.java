@@ -269,6 +269,7 @@ public class ProductAddController extends CommonDataSaveController {
                 tfSellingPrice3);
         // @formatter:on
         initBtnSaveAndAdd();
+        disableOnValidationError(btnSaveAndAdd);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyConstants.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();

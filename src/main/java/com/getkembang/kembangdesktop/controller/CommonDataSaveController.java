@@ -1,8 +1,8 @@
 package com.getkembang.kembangdesktop.controller;
 
 import com.getkembang.kembangdesktop.constant.MessageCode;
-import com.getkembang.kembangdesktop.utility.CommonValidator;
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
+import com.gitlab.muhammadkholidb.pandora.utility.CommonValidator;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.controlsfx.validation.ValidationSupport;
@@ -11,6 +11,7 @@ import org.controlsfx.validation.Validator;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Control;
 import javafx.scene.input.KeyCode;
 
@@ -68,6 +69,7 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
     @Override
     protected void initParentVBoxControlActions() {
         initDataSaveControlActions();
+        disableOnValidationError(btnSave);
         registerValidator(validationSupport);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyCode.ENTER.equals(event.getCode()) || KeyConstants.CTRL_S.match(event)) {
@@ -97,6 +99,10 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
      * @return the saved object.
      */
     protected abstract Object save();
+
+    protected void disableOnValidationError(ButtonBase btn) {
+        btn.disableProperty().bind(validationSupport.invalidProperty());
+    }
 
     protected abstract void registerValidator(ValidationSupport vs);
 
