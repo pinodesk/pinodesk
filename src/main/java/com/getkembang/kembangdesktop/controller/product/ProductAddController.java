@@ -173,12 +173,11 @@ public class ProductAddController extends CommonDataSaveController {
 
     @Override
     protected void registerValidator(ValidationSupport vs) {
-        registerBlankValidator(tfName);
-        registerBlankValidator(tfCode);
-        registerBlankValidator(tfPurchasePrice);
-        registerBlankValidator(tfSellingPrice);
-        registerEmptyValidator(cbCategory);
-        registerEmptyValidator(cbUnit);
+        registerRequiredFields(tfName, tfCode, tfPurchasePrice, tfSellingPrice, cbCategory, cbUnit);
+        registerWhitespaceValidator(tfName);
+        registerWhitespaceValidator(tfCode);
+        registerWhitespaceValidator(tfPurchasePrice);
+        registerWhitespaceValidator(tfSellingPrice);
         vs.registerValidator(cbDrugCategory, false, (c, v) -> {
             // @formatter:off
             boolean condition = v == null && !StringUtils.isAllBlank(

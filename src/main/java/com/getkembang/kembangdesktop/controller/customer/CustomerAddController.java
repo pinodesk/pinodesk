@@ -78,7 +78,8 @@ public class CustomerAddController extends CommonDataSaveController {
 
     @Override
     protected void registerValidator(ValidationSupport vs) {
-        registerBlankValidator(tfName);
+        registerRequiredFields(tfName);
+        registerWhitespaceValidator(tfName);
         registerEmailValidator(tfEmail, false);
     }
 

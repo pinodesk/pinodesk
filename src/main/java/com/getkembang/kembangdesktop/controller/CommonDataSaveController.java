@@ -1,11 +1,14 @@
 package com.getkembang.kembangdesktop.controller;
 
+import java.util.Arrays;
+
 import com.getkembang.kembangdesktop.constant.MessageCode;
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
-import com.gitlab.muhammadkholidb.pandora.validator.BlankValidator;
 import com.gitlab.muhammadkholidb.pandora.validator.EmailValidator;
 import com.gitlab.muhammadkholidb.pandora.validator.WebsiteDomainValidator;
+import com.gitlab.muhammadkholidb.pandora.validator.WhitespaceValidator;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.controlsfx.validation.Validator;
@@ -108,22 +111,20 @@ public abstract class CommonDataSaveController extends CommonParentVBoxControlle
 
     protected abstract void registerValidator(ValidationSupport vs);
 
-    protected void registerEmptyValidator(Control control, boolean required) {
+    protected void registerRequiredFields(Control... controls) {
+        if (ArrayUtils.isNotEmpty(controls)) {
+            Arrays.stream(controls).forEach(control -> validationSupport.registerValidator(control,
+                    Validator.createEmptyValidator(translate(MessageCode.ERROR_REQUIRED))));
+        }
+    }
+
+    protected void registerWhitespaceValidator(Control control, boolean required) {
         validationSupport.registerValidator(control, required,
-                Validator.createEmptyValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
+                new WhitespaceValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
     }
 
-    protected void registerEmptyValidator(Control control) {
-        registerEmptyValidator(control, true);
-    }
-
-    protected void registerBlankValidator(Control control, boolean required) {
-        validationSupport.registerValidator(control, required,
-                new BlankValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
-    }
-
-    protected void registerBlankValidator(Control control) {
-        registerBlankValidator(control, true);
+    protected void registerWhitespaceValidator(Control control) {
+        registerWhitespaceValidator(control, true);
     }
 
     protected void registerEmailValidator(Control control, boolean required) {

@@ -5,6 +5,7 @@ import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
 public enum MessageCode implements IMessage {
     
     ERROR_INCOMPLETE_FORM,
+    ERROR_REQUIRED,
     ERROR_EMPTY_OR_BLANK,
     ERROR_EMPTY_NAME,
     ERROR_EMPTY_CODE,
