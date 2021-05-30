@@ -31,7 +31,7 @@ public class ProductCategoryComboBoxKeyEventHandler implements EventHandler<KeyE
             return;
         }
         comboBox.hide();
-        if (StringUtils.isNotBlank(value) && value.length() >= 3) {
+        if (StringUtils.isNotBlank(value) && value.length() >= 1) {
             AsyncUtils.supply(() -> productCategoryService.searchProductCategoryByKeyword(value)).thenAccept(list -> {
                 if (!list.isEmpty()) {
                     Platform.runLater(() -> {

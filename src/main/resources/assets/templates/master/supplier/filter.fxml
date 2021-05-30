@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.supplier.SupplierFilterController">
+<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.supplier.SupplierFilterController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: #009c7c;" text="%lbl.title.filtercustomer" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: #009c7c;" text="%lbl.title.filtersupplier" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -104,7 +104,7 @@
                   </HBox>
                   <HBox spacing="10.0" GridPane.rowIndex="2">
                      <children>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
                               <Label text="%lbl.address">
                                  <font>
@@ -112,6 +112,20 @@
                                  </font>
                               </Label>
                               <TextField fx:id="tfAddress" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl.website">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfWebsite" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>

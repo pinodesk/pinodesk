@@ -31,7 +31,7 @@ public class RackComboBoxKeyEventHandler implements EventHandler<KeyEvent> {
             return;
         }
         cb.hide();
-        if (StringUtils.isNotBlank(value) && value.length() >= 3) {
+        if (StringUtils.isNotBlank(value) && value.length() >= 1) {
             AsyncUtils.supply(() -> rackService.searchRackByKeyword(value)).thenAccept(list -> {
                 if (!list.isEmpty()) {
                     Platform.runLater(() -> {

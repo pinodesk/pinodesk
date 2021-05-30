@@ -6,6 +6,7 @@ import java.util.List;
 import com.getkembang.kembangdesktop.constant.CacheName;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
+import com.getkembang.kembangdesktop.domain.SupplierContact;
 import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.repository.SupplierContactRepository;
 import com.getkembang.kembangdesktop.repository.SupplierRepository;
@@ -14,6 +15,7 @@ import com.getkembang.kembangdesktop.viewmodel.SupplierContactAddVM;
 import com.getkembang.kembangdesktop.viewmodel.SupplierEditVM;
 import com.getkembang.kembangdesktop.viewmodel.SupplierFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.SupplierVM;
+import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -61,7 +63,6 @@ public class SupplierService extends BaseService {
         Long supplierId = supplierRepository.createSupplier(supplier);
         if (CollectionUtils.isNotEmpty(contacts)) {
             contacts.forEach(contact -> createSupplierContact(contact, supplierId));
-
         }
         return supplierId;
     }
@@ -97,6 +98,7 @@ public class SupplierService extends BaseService {
         if (StringUtils.isNotBlank(phone) && supplierRepository.existsByPhone(phone, supplierId)) {
             throw new DomainException(DomainError.SUPPLIER_OTHER_EXISTS_BY_PHONE);
         }
+        supplierContactRepository.delete(new Where().equals(SupplierContact.C_SUPPLIER_ID, supplier.getId()), true);
         if (CollectionUtils.isNotEmpty(contacts)) {
             contacts.forEach(contact -> createSupplierContact(contact, supplierId));
         }
@@ -111,6 +113,12 @@ public class SupplierService extends BaseService {
             sequence = Integer.parseInt(maxCode.substring(prefix.length())) + 1;
         }
         return prefix + String.format("%04d", sequence); // Left pad with "0"
+    }
+
+    public List<SupplierContactAddVM> getSupplierContacts(Long supplierId) {
+        return convertList(
+                supplierContactRepository.read(new Where().equals(SupplierContact.C_SUPPLIER_ID, supplierId)),
+                SupplierContactAddVM.class);
     }
 
 }
