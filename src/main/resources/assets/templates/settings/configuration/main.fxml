@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.configuration.ConfigurationMainController">
+   <children>
+      <AnchorPane prefWidth="774.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: #009c7c;" text="%lbl.title.configuration" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <padding>
+                  <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
+               </padding>
+            </Label>
+         </children>
+      </AnchorPane>
+      <HBox alignment="TOP_RIGHT" spacing="10.0">
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+         <children>
+            <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onActionBtnSave" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn.save" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
+         </children>
+      </HBox>
+      <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefWidth="774.0" spacing="10.0">
+         <children>
+            <VBox spacing="10.0" style="-fx-border-color: #bebebe; -fx-border-width: 1px;">
+               <children>
+                  <VBox maxWidth="250.0" spacing="5.0">
+                     <children>
+                        <Label text="Store Name">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfStoreName" styleClass="input-primary">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <VBox maxWidth="250.0" spacing="5.0">
+                     <children>
+                        <Label text="Store Address">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfStoreAddress" styleClass="input-primary">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <VBox maxWidth="250.0" spacing="5.0">
+                     <children>
+                        <Label text="VAT Percentage">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfVatPercentage" styleClass="input-primary">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <VBox maxWidth="250.0" spacing="5.0">
+                     <children>
+                        <Label text="Drug Category Base">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="cbDrugCategoryBase" prefWidth="250.0" styleClass="combo-box-primary" />
+                     </children>
+                  </VBox>
+                  <VBox maxWidth="250.0" spacing="5.0">
+                     <children>
+                        <Label text="Language">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="cbLanguage" prefWidth="250.0" styleClass="combo-box-primary" />
+                     </children>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </children>
+</VBox>

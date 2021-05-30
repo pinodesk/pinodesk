@@ -6,9 +6,8 @@ import javax.sql.DataSource;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.junit5.api.DBRider;
 import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -40,13 +39,13 @@ public abstract class BaseRepositoryTest {
 
         @Bean
         public DataSource dataSource() {
-            HikariConfig config = new HikariConfig();
-            config.setDriverClassName(env.getRequiredProperty("jdbc.driver"));
-            config.setJdbcUrl(env.getRequiredProperty("jdbc.url"));
-            config.setUsername(env.getRequiredProperty("jdbc.user"));
-            config.setPassword(env.getRequiredProperty("jdbc.password"));
-
-            HikariDataSource dataSource = new HikariDataSource(config);
+            BasicDataSource dataSource = new BasicDataSource();
+            dataSource.setDriverClassName(env.getRequiredProperty("jdbc.driver"));
+            dataSource.setUrl(env.getRequiredProperty("jdbc.url"));
+            dataSource.setUsername(env.getRequiredProperty("jdbc.user"));
+            dataSource.setPassword(env.getRequiredProperty("jdbc.password"));
+            dataSource.setInitialSize(10);
+            dataSource.setMaxTotal(10);
 
             DatabasePopulator databasePopulator = new ResourceDatabasePopulator(new ClassPathResource("init.sql"));
             DatabasePopulatorUtils.execute(databasePopulator, dataSource);

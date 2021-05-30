@@ -7,9 +7,8 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getkembang.kembangdesktop.constant.CacheName;
 import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
 import org.springframework.cache.CacheManager;
@@ -37,12 +36,14 @@ public class KembangConfig {
 
     @Bean
     public DataSource dataSource() {
-        HikariConfig config = new HikariConfig();
-        config.setDriverClassName(env.getRequiredProperty("jdbc.driver"));
-        config.setJdbcUrl(env.getRequiredProperty("jdbc.url"));
-        config.setUsername(env.getRequiredProperty("jdbc.user"));
-        config.setPassword(env.getRequiredProperty("jdbc.password"));
-        return new HikariDataSource(config);
+        BasicDataSource ds = new BasicDataSource();
+        ds.setDriverClassName(env.getRequiredProperty("jdbc.driver"));
+        ds.setUrl(env.getRequiredProperty("jdbc.url"));
+        ds.setUsername(env.getRequiredProperty("jdbc.user"));
+        ds.setPassword(env.getRequiredProperty("jdbc.password"));
+        ds.setInitialSize(10);
+        ds.setMaxTotal(10);
+        return ds;
     }
 
     @Bean
