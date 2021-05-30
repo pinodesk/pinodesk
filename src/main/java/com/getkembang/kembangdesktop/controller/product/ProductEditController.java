@@ -359,18 +359,24 @@ public class ProductEditController extends CommonDataSaveController {
         registerWhitespaceValidator(tfSellingPrice);
         vs.registerValidator(cbDrugCategory, false, (c, v) -> {
             // @formatter:off
-            boolean condition = v == null && !StringUtils.isAllBlank(
+            boolean condition1 = v == null && !StringUtils.isAllBlank(
                     tfPrescriptionPrice.getText(),
                     tfIndication.getText(), 
                     tfContraindication.getText());
             // @formatter:on
-            return ValidationResult.fromErrorIf(c, translate(MessageCode.ERROR_EMPTY_OR_BLANK), condition);
+            boolean condition2 = v != null && !isProductCategoryDrugs();
+            return ValidationResult.fromErrorIf(c, translate(
+                    condition1 ? MessageCode.ERROR_EMPTY_OR_BLANK : MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS),
+                    condition1 || condition2);
         });
-        vs.registerValidator(cbDrugCategory, false, (c, v) -> {
-            boolean condition = v != null && !isProductCategoryDrugs();
-            return ValidationResult.fromErrorIf(c, translate(MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS),
-                    condition);
-        });
+        revalidateOnChange(vs);
+    }
+
+    private void revalidateOnChange(ValidationSupport vs) {
+        ComboBoxUtils.onSelectedItemChanged(cbCategory, (ov, nv) -> vs.revalidate(cbDrugCategory));
+        TextFieldUtils.onTextChanged(tfPrescriptionPrice, (ov, nv) -> vs.revalidate(cbDrugCategory));
+        TextFieldUtils.onTextChanged(tfIndication, (ov, nv) -> vs.revalidate(cbDrugCategory));
+        TextFieldUtils.onTextChanged(tfContraindication, (ov, nv) -> vs.revalidate(cbDrugCategory));
     }
 
     private boolean isProductCategoryDrugs() {

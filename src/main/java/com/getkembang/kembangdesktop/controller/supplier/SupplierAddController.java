@@ -13,6 +13,7 @@ import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
@@ -80,7 +81,7 @@ public class SupplierAddController extends CommonDataSaveController {
     void onActionBtnAddContact(ActionEvent event) {
         StageUtils.modal(Page.MASTER_SUPPLIER_CONTACT_ADD, false, we -> {
             List<SupplierContactAddVM> contacts = getPageData();
-            if (!contacts.isEmpty()) {
+            if (CollectionUtils.isNotEmpty(contacts)) {
                 tblSupplierContact.getItems().addAll(contacts);
             }
         });

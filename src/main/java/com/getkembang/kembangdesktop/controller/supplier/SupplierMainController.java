@@ -98,10 +98,10 @@ public class SupplierMainController extends BaseController {
     void onActionBtnRemove(ActionEvent event) {
         ObservableList<SupplierVM> items = tableSupplier.getSelectionModel().getSelectedItems();
         if (!items.isEmpty()) {
-            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_CUSTOMERS);
+            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_SUPPLIERS);
             if (result.isConfirmed()) {
                 supplierService.removeSuppliers(items.stream().map(SupplierVM::getId).collect(Collectors.toList()));
-                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_CUSTOMERS);
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_SUPPLIERS);
                 searchSuppliers();
             }
         }

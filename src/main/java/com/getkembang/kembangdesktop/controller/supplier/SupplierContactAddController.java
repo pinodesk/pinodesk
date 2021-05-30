@@ -47,6 +47,7 @@ public class SupplierContactAddController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlActions() {
         TextFieldUtils.setDigitTextFields(tfPhone);
+        disableOnValidationError(btnSaveAndAdd);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyConstants.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();
