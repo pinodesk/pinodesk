@@ -1,5 +1,6 @@
 package com.getkembang.kembangdesktop;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -22,10 +23,14 @@ import javafx.stage.Stage;
 
 public class Kembang extends Application {
 
+    // @formatter:off
     public static final String[] ICON_PATHS = new String[] { 
             "/assets/images/kembang-sq-128.png",
             "/assets/images/kembang-sq-64.png", 
             "/assets/images/kembang-sq-32.png" };
+    // @formatter:on
+
+    public static Stage primaryStage;
 
     @Override
     public void init() throws Exception {
@@ -37,6 +42,15 @@ public class Kembang extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        setPrimaryStage(primaryStage);
+        loadMainPage();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    private static void loadMainPage() throws IOException {
         PageContext pageContext = PageLoader.load(Page.MAIN);
         Scene scene = new Scene(pageContext.getRoot());
         primaryStage.setScene(scene);
@@ -46,11 +60,8 @@ public class Kembang extends Application {
         primaryStage.setMinHeight(primaryStage.getHeight());
         primaryStage.setTitle(CommonConstants.APP_TITLE);
         Arrays.stream(ICON_PATHS)
-                .forEach(path -> primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(path))));
-    }
-
-    public static void main(String[] args) {
-        launch(args);
+                .forEach(path -> primaryStage.getIcons().add(new Image(Kembang.class.getResourceAsStream(path))));
+        
     }
 
     private ResourceBundle getDefaultResourceBundle() {
@@ -58,6 +69,14 @@ public class Kembang extends Application {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
         Locale locale = StringUtils.isBlank(languageCode) ? CommonConstants.ENGLISH : new Locale(languageCode);
         return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, locale);
+    }
+
+    private static void setPrimaryStage(Stage primaryStage) {
+        Kembang.primaryStage = primaryStage;
+    }
+
+    public static void reload() throws IOException {
+        loadMainPage();
     }
 
 }

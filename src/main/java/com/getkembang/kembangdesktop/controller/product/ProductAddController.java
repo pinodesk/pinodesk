@@ -291,6 +291,8 @@ public class ProductAddController extends CommonDataSaveController {
     protected void initDataSaveControlValues() {
         String vatPercentageBase = configurationService.getConfiguration(ConfigurationConstants.VAT_PERCENTAGE);
         vatPercentage = NumberUtils.toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
+        chkIncludesVat.setText(
+                chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
     }
 
     @Override

@@ -20,6 +20,9 @@ public enum MessageCode implements IMessage {
     ERROR_INVALID_CODE_FORMAT,
     ERROR_INVALID_DOMAIN_FORMAT,
 
+    // Configuration
+    SUCCESS_EDIT_CONFIGURATION,
+
     // Product
     SUCCESS_ADD_PRODUCT,
     SUCCESS_EDIT_PRODUCT,

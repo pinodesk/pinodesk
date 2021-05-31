@@ -2,8 +2,10 @@ package com.getkembang.kembangdesktop.controller;
 
 import java.io.IOException;
 
+import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StyleConstants;
+import com.getkembang.kembangdesktop.service.ConfigurationService;
 import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
 
 import org.springframework.context.ApplicationContext;
@@ -12,6 +14,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -27,9 +30,14 @@ public class MainController extends BaseController {
     @FXML
     private AnchorPane contentPane;
 
+    @FXML
+    private Label lblStoreName;
+
+    private ConfigurationService configurationService;
+
     @Override
     protected void initServices(ApplicationContext ctx) {
-        // No services to initialize
+        configurationService = ctx.getBean(ConfigurationService.class);
     }
 
     @Override
@@ -39,7 +47,8 @@ public class MainController extends BaseController {
 
     @Override
     protected void initControlValues() {
-        // No fields values to initialize
+        String storeName = configurationService.getConfiguration(ConfigurationConstants.STORE_NAME);
+        lblStoreName.setText(storeName);
     }
 
     @Override

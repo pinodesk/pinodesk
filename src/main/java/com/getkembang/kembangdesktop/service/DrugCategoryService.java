@@ -6,7 +6,9 @@ import com.getkembang.kembangdesktop.constant.CacheName;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.exception.DomainException;
+import com.getkembang.kembangdesktop.repository.DrugCategoryBaseRepository;
 import com.getkembang.kembangdesktop.repository.DrugCategoryRepository;
+import com.getkembang.kembangdesktop.viewmodel.DrugCategoryBaseVM;
 import com.getkembang.kembangdesktop.viewmodel.DrugCategoryVM;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class DrugCategoryService extends BaseService {
     @Autowired
     private DrugCategoryRepository drugCategoryRepository;
 
+    @Autowired
+    private DrugCategoryBaseRepository drugCategoryBaseRepository;
+
     @Cacheable(CacheName.Keys.DRUG_CATEGORIES_BY_KEYWORD)
     public List<DrugCategoryVM> searchDrugCategoriesByKeyword(String keyword) {
         String drugCategoryBaseId = configurationService.getConfiguration(ConfigurationConstants.DRUG_CATEGORY_BASE_ID);
@@ -31,6 +36,11 @@ public class DrugCategoryService extends BaseService {
     public DrugCategoryVM getDrugCategoryById(Long id) {
         return convertOptionalOrThrow(drugCategoryRepository.readOne(id), DrugCategoryVM.class,
                 new DomainException(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_ID));
+    }
+
+    @Cacheable(CacheName.Keys.DRUG_CATEGORY_BASES_ALL)
+    public List<DrugCategoryBaseVM> getAllDrugCategoryBases() {
+        return convertList(drugCategoryBaseRepository.read(), DrugCategoryBaseVM.class);
     }
 
 }

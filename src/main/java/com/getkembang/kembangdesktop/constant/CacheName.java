@@ -5,6 +5,7 @@ import java.util.Arrays;
 public enum CacheName {
 
     // @formatter:off
+    CONFIGURATION_MAP(Keys.CONFIGURATION_MAP),
     CONFIGURATION_BY_CODE(Keys.CONFIGURATION_BY_CODE),
     PRODUCTS_BY_FILTER(Keys.PRODUCTS_BY_FILTER), 
     PRODUCT_CATEGORIES_BY_KEYWORD(Keys.PRODUCT_CATEGORIES_BY_KEYWORD), 
@@ -12,9 +13,11 @@ public enum CacheName {
     RACKS_BY_KEYWORD(Keys.RACKS_BY_KEYWORD), 
     UNITS_ALL(Keys.UNITS_ALL),
     UNITS_BY_KEYWORD(Keys.UNITS_BY_KEYWORD),
+    DRUG_CATEGORY_BASES_ALL(Keys.DRUG_CATEGORY_BASES_ALL),
     DRUG_CATEGORIES_BY_KEYWORD(Keys.DRUG_CATEGORIES_BY_KEYWORD),
     CUSTOMERS_BY_FILTER(Keys.CUSTOMERS_BY_FILTER),
-    SUPPLIERS_BY_FILTER(Keys.SUPPLIERS_BY_FILTER);
+    SUPPLIERS_BY_FILTER(Keys.SUPPLIERS_BY_FILTER),
+    LANGUAGES_ALL(Keys.LANGUAGES_ALL);
     // @formatter:on
 
     private String key;
@@ -32,6 +35,7 @@ public enum CacheName {
     }
 
     public static interface Keys {
+        String CONFIGURATION_MAP = "configurationMap";
         String CONFIGURATION_BY_CODE = "configurationByCode";
         String PRODUCTS_BY_FILTER = "productsByFilter";
         String PRODUCT_CATEGORIES_BY_KEYWORD = "productCategoriesByKeyword";
@@ -39,9 +43,11 @@ public enum CacheName {
         String RACKS_BY_KEYWORD = "racksByKeyword";
         String UNITS_ALL = "unitsAll";
         String UNITS_BY_KEYWORD = "unitsByKeyword";
+        String DRUG_CATEGORY_BASES_ALL = "drugCategoryBasesAll";
         String DRUG_CATEGORIES_BY_KEYWORD = "drugCategoriesByKeyword";
         String CUSTOMERS_BY_FILTER = "customersByFilter";
         String SUPPLIERS_BY_FILTER = "suppliersByFilter";
+        String LANGUAGES_ALL = "languagesAll";
     }
 
 }
