@@ -51,17 +51,27 @@ public class Kembang extends Application {
     }
 
     private static void loadMainPage() throws IOException {
+        loadMainPage(null, null);
+    }
+
+    private static void loadMainPage(Double height, Double width) throws IOException {
         PageContext pageContext = PageLoader.load(Page.MAIN);
         Scene scene = new Scene(pageContext.getRoot());
         primaryStage.setScene(scene);
         primaryStage.sizeToScene();
-        primaryStage.show();
         primaryStage.setMinWidth(primaryStage.getWidth());
         primaryStage.setMinHeight(primaryStage.getHeight());
+        if (height != null) {
+            primaryStage.setHeight(height);
+        }
+        if (width != null) {
+            primaryStage.setWidth(width);
+        }
         primaryStage.setTitle(CommonConstants.APP_TITLE);
-        Arrays.stream(ICON_PATHS)
-                .forEach(path -> primaryStage.getIcons().add(new Image(Kembang.class.getResourceAsStream(path))));
-        
+        for (String path : ICON_PATHS) {
+            primaryStage.getIcons().add(new Image(Kembang.class.getResourceAsStream(path)));
+        }
+        primaryStage.show();
     }
 
     private ResourceBundle getDefaultResourceBundle() {
@@ -76,7 +86,7 @@ public class Kembang extends Application {
     }
 
     public static void reload() throws IOException {
-        loadMainPage();
+        loadMainPage(primaryStage.getHeight(), primaryStage.getWidth());
     }
 
 }

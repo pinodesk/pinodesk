@@ -9,13 +9,16 @@ import com.getkembang.kembangdesktop.repository.ConfigurationRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ConfigurationService extends BaseService {
+
+    @Autowired
+    private CacheManager cacheManager;
 
     @Autowired
     private ConfigurationRepository configurationRepository;
@@ -32,11 +35,15 @@ public class ConfigurationService extends BaseService {
                 .collect(Collectors.toMap(Configuration::getCode, Configuration::getValue));
     }
 
-    @CacheEvict(value = { CacheName.Keys.CONFIGURATION_MAP, CacheName.Keys.CONFIGURATION_BY_CODE }, allEntries = true)
     @Transactional
     public void updateConfiguration(Map<String, String> configurationMap) {
         configurationMap.entrySet()
                 .forEach(entry -> configurationRepository.updateConfigurationByCode(entry.getKey(), entry.getValue()));
+        evictAllCaches();
+    }
+
+    private void evictAllCaches() {
+        cacheManager.getCacheNames().stream().forEach(name -> cacheManager.getCache(name).clear());
     }
 
 }
