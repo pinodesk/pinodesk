@@ -1,7 +1,6 @@
 package com.getkembang.kembangdesktop;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -51,10 +50,10 @@ public class Kembang extends Application {
     }
 
     private static void loadMainPage() throws IOException {
-        loadMainPage(null, null);
+        loadMainPage(null, null, false);
     }
 
-    private static void loadMainPage(Double height, Double width) throws IOException {
+    private static void loadMainPage(Double height, Double width, boolean maximized) throws IOException {
         PageContext pageContext = PageLoader.load(Page.MAIN);
         Scene scene = new Scene(pageContext.getRoot());
         primaryStage.setScene(scene);
@@ -67,6 +66,7 @@ public class Kembang extends Application {
         if (width != null) {
             primaryStage.setWidth(width);
         }
+        primaryStage.setMaximized(maximized);
         primaryStage.setTitle(CommonConstants.APP_TITLE);
         for (String path : ICON_PATHS) {
             primaryStage.getIcons().add(new Image(Kembang.class.getResourceAsStream(path)));
@@ -86,7 +86,7 @@ public class Kembang extends Application {
     }
 
     public static void reload() throws IOException {
-        loadMainPage(primaryStage.getHeight(), primaryStage.getWidth());
+        loadMainPage(primaryStage.getHeight(), primaryStage.getWidth(), primaryStage.isMaximized());
     }
 
 }
