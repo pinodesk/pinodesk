@@ -52,11 +52,6 @@ public class MainController extends BaseController {
     }
 
     @Override
-    protected Page getCurrentPage() {
-        return Page.MAIN;
-    }
-
-    @Override
     protected Stage getCurrentStage() {
         return null;
     }

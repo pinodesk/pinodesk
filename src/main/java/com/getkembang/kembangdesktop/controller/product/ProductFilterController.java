@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.controller.CommonDataFilterController;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
@@ -236,11 +235,6 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
                 tfQuantityMin,
                 tfQuantityMax);
         // @formatter:on
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_PRODUCT_FILTER;
     }
 
 }

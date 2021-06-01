@@ -1,6 +1,5 @@
 package com.getkembang.kembangdesktop.controller.customer;
 
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataFilterController;
 import com.getkembang.kembangdesktop.viewmodel.CustomerFilterVM;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
@@ -66,11 +65,6 @@ public class CustomerFilterController extends CommonDataFilterController<Custome
     @Override
     protected void initDataFilterControlActions() {
         TextFieldUtils.setDigitTextFields(tfPhone);
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_CUSTOMER_FILTER;
     }
 
 }

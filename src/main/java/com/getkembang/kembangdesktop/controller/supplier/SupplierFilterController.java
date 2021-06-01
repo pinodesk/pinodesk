@@ -1,6 +1,5 @@
 package com.getkembang.kembangdesktop.controller.supplier;
 
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataFilterController;
 import com.getkembang.kembangdesktop.viewmodel.SupplierFilterVM;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
@@ -67,11 +66,6 @@ public class SupplierFilterController extends CommonDataFilterController<Supplie
     @Override
     protected void initDataFilterControlActions() {
         TextFieldUtils.setDigitTextFields(tfPhone);
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_SUPPLIER_FILTER;
     }
 
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.MessageCode;
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.javafx.converter.DrugCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
@@ -293,11 +292,6 @@ public class ProductAddController extends CommonDataSaveController {
         vatPercentage = NumberUtils.toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
         chkIncludesVat.setText(
                 chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_PRODUCT_ADD;
     }
 
     private void initBtnSaveAndAdd() {

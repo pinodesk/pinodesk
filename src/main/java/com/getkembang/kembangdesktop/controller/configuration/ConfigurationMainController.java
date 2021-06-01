@@ -8,7 +8,6 @@ import java.util.Map;
 import com.getkembang.kembangdesktop.Kembang;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.MessageCode;
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.BaseController;
 import com.getkembang.kembangdesktop.javafx.converter.DrugCategoryBaseComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.LanguageComboBoxConverter;
@@ -103,11 +102,6 @@ public class ConfigurationMainController extends BaseController {
         ComboBoxUtils.select(cbLanguage, () -> languages.stream().filter(
                 lang -> configurationMap.get(ConfigurationConstants.LANGUAGE_ID).equals(lang.getId().toString()))
                 .findAny().get());
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.SETTINGS_CONFIGURATION_MAIN;
     }
 
     @Override

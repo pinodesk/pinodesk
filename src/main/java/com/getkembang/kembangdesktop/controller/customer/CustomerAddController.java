@@ -1,7 +1,6 @@
 package com.getkembang.kembangdesktop.controller.customer;
 
 import com.getkembang.kembangdesktop.constant.MessageCode;
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.service.CustomerService;
 import com.getkembang.kembangdesktop.viewmodel.CustomerAddVM;
@@ -69,11 +68,6 @@ public class CustomerAddController extends CommonDataSaveController {
     protected void initDataSaveControlValues() {
         String nextCustomerCode = customerService.getNextCustomerCode();
         tfCode.setText(nextCustomerCode);
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_CUSTOMER_ADD;
     }
 
     @Override

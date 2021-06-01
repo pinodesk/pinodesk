@@ -127,11 +127,6 @@ public class SupplierAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_SUPPLIER_ADD;
-    }
-
-    @Override
     protected void registerValidator(ValidationSupport vs) {
         registerRequiredFields(tfName);
         registerWhitespaceValidator(tfName);

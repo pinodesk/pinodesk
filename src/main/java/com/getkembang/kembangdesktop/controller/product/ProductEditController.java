@@ -10,7 +10,6 @@ import java.util.List;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.ConfigurationConstants;
 import com.getkembang.kembangdesktop.constant.MessageCode;
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.javafx.converter.DrugCategoryComboBoxConverter;
 import com.getkembang.kembangdesktop.javafx.converter.ProductCategoryComboBoxConverter;
@@ -268,11 +267,6 @@ public class ProductEditController extends CommonDataSaveController {
         initWholesaleControlsValues();
         calculateTaxAndProfit();
         calculateWholesaleTaxAndProfit();
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_PRODUCT_EDIT;
     }
 
     private void initDrugControlsValues() {

@@ -3,7 +3,6 @@ package com.getkembang.kembangdesktop.controller.customer;
 import java.util.Arrays;
 
 import com.getkembang.kembangdesktop.constant.MessageCode;
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.service.CustomerService;
 import com.getkembang.kembangdesktop.viewmodel.CustomerEditVM;
@@ -91,11 +90,6 @@ public class CustomerEditController extends CommonDataSaveController {
     @Override
     protected void initServices(ApplicationContext ctx) {
         customerService = ctx.getBean(CustomerService.class);
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_CUSTOMER_EDIT;
     }
 
 }

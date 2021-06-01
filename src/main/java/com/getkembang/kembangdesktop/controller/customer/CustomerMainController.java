@@ -15,9 +15,9 @@ import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import org.springframework.context.ApplicationContext;
-import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -137,11 +137,6 @@ public class CustomerMainController extends BaseController {
     protected void initControlValues() {
         customerFilter = new CustomerFilterVM();
         searchCustomers();
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_CUSTOMER_MAIN;
     }
 
     @Override

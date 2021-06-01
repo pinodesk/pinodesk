@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.getkembang.kembangdesktop.constant.MessageCode;
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.controller.CommonDataSaveController;
 import com.getkembang.kembangdesktop.viewmodel.SupplierContactAddVM;
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
@@ -81,11 +80,6 @@ public class SupplierContactAddController extends CommonDataSaveController {
     @Override
     protected void initServices(ApplicationContext ctx) {
         // Nothing to do here
-    }
-
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_SUPPLIER_CONTACT_ADD;
     }
 
     private void resetControls() {

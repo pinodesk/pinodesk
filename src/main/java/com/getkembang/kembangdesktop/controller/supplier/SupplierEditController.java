@@ -152,9 +152,4 @@ public class SupplierEditController extends CommonDataSaveController {
         supplierService = ctx.getBean(SupplierService.class);
     }
 
-    @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_SUPPLIER_EDIT;
-    }
-
 }

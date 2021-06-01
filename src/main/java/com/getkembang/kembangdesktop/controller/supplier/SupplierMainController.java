@@ -144,11 +144,6 @@ public class SupplierMainController extends BaseController {
     }
 
     @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_CUSTOMER_MAIN;
-    }
-
-    @Override
     protected Stage getCurrentStage() {
         return null;
     }

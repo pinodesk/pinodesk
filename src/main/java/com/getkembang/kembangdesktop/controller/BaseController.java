@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 import com.getkembang.kembangdesktop.Kembang;
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
-import com.getkembang.kembangdesktop.constant.Page;
 import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.exception.DomainException;
 import com.getkembang.kembangdesktop.exception.FXException;
@@ -66,8 +65,6 @@ public abstract class BaseController {
     protected abstract void initControlActions();
 
     protected abstract void initControlValues();
-
-    protected abstract Page getCurrentPage();
 
     protected abstract Stage getCurrentStage();
 

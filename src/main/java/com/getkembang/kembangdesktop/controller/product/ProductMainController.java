@@ -138,11 +138,6 @@ public class ProductMainController extends BaseController {
     }
 
     @Override
-    protected Page getCurrentPage() {
-        return Page.MASTER_PRODUCT_MAIN;
-    }
-
-    @Override
     protected Stage getCurrentStage() {
         return null;
     }
