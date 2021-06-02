@@ -42,7 +42,7 @@
                <children>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="Store Name">
+                        <Label text="%lbl.storename">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -56,7 +56,7 @@
                   </VBox>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="Store Address">
+                        <Label text="%lbl.storeaddress">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -70,7 +70,7 @@
                   </VBox>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="VAT Percentage">
+                        <Label text="%lbl.vatpercentage">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -84,7 +84,7 @@
                   </VBox>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="Drug Category Base">
+                        <Label text="%lbl.drugcategorybase">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -94,7 +94,7 @@
                   </VBox>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="Language">
+                        <Label text="%lbl.language">
                            <font>
                               <Font size="13.0" />
                            </font>

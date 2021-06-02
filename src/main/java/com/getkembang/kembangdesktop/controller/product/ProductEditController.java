@@ -1,5 +1,8 @@
 package com.getkembang.kembangdesktop.controller.product;
 
+import static org.apache.commons.lang3.math.NumberUtils.toInt;
+import static org.apache.commons.lang3.math.NumberUtils.toScaledBigDecimal;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -241,7 +244,7 @@ public class ProductEditController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlValues() {
         String vatPercentageBase = configurationService.getConfiguration(ConfigurationConstants.VAT_PERCENTAGE);
-        vatPercentage = NumberUtils.toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
+        vatPercentage = toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
         currentProduct = getPageData();
         tfName.setText(currentProduct.getName());
         tfCode.setText(currentProduct.getCode());
@@ -386,9 +389,9 @@ public class ProductEditController extends CommonDataSaveController {
         productEdit.setCode(tfCode.getText());
         productEdit.setBarcode(tfBarcode.getText());
         productEdit.setDescription(tfDescription.getText());
-        productEdit.setQuantity(NumberUtils.toInt(tfQuantity.getText()));
-        productEdit.setPurchasePrice(NumberUtils.toScaledBigDecimal(tfPurchasePrice.getText()));
-        productEdit.setSellingPrice(NumberUtils.toScaledBigDecimal(tfSellingPrice.getText()));
+        productEdit.setQuantity(toInt(tfQuantity.getText()));
+        productEdit.setPurchasePrice(toScaledBigDecimal(tfPurchasePrice.getText()));
+        productEdit.setSellingPrice(toScaledBigDecimal(tfSellingPrice.getText()));
         productEdit.setVatIncluded(chkIncludesVat.isSelected() ? CommonConstants.YES : CommonConstants.NO);
         productEdit.setUnit(cbUnit.getSelectionModel().getSelectedItem());
         productEdit.setProductCategory(cbCategory.getSelectionModel().getSelectedItem());
@@ -397,12 +400,14 @@ public class ProductEditController extends CommonDataSaveController {
         productEdit.setRack(cbRack.getSelectionModel().getSelectedItem());
         if (ComboBoxUtils.hasItemSelected(cbDrugCategory)) {
             DrugCategoryVM drugCategory = ComboBoxUtils.getSelectedItem(cbDrugCategory);
+            String strPrescriptionPrice = tfPrescriptionPrice.getText();
             DrugVM drug = new DrugVM();
             drug.setProductId(currentProduct.getId());
             drug.setDrugCategoryId(drugCategory.getId());
             drug.setDrugCategoryCode(drugCategory.getCode());
             drug.setDrugCategoryName(drugCategory.getName());
-            drug.setPrescriptionPrice(NumberUtils.toScaledBigDecimal(tfPrescriptionPrice.getText()));
+            drug.setPrescriptionPrice(
+                    strPrescriptionPrice == null ? null : toScaledBigDecimal(tfPrescriptionPrice.getText()));
             drug.setIndication(tfIndication.getText());
             drug.setContraindication(tfIndication.getText());
             productEdit.setDrug(drug);
@@ -416,22 +421,22 @@ public class ProductEditController extends CommonDataSaveController {
         if (StringUtils.isNoneBlank(tfPurchaseQuantity1.getText(), tfSellingPrice1.getText())) {
             WholesaleVM wholesale = new WholesaleVM();
             wholesale.setProductId(currentProduct.getId());
-            wholesale.setPurchaseQuantity(NumberUtils.toInt(tfPurchaseQuantity1.getText()));
-            wholesale.setSellingPrice(NumberUtils.toScaledBigDecimal(tfSellingPrice1.getText()));
+            wholesale.setPurchaseQuantity(toInt(tfPurchaseQuantity1.getText()));
+            wholesale.setSellingPrice(toScaledBigDecimal(tfSellingPrice1.getText()));
             wholesales.add(wholesale);
         }
         if (StringUtils.isNoneBlank(tfPurchaseQuantity2.getText(), tfSellingPrice2.getText())) {
             WholesaleVM wholesale = new WholesaleVM();
             wholesale.setProductId(currentProduct.getId());
-            wholesale.setPurchaseQuantity(NumberUtils.toInt(tfPurchaseQuantity2.getText()));
-            wholesale.setSellingPrice(NumberUtils.toScaledBigDecimal(tfSellingPrice2.getText()));
+            wholesale.setPurchaseQuantity(toInt(tfPurchaseQuantity2.getText()));
+            wholesale.setSellingPrice(toScaledBigDecimal(tfSellingPrice2.getText()));
             wholesales.add(wholesale);
         }
         if (StringUtils.isNoneBlank(tfPurchaseQuantity3.getText(), tfSellingPrice3.getText())) {
             WholesaleVM wholesale = new WholesaleVM();
             wholesale.setProductId(currentProduct.getId());
-            wholesale.setPurchaseQuantity(NumberUtils.toInt(tfPurchaseQuantity3.getText()));
-            wholesale.setSellingPrice(NumberUtils.toScaledBigDecimal(tfSellingPrice3.getText()));
+            wholesale.setPurchaseQuantity(toInt(tfPurchaseQuantity3.getText()));
+            wholesale.setSellingPrice(toScaledBigDecimal(tfSellingPrice3.getText()));
             wholesales.add(wholesale);
         }
         return wholesales;
