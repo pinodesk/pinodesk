@@ -104,12 +104,12 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
             tfName.setText(currentFilter.getName());
             tfCode.setText(currentFilter.getCode());
             tfBarcode.setText(currentFilter.getBarcode());
-            tfQuantityMin.setText(toStringOrDefault(quantityMin, null));
-            tfQuantityMax.setText(toStringOrDefault(quantityMax, null));
-            tfPurchasePriceMax.setText(toStringOrDefault(purchasePriceMax, null));
-            tfPurchasePriceMin.setText(toStringOrDefault(purchasePriceMin, null));
-            tfSellingPriceMax.setText(toStringOrDefault(sellingPriceMax, null));
-            tfSellingPriceMin.setText(toStringOrDefault(sellingPriceMin, null));
+            tfQuantityMin.setText(toStringOrNull(quantityMin));
+            tfQuantityMax.setText(toStringOrNull(quantityMax));
+            tfPurchasePriceMax.setText(toStringOrNull(purchasePriceMax));
+            tfPurchasePriceMin.setText(toStringOrNull(purchasePriceMin));
+            tfSellingPriceMax.setText(toStringOrNull(sellingPriceMax));
+            tfSellingPriceMin.setText(toStringOrNull(sellingPriceMin));
             tfExpiredDateMax.setPlainText(expiredDateMax == null ? null
                     : DateFormatUtils.format(expiredDateMax, CommonConstants.DATE_PATTERN));
             tfExpiredDateMin.setPlainText(expiredDateMin == null ? null

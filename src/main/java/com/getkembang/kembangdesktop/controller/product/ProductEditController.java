@@ -278,7 +278,7 @@ public class ProductEditController extends CommonDataSaveController {
             DrugCategoryVM selectedDrugCategory = drugCategoryService.getDrugCategoryById(drug.getDrugCategoryId());
             cbDrugCategory.getItems().add(selectedDrugCategory);
             cbDrugCategory.getSelectionModel().select(selectedDrugCategory);
-            tfPrescriptionPrice.setText(drug.getPrescriptionPrice().setScale(0).toString());
+            tfPrescriptionPrice.setText(toStringOrNull(drug.getPrescriptionPrice()));
             tfIndication.setText(drug.getIndication());
             tfContraindication.setText(drug.getContraindication());
         }
@@ -333,6 +333,7 @@ public class ProductEditController extends CommonDataSaveController {
 
     private void calculateTaxAndProfit() {
         calculate(tfSellingPrice, tfVat, tfSellingPriceBeforeTax, tfProfit);
+
     }
 
     private void calculateWholesaleTaxAndProfit() {

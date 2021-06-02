@@ -262,8 +262,24 @@ public abstract class BaseController {
         return num == null ? dflt : num.setScale(0).toString();
     }
 
+    protected String toStringOrNull(BigDecimal num) {
+        return toStringOrDefault(num, null);
+    }
+
+    protected String toStringOrEmpty(BigDecimal num) {
+        return toStringOrDefault(num, "");
+    }
+
     protected String toStringOrDefault(Integer num, String dflt) {
         return num == null ? dflt : num.toString();
+    }
+
+    protected String toStringOrNull(Integer num) {
+        return toStringOrDefault(num, null);
+    }
+
+    protected String toStringOrEmpty(Integer num) {
+        return toStringOrDefault(num, "");
     }
 
 }
