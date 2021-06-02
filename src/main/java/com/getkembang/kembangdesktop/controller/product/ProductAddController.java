@@ -225,8 +225,8 @@ public class ProductAddController extends CommonDataSaveController {
             drug.setDrugCategoryId(drugCategory.getId());
             drug.setDrugCategoryCode(drugCategory.getCode());
             drug.setDrugCategoryName(drugCategory.getName());
-            drug.setPrescriptionPrice(
-                    strPrescriptionPrice == null ? null : toScaledBigDecimal(tfPrescriptionPrice.getText()));
+            drug.setPrescriptionPrice(StringUtils.isBlank(strPrescriptionPrice) ? null
+                    : toScaledBigDecimal(tfPrescriptionPrice.getText()));
             drug.setIndication(tfIndication.getText());
             drug.setContraindication(tfIndication.getText());
             productAdd.setDrug(drug);
