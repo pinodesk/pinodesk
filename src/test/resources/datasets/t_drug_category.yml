@@ -1,0 +1,22 @@
+t_drug_category:
+  - id: 1
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: PERMENKESRI01
+    name: Obat Bebas Terbatas
+    description: 
+    drug_category_base_id: 1
+  - id: 2
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: PERMENKESRI02
+    name: Obat Bebas
+    description: 
+    drug_category_base_id: 1
+  - id: 3
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: PERMENKESRI03
+    name: Obat Keras
+    description: 
+    drug_category_base_id: 1
