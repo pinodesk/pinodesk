@@ -1,3 +1,15 @@
+t_language:
+  - id: 1
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: eng
+    name: English
+  - id: 2
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: ind
+    name: Bahasa Indonesia
+
 t_product_category:
   - id: 1000000001
     created_at: 2021-04-01 20:00:00
