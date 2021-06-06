@@ -35,10 +35,6 @@ create table if not exists t_drug_category_base (
 	index idx_t_drug_category_base__code (code)
 );
 
-insert into t_drug_category_base (id, created_at, updated_at, deleted_at, code, name, description) values
-(null, current_timestamp, current_timestamp, null, 'PERMENKESRI', 'Peraturan Menteri Kesehatan Indonesia', 'Permenkes No.917 Tahun 1993'),
-(null, current_timestamp, current_timestamp, null, 'USFDA', 'US Food and Drug Administration', 'General drug categories by US FDA');
-
 create table if not exists t_drug_category (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
