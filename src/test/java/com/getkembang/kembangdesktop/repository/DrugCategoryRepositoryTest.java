@@ -21,7 +21,7 @@ class DrugCategoryRepositoryTest extends BaseRepositoryTest {
     private DrugCategoryRepository drugCategoryRepository;
 
     @Test
-    void testFilter_shouldReturnFilteredDrugCategory() {
+    void testFilter_shouldReturnFilteredDrugCategories() {
         String keyword = "bebas";
         long drugCategoryBaseId = 1;
         List<DrugCategory> drugCategories = drugCategoryRepository.filter(keyword, drugCategoryBaseId);
