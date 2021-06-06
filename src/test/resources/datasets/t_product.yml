@@ -1,0 +1,106 @@
+t_unit:
+  - id: 1
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    label: PCS
+    name: Pieces
+
+t_rack:
+  - id: 1
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: RAK001
+    name: Rak Peralatan Makan
+    description: 
+  - id: 2
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: RAK002
+    name: Rak Makanan Ringan
+    description: 
+
+t_language:
+  - id: 1
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: eng
+    name: English
+  - id: 2
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: ind
+    name: Bahasa Indonesia
+
+t_product_category:
+  - id: 1000000001
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: "000000001"
+    name: Peralatan Makan
+    description: 
+    language_id: 2
+    parent_category_id: 
+  - id: 1000000002
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: "000000002"
+    name: Makanan Ringan
+    description: 
+    language_id: 2
+    parent_category_id: 
+
+t_product:
+  - id: 1
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: P00001
+    barcode: 
+    name: Gelas Belimbing Kaca
+    description: 
+    quantity: 10
+    unit_id: 1
+    unit_label: PCS
+    category_code: "000000001"
+    purchase_price: 4000
+    selling_price: 8000
+    vat_included: "no"
+    rack_id: 1
+    rack_code: RAK001
+    rack_name: Rak Peralatan Makan 
+    expired_date: 
+  - id: 2
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: P00002
+    barcode: 
+    name: Piring Kaca Putih Bunga Biru
+    description: 
+    quantity: 20
+    unit_id: 1
+    unit_label: PCS
+    category_code: "000000001"
+    purchase_price: 10000
+    selling_price: 20000
+    vat_included: "no"
+    rack_id: 1
+    rack_code: RAK001
+    rack_name: Rak Peralatan Makan
+    expired_date: 
+  - id: 3
+    created_at: 2021-04-01 20:00:00
+    updated_at: 2021-04-01 20:00:00
+    code: P00003
+    barcode: "111100001"
+    name: Potato BBQ
+    description: 
+    quantity: 100
+    unit_id: 1
+    unit_label: PCS
+    category_code: "000000002"
+    purchase_price: 8000
+    selling_price: 12000
+    vat_included: "no"
+    rack_id: 2
+    rack_code: RAK002
+    rack_name: Rak Makanan Ringan
+    expired_date: 2022-04-01

@@ -75,3 +75,53 @@ create table if not exists t_product_category (
 	index idx_t_product_category__language_id__code (language_id, code),
 	constraint fk_t_product_category__language_id foreign key (language_id) references t_language(id)
 );
+
+create table if not exists t_unit (
+	id bigint not null auto_increment,
+	created_at timestamp not null default current_timestamp,
+	updated_at timestamp not null default current_timestamp on update current_timestamp,
+	deleted_at timestamp,
+	label varchar(32) not null,
+	name varchar(128) not null,
+	primary key (id)
+);
+
+create table if not exists t_rack (
+	id bigint not null auto_increment,
+	created_at timestamp not null default current_timestamp,
+	updated_at timestamp not null default current_timestamp on update current_timestamp,
+	deleted_at timestamp,
+	code varchar(64) not null,
+	name varchar(256) not null,
+	description varchar(512),
+	primary key (id)
+);
+
+create table if not exists t_product (
+	id bigint not null auto_increment,
+	created_at timestamp not null default current_timestamp,
+	updated_at timestamp not null default current_timestamp on update current_timestamp,
+	deleted_at timestamp,
+	code varchar(64) not null,
+	barcode varchar(24),
+	name varchar(256) not null,
+	description varchar(512),
+	quantity integer not null default 0,
+	unit_id bigint not null,
+	unit_label varchar(32) not null,
+	category_code varchar(64) not null,
+	purchase_price decimal(12,2) not null default 0,
+	selling_price decimal(12,2) not null default 0,
+    vat_included char(3),
+	rack_id bigint,
+	rack_code varchar(64),
+	rack_name varchar(256),
+	expired_date date,
+	primary key (id),
+	constraint fk_t_product__unit_id foreign key (unit_id) references t_unit(id),
+	constraint fk_t_product__rack_id foreign key (rack_id) references t_rack(id),
+	index idx_t_product__code (code),
+	index idx_t_product__barcode (barcode),
+	index idx_t_product__category_code (category_code),
+	index idx_t_product__id__unit_id (id, unit_id)
+);

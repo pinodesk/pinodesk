@@ -17,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 class ProductCategoryRepositoryTest extends BaseRepositoryTest {
 
     @Autowired
-    private ProductCategoryRepository drugCategoryRepository;
+    private ProductCategoryRepository productCategoryRepository;
 
     @Test
     void testFilter_shouldReturnFilteredProductCategories() {
         String keyword = "supplies";
         long languageId = 1;
-        List<ProductCategory> productCategories = drugCategoryRepository.filter(keyword, languageId);
+        List<ProductCategory> productCategories = productCategoryRepository.filter(keyword, languageId);
         assertThat(productCategories, hasSize(3));
         for (ProductCategory pc : productCategories) {
             Long id = pc.getId();
