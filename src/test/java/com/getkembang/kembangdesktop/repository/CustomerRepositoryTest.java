@@ -1,8 +1,13 @@
 package com.getkembang.kembangdesktop.repository;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -32,9 +37,31 @@ class CustomerRepositoryTest extends BaseRepositoryTest {
         filter.setPhone("088890909001");
         filter.setAddress("Jakarta");
         List<Customer> customers = customerRepository.filter(filter);
-        assertNotNull(customers);
-        assertEquals(1, customers.size());
-        assertEquals(1L, customers.get(0).getId().longValue());
+        assertThat(customers, hasSize(1));
+        assertThat(customers.get(0), allOf(
+            hasProperty("id", is(1l)),
+            hasProperty("code", is("202104010001")),
+            hasProperty("name", is("Muhammad")),
+            hasProperty("phone", is("088890909001")),
+            hasProperty("email", is("muhammad@gmail.com")),
+            hasProperty("address", is("Jakarta"))));
+        filter = new CustomerFilterVM();
+        customers = customerRepository.filter(filter);
+        assertThat(customers, hasSize(2));
+        assertThat(customers,
+                hasItems(
+                    hasProperty("id", is(1l)),
+                    hasProperty("id", is(2l)),
+                    hasProperty("code", is("202104010001")),
+                    hasProperty("code", is("202104010002")),
+                    hasProperty("name", is("Muhammad")),
+                    hasProperty("name", is("Ismail")),
+                    hasProperty("phone", is("088890909001")),
+                    hasProperty("phone", is("088890909002")),
+                    hasProperty("email", is("muhammad@gmail.com")),
+                    hasProperty("email", is("ismail@gmail.com")),
+                    hasProperty("address", is("Jakarta")),
+                    hasProperty("address", is("Pekalongan"))));
     }
 
     @Test
@@ -60,7 +87,7 @@ class CustomerRepositoryTest extends BaseRepositoryTest {
         customerEdit.setId(1L);
         Integer rowsAffected = customerRepository.updateCustomer(customerEdit);
         assertEquals(1, rowsAffected.intValue());
-        
+
         Optional<Customer> customer = customerRepository.readOne(1L);
         assertTrue(customer.isPresent());
         assertEquals(customerEdit.getEmail(), customer.get().getEmail());
