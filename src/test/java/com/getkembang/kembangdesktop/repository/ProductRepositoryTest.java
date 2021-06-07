@@ -30,24 +30,23 @@ class ProductRepositoryTest extends BaseRepositoryTest {
 
     @Test
     void testFilter_shouldReturnFilteredProducts() throws ParseException {
-        ProductFilterVM vm = new ProductFilterVM();
-        vm.setCode("P00003");
-        vm.setBarcode("111100001");
-        vm.setName("potato");
-        vm.setQuantityMax(100);
-        vm.setQuantityMin(1);
-        vm.setUnitId(1l);
-        vm.setCategoryCode("000000002");
-        vm.setPurchasePriceMin(new BigDecimal(1000));
-        vm.setPurchasePriceMax(new BigDecimal(10000));
-        vm.setSellingPriceMin(new BigDecimal(1000));
-        vm.setSellingPriceMax(new BigDecimal(20000));
-        vm.setIncludesVat(CommonConstants.NO);
-        vm.setRackId(2l);
-        vm.setExpiredDateMin(DateUtils.parseDate("2021-01-01", DATE_PATTERN));
-        vm.setExpiredDateMax(DateUtils.parseDate("2022-12-31", DATE_PATTERN));
-        long languageId = 2;
-        List<ProductVM> products = productRepository.filter(vm, languageId);
+        ProductFilterVM filter = new ProductFilterVM();
+        filter.setCode("P00003");
+        filter.setBarcode("111100001");
+        filter.setName("potato");
+        filter.setQuantityMax(100);
+        filter.setQuantityMin(1);
+        filter.setUnitId(1l);
+        filter.setCategoryCode("000000002");
+        filter.setPurchasePriceMin(new BigDecimal(1000));
+        filter.setPurchasePriceMax(new BigDecimal(10000));
+        filter.setSellingPriceMin(new BigDecimal(1000));
+        filter.setSellingPriceMax(new BigDecimal(20000));
+        filter.setIncludesVat(CommonConstants.NO);
+        filter.setRackId(2l);
+        filter.setExpiredDateMin(DateUtils.parseDate("2021-01-01", DATE_PATTERN));
+        filter.setExpiredDateMax(DateUtils.parseDate("2022-12-31", DATE_PATTERN));
+        List<ProductVM> products = productRepository.filter(filter, 2l);
         assertThat(products, hasSize(1));
         assertThat(products.get(0), allOf(
             hasProperty("code", is("P00003")),
@@ -64,6 +63,10 @@ class ProductRepositoryTest extends BaseRepositoryTest {
                 hasProperty("year", is(2022-1900)),
                 hasProperty("month", is(3)),
                 hasProperty("date", is(1))))));
+
+        filter = new ProductFilterVM();
+        products = productRepository.filter(filter, 1l);
+        assertThat(products, hasSize(3));
     }
 
 }
