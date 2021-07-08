@@ -1,6 +1,6 @@
 package com.getkembang.kembangdesktop.repository;
 
-import static com.getkembang.kembangdesktop.constant.ConfigurationConstants.LANGUAGE_ID;
+import static com.getkembang.kembangdesktop.constant.ConfigurationConstants.LANGUAGE_CODE;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
@@ -24,15 +24,15 @@ class ConfigurationRepositoryTest extends BaseRepositoryTest {
 
     @Test
     void testUpdateConfigurationByCode_shouldSucceed() {
-        Integer rowsAffected = configurationRepository.updateConfigurationByCode(LANGUAGE_ID, "2");
+        Integer rowsAffected = configurationRepository.updateConfigurationByCode(LANGUAGE_CODE, "id");
         assertEquals(1, rowsAffected.intValue());
         Optional<Configuration> configuration = configurationRepository
-                .readOne(new Where().equals(Configuration.C_CODE, LANGUAGE_ID));
+                .readOne(new Where().equals(Configuration.C_CODE, LANGUAGE_CODE));
         assertThat(configuration.isPresent(), is(true));
         assertThat(configuration.get(),
-                allOf(hasProperty(Configuration.C_ID, is(1l)),
-                        hasProperty(Configuration.C_CODE, is(LANGUAGE_ID)),
-                        hasProperty(Configuration.C_VALUE, is("2"))));
+                allOf(hasProperty(Configuration.C_ID, is(2l)),
+                        hasProperty(Configuration.C_CODE, is(LANGUAGE_CODE)),
+                        hasProperty(Configuration.C_VALUE, is("id"))));
     }
 
 }

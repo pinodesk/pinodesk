@@ -11,7 +11,7 @@ import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
 
 public interface ProductRepository extends CommonRepository<Product> {
     
-    List<ProductVM> filter(ProductFilterVM filter, Long languageId);
+    List<ProductVM> filter(ProductFilterVM filter, String languageCode);
 
     Integer updateProduct(ProductEditVM productEdit);
 

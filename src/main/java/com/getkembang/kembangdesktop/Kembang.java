@@ -13,8 +13,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.PageContext;
 import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -77,8 +75,7 @@ public class Kembang extends Application {
     private ResourceBundle getDefaultResourceBundle() {
         ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        Locale locale = StringUtils.isBlank(languageCode) ? CommonConstants.ENGLISH : new Locale(languageCode);
-        return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, locale);
+        return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, new Locale(languageCode));
     }
 
     private static void setPrimaryStage(Stage primaryStage) {

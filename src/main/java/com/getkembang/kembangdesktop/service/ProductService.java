@@ -45,8 +45,8 @@ public class ProductService extends BaseService {
 
     @Cacheable(CacheName.Keys.PRODUCTS_BY_FILTER)
     public List<ProductVM> searchProduct(ProductFilterVM param) {
-        String languageId = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
-        return productRepository.filter(param, Long.valueOf(languageId));
+        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
+        return productRepository.filter(param, languageCode);
     }
 
     @CacheEvict(value = CacheName.Keys.PRODUCTS_BY_FILTER, allEntries = true)

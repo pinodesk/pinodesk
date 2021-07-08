@@ -14,8 +14,8 @@ public class ProductCategoryRepositoryImpl extends AbstractRepository<ProductCat
         implements ProductCategoryRepository {
 
     @Override
-    public List<ProductCategory> filter(String keyword, Long languageId) {
-        return read(new Where().equals(ProductCategory.C_LANGUAGE_ID, languageId)
+    public List<ProductCategory> filter(String keyword, String languageCode) {
+        return read(new Where().equals(ProductCategory.C_LANGUAGE_CODE, languageCode)
                 .andContainsIgnoreCase(ProductCategory.C_NAME, keyword), new Limit(10));
     }
 

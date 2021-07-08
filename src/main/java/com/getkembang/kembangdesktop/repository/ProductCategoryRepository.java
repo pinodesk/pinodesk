@@ -7,6 +7,6 @@ import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
 
 public interface ProductCategoryRepository extends CommonRepository<ProductCategory> {
     
-    List<ProductCategory> filter(String keyword, Long languageId);
+    List<ProductCategory> filter(String keyword, String languageCode);
 
 }

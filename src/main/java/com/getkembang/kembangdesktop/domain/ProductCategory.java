@@ -13,7 +13,7 @@ public class ProductCategory extends DataModel {
     public static final String TABLE_NAME = "t_product_category";
 
     public static final String C_PARENT_CATEGORY_ID = "parent_category_id";
-    public static final String C_LANGUAGE_ID = "language_id";
+    public static final String C_LANGUAGE_CODE = "language_code";
     public static final String C_CODE = "code";
     public static final String C_NAME = "name";
     public static final String C_DESCRIPTION = "description";
@@ -21,8 +21,8 @@ public class ProductCategory extends DataModel {
     @DataColumn(C_PARENT_CATEGORY_ID)
     private Long parentCategoryId;
 
-    @DataColumn(C_LANGUAGE_ID)
-    private Long languageId;
+    @DataColumn(C_LANGUAGE_CODE)
+    private String languageCode;
 
     @DataColumn(C_CODE)
     private String code;

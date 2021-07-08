@@ -49,31 +49,19 @@ create table if not exists t_drug_category (
 	constraint fk_t_drug_category__drug_category_base_id foreign key (drug_category_base_id) references t_drug_category_base(id)
 );
 
-create table if not exists t_language (
-	id bigint not null auto_increment,
-	created_at timestamp not null default current_timestamp,
-	updated_at timestamp not null default current_timestamp on update current_timestamp,
-	deleted_at timestamp,
-	code varchar(3) not null,
-	name varchar(128) not null,
-	primary key (id),
-	index idx_t_language__code (code)
-);
-
 create table if not exists t_product_category (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
 	parent_category_id bigint,
-	language_id bigint not null,
+	language_code char(2) not null,
 	code varchar(64) not null,
 	name varchar(256) not null,
 	description varchar(512),
 	primary key (id),
 	index idx_t_product_category__code (code),
-	index idx_t_product_category__language_id__code (language_id, code),
-	constraint fk_t_product_category__language_id foreign key (language_id) references t_language(id)
+	index idx_t_product_category__language_code__code (language_code, code)
 );
 
 create table if not exists t_unit (

@@ -11,7 +11,7 @@ public class ProductCategoryVM {
     private Date updatedAt;
     private Date deletedAt;
     private Long parentCategoryId;
-    private Long languageId;
+    private String languageCode;
     private String code;
     private String name;
     private String description;

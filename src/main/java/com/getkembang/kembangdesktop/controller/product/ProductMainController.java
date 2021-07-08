@@ -144,7 +144,7 @@ public class ProductMainController extends BaseController {
 
     private void initTableProduct() {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        Locale locale = languageCode == null ? CommonConstants.ENGLISH : new Locale(languageCode);
+        Locale locale = new Locale(languageCode);
         TableViewUtils.setColumnValue(colCode, ProductVM::getCode);
         TableViewUtils.setColumnValue(colName, ProductVM::getName);
         TableViewUtils.setColumnValue(colCategory, ProductVM::getCategoryName);

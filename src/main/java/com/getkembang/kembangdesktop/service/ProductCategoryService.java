@@ -30,8 +30,8 @@ public class ProductCategoryService extends BaseService {
 
     @Cacheable(CacheName.Keys.PRODUCT_CATEGORIES_BY_KEYWORD)
     public List<ProductCategoryVM> searchProductCategoryByKeyword(String keyword) {
-        String languageId = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_ID);
-        List<ProductCategory> categories = productCategoryRepository.filter(keyword, Long.valueOf(languageId));
+        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
+        List<ProductCategory> categories = productCategoryRepository.filter(keyword, languageCode);
         return convertList(categories, ProductCategoryVM.class);
     }
 

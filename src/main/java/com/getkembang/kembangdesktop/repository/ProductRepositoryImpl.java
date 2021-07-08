@@ -29,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepository {
 
     @Override
-    public List<ProductVM> filter(ProductFilterVM filter, Long languageId) {
+    public List<ProductVM> filter(ProductFilterVM filter, String languageCode) {
         String name = filter.getName();
         String code = filter.getCode();
         String barcode = filter.getBarcode();
@@ -49,10 +49,10 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         sb.append(" SELECT p.*, pc.id as category_id, pc.code as category_code, pc.name as category_name ");
         sb.append(" FROM ").append(Product.TABLE_NAME).append(" p ");
         sb.append(" LEFT JOIN ").append(ProductCategory.TABLE_NAME).append(" pc ")
-                .append(" ON pc.code = p.category_code AND pc.deleted_at IS NULL AND pc.language_id = ? ");
+                .append(" ON pc.code = p.category_code AND pc.deleted_at IS NULL AND pc.language_code = ? ");
         sb.append(" WHERE p.deleted_at IS NULL ");
         List<Object> params = new ArrayList<>();
-        params.add(languageId);
+        params.add(languageCode);
         if (StringUtils.isNotBlank(name)) {
             sb.append(" AND LOWER(p.name) LIKE ? ");
             params.add(StringUtils.join("%", name.toLowerCase(), "%"));

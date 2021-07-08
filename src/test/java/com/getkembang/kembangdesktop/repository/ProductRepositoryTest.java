@@ -46,7 +46,7 @@ class ProductRepositoryTest extends BaseRepositoryTest {
         filter.setRackId(2l);
         filter.setExpiredDateMin(DateUtils.parseDate("2021-01-01", DATE_PATTERN));
         filter.setExpiredDateMax(DateUtils.parseDate("2022-12-31", DATE_PATTERN));
-        List<ProductVM> products = productRepository.filter(filter, 2l);
+        List<ProductVM> products = productRepository.filter(filter, "id");
         assertThat(products, hasSize(1));
         assertThat(products.get(0), allOf(
             hasProperty("code", is("P00003")),
@@ -65,7 +65,7 @@ class ProductRepositoryTest extends BaseRepositoryTest {
                 hasProperty("date", is(1))))));
 
         filter = new ProductFilterVM();
-        products = productRepository.filter(filter, 1l);
+        products = productRepository.filter(filter, "en");
         assertThat(products, hasSize(3));
     }
 

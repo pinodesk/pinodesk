@@ -4,8 +4,8 @@ import java.util.Locale;
 
 public interface CommonConstants {
     String APP_TITLE = "Kembang";
-    Locale BAHASA = new Locale("ind");
-    Locale ENGLISH = new Locale("eng");
+    String LANGUAGE_CODE_ENGLISH = "en";
+    String LANGUAGE_CODE_INDONESIA = "id";
     String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
     String DATE_PATTERN = "yyyy-MM-dd";
     String YES = "yes";

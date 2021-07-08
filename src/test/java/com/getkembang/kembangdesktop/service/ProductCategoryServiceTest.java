@@ -44,7 +44,7 @@ class ProductCategoryServiceTest extends BaseServiceTest {
         productCategory = new ProductCategory();
         productCategory.setId(1L);
         productCategory.setCode("0001");
-        productCategory.setLanguageId(1L);
+        productCategory.setLanguageCode("en");
         productCategory.setName("Category 0001");
     }
 
@@ -56,11 +56,11 @@ class ProductCategoryServiceTest extends BaseServiceTest {
     @Test
     void testSearchProductCategoryByKeyword_shouldSucceed() {
         when(configurationService.getConfiguration(anyString())).thenReturn("1");
-        when(productCategoryRepository.filter(anyString(), anyLong())).thenReturn(new ArrayList<>());
+        when(productCategoryRepository.filter(anyString(), anyString())).thenReturn(new ArrayList<>());
         List<ProductCategoryVM> results = productCategoryService.searchProductCategoryByKeyword("keyword");
         assertNotNull(results);
         assertEquals(0, results.size());
-        verify(productCategoryRepository).filter(anyString(), anyLong());
+        verify(productCategoryRepository).filter(anyString(), anyString());
     }
 
     @Test
