@@ -23,7 +23,13 @@ public enum Page implements IPage {
 
     MASTER_SUPPLIER_CONTACT_ADD("master/supplier/add-contact"),
     
-    SETTINGS_CONFIGURATION_MAIN("settings/configuration/main");
+    SETTINGS_CONFIGURATION_MAIN("settings/configuration/main"),
+    
+    TRANSACTION_PURCHASE_MAIN("transaction/purchase/main"), 
+    TRANSACTION_PURCHASE_FILTER("transaction/purchase/filter"), 
+    TRANSACTION_PURCHASE_ADD("transaction/purchase/add"), 
+    TRANSACTION_PURCHASE_EDIT("transaction/purchase/edit"),
+    ;
     
     private final String templateName;
     

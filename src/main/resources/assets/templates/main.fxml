@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="640.0" minWidth="1024.0" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.MainController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="640.0" minWidth="1024.0" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.getkembang.kembangdesktop.controller.MainController">
    <children>
       <AnchorPane layoutY="61.0" prefHeight="70.0" prefWidth="250.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -97,21 +97,12 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuStockOpname" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.stockopname" textFill="WHITE">
-                           <styleClass>
-                              <String fx:value="btn-primary" />
-                              <String fx:value="align-left" />
-                           </styleClass>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </Button>
                         <Label fx:id="lblMenuTransaction" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167;" styleClass="bg-secondary" text="%lbl.menu.transaction" textFill="WHITE">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Label>
-                        <Button fx:id="btnMenuSales" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.sales" textFill="WHITE">
+                        <Button fx:id="btnMenuPurchases" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuPurchases" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.purchases" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
@@ -120,7 +111,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuPurchases" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.purchases" textFill="WHITE">
+                        <Button fx:id="btnMenuSales" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.sales" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
@@ -139,15 +130,6 @@
                            </padding>
                         </Button>
                         <Button fx:id="btnMenuReceivables" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.receivables" textFill="WHITE">
-                           <styleClass>
-                              <String fx:value="btn-primary" />
-                              <String fx:value="align-left" />
-                           </styleClass>
-                           <padding>
-                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                           </padding>
-                        </Button>
-                        <Button fx:id="btnMenuCashFlow" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn.menu.cashflow" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
