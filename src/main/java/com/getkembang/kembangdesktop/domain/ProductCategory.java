@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ProductCategory extends DataModel {
 
-    public static final String TABLE_NAME = "t_product_category";
+    public static final String TABLE_NAME = "product_category";
 
     public static final String C_PARENT_CATEGORY_ID = "parent_category_id";
     public static final String C_LANGUAGE_CODE = "language_code";

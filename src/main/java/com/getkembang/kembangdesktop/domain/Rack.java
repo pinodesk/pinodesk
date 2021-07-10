@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class Rack extends DataModel {
 
-    public static final String TABLE_NAME = "t_rack";
+    public static final String TABLE_NAME = "rack";
 
     public static final String C_CODE = "code";
     public static final String C_NAME = "name";

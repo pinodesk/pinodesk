@@ -13,7 +13,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DataSet("t_product_category.yml")
+@DataSet("product_category.yml")
 class ProductCategoryRepositoryTest extends BaseRepositoryTest {
 
     @Autowired

@@ -14,7 +14,7 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DataSet("t_drug_category.yml")
+@DataSet("drug_category.yml")
 class DrugCategoryRepositoryTest extends BaseRepositoryTest {
 
     @Autowired

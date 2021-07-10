@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class Unit extends DataModel {
 
-    public static final String TABLE_NAME = "t_unit";
+    public static final String TABLE_NAME = "unit";
 
     public static final String C_NAME = "name";
     public static final String C_LABEL = "label";

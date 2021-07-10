@@ -20,7 +20,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DataSet("t_product.yml")
+@DataSet("product.yml")
 class ProductRepositoryTest extends BaseRepositoryTest {
 
     private static final String DATE_PATTERN = "yyyy-MM-dd";

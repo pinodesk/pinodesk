@@ -1,7 +1,5 @@
 package com.getkembang.kembangdesktop.constant;
 
-import java.util.Locale;
-
 public interface CommonConstants {
     String APP_TITLE = "Kembang";
     String LANGUAGE_CODE_ENGLISH = "en";

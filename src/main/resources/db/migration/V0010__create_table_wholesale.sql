@@ -1,4 +1,4 @@
-create table if not exists t_wholesale (
+create table if not exists wholesale (
     id bigint not null auto_increment,
     created_at timestamp not null default current_timestamp,
     updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -7,5 +7,8 @@ create table if not exists t_wholesale (
     purchase_quantity integer not null,
     selling_price decimal(12,2) not null,
     primary key (id),
-	constraint fk_t_wholesale__product_id foreign key (product_id) references t_product(id)
+	index idx_wholesale__deleted_at (deleted_at),
+	index idx_wholesale__product_id (product_id),
+	index idx_wholesale__product_id__deleted_at (product_id, deleted_at),
+	constraint fk_wholesale__product_id foreign key (product_id) references product(id)
 );

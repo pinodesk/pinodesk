@@ -1,14 +1,15 @@
-create table if not exists t_unit (
+create table if not exists unit (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
 	label varchar(32) not null,
 	name varchar(128) not null,
-	primary key (id)
+	primary key (id),
+	index idx_unit__deleted_at (deleted_at)
 );
 
-insert into t_unit (id, created_at, updated_at, deleted_at, label, name) values
+insert into unit (id, created_at, updated_at, deleted_at, label, name) values
 (null, current_timestamp, current_timestamp, NULL, 'PCS', 'Pieces'),
 (null, current_timestamp, current_timestamp, NULL, 'BTL', 'Bottle'),
 (null, current_timestamp, current_timestamp, NULL, 'TABLET', 'Tablet'),

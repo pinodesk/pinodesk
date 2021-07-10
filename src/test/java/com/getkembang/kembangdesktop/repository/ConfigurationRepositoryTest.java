@@ -16,7 +16,7 @@ import com.gitlab.muhammadkholidb.sequel.sql.Where;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DataSet("t_configuration.yml")
+@DataSet("configuration.yml")
 class ConfigurationRepositoryTest extends BaseRepositoryTest {
 
     @Autowired

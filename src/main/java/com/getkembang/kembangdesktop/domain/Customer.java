@@ -10,7 +10,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class Customer extends DataModel {
 
-    public static final String TABLE_NAME = "t_customer";
+    public static final String TABLE_NAME = "customer";
 
     public static final String C_CODE = "code";
     public static final String C_NAME = "name";

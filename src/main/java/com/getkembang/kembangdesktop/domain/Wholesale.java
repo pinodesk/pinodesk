@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class Wholesale extends DataModel {
 
-    public static final String TABLE_NAME = "t_wholesale";
+    public static final String TABLE_NAME = "wholesale";
 
     public static final String C_PRODUCT_ID = "product_id";
     public static final String C_PURCHASE_QUANTITY = "purchase_quantity";

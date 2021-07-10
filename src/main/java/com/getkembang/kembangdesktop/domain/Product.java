@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class Product extends DataModel {
 
-    public static final String TABLE_NAME = "t_product";
+    public static final String TABLE_NAME = "product";
 
     public static final String C_CODE = "code";
     public static final String C_BARCODE = "barcode";

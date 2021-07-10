@@ -1,4 +1,4 @@
-create table if not exists t_product_category (
+create table if not exists product_category (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -9,11 +9,14 @@ create table if not exists t_product_category (
 	name varchar(256) not null,
 	description varchar(512),
 	primary key (id),
-	index idx_t_product_category__code (code),
-	index idx_t_product_category__language_code__code (language_code, code)
+	index idx_product_category__code (code),
+	index idx_product_category__deleted_at (deleted_at),
+	index idx_product_category__code__deleted_at (code, deleted_at),
+	index idx_product_category__language_code__code (language_code, code),
+	index idx_product_category__language_code__code__deleted_at (language_code, code, deleted_at)
 );
 
-insert into t_product_category (id, created_at, updated_at, deleted_at, parent_category_id, language_code, code, name, description) values
+insert into product_category (id, created_at, updated_at, deleted_at, parent_category_id, language_code, code, name, description) values
 (100000001, current_timestamp, current_timestamp, NULL, NULL, 'en', '000000001', 'Animals & Pet Supplies', NULL),
 (100000002, current_timestamp, current_timestamp, NULL, 100000001, 'en', '000000002', 'Pet Supplies', NULL),
 (100000003, current_timestamp, current_timestamp, NULL, 100000002, 'en', '000000003', 'Bird Supplies', NULL),
@@ -11024,6 +11027,6 @@ insert into t_product_category (id, created_at, updated_at, deleted_at, parent_c
 (200505831, current_timestamp, current_timestamp, NULL, 200002174, 'id', '000505831', 'Pisau Pemotong & Pengikis', NULL),
 (200505832, current_timestamp, current_timestamp, NULL, 200004171, 'id', '000505832', 'Perlengkapan Kain Masak', NULL);
 
-alter table t_product_category
-add constraint fk_t_product_category__parent_category_id 
-foreign key (parent_category_id) references t_product_category(id);
+alter table product_category
+add constraint fk_product_category__parent_category_id 
+foreign key (parent_category_id) references product_category(id);

@@ -1,4 +1,4 @@
-create table if not exists t_product (
+create table if not exists product (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -19,15 +19,16 @@ create table if not exists t_product (
 	rack_name varchar(256),
 	expired_date date,
 	primary key (id),
-	constraint fk_t_product__unit_id foreign key (unit_id) references t_unit(id),
-	constraint fk_t_product__rack_id foreign key (rack_id) references t_rack(id),
-	index idx_t_product__code (code),
-	index idx_t_product__barcode (barcode),
-	index idx_t_product__category_code (category_code),
-	index idx_t_product__id__unit_id (id, unit_id)
+	constraint fk_product__unit_id foreign key (unit_id) references unit(id),
+	constraint fk_product__rack_id foreign key (rack_id) references rack(id),
+	index idx_product__deleted_at (deleted_at),
+	index idx_product__code (code),
+	index idx_product__barcode (barcode),
+	index idx_product__category_code (category_code),
+	index idx_product__id__unit_id (id, unit_id)
 );
 
-insert into t_product (id, created_at, updated_at, deleted_at, code, name, description, quantity, unit_id, unit_label, category_code, purchase_price, selling_price, rack_id, rack_code, rack_name, expired_date) values
+insert into product (id, created_at, updated_at, deleted_at, code, name, description, quantity, unit_id, unit_label, category_code, purchase_price, selling_price, rack_id, rack_code, rack_name, expired_date) values
 (null, current_timestamp, current_timestamp, NULL, '8999909085114', 'SAMPOERNA KRETEK 12', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL),
 (null, current_timestamp, current_timestamp, NULL, '8999909028234', 'DJI SAM SOE KRETEK 12', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL),
 (null, current_timestamp, current_timestamp, NULL, '8999909096004', 'SAMPOERNA MILD FILTER 16', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL),
@@ -769,4 +770,4 @@ insert into t_product (id, created_at, updated_at, deleted_at, code, name, descr
 (null, current_timestamp, current_timestamp, NULL, '8992727003087', 'LAURIER RELAX NIGHT 35CM 6’S', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL),
 (null, current_timestamp, current_timestamp, NULL, '8992727000048', 'LAURIER SPR MXI NONWING 8’S', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL);
 
-update t_product set barcode = code;
+update product set barcode = code;

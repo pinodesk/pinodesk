@@ -1,4 +1,4 @@
-create table if not exists t_customer (
+create table if not exists customer (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -8,10 +8,13 @@ create table if not exists t_customer (
 	phone varchar(16),
 	email varchar(256),
 	address varchar(512),
-	primary key (id)
+	primary key (id),
+	index idx_customer__deleted_at (deleted_at),
+	index idx_customer__code (code),
+	index idx_customer__code__deleted_at (code, deleted_at)
 );
 
-create table if not exists t_configuration (
+create table if not exists configuration (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -20,10 +23,12 @@ create table if not exists t_configuration (
 	value varchar(1024) not null,
 	description varchar(512),
 	primary key (id),
-	index idx_t_configuration__code (code)
+	index idx_configuration__code (code),
+	index idx_configuration__deleted_at (deleted_at),
+	index idx_configuration__code__deleted_at (code, deleted_at)
 );
 
-create table if not exists t_drug_category_base (
+create table if not exists drug_category_base (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -32,10 +37,12 @@ create table if not exists t_drug_category_base (
 	name varchar(256) not null,
 	description varchar(512),
 	primary key (id),
-	index idx_t_drug_category_base__code (code)
+	index idx_drug_category_base__code (code),
+	index idx_drug_category_base__deleted_at (deleted_at),
+	index idx_drug_category_base__code__deleted_at (code, deleted_at)
 );
 
-create table if not exists t_drug_category (
+create table if not exists drug_category (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -45,11 +52,13 @@ create table if not exists t_drug_category (
 	name varchar(256) not null,
 	description varchar(512),
 	primary key (id),
-	index idx_t_drug_category__code (code),
-	constraint fk_t_drug_category__drug_category_base_id foreign key (drug_category_base_id) references t_drug_category_base(id)
+	index idx_drug_category__code (code),
+	index idx_drug_category__deleted_at (deleted_at),
+	index idx_drug_category__code__deleted_at (code, deleted_at),
+	constraint fk_drug_category__drug_category_base_id foreign key (drug_category_base_id) references drug_category_base(id)
 );
 
-create table if not exists t_product_category (
+create table if not exists product_category (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -60,21 +69,25 @@ create table if not exists t_product_category (
 	name varchar(256) not null,
 	description varchar(512),
 	primary key (id),
-	index idx_t_product_category__code (code),
-	index idx_t_product_category__language_code__code (language_code, code)
+	index idx_product_category__code (code),
+	index idx_product_category__deleted_at (deleted_at),
+	index idx_product_category__code__deleted_at (code, deleted_at),
+	index idx_product_category__language_code__code (language_code, code),
+	index idx_product_category__language_code__code__deleted_at (language_code, code, deleted_at)
 );
 
-create table if not exists t_unit (
+create table if not exists unit (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
 	label varchar(32) not null,
 	name varchar(128) not null,
-	primary key (id)
+	primary key (id),
+	index idx_unit__deleted_at (deleted_at)
 );
 
-create table if not exists t_rack (
+create table if not exists rack (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -82,10 +95,11 @@ create table if not exists t_rack (
 	code varchar(64) not null,
 	name varchar(256) not null,
 	description varchar(512),
-	primary key (id)
+	primary key (id),
+	index idx_rack__deleted_at (deleted_at)
 );
 
-create table if not exists t_product (
+create table if not exists product (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -106,10 +120,11 @@ create table if not exists t_product (
 	rack_name varchar(256),
 	expired_date date,
 	primary key (id),
-	constraint fk_t_product__unit_id foreign key (unit_id) references t_unit(id),
-	constraint fk_t_product__rack_id foreign key (rack_id) references t_rack(id),
-	index idx_t_product__code (code),
-	index idx_t_product__barcode (barcode),
-	index idx_t_product__category_code (category_code),
-	index idx_t_product__id__unit_id (id, unit_id)
+	constraint fk_product__unit_id foreign key (unit_id) references unit(id),
+	constraint fk_product__rack_id foreign key (rack_id) references rack(id),
+	index idx_product__deleted_at (deleted_at),
+	index idx_product__code (code),
+	index idx_product__barcode (barcode),
+	index idx_product__category_code (category_code),
+	index idx_product__id__unit_id (id, unit_id)
 );

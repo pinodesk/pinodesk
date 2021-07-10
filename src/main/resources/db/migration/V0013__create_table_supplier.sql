@@ -1,4 +1,4 @@
-create table if not exists t_supplier (
+create table if not exists supplier (
 	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
@@ -9,5 +9,8 @@ create table if not exists t_supplier (
 	email varchar(256),
 	website varchar(256),
 	address varchar(512),
-	primary key (id)
+	primary key (id),
+	index idx_supplier__deleted_at (deleted_at),
+	index idx_supplier__code (code),
+	index idx_supplier__code__deleted_at (code, deleted_at)
 );

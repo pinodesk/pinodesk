@@ -1,11 +1,11 @@
-t_unit:
+unit:
   - id: 1
     created_at: 2021-04-01 20:00:00
     updated_at: 2021-04-01 20:00:00
     label: PCS
     name: Pieces
 
-t_rack:
+rack:
   - id: 1
     created_at: 2021-04-01 20:00:00
     updated_at: 2021-04-01 20:00:00
@@ -19,7 +19,7 @@ t_rack:
     name: Rak Makanan Ringan
     description: 
 
-t_product_category:
+product_category:
   - id: 1000000001
     created_at: 2021-04-01 20:00:00
     updated_at: 2021-04-01 20:00:00
@@ -37,7 +37,7 @@ t_product_category:
     language_code: id
     parent_category_id: 
 
-t_product:
+product:
   - id: 1
     created_at: 2021-04-01 20:00:00
     updated_at: 2021-04-01 20:00:00
