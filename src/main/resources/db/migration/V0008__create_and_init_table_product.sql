@@ -770,4 +770,4 @@ insert into product (id, created_at, updated_at, deleted_at, code, name, descrip
 (null, current_timestamp, current_timestamp, NULL, '8992727003087', 'LAURIER RELAX NIGHT 35CM 6’S', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL),
 (null, current_timestamp, current_timestamp, NULL, '8992727000048', 'LAURIER SPR MXI NONWING 8’S', NULL, 0, 1, 'PCS', '', 0, 0, NULL, NULL, NULL, NULL);
 
-update product set barcode = code;
+update product set barcode = code, quantity = null, purchase_price = null, selling_price = null;
