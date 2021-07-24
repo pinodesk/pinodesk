@@ -5,9 +5,10 @@ import static org.apache.commons.lang3.math.NumberUtils.toScaledBigDecimal;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
@@ -45,7 +46,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
@@ -250,15 +250,15 @@ public class ProductEditController extends CommonDataSaveController {
         tfCode.setText(currentProduct.getCode());
         tfBarcode.setText(currentProduct.getBarcode());
         tfDescription.setText(currentProduct.getDescription());
-        tfQuantity.setText(currentProduct.getQuantity().toString());
-        tfPurchasePrice.setText(currentProduct.getPurchasePrice().setScale(0).toString());
-        tfSellingPrice.setText(currentProduct.getSellingPrice().setScale(0).toString());
+        tfQuantity.setText(toStringOrNull(currentProduct.getQuantity()));
+        tfPurchasePrice.setText(toStringOrNull(currentProduct.getPurchasePrice()));
+        tfSellingPrice.setText(toStringOrNull(currentProduct.getSellingPrice()));
         chkIncludesVat.setText(
                 chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
         chkIncludesVat.setSelected(CommonConstants.YES.equals(currentProduct.getVatIncluded()));
-        Date expiredDate = currentProduct.getExpiredDate();
+        LocalDate expiredDate = currentProduct.getExpiredDate();
         tfExpiredDate.setPlainText(
-                expiredDate == null ? null : DateFormatUtils.format(expiredDate, CommonConstants.DATE_PATTERN));
+                expiredDate == null ? null : expiredDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_PATTERN)));
         ComboBoxUtils.select(cbCategory,
                 () -> productCategoryService.getProductCategoryById(currentProduct.getCategoryId()));
         ComboBoxUtils.select(cbUnit, () -> unitService.getUnitById(currentProduct.getUnitId()));
@@ -390,14 +390,14 @@ public class ProductEditController extends CommonDataSaveController {
         productEdit.setCode(tfCode.getText());
         productEdit.setBarcode(tfBarcode.getText());
         productEdit.setDescription(tfDescription.getText());
-        productEdit.setQuantity(toInt(tfQuantity.getText()));
+        productEdit.setQuantity(tfQuantity.getText() == null ? null : toInt(tfQuantity.getText()));
         productEdit.setPurchasePrice(toScaledBigDecimal(tfPurchasePrice.getText()));
         productEdit.setSellingPrice(toScaledBigDecimal(tfSellingPrice.getText()));
         productEdit.setVatIncluded(chkIncludesVat.isSelected() ? CommonConstants.YES : CommonConstants.NO);
         productEdit.setUnit(cbUnit.getSelectionModel().getSelectedItem());
         productEdit.setProductCategory(cbCategory.getSelectionModel().getSelectedItem());
         String expiredDate = tfExpiredDate.getTextMasked();
-        productEdit.setExpiredDate(parseDateQuietly(expiredDate, CommonConstants.DATE_PATTERN));
+        productEdit.setExpiredDate(parseLocalDateQuietly(expiredDate, CommonConstants.DATE_PATTERN));
         productEdit.setRack(cbRack.getSelectionModel().getSelectedItem());
         if (ComboBoxUtils.hasItemSelected(cbDrugCategory)) {
             DrugCategoryVM drugCategory = ComboBoxUtils.getSelectedItem(cbDrugCategory);

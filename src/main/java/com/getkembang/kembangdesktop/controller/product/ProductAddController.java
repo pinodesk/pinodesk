@@ -216,7 +216,7 @@ public class ProductAddController extends CommonDataSaveController {
         productAdd.setUnit(cbUnit.getSelectionModel().getSelectedItem());
         productAdd.setProductCategory(cbCategory.getSelectionModel().getSelectedItem());
         String expiredDate = tfExpiredDate.getTextMasked();
-        productAdd.setExpiredDate(parseDateQuietly(expiredDate, CommonConstants.DATE_PATTERN));
+        productAdd.setExpiredDate(parseLocalDateQuietly(expiredDate, CommonConstants.DATE_PATTERN));
         productAdd.setRack(cbRack.getSelectionModel().getSelectedItem());
         if (ComboBoxUtils.hasItemSelected(cbDrugCategory)) {
             DrugCategoryVM drugCategory = ComboBoxUtils.getSelectedItem(cbDrugCategory);

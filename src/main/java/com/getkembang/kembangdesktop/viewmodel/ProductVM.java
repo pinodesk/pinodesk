@@ -1,16 +1,17 @@
 package com.getkembang.kembangdesktop.viewmodel;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
 @Data
 public class ProductVM {
     private Long id;
-    private Date createdAt;
-    private Date updatedAt;
-    private Date deletedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
     private String code;
     private String barcode;
     private String name;
@@ -27,5 +28,5 @@ public class ProductVM {
     private Long rackId;
     private String rackCode;
     private String rackName;
-    private Date expiredDate;
+    private LocalDate expiredDate;
 }

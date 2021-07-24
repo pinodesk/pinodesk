@@ -1,6 +1,6 @@
 package com.getkembang.kembangdesktop.controller.supplier;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
@@ -10,7 +10,7 @@ import com.getkembang.kembangdesktop.controller.BaseController;
 import com.getkembang.kembangdesktop.service.SupplierService;
 import com.getkembang.kembangdesktop.viewmodel.SupplierFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.SupplierVM;
-import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
@@ -64,10 +64,10 @@ public class SupplierMainController extends BaseController {
     private TableColumn<SupplierVM, String> colWebsite;
 
     @FXML
-    private TableColumn<SupplierVM, Date> colCreatedAt;
+    private TableColumn<SupplierVM, LocalDateTime> colCreatedAt;
 
     @FXML
-    private TableColumn<SupplierVM, Date> colUpdatedAt;
+    private TableColumn<SupplierVM, LocalDateTime> colUpdatedAt;
 
     @FXML
     private Label lblRows;
@@ -120,9 +120,9 @@ public class SupplierMainController extends BaseController {
         TableViewUtils.setColumnValue(colEmail, SupplierVM::getEmail);
         TableViewUtils.setColumnValue(colAddress, SupplierVM::getAddress);
         TableViewUtils.setColumnValue(colWebsite, SupplierVM::getWebsite);
-        TableViewUtils.initTableColumn(colCreatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
+        TableViewUtils.initTableColumn(colCreatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 SupplierVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
+        TableViewUtils.initTableColumn(colUpdatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 SupplierVM::getUpdatedAt);
         tableSupplier.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableSupplier.setOnMouseClicked(event -> {

@@ -1,15 +1,15 @@
 package com.getkembang.kembangdesktop.viewmodel;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
 @Data
 public class SupplierContactVM {
     private Long id;
-    private Date createdAt;
-    private Date updatedAt;
-    private Date deletedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
     private Long supplierId;
     private String name;
     private String phone;

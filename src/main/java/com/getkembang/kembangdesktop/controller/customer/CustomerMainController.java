@@ -1,6 +1,6 @@
 package com.getkembang.kembangdesktop.controller.customer;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
@@ -10,7 +10,7 @@ import com.getkembang.kembangdesktop.controller.BaseController;
 import com.getkembang.kembangdesktop.service.CustomerService;
 import com.getkembang.kembangdesktop.viewmodel.CustomerFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.CustomerVM;
-import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
@@ -61,10 +61,10 @@ public class CustomerMainController extends BaseController {
     private TableColumn<CustomerVM, String> colAddress;
 
     @FXML
-    private TableColumn<CustomerVM, Date> colCreatedAt;
+    private TableColumn<CustomerVM, LocalDateTime> colCreatedAt;
 
     @FXML
-    private TableColumn<CustomerVM, Date> colUpdatedAt;
+    private TableColumn<CustomerVM, LocalDateTime> colUpdatedAt;
 
     @FXML
     private Label lblRows;
@@ -116,9 +116,9 @@ public class CustomerMainController extends BaseController {
         TableViewUtils.setColumnValue(colPhone, CustomerVM::getPhone);
         TableViewUtils.setColumnValue(colEmail, CustomerVM::getEmail);
         TableViewUtils.setColumnValue(colAddress, CustomerVM::getAddress);
-        TableViewUtils.initTableColumn(colCreatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
+        TableViewUtils.initTableColumn(colCreatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 CustomerVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
+        TableViewUtils.initTableColumn(colUpdatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 CustomerVM::getUpdatedAt);
         tableCustomer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableCustomer.setOnMouseClicked(event -> {

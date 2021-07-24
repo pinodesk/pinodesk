@@ -1,7 +1,8 @@
 package com.getkembang.kembangdesktop.controller.product;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.StringConstants;
@@ -26,7 +27,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.fxml.FXML;
@@ -98,8 +98,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
             Long categoryId = currentFilter.getCategoryId();
             Long unitId = currentFilter.getUnitId();
             Long rackId = currentFilter.getRackId();
-            Date expiredDateMin = currentFilter.getExpiredDateMin();
-            Date expiredDateMax = currentFilter.getExpiredDateMax();
+            LocalDate expiredDateMin = currentFilter.getExpiredDateMin();
+            LocalDate expiredDateMax = currentFilter.getExpiredDateMax();
             String includesVat = currentFilter.getIncludesVat();
             tfName.setText(currentFilter.getName());
             tfCode.setText(currentFilter.getCode());
@@ -110,10 +110,11 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
             tfPurchasePriceMin.setText(toStringOrNull(purchasePriceMin));
             tfSellingPriceMax.setText(toStringOrNull(sellingPriceMax));
             tfSellingPriceMin.setText(toStringOrNull(sellingPriceMin));
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_PATTERN);
             tfExpiredDateMax.setPlainText(expiredDateMax == null ? null
-                    : DateFormatUtils.format(expiredDateMax, CommonConstants.DATE_PATTERN));
+                    : expiredDateMax.format(dateFormatter));
             tfExpiredDateMin.setPlainText(expiredDateMin == null ? null
-                    : DateFormatUtils.format(expiredDateMin, CommonConstants.DATE_PATTERN));
+                    : expiredDateMin.format(dateFormatter));
             if (categoryId != null) {
                 ComboBoxUtils.select(cbCategory, () -> productCategoryService.getProductCategoryById(categoryId));
             }
@@ -167,10 +168,10 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
             filter.setQuantityMin(NumberUtils.toInt(quantityMin));
         }
         if (StringUtils.isNotBlank(expiredDateMin)) {
-            filter.setExpiredDateMin(parseDateQuietly(expiredDateMin, CommonConstants.DATE_PATTERN));
+            filter.setExpiredDateMin(parseLocalDateQuietly(expiredDateMin, CommonConstants.DATE_PATTERN));
         }
         if (StringUtils.isNotBlank(expiredDateMax)) {
-            filter.setExpiredDateMax(parseDateQuietly(expiredDateMax, CommonConstants.DATE_PATTERN));
+            filter.setExpiredDateMax(parseLocalDateQuietly(expiredDateMax, CommonConstants.DATE_PATTERN));
         }
         if (selectedCategory != null) {
             filter.setCategoryId(selectedCategory.getId());

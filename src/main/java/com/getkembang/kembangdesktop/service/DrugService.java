@@ -15,7 +15,8 @@ public class DrugService extends BaseService {
     private DrugRepository drugRepository;
 
     public DrugVM getDrugByProductId(Long productId) {
-        return convertOptional(drugRepository.readOne(new Where().equals(Drug.C_PRODUCT_ID, productId)), DrugVM.class);
+        return objectConverter.convertOptional(drugRepository.readOne(new Where().equals(Drug.C_PRODUCT_ID, productId)),
+                DrugVM.class);
     }
 
 }

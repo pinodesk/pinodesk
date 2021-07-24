@@ -78,13 +78,13 @@ public class ProductService extends BaseService {
         DrugVM drug = productEdit.getDrug();
         if (drug != null) {
             drugRepository.delete(new Where().equals(Drug.C_PRODUCT_ID, productEdit.getId()), true);
-            drugRepository.create(convertObject(drug, Drug.class));
+            drugRepository.create(objectConverter.convertObject(drug, Drug.class));
         }
 
         List<WholesaleVM> wholesales = productEdit.getWholesales();
         if (ObjectUtils.isNotEmpty(wholesales)) {
             wholesaleRepository.delete(new Where().equals(Wholesale.C_PRODUCT_ID, productEdit.getId()), true);
-            wholesales.forEach(wholesale -> wholesaleRepository.create(convertObject(wholesale, Wholesale.class)));
+            wholesales.forEach(wholesale -> wholesaleRepository.create(objectConverter.convertObject(wholesale, Wholesale.class)));
         }
 
         return countUpdated > 0;
@@ -120,14 +120,14 @@ public class ProductService extends BaseService {
         DrugVM drug = productAdd.getDrug();
         if (drug != null) {
             drug.setProductId(productId);
-            drugRepository.create(convertObject(drug, Drug.class));
+            drugRepository.create(objectConverter.convertObject(drug, Drug.class));
         }
 
         List<WholesaleVM> wholesales = productAdd.getWholesales();
         if (ObjectUtils.isNotEmpty(wholesales)) {
             wholesales.forEach(wholesale -> {
                 wholesale.setProductId(productId);
-                wholesaleRepository.create(convertObject(wholesale, Wholesale.class));
+                wholesaleRepository.create(objectConverter.convertObject(wholesale, Wholesale.class));
             });
         }
 

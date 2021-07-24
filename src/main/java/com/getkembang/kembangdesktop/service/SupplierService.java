@@ -37,7 +37,7 @@ public class SupplierService extends BaseService {
 
     @Cacheable(CacheName.Keys.SUPPLIERS_BY_FILTER)
     public List<SupplierVM> searchSuppliers(SupplierFilterVM filter) {
-        return convertList(supplierRepository.filter(filter), SupplierVM.class);
+        return objectConverter.convertList(supplierRepository.filter(filter), SupplierVM.class);
     }
 
     @CacheEvict(value = CacheName.Keys.SUPPLIERS_BY_FILTER, allEntries = true)
@@ -116,7 +116,7 @@ public class SupplierService extends BaseService {
     }
 
     public List<SupplierContactAddVM> getSupplierContacts(Long supplierId) {
-        return convertList(
+        return objectConverter.convertList(
                 supplierContactRepository.read(new Where().equals(SupplierContact.C_SUPPLIER_ID, supplierId)),
                 SupplierContactAddVM.class);
     }

@@ -1,9 +1,9 @@
 package com.getkembang.kembangdesktop.repository;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import com.getkembang.kembangdesktop.domain.Product;
@@ -41,8 +41,8 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         BigDecimal purchasePriceMin = filter.getPurchasePriceMin();
         BigDecimal sellingPriceMax = filter.getSellingPriceMax();
         BigDecimal sellingPriceMin = filter.getSellingPriceMin();
-        Date expiredDateMax = filter.getExpiredDateMax();
-        Date expiredDateMin = filter.getExpiredDateMin();
+        LocalDate expiredDateMax = filter.getExpiredDateMax();
+        LocalDate expiredDateMin = filter.getExpiredDateMin();
         Long rackId = filter.getRackId();
         String includesVat = filter.getIncludesVat();
         StringBuilder sb = new StringBuilder();

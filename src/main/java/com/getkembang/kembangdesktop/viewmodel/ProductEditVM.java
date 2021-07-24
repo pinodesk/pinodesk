@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.viewmodel;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import lombok.Data;
@@ -20,7 +20,7 @@ public class ProductEditVM {
     private String vatIncluded;
     private UnitVM unit;
     private RackVM rack;
-    private Date expiredDate;
+    private LocalDate expiredDate;
     private DrugVM drug;
     private List<WholesaleVM> wholesales;
 }

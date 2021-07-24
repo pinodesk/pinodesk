@@ -5,6 +5,9 @@ import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +19,6 @@ import com.getkembang.kembangdesktop.constant.CommonConstants;
 import com.getkembang.kembangdesktop.constant.DomainError;
 import com.getkembang.kembangdesktop.constant.StringConstants;
 import com.getkembang.kembangdesktop.exception.DomainException;
-import com.getkembang.kembangdesktop.exception.FXException;
 import com.getkembang.kembangdesktop.utility.SpringUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
@@ -25,6 +27,7 @@ import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.ApplicationContext;
 
@@ -82,7 +85,7 @@ public abstract class BaseController {
     /**
      * Sets data for a page on the topmost order of the data stack.
      * 
-     * @param <T> type of the data.
+     * @param <T>  type of the data.
      * @param data the data for a page.
      */
     protected <T> void setPageData(T data) {
@@ -99,10 +102,6 @@ public abstract class BaseController {
                         handleDomainException((DomainException) rootCause);
                         return;
                     }
-                    if (rootCause instanceof FXException) {
-                        handleFXException((FXException) rootCause);
-                        return;
-                    }
                     log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
                     displayException(rootCause);
                 });
@@ -115,11 +114,6 @@ public abstract class BaseController {
     private void handleDomainException(DomainException e) {
         DomainError err = e.getError();
         displayError(String.format("%s. (%s)", translate(err.messageCode()), err.code()));
-    }
-
-    private void handleFXException(FXException e) {
-        log.error("FXException caught!", e);
-        displayException(e.getCause());
     }
 
     protected String translate(String messageCode) {
@@ -137,14 +131,14 @@ public abstract class BaseController {
 
     private String getAlertHeaderMessageCode(AlertType type) {
         switch (type) {
-        case INFORMATION:
-            return "lbl.information";
-        case ERROR:
-            return "lbl.error";
-        case CONFIRMATION:
-            return "lbl.confirmation";
-        default:
-            return "";
+            case INFORMATION:
+                return "lbl.information";
+            case ERROR:
+                return "lbl.error";
+            case CONFIRMATION:
+                return "lbl.confirmation";
+            default:
+                return "";
         }
     }
 
@@ -167,18 +161,18 @@ public abstract class BaseController {
         dialogPane.getButtonTypes().clear();
         dialogPane.getStylesheets().add(getClass().getResource("/assets/css/kembang-desktop.css").toExternalForm());
         switch (type) {
-        case INFORMATION:
-        case ERROR:
-            dialogPane.getButtonTypes().add(btnTypeOk);
-            dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
-            break;
-        case CONFIRMATION:
-            dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
-            dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
-            dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
-            break;
-        default:
-            break;
+            case INFORMATION:
+            case ERROR:
+                dialogPane.getButtonTypes().add(btnTypeOk);
+                dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
+                break;
+            case CONFIRMATION:
+                dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
+                dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
+                dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
+                break;
+            default:
+                break;
         }
         return new AlertResult(alert.showAndWait());
     }
@@ -258,6 +252,14 @@ public abstract class BaseController {
         }
     }
 
+    protected LocalDate parseLocalDateQuietly(String str, String pattern) {
+        try {
+            return LocalDate.parse(str, DateTimeFormatter.ofPattern(pattern));
+        } catch (DateTimeParseException e) {
+            return null;
+        }
+    }
+
     protected String toStringOrDefault(BigDecimal num, String dflt) {
         return num == null ? dflt : num.setScale(0).toString();
     }
@@ -280,6 +282,18 @@ public abstract class BaseController {
 
     protected String toStringOrEmpty(Integer num) {
         return toStringOrDefault(num, "");
+    }
+
+    protected BigDecimal toBigDecimalOrDefault(String str, BigDecimal dflt) {
+        return str == null ? dflt : NumberUtils.toScaledBigDecimal(str);
+    }
+
+    protected BigDecimal toBigDecimalOrNull(String str) {
+        return toBigDecimalOrDefault(str, null);
+    }
+
+    protected Integer toIntegerOrDefault(String str, Integer dflt) {
+        return str == null ? dflt : NumberUtils.toInt(str);
     }
 
 }

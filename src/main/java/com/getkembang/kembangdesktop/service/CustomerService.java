@@ -29,7 +29,7 @@ public class CustomerService extends BaseService {
 
     @Cacheable(CacheName.Keys.CUSTOMERS_BY_FILTER)
     public List<CustomerVM> searchCustomers(CustomerFilterVM filter) {
-        return convertList(customerRepository.filter(filter), CustomerVM.class);
+        return objectConverter.convertList(customerRepository.filter(filter), CustomerVM.class);
     }
 
     @CacheEvict(value = CacheName.Keys.CUSTOMERS_BY_FILTER, allEntries = true)

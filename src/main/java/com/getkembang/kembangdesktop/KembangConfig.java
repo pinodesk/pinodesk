@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getkembang.kembangdesktop.constant.CacheName;
 import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
+import com.gitlab.muhammadkholidb.toolbox.data.ObjectConverter;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.flywaydb.core.Flyway;
@@ -60,7 +61,13 @@ public class KembangConfig {
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.findAndRegisterModules();
         return objectMapper;
+    }
+
+    @Bean
+    public ObjectConverter objectConverter(ObjectMapper objectMapper) {
+        return new ObjectConverter(objectMapper);
     }
 
     @Bean(initMethod = "migrate")

@@ -18,8 +18,9 @@ public class WholesaleService extends BaseService {
     private WholesaleRepository wholesaleRepository;
 
     public List<WholesaleVM> getWholesalesByProductId(Long productId) {
-        return convertList(wholesaleRepository.read(new Where().equals(Wholesale.C_PRODUCT_ID, productId),
-                new Order().by(Wholesale.C_PURCHASE_QUANTITY)), WholesaleVM.class);
+        return objectConverter
+                .convertList(wholesaleRepository.read(new Where().equals(Wholesale.C_PRODUCT_ID, productId),
+                        new Order().by(Wholesale.C_PURCHASE_QUANTITY)), WholesaleVM.class);
     }
 
 }

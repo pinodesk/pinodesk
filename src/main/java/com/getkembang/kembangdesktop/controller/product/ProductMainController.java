@@ -1,7 +1,8 @@
 package com.getkembang.kembangdesktop.controller.product;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,8 @@ import com.getkembang.kembangdesktop.service.ProductService;
 import com.getkembang.kembangdesktop.viewmodel.ProductFilterVM;
 import com.getkembang.kembangdesktop.viewmodel.ProductVM;
 import com.gitlab.muhammadkholidb.pandora.factory.BooleanImageCellFactory;
-import com.gitlab.muhammadkholidb.pandora.factory.DateCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
@@ -68,16 +70,16 @@ public class ProductMainController extends BaseController {
     private TableColumn<ProductVM, String> colIncludesVat;
 
     @FXML
-    private TableColumn<ProductVM, Date> colExpiredDate;
+    private TableColumn<ProductVM, LocalDate> colExpiredDate;
 
     @FXML
     private TableColumn<ProductVM, String> colRack;
 
     @FXML
-    private TableColumn<ProductVM, Date> colCreatedAt;
+    private TableColumn<ProductVM, LocalDateTime> colCreatedAt;
 
     @FXML
-    private TableColumn<ProductVM, Date> colUpdatedAt;
+    private TableColumn<ProductVM, LocalDateTime> colUpdatedAt;
 
     @FXML
     private Label lblRows;
@@ -160,11 +162,11 @@ public class ProductMainController extends BaseController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colIncludesVat, new BooleanImageCellFactory<>(CommonConstants.YES::equals),
                 ProductVM::getVatIncluded, StyleConstants.ALIGN_CENTER);
-        TableViewUtils.initTableColumn(colExpiredDate, new DateCellFactory<>(CommonConstants.DATE_PATTERN),
-                ProductVM::getExpiredDate);
-        TableViewUtils.initTableColumn(colCreatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
+        TableViewUtils.initTableColumn(colExpiredDate, new LocalDateCellFactory<>(CommonConstants.DATE_PATTERN),
+                ProductVM::getExpiredDate); 
+        TableViewUtils.initTableColumn(colCreatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 ProductVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt, new DateCellFactory<>(CommonConstants.DATETIME_PATTERN),
+        TableViewUtils.initTableColumn(colUpdatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_PATTERN),
                 ProductVM::getUpdatedAt);
         tableProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }

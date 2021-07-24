@@ -1,7 +1,7 @@
 package com.getkembang.kembangdesktop.viewmodel;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.Data;
 
@@ -20,7 +20,7 @@ public class ProductFilterVM {
     private Integer quantityMax;
     private Long rackId;
     private Long unitId;
-    private Date expiredDateMin;
-    private Date expiredDateMax;
+    private LocalDate expiredDateMin;
+    private LocalDate expiredDateMax;
     private String includesVat;
 }

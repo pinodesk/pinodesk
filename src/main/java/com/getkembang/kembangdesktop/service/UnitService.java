@@ -20,16 +20,16 @@ public class UnitService extends BaseService {
 
     @Cacheable(CacheName.Keys.UNITS_ALL)
     public List<UnitVM> getAllUnits() {
-        return convertList(unitRepository.read(), UnitVM.class);
+        return objectConverter.convertList(unitRepository.read(), UnitVM.class);
     }
 
     @Cacheable(CacheName.Keys.UNITS_BY_KEYWORD)
     public List<UnitVM> searchUnitByKeyword(String keyword) {
-        return convertList(unitRepository.filter(keyword, 10), UnitVM.class);
+        return objectConverter.convertList(unitRepository.filter(keyword, 10), UnitVM.class);
     }
 
     public UnitVM getUnitById(Long id) {
-        return convertOptionalOrThrow(unitRepository.readOne(id), UnitVM.class,
+        return objectConverter.convertOptionalOrThrow(unitRepository.readOne(id), UnitVM.class,
                 new DomainException(DomainError.UNIT_NOT_FOUND_BY_ID));
     }
 

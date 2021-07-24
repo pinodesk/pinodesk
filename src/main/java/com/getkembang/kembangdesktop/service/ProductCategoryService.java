@@ -24,7 +24,7 @@ public class ProductCategoryService extends BaseService {
     private ConfigurationService configurationService;
 
     public ProductCategoryVM getProductCategoryById(Long id) {
-        return convertOptionalOrThrow(productCategoryRepository.readOne(id), ProductCategoryVM.class,
+        return objectConverter.convertOptionalOrThrow(productCategoryRepository.readOne(id), ProductCategoryVM.class,
                 new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_ID));
     }
 
@@ -32,7 +32,7 @@ public class ProductCategoryService extends BaseService {
     public List<ProductCategoryVM> searchProductCategoryByKeyword(String keyword) {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
         List<ProductCategory> categories = productCategoryRepository.filter(keyword, languageCode);
-        return convertList(categories, ProductCategoryVM.class);
+        return objectConverter.convertList(categories, ProductCategoryVM.class);
     }
 
 }
