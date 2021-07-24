@@ -8,6 +8,8 @@ import static org.hamcrest.Matchers.is;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import com.getkembang.kembangdesktop.constant.CommonConstants;
@@ -16,7 +18,6 @@ import com.getkembang.kembangdesktop.viewmodel.ProductVM;
 import com.github.database.rider.core.api.dataset.DataSet;
 
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -44,8 +45,9 @@ class ProductRepositoryTest extends BaseRepositoryTest {
         filter.setSellingPriceMax(new BigDecimal(20000));
         filter.setIncludesVat(CommonConstants.NO);
         filter.setRackId(2l);
-        filter.setExpiredDateMin(DateUtils.parseDate("2021-01-01", DATE_PATTERN));
-        filter.setExpiredDateMax(DateUtils.parseDate("2022-12-31", DATE_PATTERN));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
+        filter.setExpiredDateMin(LocalDate.parse("2021-01-01", formatter));
+        filter.setExpiredDateMax(LocalDate.parse("2022-12-31", formatter));
         List<ProductVM> products = productRepository.filter(filter, "id");
         assertThat(products, hasSize(1));
         assertThat(products.get(0), allOf(
