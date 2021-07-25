@@ -1,6 +1,10 @@
 package com.getkembang.kembangdesktop.service;
 
+import static org.mockito.Mockito.spy;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gitlab.muhammadkholidb.toolbox.data.ObjectConverter;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
@@ -13,5 +17,16 @@ import org.mockito.quality.Strictness;
 public abstract class BaseServiceTest {
     
     @Spy
-    protected ObjectMapper objectMapper;
+    protected ObjectMapper objectMapper = createObjectMapper();
+
+    @Spy
+    protected ObjectConverter objectConverter = new ObjectConverter(objectMapper);
+
+    private ObjectMapper createObjectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.findAndRegisterModules();
+        return objectMapper;
+    }
+
 }

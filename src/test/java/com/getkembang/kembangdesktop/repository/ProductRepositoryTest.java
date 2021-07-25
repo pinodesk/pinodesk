@@ -62,9 +62,9 @@ class ProductRepositoryTest extends BaseRepositoryTest {
             hasProperty("vatIncluded", is(CommonConstants.NO)),
             hasProperty("rackId", is(2l)),
             hasProperty("expiredDate", allOf(
-                hasProperty("year", is(2022-1900)),
-                hasProperty("month", is(3)),
-                hasProperty("date", is(1))))));
+                hasProperty("year", is(2022)),
+                hasProperty("monthValue", is(4)),
+                hasProperty("dayOfMonth", is(1))))));
 
         filter = new ProductFilterVM();
         products = productRepository.filter(filter, "en");
