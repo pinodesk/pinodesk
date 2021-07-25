@@ -20,7 +20,7 @@ import javafx.scene.control.ButtonBase;
 import javafx.scene.control.Control;
 import javafx.scene.input.KeyCode;
 
-public abstract class CommonDataSaveController extends CommonParentVBoxController {
+public abstract class CommonDataSaveController extends CommonContentPaneController {
 
     @FXML
     protected Button btnCancel;

@@ -6,13 +6,13 @@ import java.util.List;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public abstract class CommonParentVBoxController extends BaseController {
+public abstract class CommonContentPaneController extends BaseController {
 
     @FXML
-    protected VBox contentPane;
+    protected Pane contentPane;
 
     private List<EventHandler<KeyEvent>> contentPaneKeyPressedHandlers = new ArrayList<>();
 

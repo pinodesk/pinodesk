@@ -7,7 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 
-public abstract class CommonDataFilterController<T> extends CommonParentVBoxController {
+public abstract class CommonDataFilterController<T> extends CommonContentPaneController {
 
     protected T currentFilter;
 
