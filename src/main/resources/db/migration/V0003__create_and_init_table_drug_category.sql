@@ -14,7 +14,7 @@ create table if not exists drug_category (
 	constraint fk_drug_category__drug_category_base_id foreign key (drug_category_base_id) references drug_category_base(id)
 );
 
-insert into public.drug_category (id, created_at, updated_at, deleted_at, drug_category_base_id, code, name, description) values
+insert into drug_category (id, created_at, updated_at, deleted_at, drug_category_base_id, code, name, description) values
 (null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI01', 'Obat Bebas Terbatas', null),
 (null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI02', 'Obat Bebas', null),
 (null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI03', 'Obat Keras', null),
