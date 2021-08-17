@@ -6,25 +6,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.gitlab.muhammadkholidb.sequel.model.DataModel;
+import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
+import com.gitlab.muhammadkholidb.sequel.sql.Where;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Repository;
+
 import tosca.desktop.domain.Product;
 import tosca.desktop.domain.ProductCategory;
 import tosca.desktop.viewmodel.ProductAddVM;
 import tosca.desktop.viewmodel.ProductEditVM;
 import tosca.desktop.viewmodel.ProductFilterVM;
 import tosca.desktop.viewmodel.ProductVM;
-import com.gitlab.muhammadkholidb.sequel.model.DataModel;
-import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
-import com.gitlab.muhammadkholidb.sequel.utility.SQLUtils;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.stereotype.Repository;
-
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Repository
 public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepository {
 
@@ -113,8 +109,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
             sb.append(" AND p.vat_included = ? ");
             params.add(includesVat);
         }
-        log.debug("Formatted SQL: \n{}", SQLUtils.format(sb.toString()));
-        return jdbcTemplate.query(sb.toString(), BeanPropertyRowMapper.newInstance(ProductVM.class), params.toArray());
+        return performSelect(sb.toString(), params, ProductVM.class);
     }
 
     // @formatter:off

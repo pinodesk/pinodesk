@@ -153,6 +153,7 @@ class CustomerServiceTest extends BaseServiceTest {
         DomainException ex = assertThrows(DomainException.class, () -> customerService.createCustomer(customerAdd));
         assertEquals(DomainError.CUSTOMER_EXISTS_BY_EMAIL, ex.getError());
         verify(customerRepository).existsByCode(anyString());
+        verify(customerRepository).existsByEmail(anyString());
         verify(customerRepository, never()).createCustomer(any(CustomerAddVM.class));
     }
 
@@ -168,6 +169,8 @@ class CustomerServiceTest extends BaseServiceTest {
         DomainException ex = assertThrows(DomainException.class, () -> customerService.createCustomer(customerAdd));
         assertEquals(DomainError.CUSTOMER_EXISTS_BY_PHONE, ex.getError());
         verify(customerRepository).existsByCode(anyString());
+        verify(customerRepository).existsByEmail(anyString());
+        verify(customerRepository).existsByPhone(anyString());
         verify(customerRepository, never()).createCustomer(any(CustomerAddVM.class));
     }
 
@@ -312,6 +315,7 @@ class CustomerServiceTest extends BaseServiceTest {
         when(customerRepository.findMaxCodeByPrefix(anyString())).thenReturn(null);
         String nextCode = customerService.getNextCustomerCode();
         assertEquals(prefix + "0000", nextCode);
+        verify(customerRepository).findMaxCodeByPrefix(anyString());
     }
 
     @Test
@@ -320,6 +324,7 @@ class CustomerServiceTest extends BaseServiceTest {
         when(customerRepository.findMaxCodeByPrefix(anyString())).thenReturn(prefix + "1000");
         String nextCode = customerService.getNextCustomerCode();
         assertEquals(prefix + "1001", nextCode);
+        verify(customerRepository).findMaxCodeByPrefix(anyString());
     }
 
 }

@@ -12,17 +12,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import tosca.desktop.constant.CommonConstants;
-import tosca.desktop.viewmodel.ProductFilterVM;
-import tosca.desktop.viewmodel.ProductVM;
-import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DataSet("product.yml")
-class ProductRepositoryTest extends BaseRepositoryTest {
+import tosca.desktop.constant.CommonConstants;
+import tosca.desktop.viewmodel.ProductFilterVM;
+import tosca.desktop.viewmodel.ProductVM;
+
+@DatabaseSetup("ProductRepositoryTest.xml")
+class ProductRepositoryTest extends RepositoryTestBase {
 
     private static final String DATE_PATTERN = "yyyy-MM-dd";
 

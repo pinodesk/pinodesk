@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <drug_category_base id='1' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' name='Peraturan Menteri Kesehatan Indonesia' code='PERMENKESRI' description='Permenkes No.917 Tahun 1993' />
+  <drug_category_base id='2' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' name='US Food and Drug Administration' code='USFDA' description='General drug categories by US FDA' />
+  <drug_category id='1' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' drug_category_base_id='1' name='Obat Bebas Terbatas' code='PERMENKESRI01' description='' />
+  <drug_category id='2' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' drug_category_base_id='1' name='Obat Bebas' code='PERMENKESRI02' description='' />
+  <drug_category id='3' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' drug_category_base_id='1' name='Obat Keras' code='PERMENKESRI03' description='' />
+</dataset>

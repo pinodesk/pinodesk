@@ -15,7 +15,7 @@
         </encoder>
     </appender>
 
-    <root level="ERROR">
+    <root level="INFO">
         <if condition='property("os.name").toLowerCase().contains("windows")'>
             <then>
                 <appender-ref ref="STDOUT_NO_COLOR" />
@@ -25,5 +25,8 @@
             </else>
         </if>
     </root>
+    <logger name="tosca.desktop" level="TRACE" />
+    <logger name="com.gitlab.muhammadkholidb.sequel" level="TRACE" />
+    <logger name="org.springframework.jdbc" level="TRACE" />
 
 </configuration>

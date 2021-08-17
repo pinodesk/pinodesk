@@ -7,14 +7,15 @@ import static org.hamcrest.core.IsNull.nullValue;
 
 import java.util.List;
 
-import tosca.desktop.domain.ProductCategory;
-import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DataSet("product_category.yml")
-class ProductCategoryRepositoryTest extends BaseRepositoryTest {
+import tosca.desktop.domain.ProductCategory;
+
+@DatabaseSetup("ProductCategoryRepositoryTest.xml")
+class ProductCategoryRepositoryTest extends RepositoryTestBase {
 
     @Autowired
     private ProductCategoryRepository productCategoryRepository;

@@ -13,17 +13,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Optional;
 
-import tosca.desktop.domain.Customer;
-import tosca.desktop.viewmodel.CustomerAddVM;
-import tosca.desktop.viewmodel.CustomerEditVM;
-import tosca.desktop.viewmodel.CustomerFilterVM;
-import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DataSet("customer.yml")
-class CustomerRepositoryTest extends BaseRepositoryTest {
+import tosca.desktop.domain.Customer;
+import tosca.desktop.viewmodel.CustomerAddVM;
+import tosca.desktop.viewmodel.CustomerEditVM;
+import tosca.desktop.viewmodel.CustomerFilterVM;
+
+@DatabaseSetup("CustomerRepositoryTest.xml")
+class CustomerRepositoryTest extends RepositoryTestBase {
 
     @Autowired
     private CustomerRepository customerRepository;

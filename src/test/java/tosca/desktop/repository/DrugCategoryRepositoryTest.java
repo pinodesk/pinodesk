@@ -8,14 +8,15 @@ import static org.hamcrest.Matchers.is;
 
 import java.util.List;
 
-import tosca.desktop.domain.DrugCategory;
-import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@DataSet("drug_category.yml")
-class DrugCategoryRepositoryTest extends BaseRepositoryTest {
+import tosca.desktop.domain.DrugCategory;
+
+@DatabaseSetup("DrugCategoryRepositoryTest.xml")
+class DrugCategoryRepositoryTest extends RepositoryTestBase {
 
     @Autowired
     private DrugCategoryRepository drugCategoryRepository;

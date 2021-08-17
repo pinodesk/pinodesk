@@ -60,6 +60,7 @@ class ProductCategoryServiceTest extends BaseServiceTest {
         List<ProductCategoryVM> results = productCategoryService.searchProductCategoryByKeyword("keyword");
         assertNotNull(results);
         assertEquals(0, results.size());
+        verify(configurationService).getConfiguration(anyString());
         verify(productCategoryRepository).filter(anyString(), anyString());
     }
 
