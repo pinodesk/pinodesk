@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.getkembang</groupId>
-    <artifactId>kembang-desktop</artifactId>
+    <groupId>tosca</groupId>
+    <artifactId>tosca-desktop</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Kembang Desktop</name>
-    <description>Kembang POS (Point-of-Sale) Desktop App</description>
+    <name>Tosca Desktop</name>
+    <description>Tosca POS (Point-of-Sale) Desktop App</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.mainClass>com.getkembang.kembangdesktop.Main</project.mainClass>
+        <project.mainClass>tosca.desktop.Main</project.mainClass>
         <java.version>11</java.version>
     </properties>
 
@@ -231,10 +231,10 @@
                 <version>0.8.6</version>
                 <configuration>
                     <excludes>
-                        <exclude>com/getkembang/kembangdesktop/domain/*</exclude>
-                        <exclude>com/getkembang/kembangdesktop/constant/*</exclude>
-                        <exclude>com/getkembang/kembangdesktop/misc/*</exclude>
-                        <exclude>com/getkembang/kembangdesktop/viewmodel/*</exclude>
+                        <exclude>tosca/desktop/domain/*</exclude>
+                        <exclude>tosca/desktop/constant/*</exclude>
+                        <exclude>tosca/desktop/misc/*</exclude>
+                        <exclude>tosca/desktop/viewmodel/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -292,8 +292,8 @@
                                     <goal>package</goal>
                                 </goals>
                                 <configuration>
-                                    <name>Kembang</name>
-                                    <displayName>Kembang</displayName>
+                                    <name>Tosca</name>
+                                    <displayName>Tosca</displayName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
                                 </configuration>

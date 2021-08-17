@@ -1,0 +1,120 @@
+package tosca.desktop.repository;
+
+import java.util.Arrays;
+import java.util.List;
+
+import tosca.desktop.domain.Supplier;
+import tosca.desktop.viewmodel.SupplierAddVM;
+import tosca.desktop.viewmodel.SupplierEditVM;
+import tosca.desktop.viewmodel.SupplierFilterVM;
+import com.gitlab.muhammadkholidb.sequel.model.DataModel;
+import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
+import com.gitlab.muhammadkholidb.sequel.sql.Order;
+import com.gitlab.muhammadkholidb.sequel.sql.Order.Direction;
+import com.gitlab.muhammadkholidb.sequel.sql.Where;
+
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public class SupplierRepositoryImpl extends AbstractRepository<Supplier> implements SupplierRepository {
+
+    @Override
+    public List<Supplier> filter(SupplierFilterVM filter) {
+        Where where = new Where();
+        if (StringUtils.isNotBlank(filter.getName())) {
+            where.containsIgnoreCase(Supplier.C_NAME, filter.getName());
+        }
+        if (StringUtils.isNotBlank(filter.getCode())) {
+            where.contains(Supplier.C_CODE, filter.getCode());
+        }
+        if (StringUtils.isNotBlank(filter.getPhone())) {
+            where.contains(Supplier.C_PHONE, filter.getPhone());
+        }
+        if (StringUtils.isNotBlank(filter.getEmail())) {
+            where.containsIgnoreCase(Supplier.C_EMAIL, filter.getEmail());
+        }
+        if (StringUtils.isNotBlank(filter.getWebsite())) {
+            where.containsIgnoreCase(Supplier.C_WEBSITE, filter.getWebsite());
+        }
+        if (StringUtils.isNotBlank(filter.getAddress())) {
+            where.containsIgnoreCase(Supplier.C_ADDRESS, filter.getAddress());
+        }
+        return read(where);
+    }
+
+    // @formatter:off
+    @Override
+    public Long createSupplier(SupplierAddVM supplierAdd) {
+        return insert(new String[] {
+            Supplier.C_NAME,
+            Supplier.C_CODE,
+            Supplier.C_PHONE,
+            Supplier.C_EMAIL,
+            Supplier.C_WEBSITE,
+            Supplier.C_ADDRESS
+        }, new Object[] {
+            supplierAdd.getName(),
+            supplierAdd.getCode(),
+            supplierAdd.getPhone(),
+            supplierAdd.getEmail(),
+            supplierAdd.getWebsite(),
+            supplierAdd.getAddress()
+        });
+    }
+
+    @Override
+    public Integer updateSupplier(SupplierEditVM supplierEdit) {
+        return update(new String[] {
+            Supplier.C_NAME,
+            Supplier.C_CODE,
+            Supplier.C_PHONE,
+            Supplier.C_EMAIL,
+            Supplier.C_WEBSITE,
+            Supplier.C_ADDRESS
+        }, new Object[] {
+            supplierEdit.getName(),
+            supplierEdit.getCode(),
+            supplierEdit.getPhone(),
+            supplierEdit.getEmail(),
+            supplierEdit.getWebsite(),
+            supplierEdit.getAddress()
+        }, supplierEdit.getId());
+    }
+    // @formatter:on
+
+    @Override
+    public boolean existsByCode(String code, Long... excludedIds) {
+        Where where = new Where().equalsIgnoreCase(Supplier.C_CODE, code);
+        if (ArrayUtils.isNotEmpty(excludedIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
+        }
+        return exists(where);
+    }
+
+    @Override
+    public boolean existsByEmail(String email, Long... excludeIds) {
+        Where where = new Where().equalsIgnoreCase(Supplier.C_EMAIL, email);
+        if (ArrayUtils.isNotEmpty(excludeIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludeIds));
+        }
+        return exists(where);
+    }
+
+    @Override
+    public boolean existsByPhone(String phone, Long... excludeIds) {
+        Where where = new Where().equalsIgnoreCase(Supplier.C_PHONE, phone);
+        if (ArrayUtils.isNotEmpty(excludeIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludeIds));
+        }
+        return exists(where);
+    }
+
+    @Override
+    public String findMaxCodeByPrefix(String prefix) {
+        return readOne(new Where().startsWith(Supplier.C_CODE, prefix),
+                new Order().by(Supplier.C_CODE, Direction.DESCENDING), true).map(Supplier::getCode).orElse(null);
+    }
+
+}
