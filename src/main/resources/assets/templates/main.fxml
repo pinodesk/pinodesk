@@ -37,11 +37,11 @@
             </VBox>
          </children>
       </AnchorPane>
-      <AnchorPane layoutX="250.0" layoutY="-4.0" prefHeight="70.0" prefWidth="774.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane layoutX="250.0" layoutY="-4.0" prefHeight="70.0" prefWidth="774.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
-                  <Label fx:id="lblStoreName" prefHeight="70.0" text="Apotek Karunia Sehat" textFill="#717171">
+                  <Label fx:id="lblStoreName" prefHeight="70.0" text="Apotek Karunia Sehat" textFill="WHITE">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -52,9 +52,9 @@
                   <Button mnemonicParsing="false" styleClass="btn-primary" text="Overview" />
                </children>
             </HBox>
-            <ImageView fitHeight="70.0" fitWidth="128.0" layoutX="298.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
+            <ImageView fitHeight="70.0" fitWidth="128.0" layoutX="646.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
                <image>
-                  <Image url="@../images/kembang-256.png" />
+                  <Image url="@../images/tosca-black-256.png" />
                </image>
             </ImageView>
          </children>

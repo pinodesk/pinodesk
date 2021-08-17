@@ -72,7 +72,7 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
     }
 
     @Override
-    protected void initParentVBoxControlActions() {
+    protected void initContentPaneControlActions() {
         initDataSaveControlActions();
         disableOnValidationError(btnSave);
         registerValidator(validationSupport);

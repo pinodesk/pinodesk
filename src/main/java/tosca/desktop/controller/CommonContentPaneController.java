@@ -23,7 +23,7 @@ public abstract class CommonContentPaneController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        initParentVBoxControlActions();
+        initContentPaneControlActions();
         contentPane.setOnKeyPressed(event -> contentPaneKeyPressedHandlers.forEach(handler -> handler.handle(event)));
     }
 
@@ -31,6 +31,6 @@ public abstract class CommonContentPaneController extends BaseController {
         contentPaneKeyPressedHandlers.add(handler);
     }
 
-    protected abstract void initParentVBoxControlActions();
+    protected abstract void initContentPaneControlActions();
 
 }

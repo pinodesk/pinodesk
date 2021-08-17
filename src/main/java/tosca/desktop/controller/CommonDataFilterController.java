@@ -44,7 +44,7 @@ public abstract class CommonDataFilterController<T> extends CommonContentPaneCon
     }
 
     @Override
-    protected void initParentVBoxControlActions() {
+    protected void initContentPaneControlActions() {
         initDataFilterControlActions();
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyCode.ENTER.equals(event.getCode()) || KeyConstants.CTRL_S.match(event)) {

@@ -1,7 +1,7 @@
 package tosca.desktop.constant;
 
 public interface CommonConstants {
-    String APP_TITLE = "Tosca";
+    String APP_TITLE = "T O S C A";
     String LANGUAGE_CODE_ENGLISH = "en";
     String LANGUAGE_CODE_INDONESIA = "id";
     String DATETIME_DISPLAY_PATTERN = "yyyy-MM-dd HH:mm:ss";

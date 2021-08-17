@@ -14,15 +14,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-import tosca.desktop.Tosca;
-import tosca.desktop.constant.CommonConstants;
-import tosca.desktop.constant.DomainError;
-import tosca.desktop.constant.StringConstants;
-import tosca.desktop.exception.DomainException;
-import tosca.desktop.utility.SpringUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
-import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
 
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +38,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import tosca.desktop.constant.CommonConstants;
+import tosca.desktop.constant.DomainError;
+import tosca.desktop.constant.StringConstants;
+import tosca.desktop.exception.DomainException;
+import tosca.desktop.utility.SpringUtils;
 
 @Slf4j
 public abstract class BaseController {
@@ -150,7 +148,6 @@ public abstract class BaseController {
         alert.setTitle(CommonConstants.APP_TITLE);
         alert.setHeaderText(translate(getAlertHeaderMessageCode(type)));
         DialogPane dialogPane = alert.getDialogPane();
-        StageUtils.setIcons((Stage) dialogPane.getScene().getWindow(), Tosca.ICON_PATHS);
         Text text = new Text(message);
         text.setWrappingWidth(dialogPane.getWidth());
         text.setStyle("-fx-font-size: 13px");
@@ -216,9 +213,6 @@ public abstract class BaseController {
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setMinWidth(600);
         dialogPane.setPrefWidth(600);
-
-        StageUtils.setIcons((Stage) dialogPane.getScene().getWindow(), Tosca.ICON_PATHS);
-
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         ex.printStackTrace(pw);
