@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.getkembang.kembangdesktop.constant.CacheName;
 import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
-import com.gitlab.muhammadkholidb.toolbox.data.ObjectConverter;
+import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.flywaydb.core.Flyway;
@@ -51,7 +51,7 @@ public class KembangConfig {
     public DataSourceTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
-    
+
     @Bean
     public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager(CacheName.keys());

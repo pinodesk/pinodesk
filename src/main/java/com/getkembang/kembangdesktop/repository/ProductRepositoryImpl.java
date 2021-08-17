@@ -184,7 +184,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
     // @formatter:off
     @Override
     public Long createProduct(ProductAddVM productAdd) {
-        return executeInsert(new String[] {
+        return insert(new String[] {
             Product.C_NAME,
             Product.C_DESCRIPTION,
             Product.C_CODE,

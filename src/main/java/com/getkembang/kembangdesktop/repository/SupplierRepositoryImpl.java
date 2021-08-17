@@ -47,7 +47,7 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
     // @formatter:off
     @Override
     public Long createSupplier(SupplierAddVM supplierAdd) {
-        return executeInsert(new String[] {
+        return insert(new String[] {
             Supplier.C_NAME,
             Supplier.C_CODE,
             Supplier.C_PHONE,

@@ -1,10 +1,8 @@
 package com.getkembang.kembangdesktop.service;
 
-import static org.mockito.Mockito.spy;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gitlab.muhammadkholidb.toolbox.data.ObjectConverter;
+import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;

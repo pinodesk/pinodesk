@@ -44,7 +44,7 @@ public class CustomerRepositoryImpl extends AbstractRepository<Customer> impleme
     // @formatter:off
     @Override
     public Long createCustomer(CustomerAddVM customerAdd) {
-        return executeInsert(new String[] {
+        return insert(new String[] {
             Customer.C_NAME,
             Customer.C_CODE,
             Customer.C_PHONE,

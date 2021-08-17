@@ -1,6 +1,6 @@
 package com.getkembang.kembangdesktop.service;
 
-import com.gitlab.muhammadkholidb.toolbox.data.ObjectConverter;
+import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
