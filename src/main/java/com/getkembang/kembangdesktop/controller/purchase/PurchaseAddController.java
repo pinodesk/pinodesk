@@ -19,6 +19,21 @@ public class PurchaseAddController extends CommonDataSaveController {
         
     }
 
+    @FXML
+    void onActionBtnAddProduct(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionBtnNewProduct(ActionEvent event) {
+
+    }
+
+    @FXML
+    void onActionBtnNewSupplier(ActionEvent event) {
+
+    }
+
     @Override
     protected void initServices(ApplicationContext ctx) {
         

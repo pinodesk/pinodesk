@@ -23,6 +23,7 @@ public class Purchase extends DataModel {
     public static final String C_PAYMENT_METHOD = "payment_method";
     public static final String C_PAYMENT_PERIOD_COUNT = "payment_period_count";
     public static final String C_PAYMENT_PERIOD_UNIT = "payment_period_unit";
+    public static final String C_PAYMENT_DUE_DATE = "payment_due_date";
 
     @DataColumn(C_SUPPLIER_ID)
     private Long supplierId;
@@ -48,6 +49,9 @@ public class Purchase extends DataModel {
     @DataColumn(C_PAYMENT_PERIOD_UNIT)
     private String paymentPeriodUnit;
     
+    @DataColumn(C_PAYMENT_DUE_DATE)
+    private LocalDate paymentDueDate;
+
     @Override
     public String tableName() {
         return TABLE_NAME;
