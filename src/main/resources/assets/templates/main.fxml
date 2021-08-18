@@ -49,7 +49,7 @@
                         <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
                      </padding>
                   </Label>
-                  <Button mnemonicParsing="false" styleClass="btn-primary" text="Overview" />
+                  <Button mnemonicParsing="false" styleClass="btn-primary" text="%btn.stats" />
                </children>
             </HBox>
             <ImageView fitHeight="70.0" fitWidth="128.0" layoutX="646.0" layoutY="19.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">

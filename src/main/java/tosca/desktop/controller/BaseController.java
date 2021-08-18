@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationContext;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -34,7 +35,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
@@ -171,6 +174,10 @@ public abstract class BaseController {
             default:
                 break;
         }
+        dialogPane.applyCss();
+        HBox buttonContainer = (HBox) dialogPane.lookup(".container");
+        buttonContainer.setSpacing(1);
+        buttonContainer.requestFocus();
         return new AlertResult(alert.showAndWait());
     }
 
