@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/kembang-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tosca.desktop.controller.supplier.SupplierEditController">
+<VBox fx:id="contentPane" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/toska-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toska.desktop.controller.supplier.SupplierEditController">
    <children>
       <AnchorPane>
          <children>

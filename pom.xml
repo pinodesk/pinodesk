@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>tosca</groupId>
-    <artifactId>tosca-desktop</artifactId>
+    <groupId>toska</groupId>
+    <artifactId>toska-desktop</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Tosca Desktop</name>
-    <description>Tosca POS (Point-of-Sale) Desktop App</description>
+    <name>Toska Desktop</name>
+    <description>Toska POS (Point-of-Sale) Desktop App</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.mainClass>tosca.desktop.Main</project.mainClass>
+        <project.mainClass>toska.desktop.Main</project.mainClass>
         <java.version>11</java.version>
     </properties>
 
@@ -224,10 +224,10 @@
                 <version>0.8.6</version>
                 <configuration>
                     <excludes>
-                        <exclude>tosca/desktop/domain/*</exclude>
-                        <exclude>tosca/desktop/constant/*</exclude>
-                        <exclude>tosca/desktop/misc/*</exclude>
-                        <exclude>tosca/desktop/viewmodel/*</exclude>
+                        <exclude>toska/desktop/domain/*</exclude>
+                        <exclude>toska/desktop/constant/*</exclude>
+                        <exclude>toska/desktop/misc/*</exclude>
+                        <exclude>toska/desktop/viewmodel/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -285,8 +285,8 @@
                                     <goal>package</goal>
                                 </goals>
                                 <configuration>
-                                    <name>Tosca</name>
-                                    <displayName>Tosca</displayName>
+                                    <name>Toska</name>
+                                    <displayName>Toska</displayName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
                                 </configuration>
