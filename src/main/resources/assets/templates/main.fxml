@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="640.0" minWidth="1024.0" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/toska-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toska.desktop.controller.MainController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="640.0" minWidth="1024.0" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/toscabox-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toscabox.desktop.controller.MainController">
    <children>
       <AnchorPane layoutY="61.0" prefHeight="70.0" prefWidth="250.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -52,9 +52,9 @@
                   <Button mnemonicParsing="false" styleClass="btn-primary" text="%btn.stats" />
                </children>
             </HBox>
-            <ImageView fitHeight="70.0" fitWidth="128.0" layoutX="633.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0">
+            <ImageView fitHeight="50.0" fitWidth="50.0" layoutX="716.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="14.640625">
                <image>
-                  <Image url="@../images/toska-256.png" />
+                  <Image url="@../images/toscabox-icon-256.png" />
                </image>
             </ImageView>
          </children>
