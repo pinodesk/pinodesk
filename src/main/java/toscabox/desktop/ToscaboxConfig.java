@@ -23,8 +23,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import toscabox.desktop.constant.CacheName;
-
 @Configuration
 @Import(SequelConfig.class)
 @ComponentScan
@@ -55,7 +53,7 @@ public class ToscaboxConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager(CacheName.keys());
+        return new ConcurrentMapCacheManager();
     }
 
     @Bean

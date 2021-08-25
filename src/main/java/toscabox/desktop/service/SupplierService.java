@@ -14,7 +14,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import toscabox.desktop.constant.CacheName;
+import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.domain.SupplierContact;
@@ -36,18 +36,18 @@ public class SupplierService extends BaseService {
     @Autowired
     private SupplierContactRepository supplierContactRepository;
 
-    @Cacheable(CacheName.Keys.SUPPLIERS_BY_FILTER)
+    @Cacheable(CacheNameConstants.SUPPLIERS_BY_FILTER)
     public List<SupplierVM> searchSuppliers(SupplierFilterVM filter) {
         return objectConverter.convertList(supplierRepository.filter(filter), SupplierVM.class);
     }
 
-    @CacheEvict(value = CacheName.Keys.SUPPLIERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = CacheNameConstants.SUPPLIERS_BY_FILTER, allEntries = true)
     @Transactional
     public void removeSuppliers(List<Long> ids) {
         supplierRepository.delete(ids);
     }
 
-    @CacheEvict(value = CacheName.Keys.SUPPLIERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = CacheNameConstants.SUPPLIERS_BY_FILTER, allEntries = true)
     @Transactional
     public Long createSupplier(SupplierAddVM supplier, List<SupplierContactAddVM> contacts) {
         if (supplierRepository.existsByCode(supplier.getCode())) {
@@ -81,7 +81,7 @@ public class SupplierService extends BaseService {
         return supplierContactRepository.createSupplierContact(contact);
     }
 
-    @CacheEvict(value = CacheName.Keys.SUPPLIERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = CacheNameConstants.SUPPLIERS_BY_FILTER, allEntries = true)
     @Transactional
     public boolean updateSupplier(SupplierEditVM supplier, List<SupplierContactAddVM> contacts) {
         Long supplierId = supplier.getId();

@@ -11,7 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import toscabox.desktop.constant.CacheName;
+import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.exception.DomainException;
@@ -27,18 +27,18 @@ public class CustomerService extends BaseService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @Cacheable(CacheName.Keys.CUSTOMERS_BY_FILTER)
+    @Cacheable(CacheNameConstants.CUSTOMERS_BY_FILTER)
     public List<CustomerVM> searchCustomers(CustomerFilterVM filter) {
         return objectConverter.convertList(customerRepository.filter(filter), CustomerVM.class);
     }
 
-    @CacheEvict(value = CacheName.Keys.CUSTOMERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = CacheNameConstants.CUSTOMERS_BY_FILTER, allEntries = true)
     @Transactional
     public void removeCustomers(List<Long> ids) {
         customerRepository.delete(ids);
     }
 
-    @CacheEvict(value = CacheName.Keys.CUSTOMERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = CacheNameConstants.CUSTOMERS_BY_FILTER, allEntries = true)
     @Transactional
     public Long createCustomer(CustomerAddVM customer) {
         if (customerRepository.existsByCode(customer.getCode())) {
@@ -55,7 +55,7 @@ public class CustomerService extends BaseService {
         return customerRepository.createCustomer(customer);
     }
 
-    @CacheEvict(value = CacheName.Keys.CUSTOMERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = CacheNameConstants.CUSTOMERS_BY_FILTER, allEntries = true)
     @Transactional
     public boolean updateCustomer(CustomerEditVM customer) {
         Long customerId = customer.getId();

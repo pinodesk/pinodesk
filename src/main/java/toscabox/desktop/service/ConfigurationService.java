@@ -11,7 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import toscabox.desktop.constant.CacheName;
+import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.domain.Configuration;
 import toscabox.desktop.repository.ConfigurationRepository;
 
@@ -24,13 +24,13 @@ public class ConfigurationService extends BaseService {
     @Autowired
     private ConfigurationRepository configurationRepository;
 
-    @Cacheable(CacheName.Keys.CONFIGURATION_BY_CODE)
+    @Cacheable(CacheNameConstants.CONFIGURATION_BY_CODE)
     public String getConfiguration(String code) {
         return configurationRepository.readOne(new Where().equals(Configuration.C_CODE, code))
                 .map(Configuration::getValue).orElse(null);
     }
 
-    @Cacheable(CacheName.Keys.CONFIGURATION_MAP)
+    @Cacheable(CacheNameConstants.CONFIGURATION_MAP)
     public Map<String, String> getConfigurationMap() {
         return configurationRepository.read().stream()
                 .collect(Collectors.toMap(Configuration::getCode, Configuration::getValue));

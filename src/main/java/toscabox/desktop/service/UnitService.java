@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import toscabox.desktop.constant.CacheName;
+import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.exception.DomainException;
 import toscabox.desktop.repository.UnitRepository;
@@ -18,12 +18,12 @@ public class UnitService extends BaseService {
     @Autowired
     private UnitRepository unitRepository;
 
-    @Cacheable(CacheName.Keys.UNITS_ALL)
+    @Cacheable(CacheNameConstants.UNITS_ALL)
     public List<UnitVM> getAllUnits() {
         return objectConverter.convertList(unitRepository.read(), UnitVM.class);
     }
 
-    @Cacheable(CacheName.Keys.UNITS_BY_KEYWORD)
+    @Cacheable(CacheNameConstants.UNITS_BY_KEYWORD)
     public List<UnitVM> searchUnitByKeyword(String keyword) {
         return objectConverter.convertList(unitRepository.filter(keyword, 10), UnitVM.class);
     }

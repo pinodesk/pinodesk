@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import toscabox.desktop.constant.CacheName;
+import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.exception.DomainException;
 import toscabox.desktop.repository.RackRepository;
@@ -18,12 +18,12 @@ public class RackService extends BaseService {
     @Autowired
     private RackRepository rackRepository;
 
-    @Cacheable(CacheName.Keys.RACKS_ALL)
+    @Cacheable(CacheNameConstants.RACKS_ALL)
     public List<RackVM> getAllRacks() {
         return objectConverter.convertList(rackRepository.read(), RackVM.class);
     }
 
-    @Cacheable(CacheName.Keys.RACKS_BY_KEYWORD)
+    @Cacheable(CacheNameConstants.RACKS_BY_KEYWORD)
     public List<RackVM> searchRackByKeyword(String keyword) {
         return objectConverter.convertList(rackRepository.filter(keyword, 10), RackVM.class);
     }

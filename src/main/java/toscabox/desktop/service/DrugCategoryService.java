@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import toscabox.desktop.constant.CacheName;
+import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.exception.DomainException;
@@ -27,7 +27,7 @@ public class DrugCategoryService extends BaseService {
     @Autowired
     private DrugCategoryBaseRepository drugCategoryBaseRepository;
 
-    @Cacheable(CacheName.Keys.DRUG_CATEGORIES_BY_KEYWORD)
+    @Cacheable(CacheNameConstants.DRUG_CATEGORIES_BY_KEYWORD)
     public List<DrugCategoryVM> searchDrugCategoriesByKeyword(String keyword) {
         String drugCategoryBaseId = configurationService.getConfiguration(ConfigurationConstants.DRUG_CATEGORY_BASE_ID);
         return objectConverter.convertList(drugCategoryRepository.filter(keyword, Long.valueOf(drugCategoryBaseId)),
@@ -39,7 +39,7 @@ public class DrugCategoryService extends BaseService {
                 new DomainException(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_ID));
     }
 
-    @Cacheable(CacheName.Keys.DRUG_CATEGORY_BASES_ALL)
+    @Cacheable(CacheNameConstants.DRUG_CATEGORY_BASES_ALL)
     public List<DrugCategoryBaseVM> getAllDrugCategoryBases() {
         return objectConverter.convertList(drugCategoryBaseRepository.read(), DrugCategoryBaseVM.class);
     }

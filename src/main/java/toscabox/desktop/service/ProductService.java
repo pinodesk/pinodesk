@@ -13,7 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import toscabox.desktop.constant.CacheName;
+import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.domain.Drug;
@@ -44,13 +44,13 @@ public class ProductService extends BaseService {
     @Autowired
     private WholesaleRepository wholesaleRepository;
 
-    @Cacheable(CacheName.Keys.PRODUCTS_BY_FILTER)
+    @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
     public List<ProductVM> searchProduct(ProductFilterVM param) {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
         return productRepository.filter(param, languageCode);
     }
 
-    @CacheEvict(value = CacheName.Keys.PRODUCTS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = CacheNameConstants.PRODUCTS_BY_FILTER, allEntries = true)
     @Transactional
     public boolean updateProduct(ProductEditVM productEdit) {
 
@@ -91,13 +91,13 @@ public class ProductService extends BaseService {
         return countUpdated > 0;
     }
 
-    @CacheEvict(value = CacheName.Keys.PRODUCTS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = CacheNameConstants.PRODUCTS_BY_FILTER, allEntries = true)
     @Transactional
     public void removeProducts(List<Long> ids) {
         productRepository.delete(new Where().in(DataModel.C_ID, ids));
     }
 
-    @CacheEvict(value = CacheName.Keys.PRODUCTS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = CacheNameConstants.PRODUCTS_BY_FILTER, allEntries = true)
     @Transactional
     public Long createProduct(ProductAddVM productAdd) {
 

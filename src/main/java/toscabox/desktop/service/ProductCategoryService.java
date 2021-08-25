@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import toscabox.desktop.constant.CacheName;
+import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.domain.ProductCategory;
@@ -28,7 +28,7 @@ public class ProductCategoryService extends BaseService {
                 new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_ID));
     }
 
-    @Cacheable(CacheName.Keys.PRODUCT_CATEGORIES_BY_KEYWORD)
+    @Cacheable(CacheNameConstants.PRODUCT_CATEGORIES_BY_KEYWORD)
     public List<ProductCategoryVM> searchProductCategoryByKeyword(String keyword) {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
         List<ProductCategory> categories = productCategoryRepository.filter(keyword, languageCode);
