@@ -13,6 +13,8 @@ public interface SupplierRepository extends CommonRepository<Supplier> {
     
 	List<Supplier> filter(SupplierFilterVM filter);
     
+    List<Supplier> findByKeyword(String keyword);
+
     Long createSupplier(SupplierAddVM supplierAdd);
 
     Integer updateSupplier(SupplierEditVM supplierEdit);

@@ -71,7 +71,7 @@ public class SupplierAddController extends CommonDataSaveController {
     void onActionBtnSaveAndAdd(ActionEvent event) {
         processDataSave();
         if (isLastDataSaved()) {
-            displayInfo(MessageCode.SUCCESS_ADD_CUSTOMER);
+            displayInfo(MessageCode.SUCCESS_ADD_SUPPLIER);
             resetControls();
             initDataSaveControlValues();
         }

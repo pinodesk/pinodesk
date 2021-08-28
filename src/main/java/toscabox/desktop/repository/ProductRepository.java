@@ -14,6 +14,8 @@ public interface ProductRepository extends CommonRepository<Product> {
     
     List<ProductVM> filter(ProductFilterVM filter, String languageCode);
 
+    List<ProductVM> findByKeyword(String keyword, String languageCode);
+
     Integer updateProduct(ProductEditVM productEdit);
 
     boolean existsByCode(String code, Long... excludedIds);

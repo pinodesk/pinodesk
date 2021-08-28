@@ -112,6 +112,31 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         return performSelect(sb.toString(), params, ProductVM.class);
     }
 
+    @Override
+    public List<ProductVM> findByKeyword(String keyword, String languageCode) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(" SELECT p.*, pc.id as category_id, pc.code as category_code, pc.name as category_name ");
+        sb.append(" FROM ").append(Product.TABLE_NAME).append(" p ");
+        sb.append(" LEFT JOIN ").append(ProductCategory.TABLE_NAME).append(" pc ")
+                .append(" ON pc.code = p.category_code AND pc.deleted_at IS NULL AND pc.language_code = ? ");
+        Where where = new Where();
+        if (StringUtils.isNotBlank(keyword)) {
+            keyword = keyword.trim();
+            where.containsIgnoreCase("p.name", keyword)
+                    .orContains("p.code", keyword)
+                    .orContains("p.barcode", keyword)
+                    .orContains("pc.code", keyword)
+                    .orContainsIgnoreCase("pc.name", keyword);
+            sb.append(where.getClause());
+            sb.append(" AND p.deleted_at IS NULL ");
+        } else {
+            sb.append(" WHERE p.deleted_at IS NULL ");   
+        }
+        List<Object> params = where.getValues();
+        params.add(0, languageCode);
+        return performSelect(sb.toString(), params, ProductVM.class);
+    }
+
     // @formatter:off
     @Override
     public Integer updateProduct(ProductEditVM productEdit) {

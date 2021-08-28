@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.DomainError;
+import toscabox.desktop.domain.Supplier;
 import toscabox.desktop.domain.SupplierContact;
 import toscabox.desktop.exception.DomainException;
 import toscabox.desktop.repository.SupplierContactRepository;
@@ -41,13 +42,22 @@ public class SupplierService extends BaseService {
         return objectConverter.convertList(supplierRepository.filter(filter), SupplierVM.class);
     }
 
-    @CacheEvict(value = CacheNameConstants.SUPPLIERS_BY_FILTER, allEntries = true)
+    @Cacheable(CacheNameConstants.SUPPLIERS_BY_KEYWORD)
+    public List<SupplierVM> searchSuppliersByKeyword(String keyword) {
+        List<Supplier> suppliers = StringUtils.isBlank(keyword) ? supplierRepository.read()
+                : supplierRepository.findByKeyword(keyword.trim());
+        return objectConverter.convertList(suppliers, SupplierVM.class);
+    }
+
+    @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER,
+            CacheNameConstants.SUPPLIERS_BY_KEYWORD }, allEntries = true)
     @Transactional
     public void removeSuppliers(List<Long> ids) {
         supplierRepository.delete(ids);
     }
 
-    @CacheEvict(value = CacheNameConstants.SUPPLIERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER,
+            CacheNameConstants.SUPPLIERS_BY_KEYWORD }, allEntries = true)
     @Transactional
     public Long createSupplier(SupplierAddVM supplier, List<SupplierContactAddVM> contacts) {
         if (supplierRepository.existsByCode(supplier.getCode())) {
@@ -81,7 +91,8 @@ public class SupplierService extends BaseService {
         return supplierContactRepository.createSupplierContact(contact);
     }
 
-    @CacheEvict(value = CacheNameConstants.SUPPLIERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER,
+            CacheNameConstants.SUPPLIERS_BY_KEYWORD }, allEntries = true)
     @Transactional
     public boolean updateSupplier(SupplierEditVM supplier, List<SupplierContactAddVM> contacts) {
         Long supplierId = supplier.getId();

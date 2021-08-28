@@ -153,14 +153,14 @@ public class SupplierMainController extends BaseController {
         tableSupplier.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableSupplier.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> supplierService.searchSuppliers(supplierFilter))
-                .thenAccept(customers -> Platform.runLater(() -> {
-                    if (customers.isEmpty()) {
+                .thenAccept(suppliers -> Platform.runLater(() -> {
+                    if (suppliers.isEmpty()) {
                         tableSupplier.setPlaceholder(new Label(translate("lbl.nodata")));
                         lblRows.setText("0");
                     }
-                    tableSupplier.setItems(FXCollections.observableList(customers));
+                    tableSupplier.setItems(FXCollections.observableList(suppliers));
                     tableSupplier.getSortOrder().setAll(colName); // Always sort by name after searching
-                    lblRows.setText(customers.size() + "");
+                    lblRows.setText(suppliers.size() + "");
                 }));
     }
 

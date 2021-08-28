@@ -47,6 +47,18 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
 
     // @formatter:off
     @Override
+    public List<Supplier> findByKeyword(String keyword) {
+        Where where = new Where()
+            .containsIgnoreCase(Supplier.C_NAME, keyword)
+            .orContainsIgnoreCase(Supplier.C_EMAIL, keyword)
+            .orContains(Supplier.C_CODE, keyword)
+            .orContains(Supplier.C_PHONE, keyword)
+            .orContainsIgnoreCase(Supplier.C_WEBSITE, keyword)
+            .orContainsIgnoreCase(Supplier.C_ADDRESS, keyword);
+        return read(where);
+    }
+
+    @Override
     public Long createSupplier(SupplierAddVM supplierAdd) {
         return insert(new String[] {
             Supplier.C_NAME,

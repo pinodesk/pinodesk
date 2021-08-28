@@ -24,7 +24,9 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.ApplicationContext;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
@@ -69,6 +71,10 @@ public abstract class BaseController {
     protected abstract void initControlValues();
 
     protected abstract Stage getCurrentStage();
+
+    protected void setFocused(Node node) {
+        Platform.runLater(node::requestFocus);
+    }
 
     protected void close() {
         getCurrentStage().close();

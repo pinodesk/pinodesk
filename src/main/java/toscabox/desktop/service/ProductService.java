@@ -17,6 +17,7 @@ import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.domain.Drug;
+import toscabox.desktop.domain.Product;
 import toscabox.desktop.domain.Wholesale;
 import toscabox.desktop.exception.DomainException;
 import toscabox.desktop.repository.DrugRepository;
@@ -50,7 +51,14 @@ public class ProductService extends BaseService {
         return productRepository.filter(param, languageCode);
     }
 
-    @CacheEvict(value = CacheNameConstants.PRODUCTS_BY_FILTER, allEntries = true)
+    @Cacheable(CacheNameConstants.PRODUCTS_BY_KEYWORD)
+    public List<ProductVM> searchProductsByKeyword(String keyword) {
+        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
+        return productRepository.findByKeyword(keyword, languageCode);
+    }
+
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_KEYWORD }, allEntries = true)
     @Transactional
     public boolean updateProduct(ProductEditVM productEdit) {
 
@@ -85,19 +93,22 @@ public class ProductService extends BaseService {
         List<WholesaleVM> wholesales = productEdit.getWholesales();
         if (ObjectUtils.isNotEmpty(wholesales)) {
             wholesaleRepository.delete(new Where().equals(Wholesale.C_PRODUCT_ID, productEdit.getId()), true);
-            wholesales.forEach(wholesale -> wholesaleRepository.create(objectConverter.convertObject(wholesale, Wholesale.class)));
+            wholesales.forEach(
+                    wholesale -> wholesaleRepository.create(objectConverter.convertObject(wholesale, Wholesale.class)));
         }
 
         return countUpdated > 0;
     }
 
-    @CacheEvict(value = CacheNameConstants.PRODUCTS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_KEYWORD }, allEntries = true)
     @Transactional
     public void removeProducts(List<Long> ids) {
         productRepository.delete(new Where().in(DataModel.C_ID, ids));
     }
 
-    @CacheEvict(value = CacheNameConstants.PRODUCTS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_KEYWORD }, allEntries = true)
     @Transactional
     public Long createProduct(ProductAddVM productAdd) {
 

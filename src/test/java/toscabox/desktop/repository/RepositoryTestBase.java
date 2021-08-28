@@ -1,6 +1,5 @@
 package toscabox.desktop.repository;
 
-import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 
 import javax.annotation.Resource;
@@ -67,7 +66,7 @@ public abstract class RepositoryTestBase {
         }
 
         @Bean
-        public IDatabaseConnection databaseConnection(DataSource dataSource, DatabaseMetaData databaseMetaData)
+        public IDatabaseConnection databaseConnection(DataSource dataSource)
                 throws SQLException, DatabaseUnitException {
             DatabaseDataSourceConnection databaseConnection = new DatabaseDataSourceConnection(dataSource);
             DatabaseConfig databaseConfig = databaseConnection.getConfig();
