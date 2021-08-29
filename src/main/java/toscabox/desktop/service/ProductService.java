@@ -17,7 +17,6 @@ import toscabox.desktop.constant.CacheNameConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.domain.Drug;
-import toscabox.desktop.domain.Product;
 import toscabox.desktop.domain.Wholesale;
 import toscabox.desktop.exception.DomainException;
 import toscabox.desktop.repository.DrugRepository;

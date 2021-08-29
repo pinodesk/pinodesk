@@ -27,6 +27,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.MessageCode;
 import toscabox.desktop.constant.Page;
@@ -35,8 +36,10 @@ import toscabox.desktop.constant.PaymentPeriodUnit;
 import toscabox.desktop.constant.StyleConstants;
 import toscabox.desktop.controller.CommonDataSaveController;
 import toscabox.desktop.service.ConfigurationService;
+import toscabox.desktop.service.PurchaseService;
 import toscabox.desktop.utility.SpringUtils;
 import toscabox.desktop.viewmodel.ProductVM;
+import toscabox.desktop.viewmodel.PurchaseOrderVM;
 import toscabox.desktop.viewmodel.PurchaseOrderVM.PurchaseProductVM;
 import toscabox.desktop.viewmodel.SupplierVM;
 
@@ -152,8 +155,11 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     private SupplierVM selectedSupplier;
     private ProductVM selectedProduct;
+    private Integer totalProduct = 0;
+    private BigDecimal totalPayment = BigDecimal.ZERO;
 
     private ConfigurationService configurationService;
+    private PurchaseService purchaseService;
 
     @FXML
     void onActionBtnSaveAndAdd(ActionEvent event) {
@@ -175,6 +181,8 @@ public class PurchaseAddController extends CommonDataSaveController {
             tblPurchaseProduct.getItems().add(purchaseProduct);
             this.selectedProduct = null;
             setSelectedProduct(null);
+            totalProduct = totalProduct + purchaseQuantity;
+            totalPayment = totalPayment.add(subtotalPurchase);
         }
     }
 
@@ -199,6 +207,7 @@ public class PurchaseAddController extends CommonDataSaveController {
     @Override
     protected void initServices(ApplicationContext ctx) {
         configurationService = SpringUtils.getBean(ConfigurationService.class);
+        purchaseService = SpringUtils.getBean(PurchaseService.class);
     }
 
     @Override
@@ -271,7 +280,23 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     @Override
     protected Object save() {
-        return null;
+        PaymentMethod paymentMethod = PaymentMethod.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentMethod).getValue());
+        PurchaseOrderVM po = new PurchaseOrderVM();
+        po.setOrderNumber(tfOrderNumber.getText().trim());
+        po.setOrderDate(LocalDate.parse(tfOrderDate.getText(),
+                DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        po.setSupplierId(selectedSupplier.getId());
+        po.setPaymentMethod(paymentMethod);
+        if (PaymentMethod.CREDIT.equals(paymentMethod)) {
+            po.setPaymentPeriodCount(Integer.valueOf(ComboBoxUtils.getSelectedItem(cbPeriodCount).getValue()));
+            po.setPaymentPeriodUnit(PaymentPeriodUnit.valueOf(ComboBoxUtils.getSelectedItem(cbPeriodUnit).getValue()));
+            po.setDueDate(LocalDate.parse(tfDueDate.getText(),
+                    DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        }
+        po.setTotalProduct(totalProduct);
+        po.setTotalPayment(totalPayment);
+        po.setPurchaseProducts(tblPurchaseProduct.getItems());
+        return purchaseService.createPurchase(po);
     }
 
     private void togglePaymentPeriodControls(boolean disable) {

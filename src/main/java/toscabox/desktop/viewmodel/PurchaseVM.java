@@ -13,6 +13,7 @@ public class PurchaseVM {
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
     private Long supplierId;
+    private String supplierName;
     private String orderNumber;
     private LocalDate orderDate;
     private Integer totalProduct;

@@ -86,7 +86,11 @@ public class PurchaseMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        StageUtils.modal(Page.TRANSACTION_PURCHASE_ADD, true);
+        StageUtils.modal(Page.TRANSACTION_PURCHASE_ADD, true, we -> {
+            if (getPageData() != null) {
+                searchPurchases();
+            }
+        });
     }
 
     @FXML
@@ -121,10 +125,10 @@ public class PurchaseMainController extends BaseController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colOrderDate, new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PurchaseVM::getOrderDate);
-        TableViewUtils.initTableColumn(colCreatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                PurchaseVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                PurchaseVM::getUpdatedAt);
+        TableViewUtils.initTableColumn(colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), PurchaseVM::getCreatedAt);
+        TableViewUtils.initTableColumn(colUpdatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), PurchaseVM::getUpdatedAt);
         tblPurchase.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblPurchase.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

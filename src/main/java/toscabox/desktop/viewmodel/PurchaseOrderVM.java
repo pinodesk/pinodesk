@@ -2,6 +2,7 @@ package toscabox.desktop.viewmodel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import lombok.Data;
 import toscabox.desktop.constant.PaymentMethod;
@@ -17,6 +18,9 @@ public class PurchaseOrderVM {
     private PaymentPeriodUnit paymentPeriodUnit;
     private Integer paymentPeriodCount;
     private LocalDate dueDate;
+    private Integer totalProduct;
+    private BigDecimal totalPayment;
+    private List<PurchaseProductVM> purchaseProducts;
 
     @Data
     public static class PurchaseProductVM {
