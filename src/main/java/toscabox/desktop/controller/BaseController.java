@@ -249,10 +249,10 @@ public abstract class BaseController {
         alert.showAndWait();
     }
 
-    protected Date parseDateQuietly(String str, String pattern) {
+    protected LocalDate parseDateQuietly(String str, String pattern) {
         try {
-            return DateUtils.parseDate(str, pattern);
-        } catch (ParseException e) {
+            return LocalDate.parse(str, DateTimeFormatter.ofPattern(pattern));
+        } catch (DateTimeParseException e) {
             return null;
         }
     }
@@ -290,15 +290,27 @@ public abstract class BaseController {
     }
 
     protected BigDecimal toBigDecimalOrDefault(String str, BigDecimal dflt) {
-        return str == null ? dflt : NumberUtils.toScaledBigDecimal(str);
+        return StringUtils.isNumeric(str) ? NumberUtils.toScaledBigDecimal(str) : dflt;
     }
 
     protected BigDecimal toBigDecimalOrNull(String str) {
         return toBigDecimalOrDefault(str, null);
     }
 
+    protected BigDecimal toBigDecimalOrZero(String str) {
+        return toBigDecimalOrDefault(str, BigDecimal.ZERO);
+    }
+
     protected Integer toIntegerOrDefault(String str, Integer dflt) {
-        return str == null ? dflt : NumberUtils.toInt(str);
+        return StringUtils.isNumeric(str) ? NumberUtils.toInt(str) : dflt;
+    }
+
+    protected Integer toIntegerOrNull(String str) {
+        return toIntegerOrDefault(str, null);
+    }
+
+    protected Integer toIntegerOrZero(String str) {
+        return toIntegerOrDefault(str, 0);
     }
 
 }

@@ -74,6 +74,9 @@ public enum MessageCode implements IMessage {
     
     // Supplier contact
     ERROR_SUPPLIER_CONTACT_EXISTS_BY_EMAIL,
-    ERROR_SUPPLIER_CONTACT_EXISTS_BY_PHONE,
+    ERROR_SUPPLIER_CONTACT_EXISTS_BY_PHONE, 
+    
+    // Purchase
+    SUCCESS_ADD_PURCHASE,
 
 }

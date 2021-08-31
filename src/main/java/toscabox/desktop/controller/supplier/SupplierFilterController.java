@@ -55,7 +55,7 @@ public class SupplierFilterController extends CommonDataFilterController<Supplie
 
     @Override
     protected void resetControls() {
-        TextFieldUtils.setTextNull(tfName, tfCode, tfPhone, tfEmail, tfAddress, tfWebsite);
+        TextFieldUtils.setTextEmpty(tfName, tfCode, tfPhone, tfEmail, tfAddress, tfWebsite);
     }
 
     @Override

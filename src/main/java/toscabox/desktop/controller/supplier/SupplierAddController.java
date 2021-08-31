@@ -147,11 +147,7 @@ public class SupplierAddController extends CommonDataSaveController {
     }
 
     private void resetControls() {
-        tfName.setText(null);
-        tfCode.setText(null);
-        tfPhone.setText(null);
-        tfEmail.setText(null);
-        tfAddress.setText(null);
+        TextFieldUtils.setTextEmpty(tfName, tfCode, tfPhone, tfEmail, tfAddress, tfWebsite);
     }
 
 }

@@ -16,9 +16,11 @@ import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
+import org.controlsfx.validation.ValidationResult;
 import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
+import javafx.collections.ListChangeListener.Change;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -151,7 +153,10 @@ public class PurchaseAddController extends CommonDataSaveController {
     private Label lblTotalPurchase;
 
     @FXML
-    private Label lblProductCount;
+    private Label lblTotalProduct;
+
+    @FXML
+    private Button btnSaveAndAdd;
 
     private SupplierVM selectedSupplier;
     private ProductVM selectedProduct;
@@ -163,27 +168,39 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     @FXML
     void onActionBtnSaveAndAdd(ActionEvent event) {
-
+        processDataSave();
+        if (isLastDataSaved()) {
+            displayInfo(MessageCode.SUCCESS_ADD_PURCHASE);
+            resetControls();
+        }
     }
 
     @FXML
     void onActionBtnAddProduct(ActionEvent event) {
-        if (selectedProduct != null) {
-            BigDecimal purchasePrice = new BigDecimal(tfPurchasePrice.getText());
-            Integer purchaseQuantity = Integer.valueOf(tfProductQuantity.getText());
+        BigDecimal purchasePrice = toBigDecimalOrZero(tfPurchasePrice.getText());
+        Integer purchaseQuantity = toIntegerOrZero(tfProductQuantity.getText());
+        BigDecimal sellingPrice = toBigDecimalOrNull(tfSellingPrice.getText());
+        if (isValidProductValues(purchaseQuantity, purchasePrice, sellingPrice)) {
             BigDecimal subtotalPurchase = purchasePrice.multiply(new BigDecimal(purchaseQuantity));
             PurchaseProductVM purchaseProduct = new PurchaseProductVM();
             purchaseProduct.setProduct(selectedProduct);
             purchaseProduct.setPurchasePrice(purchasePrice);
             purchaseProduct.setPurchaseQuantity(purchaseQuantity);
-            purchaseProduct.setSellingPrice(new BigDecimal(tfSellingPrice.getText()));
+            purchaseProduct.setSellingPrice(toBigDecimalOrDefault(tfSellingPrice.getText(), null));
             purchaseProduct.setSubtotalPurchase(subtotalPurchase);
             tblPurchaseProduct.getItems().add(purchaseProduct);
             this.selectedProduct = null;
             setSelectedProduct(null);
             totalProduct = totalProduct + purchaseQuantity;
             totalPayment = totalPayment.add(subtotalPurchase);
+            lblTotalPurchase.setText(toStringOrDefault(totalPayment, "0"));
+            lblTotalProduct.setText(toStringOrDefault(totalProduct, "0"));
         }
+    }
+
+    private boolean isValidProductValues(Integer purchaseQuantity, BigDecimal purchasePrice, BigDecimal sellingPrice) {
+        return selectedProduct != null && purchasePrice.compareTo(BigDecimal.ZERO) > 0 && purchaseQuantity > 0
+                && (sellingPrice == null || sellingPrice.compareTo(BigDecimal.ZERO) > 0);
     }
 
     @FXML
@@ -204,6 +221,18 @@ public class PurchaseAddController extends CommonDataSaveController {
         });
     }
 
+    @FXML
+    void onActionBtnRemoveProduct(ActionEvent event) {
+        PurchaseProductVM selected = tblPurchaseProduct.getSelectionModel().getSelectedItem();
+        if (selected != null) {
+            tblPurchaseProduct.getItems().remove(selected);
+            totalProduct = totalProduct - selected.getPurchaseQuantity();
+            totalPayment = totalPayment.subtract(selected.getSubtotalPurchase());
+            lblTotalPurchase.setText(toStringOrDefault(totalPayment, "0"));
+            lblTotalProduct.setText(toStringOrDefault(totalProduct, "0"));
+        }
+    }
+
     @Override
     protected void initServices(ApplicationContext ctx) {
         configurationService = SpringUtils.getBean(ConfigurationService.class);
@@ -212,6 +241,7 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        TextFieldUtils.onTextChanged(tfOrderDate, (ov, nv) -> calculateDueDate());
         ComboBoxUtils.initSimple(cbPaymentMethod,
                 new SimpleComboBoxModel(PaymentMethod.CASH.name(), translate("lbl.cash")),
                 new SimpleComboBoxModel(PaymentMethod.CREDIT.name(), translate("lbl.credit")));
@@ -266,6 +296,7 @@ public class PurchaseAddController extends CommonDataSaveController {
                 PurchaseProductVM::getSubtotalPurchase, StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colSellingPrice, new NumberCellFactory<>(locale),
                 PurchaseProductVM::getSellingPrice, StyleConstants.ALIGN_RIGHT);
+        disableOnValidationError(btnSaveAndAdd);
     }
 
     @Override
@@ -275,7 +306,15 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     @Override
     protected void registerValidator(ValidationSupport vs) {
+        registerRequiredFields(tfOrderNumber, tfOrderDate, tfSupplierName);
+        vs.registerValidator(tblPurchaseProduct, (c, v) -> ValidationResult.fromErrorIf(c,
+                translate(MessageCode.ERROR_REQUIRED), tblPurchaseProduct.getItems().isEmpty()));
+        revalidateOnChange(vs);
+    }
 
+    private void revalidateOnChange(ValidationSupport vs) {
+        tblPurchaseProduct.getItems()
+                .addListener((Change<? extends PurchaseProductVM> listener) -> vs.revalidate(tblPurchaseProduct));
     }
 
     @Override
@@ -308,24 +347,28 @@ public class PurchaseAddController extends CommonDataSaveController {
     }
 
     private void calculateDueDate() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate today = LocalDate.now();
+        LocalDate orderDate = parseDateQuietly(tfOrderDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        if (orderDate == null) {
+            tfDueDate.setText(null);
+            return;
+        }
         Integer periodCount = Integer.valueOf(ComboBoxUtils.getSelectedItem(cbPeriodCount).getValue());
         PaymentPeriodUnit periodUnit = PaymentPeriodUnit
                 .valueOf(ComboBoxUtils.getSelectedItem(cbPeriodUnit).getValue());
-        String dueDate = "";
+        LocalDate dueDate = null;
         switch (periodUnit) {
             case DAY:
-                dueDate = formatter.format(today.plusDays(periodCount));
+                dueDate = orderDate.plusDays(periodCount);
                 break;
             case WEEK:
-                dueDate = formatter.format(today.plusWeeks(periodCount));
+                dueDate = orderDate.plusWeeks(periodCount);
                 break;
             case MONTH:
-                dueDate = formatter.format(today.plusMonths(periodCount));
+                dueDate = orderDate.plusMonths(periodCount);
                 break;
         }
-        tfDueDate.setText(dueDate);
+        tfDueDate.setText(dueDate == null ? null
+                : dueDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
     }
 
     private void setSelectedSupplier(SupplierVM vm) {
@@ -338,7 +381,7 @@ public class PurchaseAddController extends CommonDataSaveController {
             tfSupplierAddress.setText(vm.getAddress());
             tfSupplierWebsite.setText(vm.getWebsite());
         } else if (selectedSupplier == null) {
-            TextFieldUtils.setTextNull(tfSupplierName, tfSupplierCode, tfSupplierEmail, tfSupplierPhone,
+            TextFieldUtils.setTextEmpty(tfSupplierName, tfSupplierCode, tfSupplierEmail, tfSupplierPhone,
                     tfSupplierAddress, tfSupplierWebsite);
         }
     }
@@ -354,9 +397,24 @@ public class PurchaseAddController extends CommonDataSaveController {
             tfSellingPrice.setText(toStringOrNull(vm.getSellingPrice()));
             tfPurchasePrice.setText(toStringOrNull(vm.getPurchasePrice()));
         } else if (selectedProduct == null) {
-            TextFieldUtils.setTextNull(tfProductName, tfProductBarcode, tfProductCategory, tfProductCode, tfProductUnit,
-                    tfSellingPrice, tfPurchasePrice, tfProductQuantity);
+            TextFieldUtils.setTextEmpty(tfProductName, tfProductBarcode, tfProductCategory, tfProductCode,
+                    tfProductUnit, tfSellingPrice, tfPurchasePrice, tfProductQuantity);
         }
+    }
+
+    private void resetControls() {
+        this.selectedSupplier = null;
+        this.selectedProduct = null;
+        setSelectedProduct(null);
+        setSelectedSupplier(null);
+        ComboBoxUtils.selectIndex(cbPaymentMethod, 0);
+        ComboBoxUtils.selectIndex(cbPeriodCount, 0);
+        ComboBoxUtils.selectIndex(cbPeriodUnit, 0);
+        TextFieldUtils.setTextEmpty(tfOrderNumber, tfDueDate);
+        tfOrderDate.setPlainText("");
+        tblPurchaseProduct.getItems().clear();
+        lblTotalProduct.setText("0");
+        lblTotalPurchase.setText("0");
     }
 
 }
