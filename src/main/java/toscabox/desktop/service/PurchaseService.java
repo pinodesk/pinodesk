@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import toscabox.desktop.constant.CacheNameConstants;
+import toscabox.desktop.constant.PaymentMethod;
+import toscabox.desktop.constant.PaymentStatus;
 import toscabox.desktop.domain.Product;
 import toscabox.desktop.domain.Purchase;
 import toscabox.desktop.domain.PurchaseDetail;
@@ -34,7 +36,7 @@ public class PurchaseService extends BaseService {
 
     @Cacheable(CacheNameConstants.PURCHASES_BY_FILTER)
     public List<PurchaseVM> searchPurchases(PurchaseFilterVM filter) {
-        return objectConverter.convertList(purchaseRepository.filter(filter), PurchaseVM.class);
+        return purchaseRepository.filter(filter);
     }
 
     @CacheEvict(value = { CacheNameConstants.PURCHASES_BY_FILTER }, allEntries = true)
@@ -49,6 +51,8 @@ public class PurchaseService extends BaseService {
         purchase.setPaymentPeriodCount(po.getPaymentPeriodCount());
         purchase.setPaymentPeriodUnit(po.getPaymentPeriodUnit() == null ? null : po.getPaymentPeriodUnit().name());
         purchase.setPaymentDueDate(po.getDueDate());
+        purchase.setPaymentStatus(po.getPaymentMethod().equals(PaymentMethod.CASH) ? PaymentStatus.PAID.name()
+                : PaymentStatus.UNPAID.name());
         purchase.setSupplierId(po.getSupplierId());
         Long purchaseId = purchaseRepository.create(purchase);
         for (PurchaseProductVM purchaseProduct : po.getPurchaseProducts()) {

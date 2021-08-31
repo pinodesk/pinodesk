@@ -78,5 +78,6 @@ public enum MessageCode implements IMessage {
     
     // Purchase
     SUCCESS_ADD_PURCHASE,
+    ERROR_ORDER_DATE_GREATER_THAN_TODAY,
 
 }

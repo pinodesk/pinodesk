@@ -21,4 +21,6 @@ public class PurchaseVM {
     private String paymentMethod;
     private Integer paymentPeriodCount;
     private String paymentPeriodUnit;
+    private LocalDate paymentDueDate;
+    private String paymentStatus;
 }

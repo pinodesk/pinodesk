@@ -309,6 +309,11 @@ public class PurchaseAddController extends CommonDataSaveController {
         registerRequiredFields(tfOrderNumber, tfOrderDate, tfSupplierName);
         vs.registerValidator(tblPurchaseProduct, (c, v) -> ValidationResult.fromErrorIf(c,
                 translate(MessageCode.ERROR_REQUIRED), tblPurchaseProduct.getItems().isEmpty()));
+        vs.registerValidator(tfOrderDate, (c, v) -> {
+            LocalDate orderDate = parseDateQuietly(tfOrderDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+            return ValidationResult.fromErrorIf(c, translate(MessageCode.ERROR_ORDER_DATE_GREATER_THAN_TODAY),
+                    orderDate != null && orderDate.isAfter(LocalDate.now()));
+        });
         revalidateOnChange(vs);
     }
 

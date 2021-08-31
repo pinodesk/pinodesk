@@ -6,9 +6,10 @@ import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
 
 import toscabox.desktop.domain.Purchase;
 import toscabox.desktop.viewmodel.PurchaseFilterVM;
+import toscabox.desktop.viewmodel.PurchaseVM;
 
 public interface PurchaseRepository extends CommonRepository<Purchase> {
     
-	List<Purchase> filter(PurchaseFilterVM filter);
+	List<PurchaseVM> filter(PurchaseFilterVM filter);
     
 }

@@ -24,10 +24,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TableColumn.SortType;
 import javafx.stage.Stage;
 import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.Page;
+import toscabox.desktop.constant.PaymentMethod;
+import toscabox.desktop.constant.PaymentPeriodUnit;
+import toscabox.desktop.constant.PaymentStatus;
 import toscabox.desktop.constant.StyleConstants;
 import toscabox.desktop.controller.BaseController;
 import toscabox.desktop.service.ConfigurationService;
@@ -70,6 +74,12 @@ public class PurchaseMainController extends BaseController {
 
     @FXML
     private TableColumn<PurchaseVM, String> colPaymentPeriod;
+
+    @FXML
+    private TableColumn<PurchaseVM, String> colPaymentStatus;
+
+    @FXML
+    private TableColumn<PurchaseVM, LocalDate> colDueDate;
 
     @FXML
     private TableColumn<PurchaseVM, LocalDateTime> colCreatedAt;
@@ -115,10 +125,24 @@ public class PurchaseMainController extends BaseController {
         Locale locale = new Locale(languageCode);
         TableViewUtils.setColumnValue(colOrderNumber, PurchaseVM::getOrderNumber);
         TableViewUtils.setColumnValue(colOrderDate, PurchaseVM::getOrderDate);
-        TableViewUtils.setColumnValue(colSupplierName, vm -> vm.getSupplierId().toString());
-        TableViewUtils.setColumnValue(colPaymentMethod, PurchaseVM::getPaymentMethod);
-        TableViewUtils.setColumnValue(colPaymentPeriod,
-                vm -> vm.getPaymentPeriodCount() + " " + vm.getPaymentPeriodUnit());
+        TableViewUtils.setColumnValue(colDueDate, PurchaseVM::getPaymentDueDate);
+        TableViewUtils.setColumnValue(colSupplierName, PurchaseVM::getSupplierName);
+        TableViewUtils.setColumnValue(colPaymentMethod, vm -> {
+            PaymentMethod pm = PaymentMethod.valueOf(vm.getPaymentMethod());
+            return PaymentMethod.CASH.equals(pm) ? translate("lbl.cash") : translate("lbl.credit");
+        });
+        TableViewUtils.setColumnValue(colPaymentStatus, vm -> {
+            PaymentStatus ps = PaymentStatus.valueOf(vm.getPaymentStatus());
+            return PaymentStatus.PAID.equals(ps) ? translate("lbl.paid") : translate("lbl.unpaid");
+        });
+        TableViewUtils.setColumnValue(colPaymentPeriod, vm -> {
+            PaymentMethod pm = PaymentMethod.valueOf(vm.getPaymentMethod());
+            if (PaymentMethod.CASH.equals(pm)) {
+                return null;
+            }
+            String periodUnit = PaymentPeriodUnit.valueOf(vm.getPaymentPeriodUnit()).name().toLowerCase();
+            return vm.getPaymentPeriodCount() + " " + translate("lbl." + periodUnit);
+        });
         TableViewUtils.initTableColumn(colTotalProduct, new NumberCellFactory<>(locale), PurchaseVM::getTotalProduct,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colTotalPayment, new NumberCellFactory<>(locale), PurchaseVM::getTotalPayment,
@@ -164,7 +188,8 @@ public class PurchaseMainController extends BaseController {
                         lblRows.setText("0");
                     }
                     tblPurchase.setItems(FXCollections.observableList(purchases));
-                    tblPurchase.getSortOrder().setAll(colOrderNumber); // Always sort by name after searching
+                    colCreatedAt.setSortType(SortType.DESCENDING);
+                    tblPurchase.getSortOrder().setAll(colCreatedAt);
                     lblRows.setText(purchases.size() + "");
                 }));
     }

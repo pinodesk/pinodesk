@@ -24,6 +24,7 @@ public class Purchase extends DataModel {
     public static final String C_PAYMENT_PERIOD_COUNT = "payment_period_count";
     public static final String C_PAYMENT_PERIOD_UNIT = "payment_period_unit";
     public static final String C_PAYMENT_DUE_DATE = "payment_due_date";
+    public static final String C_PAYMENT_STATUS = "payment_status";
 
     @DataColumn(C_SUPPLIER_ID)
     private Long supplierId;
@@ -48,9 +49,12 @@ public class Purchase extends DataModel {
 
     @DataColumn(C_PAYMENT_PERIOD_UNIT)
     private String paymentPeriodUnit;
-    
+
     @DataColumn(C_PAYMENT_DUE_DATE)
     private LocalDate paymentDueDate;
+
+    @DataColumn(C_PAYMENT_STATUS)
+    private String paymentStatus;
 
     @Override
     public String tableName() {

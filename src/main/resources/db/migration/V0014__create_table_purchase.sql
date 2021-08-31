@@ -12,6 +12,7 @@ create table if not exists purchase (
 	payment_period_count int,
 	payment_period_unit varchar(5),	-- DAY, WEEK, MONTH
 	payment_due_date date,
+	payment_status varchar(6), -- PAID, UNPAID
 	primary key (id),
 	index idx_purchase__deleted_at (deleted_at),
 	index idx_purchase__supplier_id (supplier_id),
