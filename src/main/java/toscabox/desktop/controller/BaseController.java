@@ -4,12 +4,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -21,7 +19,6 @@ import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
@@ -289,6 +286,18 @@ public abstract class BaseController {
         return toStringOrDefault(num, "");
     }
 
+    protected String toStringOrDefault(Long num, String dflt) {
+        return num == null ? dflt : num.toString();
+    }
+
+    protected String toStringOrNull(Long num) {
+        return toStringOrDefault(num, null);
+    }
+
+    protected String toStringOrEmpty(Long num) {
+        return toStringOrDefault(num, "");
+    }
+
     protected BigDecimal toBigDecimalOrDefault(String str, BigDecimal dflt) {
         return StringUtils.isNumeric(str) ? NumberUtils.toScaledBigDecimal(str) : dflt;
     }
@@ -302,7 +311,7 @@ public abstract class BaseController {
     }
 
     protected Integer toIntegerOrDefault(String str, Integer dflt) {
-        return StringUtils.isNumeric(str) ? NumberUtils.toInt(str) : dflt;
+        return StringUtils.isNumeric(str) ? Integer.valueOf(str) : dflt;
     }
 
     protected Integer toIntegerOrNull(String str) {

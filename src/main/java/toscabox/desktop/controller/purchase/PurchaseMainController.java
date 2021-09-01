@@ -105,7 +105,11 @@ public class PurchaseMainController extends BaseController {
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        // not yet
+        setPageData(purchaseFilter);
+        StageUtils.modal(Page.TRANSACTION_PURCHASE_FILTER, false, we -> {
+            purchaseFilter = getPageData();
+            searchPurchases();
+        });
     }
 
     @FXML
