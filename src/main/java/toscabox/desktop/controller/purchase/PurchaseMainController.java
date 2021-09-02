@@ -4,10 +4,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
@@ -17,17 +19,19 @@ import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn.SortType;
+import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
+import toscabox.desktop.constant.MessageCode;
 import toscabox.desktop.constant.Page;
 import toscabox.desktop.constant.PaymentMethod;
 import toscabox.desktop.constant.PaymentPeriodUnit;
@@ -114,7 +118,15 @@ public class PurchaseMainController extends BaseController {
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-        // not yet
+        ObservableList<PurchaseVM> items = tblPurchase.getSelectionModel().getSelectedItems();
+        if (!items.isEmpty()) {
+            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PURCHASES);
+            if (result.isConfirmed()) {
+                purchaseService.removePurchases(items.stream().map(PurchaseVM::getId).collect(Collectors.toList()));
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PURCHASES);
+                searchPurchases();
+            }
+        }
     }
 
     @Override

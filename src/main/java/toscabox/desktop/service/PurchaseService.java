@@ -2,6 +2,8 @@ package toscabox.desktop.service;
 
 import java.util.List;
 
+import com.gitlab.muhammadkholidb.sequel.sql.Where;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -72,6 +74,13 @@ public class PurchaseService extends BaseService {
             productRepository.update(product);
         }
         return purchaseId;
+    }
+
+    @CacheEvict(value = { CacheNameConstants.PURCHASES_BY_FILTER }, allEntries = true)
+    @Transactional
+    public void removePurchases(List<Long> ids) {
+        purchaseRepository.delete(ids);
+        purchaseDetailRepository.delete(new Where().in(PurchaseDetail.C_PURCHASE_ID, ids));
     }
 
 }

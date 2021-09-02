@@ -54,6 +54,7 @@ public class SupplierService extends BaseService {
     @Transactional
     public void removeSuppliers(List<Long> ids) {
         supplierRepository.delete(ids);
+        supplierContactRepository.delete(new Where().in(SupplierContact.C_SUPPLIER_ID, ids));
     }
 
     @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER,
