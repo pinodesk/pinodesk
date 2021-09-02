@@ -1,6 +1,9 @@
 package toscabox.desktop.controller.purchase;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -21,6 +24,7 @@ import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
 import javafx.collections.ListChangeListener.Change;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -30,7 +34,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import toscabox.desktop.constant.CommonConstants;
-import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.MessageCode;
 import toscabox.desktop.constant.Page;
 import toscabox.desktop.constant.PaymentMethod;
@@ -163,7 +166,6 @@ public class PurchaseAddController extends CommonDataSaveController {
     private Integer totalProduct = 0;
     private BigDecimal totalPayment = BigDecimal.ZERO;
 
-    private ConfigurationService configurationService;
     private PurchaseService purchaseService;
 
     @FXML
@@ -188,14 +190,40 @@ public class PurchaseAddController extends CommonDataSaveController {
             purchaseProduct.setPurchaseQuantity(purchaseQuantity);
             purchaseProduct.setSellingPrice(toBigDecimalOrDefault(tfSellingPrice.getText(), null));
             purchaseProduct.setSubtotalPurchase(subtotalPurchase);
+            int indexProduct = getProductIndexInTable(selectedProduct, tblPurchaseProduct);
+            if (indexProduct != -1) {
+                ObservableList<PurchaseProductVM> items = tblPurchaseProduct.getItems();
+                PurchaseProductVM item = items.get(indexProduct);
+                totalProduct = totalProduct - item.getPurchaseQuantity();
+                totalPayment = totalPayment.subtract(item.getSubtotalPurchase());
+                tblPurchaseProduct.getItems().remove(indexProduct);
+            }
             tblPurchaseProduct.getItems().add(purchaseProduct);
             this.selectedProduct = null;
             setSelectedProduct(null);
             totalProduct = totalProduct + purchaseQuantity;
             totalPayment = totalPayment.add(subtotalPurchase);
-            lblTotalPurchase.setText(toStringOrDefault(totalPayment, "0"));
-            lblTotalProduct.setText(toStringOrDefault(totalProduct, "0"));
+            lblTotalPurchase.setText(formatNumber(totalPayment));
+            lblTotalProduct.setText(formatNumber(totalProduct));
         }
+    }
+
+    private String formatNumber(Object number) {
+        DecimalFormat df = new DecimalFormat();
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(resources.getLocale()));
+        df.setGroupingUsed(true);
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        return df.format(number);
+    }
+
+    private int getProductIndexInTable(ProductVM product, TableView<PurchaseProductVM> table) {
+        ObservableList<PurchaseProductVM> items = table.getItems();
+        for (int i = 0; i < items.size(); i++) {
+            if (items.get(i).getProduct().equals(product)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private boolean isValidProductValues(Integer purchaseQuantity, BigDecimal purchasePrice, BigDecimal sellingPrice) {
@@ -235,12 +263,12 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     @Override
     protected void initServices(ApplicationContext ctx) {
-        configurationService = SpringUtils.getBean(ConfigurationService.class);
         purchaseService = SpringUtils.getBean(PurchaseService.class);
     }
 
     @Override
     protected void initDataSaveControlActions() {
+        Locale locale = resources.getLocale();
         TextFieldUtils.onTextChanged(tfOrderDate, (ov, nv) -> calculateDueDate());
         ComboBoxUtils.initSimple(cbPaymentMethod,
                 new SimpleComboBoxModel(PaymentMethod.CASH.name(), translate("lbl.cash")),
@@ -281,8 +309,6 @@ public class PurchaseAddController extends CommonDataSaveController {
                 setFocused(tfProductQuantity);
             }
         });
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        Locale locale = new Locale(languageCode);
         TextFieldUtils.setDigitTextFields(tfSellingPrice, tfPurchasePrice, tfProductQuantity);
         TableViewUtils.setColumnValue(colProductName, purchaseProduct -> purchaseProduct.getProduct().getName());
         TableViewUtils.setColumnValue(colUnit, purchaseProduct -> purchaseProduct.getProduct().getUnitLabel());
