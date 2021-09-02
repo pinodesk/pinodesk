@@ -161,13 +161,15 @@ public class CustomerMainController extends BaseController {
     }
 
     private void handleActionTableCustomer() {
-        CustomerVM selected = tableCustomer.getSelectionModel().getSelectedItem();
-        setPageData(selected);
-        StageUtils.modal(Page.MASTER_CUSTOMER_EDIT, false, event -> {
-            if (Boolean.TRUE.equals(getPageData())) {
-                searchCustomers();
-            }
-        });
+        if (TableViewUtils.hasItemSelected(tableCustomer)) {
+            setPageData(TableViewUtils.getSelectedItem(tableCustomer));
+            StageUtils.modal(Page.MASTER_CUSTOMER_EDIT, false, event -> {
+                if (Boolean.TRUE.equals(getPageData())) {
+                    searchCustomers();
+                }
+            });
+
+        }
     }
 
 }

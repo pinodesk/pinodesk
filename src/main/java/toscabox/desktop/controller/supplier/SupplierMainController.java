@@ -165,13 +165,14 @@ public class SupplierMainController extends BaseController {
     }
 
     private void handleActionTableSupplier() {
-        SupplierVM selected = tableSupplier.getSelectionModel().getSelectedItem();
-        setPageData(selected);
-        StageUtils.modal(Page.MASTER_SUPPLIER_EDIT, false, event -> {
-            if (Boolean.TRUE.equals(getPageData())) {
-                searchSuppliers();
-            }
-        });
+        if (TableViewUtils.hasItemSelected(tableSupplier)) {
+            setPageData(TableViewUtils.getSelectedItem(tableSupplier));
+            StageUtils.modal(Page.MASTER_SUPPLIER_EDIT, false, event -> {
+                if (Boolean.TRUE.equals(getPageData())) {
+                    searchSuppliers();
+                }
+            });
+        }
     }
 
 }

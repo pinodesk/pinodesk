@@ -185,13 +185,14 @@ public class ProductMainController extends BaseController {
     }
 
     private void handleActionTableProduct() {
-        ProductVM selected = tableProduct.getSelectionModel().getSelectedItem();
-        setPageData(selected);
-        StageUtils.modal(Page.MASTER_PRODUCT_EDIT, false, event -> {
-            if (Boolean.TRUE.equals(getPageData())) {
-                searchProducts();
-            }
-        });
+        if (TableViewUtils.hasItemSelected(tableProduct)) {
+            setPageData(TableViewUtils.getSelectedItem(tableProduct));
+            StageUtils.modal(Page.MASTER_PRODUCT_EDIT, false, event -> {
+                if (Boolean.TRUE.equals(getPageData())) {
+                    searchProducts();
+                }
+            });
+        }
     }
 
     @SuppressWarnings("unchecked")
