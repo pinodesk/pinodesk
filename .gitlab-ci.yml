@@ -20,7 +20,7 @@ cache:
 
 build:
   stage: build
-  script: mvn $MAVEN_CLI_OPTS test-compile
+  script: mvn $MAVEN_CLI_OPTS test-compile -U 
   allow_failure: false
 
 test:
@@ -28,7 +28,7 @@ test:
     JACOCO_REPORT_HTML: $CI_PROJECT_DIR/target/site/jacoco/index.html
   stage: test
   script:
-    - mvn $MAVEN_CLI_OPTS verify
+    - mvn $MAVEN_CLI_OPTS verify -U 
     - if [ -f $JACOCO_REPORT_HTML ]; then cat $JACOCO_REPORT_HTML | grep -o "Total[^%]*%"; fi
   allow_failure: false
   coverage: "/Total.*?([0-9]{1,3})%/"
