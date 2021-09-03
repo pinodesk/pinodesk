@@ -67,4 +67,9 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
         return performSelect(sb.toString(), params, PurchaseVM.class);
     }
 
+    @Override
+    public boolean existsByOrderNumberAndSupplierId(String orderNumber, Long supplierId) {
+        return exists(
+                new Where().equals(Purchase.C_ORDER_NUMBER, orderNumber).andEquals(Purchase.C_SUPPLIER_ID, supplierId));
+    }
 }

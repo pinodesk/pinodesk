@@ -11,11 +11,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import toscabox.desktop.constant.CacheNameConstants;
+import toscabox.desktop.constant.DomainError;
 import toscabox.desktop.constant.PaymentMethod;
 import toscabox.desktop.constant.PaymentStatus;
 import toscabox.desktop.domain.Product;
 import toscabox.desktop.domain.Purchase;
 import toscabox.desktop.domain.PurchaseDetail;
+import toscabox.desktop.exception.DomainException;
 import toscabox.desktop.repository.ProductRepository;
 import toscabox.desktop.repository.PurchaseDetailRepository;
 import toscabox.desktop.repository.PurchaseRepository;
@@ -44,6 +46,9 @@ public class PurchaseService extends BaseService {
     @CacheEvict(value = { CacheNameConstants.PURCHASES_BY_FILTER }, allEntries = true)
     @Transactional
     public Long createPurchase(PurchaseOrderVM po) {
+        if (purchaseRepository.existsByOrderNumberAndSupplierId(po.getOrderNumber(), po.getSupplierId())) {
+            throw new DomainException(DomainError.PURCHASE_EXISTS_BY_ORDER_NUMBER_AND_SUPPLIER_ID);
+        }
         Purchase purchase = new Purchase();
         purchase.setOrderDate(po.getOrderDate());
         purchase.setOrderNumber(po.getOrderNumber());
