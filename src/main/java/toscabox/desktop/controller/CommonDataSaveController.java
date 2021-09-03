@@ -3,9 +3,7 @@ package toscabox.desktop.controller;
 import java.util.Arrays;
 
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
-import com.gitlab.muhammadkholidb.pandora.validator.EmailValidator;
-import com.gitlab.muhammadkholidb.pandora.validator.WebsiteDomainValidator;
-import com.gitlab.muhammadkholidb.pandora.validator.WhitespaceValidator;
+import com.gitlab.muhammadkholidb.pandora.utility.CommonValidator;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -120,7 +118,7 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
 
     protected void registerWhitespaceValidator(Control control, boolean required) {
         validationSupport.registerValidator(control, required,
-                new WhitespaceValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
+                CommonValidator.createWhitespaceValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
     }
 
     protected void registerWhitespaceValidator(Control control) {
@@ -129,7 +127,7 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
 
     protected void registerEmailValidator(Control control, boolean required) {
         validationSupport.registerValidator(control, required,
-                new EmailValidator(translate(MessageCode.ERROR_INVALID_EMAIL_FORMAT)));
+                CommonValidator.createEmailValidator(translate(MessageCode.ERROR_INVALID_EMAIL_FORMAT)));
     }
 
     protected void registerEmailValidator(Control control) {
@@ -138,7 +136,7 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
 
     protected void registerDomainValidator(Control control, boolean required) {
         validationSupport.registerValidator(control, required,
-                new WebsiteDomainValidator(translate(MessageCode.ERROR_INVALID_DOMAIN_FORMAT)));
+                CommonValidator.createDomainValidator(translate(MessageCode.ERROR_INVALID_DOMAIN_FORMAT)));
     }
 
     protected void registerDomainValidator(Control control) {

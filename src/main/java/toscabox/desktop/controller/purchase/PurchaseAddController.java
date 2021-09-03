@@ -1,14 +1,12 @@
 package toscabox.desktop.controller.purchase;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
@@ -40,7 +38,6 @@ import toscabox.desktop.constant.PaymentMethod;
 import toscabox.desktop.constant.PaymentPeriodUnit;
 import toscabox.desktop.constant.StyleConstants;
 import toscabox.desktop.controller.CommonDataSaveController;
-import toscabox.desktop.service.ConfigurationService;
 import toscabox.desktop.service.PurchaseService;
 import toscabox.desktop.utility.SpringUtils;
 import toscabox.desktop.viewmodel.ProductVM;
@@ -206,29 +203,6 @@ public class PurchaseAddController extends CommonDataSaveController {
             lblTotalPurchase.setText(formatNumber(totalPayment));
             lblTotalProduct.setText(formatNumber(totalProduct));
         }
-    }
-
-    private String formatNumber(Object number) {
-        DecimalFormat df = new DecimalFormat();
-        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(resources.getLocale()));
-        df.setGroupingUsed(true);
-        df.setRoundingMode(RoundingMode.HALF_UP);
-        return df.format(number);
-    }
-
-    private int getProductIndexInTable(ProductVM product, TableView<PurchaseProductVM> table) {
-        ObservableList<PurchaseProductVM> items = table.getItems();
-        for (int i = 0; i < items.size(); i++) {
-            if (items.get(i).getProduct().equals(product)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private boolean isValidProductValues(Integer purchaseQuantity, BigDecimal purchasePrice, BigDecimal sellingPrice) {
-        return selectedProduct != null && purchasePrice.compareTo(BigDecimal.ZERO) > 0 && purchaseQuantity > 0
-                && (sellingPrice == null || sellingPrice.compareTo(BigDecimal.ZERO) > 0);
     }
 
     @FXML
@@ -446,6 +420,16 @@ public class PurchaseAddController extends CommonDataSaveController {
         tblPurchaseProduct.getItems().clear();
         lblTotalProduct.setText("0");
         lblTotalPurchase.setText("0");
+    }
+
+    private int getProductIndexInTable(ProductVM product, TableView<PurchaseProductVM> table) {
+        Predicate<PurchaseProductVM> productExists = item -> item.getProduct().equals(product);
+        return TableViewUtils.getItemIndex(productExists, table);
+    }
+
+    private boolean isValidProductValues(Integer purchaseQuantity, BigDecimal purchasePrice, BigDecimal sellingPrice) {
+        return selectedProduct != null && purchasePrice.compareTo(BigDecimal.ZERO) > 0 && purchaseQuantity > 0
+                && (sellingPrice == null || sellingPrice.compareTo(BigDecimal.ZERO) > 0);
     }
 
 }

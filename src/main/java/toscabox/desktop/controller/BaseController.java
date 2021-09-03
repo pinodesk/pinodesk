@@ -3,7 +3,10 @@ package toscabox.desktop.controller;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -320,6 +323,14 @@ public abstract class BaseController {
 
     protected Integer toIntegerOrZero(String str) {
         return toIntegerOrDefault(str, 0);
+    }
+
+    protected String formatNumber(Number number) {
+        DecimalFormat df = new DecimalFormat();
+        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(resources.getLocale()));
+        df.setGroupingUsed(true);
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        return df.format(number);
     }
 
 }
