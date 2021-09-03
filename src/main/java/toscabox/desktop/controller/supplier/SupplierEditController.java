@@ -3,7 +3,9 @@ package toscabox.desktop.controller.supplier;
 import java.util.Arrays;
 import java.util.List;
 
+import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
@@ -16,6 +18,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -23,6 +26,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import toscabox.desktop.constant.MessageCode;
 import toscabox.desktop.constant.Page;
+import toscabox.desktop.constant.SupplierType;
 import toscabox.desktop.controller.CommonDataSaveController;
 import toscabox.desktop.service.SupplierService;
 import toscabox.desktop.viewmodel.SupplierContactAddVM;
@@ -54,6 +58,9 @@ public class SupplierEditController extends CommonDataSaveController {
 
     @FXML
     private Button btnAddContact;
+
+    @FXML
+    private ComboBox<SimpleComboBoxModel> cbType;
 
     @FXML
     private TableView<SupplierContactAddVM> tblSupplierContact;
@@ -110,6 +117,9 @@ public class SupplierEditController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colName, SupplierContactAddVM::getName);
         TableViewUtils.setColumnValue(colPhone, SupplierContactAddVM::getPhone);
         TableViewUtils.setColumnValue(colEmail, SupplierContactAddVM::getEmail);
+        ComboBoxUtils.initSimple(cbType,
+                new SimpleComboBoxModel(SupplierType.WHOLESALER.name(), translate("lbl.wholesaler")),
+                new SimpleComboBoxModel(SupplierType.RETAILER.name(), translate("lbl.retailer")));
         TextFieldUtils.setDigitTextFields(tfPhone);
     }
 
@@ -122,6 +132,8 @@ public class SupplierEditController extends CommonDataSaveController {
         tfEmail.setText(currentSupplier.getEmail());
         tfAddress.setText(currentSupplier.getAddress());
         tfWebsite.setText(currentSupplier.getWebsite());
+        ComboBoxUtils.select(cbType, () -> cbType.getItems().stream()
+                .filter(vm -> currentSupplier.getType().equals(vm.getValue())).findAny().orElseThrow());
         List<SupplierContactAddVM> contacts = supplierService.getSupplierContacts(currentSupplier.getId());
         tblSupplierContact.getItems().addAll(contacts);
     }
@@ -144,6 +156,7 @@ public class SupplierEditController extends CommonDataSaveController {
         supplier.setEmail(tfEmail.getText());
         supplier.setAddress(tfAddress.getText());
         supplier.setWebsite(tfWebsite.getText());
+        supplier.setType(ComboBoxUtils.getSelectedItem(cbType).getValue());
         return supplierService.updateSupplier(supplier, tblSupplierContact.getItems());
     }
 

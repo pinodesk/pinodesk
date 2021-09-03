@@ -11,4 +11,5 @@ public class SupplierEditVM {
     private String email;
     private String website;
     private String address;
+    private String type;
 }

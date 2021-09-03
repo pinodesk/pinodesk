@@ -50,6 +50,7 @@
         <columns>
           <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl.code" />
           <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="200.0" text="%lbl.name" />
+            <TableColumn fx:id="colType" minWidth="-Infinity" prefWidth="200.0" text="%lbl.type" />
             <TableColumn fx:id="colPhone" minWidth="-Infinity" prefWidth="200.0" text="%lbl.phone" />
             <TableColumn fx:id="colEmail" minWidth="-Infinity" prefWidth="200.0" text="%lbl.email" />
             <TableColumn fx:id="colAddress" minWidth="-Infinity" prefWidth="300.0" text="%lbl.address" />

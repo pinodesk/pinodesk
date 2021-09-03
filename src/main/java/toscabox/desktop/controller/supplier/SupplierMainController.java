@@ -26,6 +26,7 @@ import javafx.stage.Stage;
 import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.MessageCode;
 import toscabox.desktop.constant.Page;
+import toscabox.desktop.constant.SupplierType;
 import toscabox.desktop.controller.BaseController;
 import toscabox.desktop.service.SupplierService;
 import toscabox.desktop.viewmodel.SupplierFilterVM;
@@ -62,6 +63,9 @@ public class SupplierMainController extends BaseController {
 
     @FXML
     private TableColumn<SupplierVM, String> colWebsite;
+
+    @FXML
+    private TableColumn<SupplierVM, String> colType;
 
     @FXML
     private TableColumn<SupplierVM, LocalDateTime> colCreatedAt;
@@ -120,10 +124,14 @@ public class SupplierMainController extends BaseController {
         TableViewUtils.setColumnValue(colEmail, SupplierVM::getEmail);
         TableViewUtils.setColumnValue(colAddress, SupplierVM::getAddress);
         TableViewUtils.setColumnValue(colWebsite, SupplierVM::getWebsite);
-        TableViewUtils.initTableColumn(colCreatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                SupplierVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                SupplierVM::getUpdatedAt);
+        TableViewUtils.setColumnValue(colType, vm -> {
+            SupplierType type = SupplierType.valueOf(vm.getType());
+            return SupplierType.WHOLESALER.equals(type) ? translate("lbl.wholesaler") : translate("lbl.retailer");
+        });
+        TableViewUtils.initTableColumn(colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), SupplierVM::getCreatedAt);
+        TableViewUtils.initTableColumn(colUpdatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), SupplierVM::getUpdatedAt);
         tableSupplier.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableSupplier.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

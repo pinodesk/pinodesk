@@ -9,6 +9,7 @@ create table if not exists supplier (
 	email varchar(256),
 	website varchar(256),
 	address varchar(512),
+    type char(10), -- WHOLESALER, RETAILER
 	primary key (id),
 	index idx_supplier__deleted_at (deleted_at),
 	index idx_supplier__code (code),

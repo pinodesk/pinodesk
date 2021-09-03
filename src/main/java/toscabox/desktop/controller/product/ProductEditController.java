@@ -30,6 +30,7 @@ import javafx.scene.control.TextField;
 import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.MessageCode;
+import toscabox.desktop.constant.SimpleStatus;
 import toscabox.desktop.controller.CommonDataSaveController;
 import toscabox.desktop.javafx.converter.DrugCategoryComboBoxConverter;
 import toscabox.desktop.javafx.converter.ProductCategoryComboBoxConverter;
@@ -255,7 +256,7 @@ public class ProductEditController extends CommonDataSaveController {
         tfSellingPrice.setText(toStringOrNull(currentProduct.getSellingPrice()));
         chkIncludesVat.setText(
                 chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
-        chkIncludesVat.setSelected(CommonConstants.YES.equals(currentProduct.getVatIncluded()));
+        chkIncludesVat.setSelected(SimpleStatus.YES.equals(SimpleStatus.valueOf(currentProduct.getVatIncluded())));
         LocalDate expiredDate = currentProduct.getExpiredDate();
         tfExpiredDate.setPlainText(
                 expiredDate == null ? null : expiredDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
@@ -393,7 +394,7 @@ public class ProductEditController extends CommonDataSaveController {
         productEdit.setQuantity(tfQuantity.getText() == null ? null : toInt(tfQuantity.getText()));
         productEdit.setPurchasePrice(toScaledBigDecimal(tfPurchasePrice.getText()));
         productEdit.setSellingPrice(toScaledBigDecimal(tfSellingPrice.getText()));
-        productEdit.setVatIncluded(chkIncludesVat.isSelected() ? CommonConstants.YES : CommonConstants.NO);
+        productEdit.setVatIncluded(chkIncludesVat.isSelected() ? SimpleStatus.YES.name() : SimpleStatus.NO.name());
         productEdit.setUnit(cbUnit.getSelectionModel().getSelectedItem());
         productEdit.setProductCategory(cbCategory.getSelectionModel().getSelectedItem());
         String expiredDate = tfExpiredDate.getTextMasked();

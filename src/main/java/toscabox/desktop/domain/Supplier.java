@@ -18,6 +18,7 @@ public class Supplier extends DataModel {
     public static final String C_EMAIL = "email";
     public static final String C_WEBSITE = "website";
     public static final String C_ADDRESS = "address";
+    public static final String C_TYPE = "type";
 
     @DataColumn(C_CODE)
     private String code;
@@ -36,6 +37,9 @@ public class Supplier extends DataModel {
 
     @DataColumn(C_ADDRESS)
     private String address;
+
+    @DataColumn(C_TYPE)
+    private String type;
 
     @Override
     public String tableName() {

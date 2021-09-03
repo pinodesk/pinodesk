@@ -30,12 +30,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import toscabox.desktop.constant.CommonConstants;
-import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.MessageCode;
 import toscabox.desktop.constant.Page;
+import toscabox.desktop.constant.SimpleStatus;
 import toscabox.desktop.constant.StyleConstants;
 import toscabox.desktop.controller.BaseController;
-import toscabox.desktop.service.ConfigurationService;
 import toscabox.desktop.service.ProductService;
 import toscabox.desktop.viewmodel.ProductFilterVM;
 import toscabox.desktop.viewmodel.ProductVM;
@@ -88,8 +87,6 @@ public class ProductMainController extends BaseController {
 
     private ProductService productService;
 
-    private ConfigurationService configurationService;
-
     @FXML
     void onActionBtnAdd(ActionEvent event) {
         StageUtils.modal(Page.MASTER_PRODUCT_ADD, false, we -> {
@@ -124,7 +121,6 @@ public class ProductMainController extends BaseController {
     @Override
     protected void initServices(ApplicationContext ctx) {
         productService = ctx.getBean(ProductService.class);
-        configurationService = ctx.getBean(ConfigurationService.class);
     }
 
     @Override
@@ -145,8 +141,7 @@ public class ProductMainController extends BaseController {
     }
 
     private void initTableProduct() {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        Locale locale = new Locale(languageCode);
+        Locale locale = resources.getLocale();
         TableViewUtils.setColumnValue(colCode, ProductVM::getCode);
         TableViewUtils.setColumnValue(colName, ProductVM::getName);
         TableViewUtils.setColumnValue(colCategory, ProductVM::getCategoryName);
@@ -160,14 +155,15 @@ public class ProductMainController extends BaseController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colPurchasePrice, new NumberCellFactory<>(locale), ProductVM::getPurchasePrice,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colIncludesVat, new BooleanImageCellFactory<>(CommonConstants.YES::equals),
-                ProductVM::getVatIncluded, StyleConstants.ALIGN_CENTER);
+        TableViewUtils.initTableColumn(colIncludesVat,
+                new BooleanImageCellFactory<>(val -> SimpleStatus.YES.name().equals(val)), ProductVM::getVatIncluded,
+                StyleConstants.ALIGN_CENTER);
         TableViewUtils.initTableColumn(colExpiredDate, new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                ProductVM::getExpiredDate); 
-        TableViewUtils.initTableColumn(colCreatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                ProductVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                ProductVM::getUpdatedAt);
+                ProductVM::getExpiredDate);
+        TableViewUtils.initTableColumn(colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), ProductVM::getCreatedAt);
+        TableViewUtils.initTableColumn(colUpdatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), ProductVM::getUpdatedAt);
         tableProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
@@ -199,15 +195,16 @@ public class ProductMainController extends BaseController {
     private void searchProducts() {
         tableProduct.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableProduct.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> productService.searchProduct(productFilter)).thenAccept(products -> Platform.runLater(() -> {
-            if (products.isEmpty()) {
-                tableProduct.setPlaceholder(new Label(translate("lbl.nodata")));
-                lblRows.setText("0");
-            }
-            tableProduct.setItems(FXCollections.observableList(products));
-            tableProduct.getSortOrder().setAll(colName); // Always sort by name after searching
-            lblRows.setText(products.size() + "");
-        }));
+        AsyncUtils.supply(() -> productService.searchProduct(productFilter))
+                .thenAccept(products -> Platform.runLater(() -> {
+                    if (products.isEmpty()) {
+                        tableProduct.setPlaceholder(new Label(translate("lbl.nodata")));
+                        lblRows.setText("0");
+                    }
+                    tableProduct.setItems(FXCollections.observableList(products));
+                    tableProduct.getSortOrder().setAll(colName); // Always sort by name after searching
+                    lblRows.setText(products.size() + "");
+                }));
     }
 
 }

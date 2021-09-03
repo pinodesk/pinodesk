@@ -29,6 +29,7 @@ import javafx.scene.control.TextField;
 import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.ConfigurationConstants;
 import toscabox.desktop.constant.MessageCode;
+import toscabox.desktop.constant.SimpleStatus;
 import toscabox.desktop.controller.CommonDataSaveController;
 import toscabox.desktop.javafx.converter.DrugCategoryComboBoxConverter;
 import toscabox.desktop.javafx.converter.ProductCategoryComboBoxConverter;
@@ -212,7 +213,7 @@ public class ProductAddController extends CommonDataSaveController {
         productAdd.setQuantity(toInt(tfQuantity.getText()));
         productAdd.setPurchasePrice(toScaledBigDecimal(tfPurchasePrice.getText()));
         productAdd.setSellingPrice(toScaledBigDecimal(tfSellingPrice.getText()));
-        productAdd.setVatIncluded(chkIncludesVat.isSelected() ? CommonConstants.YES : CommonConstants.NO);
+        productAdd.setVatIncluded(chkIncludesVat.isSelected() ? SimpleStatus.YES.name() : SimpleStatus.NO.name());
         productAdd.setUnit(cbUnit.getSelectionModel().getSelectedItem());
         productAdd.setProductCategory(cbCategory.getSelectionModel().getSelectedItem());
         String expiredDate = tfExpiredDate.getTextMasked();

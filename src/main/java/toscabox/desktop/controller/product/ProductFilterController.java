@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import toscabox.desktop.constant.CommonConstants;
+import toscabox.desktop.constant.SimpleStatus;
 import toscabox.desktop.constant.StringConstants;
 import toscabox.desktop.controller.CommonDataFilterController;
 import toscabox.desktop.javafx.converter.ProductCategoryComboBoxConverter;
@@ -224,8 +225,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         ComboBoxUtils.initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack),
                 new RackComboBoxConverter(cbRack));
         ComboBoxUtils.initSimple(cbIncludesVat, new SimpleComboBoxModel(null, StringConstants.EMPTY),
-                new SimpleComboBoxModel(CommonConstants.YES, translate("lbl.yes")),
-                new SimpleComboBoxModel(CommonConstants.NO, translate("lbl.no")));
+                new SimpleComboBoxModel(SimpleStatus.YES.name(), translate("lbl.yes")),
+                new SimpleComboBoxModel(SimpleStatus.NO.name(), translate("lbl.no")));
         // @formatter:off
         TextFieldUtils.setDigitTextFields(
                 tfBarcode,

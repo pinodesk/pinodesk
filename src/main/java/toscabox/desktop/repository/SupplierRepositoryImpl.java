@@ -42,6 +42,9 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
         if (StringUtils.isNotBlank(filter.getAddress())) {
             where.containsIgnoreCase(Supplier.C_ADDRESS, filter.getAddress());
         }
+        if (StringUtils.isNotBlank(filter.getType())) {
+            where.equals(Supplier.C_TYPE, filter.getType());
+        }
         return read(where);
     }
 
@@ -66,14 +69,16 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
             Supplier.C_PHONE,
             Supplier.C_EMAIL,
             Supplier.C_WEBSITE,
-            Supplier.C_ADDRESS
+            Supplier.C_ADDRESS,
+            Supplier.C_TYPE
         }, new Object[] {
             supplierAdd.getName(),
             supplierAdd.getCode(),
             supplierAdd.getPhone(),
             supplierAdd.getEmail(),
             supplierAdd.getWebsite(),
-            supplierAdd.getAddress()
+            supplierAdd.getAddress(),
+            supplierAdd.getType()
         });
     }
 
@@ -85,14 +90,16 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
             Supplier.C_PHONE,
             Supplier.C_EMAIL,
             Supplier.C_WEBSITE,
-            Supplier.C_ADDRESS
+            Supplier.C_ADDRESS,
+            Supplier.C_TYPE
         }, new Object[] {
             supplierEdit.getName(),
             supplierEdit.getCode(),
             supplierEdit.getPhone(),
             supplierEdit.getEmail(),
             supplierEdit.getWebsite(),
-            supplierEdit.getAddress()
+            supplierEdit.getAddress(),
+            supplierEdit.getType()
         }, supplierEdit.getId());
     }
     // @formatter:on
