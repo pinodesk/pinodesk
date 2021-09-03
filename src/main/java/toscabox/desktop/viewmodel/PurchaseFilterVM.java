@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import lombok.Data;
 import toscabox.desktop.constant.PaymentMethod;
 import toscabox.desktop.constant.PaymentPeriodUnit;
+import toscabox.desktop.constant.PaymentStatus;
 
 @Data
 public class PurchaseFilterVM {
@@ -21,4 +22,5 @@ public class PurchaseFilterVM {
     private BigDecimal totalPaymentMax;
     private Integer totalProductMin;
     private Integer totalProductMax;
+    private PaymentStatus paymentStatus;
 }

@@ -17,6 +17,7 @@ import toscabox.desktop.constant.CommonConstants;
 import toscabox.desktop.constant.Page;
 import toscabox.desktop.constant.PaymentMethod;
 import toscabox.desktop.constant.PaymentPeriodUnit;
+import toscabox.desktop.constant.PaymentStatus;
 import toscabox.desktop.constant.StringConstants;
 import toscabox.desktop.controller.CommonDataFilterController;
 import toscabox.desktop.viewmodel.PurchaseFilterVM;
@@ -41,6 +42,9 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbPaymentPeriod;
+
+    @FXML
+    private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
 
     @FXML
     private MaskedTextField tfDueDateMin;
@@ -96,6 +100,12 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
                                 .filter(vm -> currentFilter.getPaymentPeriodUnit().name().equals(vm.getValue()))
                                 .findAny().orElseThrow());
             }
+            if (currentFilter.getPaymentStatus() != null) {
+                ComboBoxUtils.select(cbPaymentStatus,
+                        () -> cbPaymentStatus.getItems().stream()
+                                .filter(vm -> currentFilter.getPaymentStatus().name().equals(vm.getValue())).findAny()
+                                .orElseThrow());
+            }
         }
     }
 
@@ -109,10 +119,13 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         filter.setDueDateMin(parseDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         SimpleComboBoxModel selectedPaymentMethod = ComboBoxUtils.getSelectedItem(cbPaymentMethod);
         SimpleComboBoxModel selectedPaymentPeriod = ComboBoxUtils.getSelectedItem(cbPaymentPeriod);
+        SimpleComboBoxModel selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
         filter.setPaymentMethod(selectedPaymentMethod == null || selectedPaymentMethod.getValue().isEmpty() ? null
                 : PaymentMethod.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentMethod).getValue()));
         filter.setPaymentPeriodUnit(selectedPaymentPeriod == null || selectedPaymentPeriod.getValue().isEmpty() ? null
                 : PaymentPeriodUnit.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentPeriod).getValue()));
+        filter.setPaymentStatus(selectedPaymentStatus == null || selectedPaymentStatus.getValue().isEmpty() ? null
+                : PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue()));
         filter.setSupplierId(selectedSupplier == null ? null : selectedSupplier.getId());
         filter.setTotalPaymentMax(toBigDecimalOrNull(tfTotalPaymentMax.getText()));
         filter.setTotalPaymentMin(toBigDecimalOrNull(tfTotalPaymentMin.getText()));
@@ -131,6 +144,7 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         tfDueDateMin.setPlainText("");
         ComboBoxUtils.selectIndex(cbPaymentMethod, 0);
         ComboBoxUtils.selectIndex(cbPaymentPeriod, 0);
+        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
     }
 
     @Override
@@ -148,6 +162,9 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
                 new SimpleComboBoxModel(PaymentPeriodUnit.DAY.name(), translate("lbl.day")),
                 new SimpleComboBoxModel(PaymentPeriodUnit.WEEK.name(), translate("lbl.week")),
                 new SimpleComboBoxModel(PaymentPeriodUnit.MONTH.name(), translate("lbl.month")));
+        ComboBoxUtils.initSimple(cbPaymentStatus, new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
+                new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate("lbl.paid")),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate("lbl.unpaid")));
         tfSupplier.focusedProperty().addListener((o, ov, nv) -> {
             if (Boolean.TRUE.equals(nv)) {
                 StageUtils.modal(Page.MASTER_SUPPLIER_CHOOSE, false, we -> {

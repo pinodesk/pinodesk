@@ -42,6 +42,9 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
         if (filter.getPaymentPeriodUnit() != null) {
             where.andEquals("a.payment_period_unit", filter.getPaymentPeriodUnit().name());
         }
+        if (filter.getPaymentStatus() != null) {
+            where.andEquals("a.payment_status", filter.getPaymentStatus().name());
+        }
         if (filter.getSupplierId() != null) {
             where.andEquals("a.supplier_id", filter.getSupplierId());
         }
