@@ -18,7 +18,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import toscabox.desktop.constant.CommonConstants;
+import toscabox.desktop.constant.SimpleStatus;
 import toscabox.desktop.viewmodel.ProductFilterVM;
 import toscabox.desktop.viewmodel.ProductVM;
 
@@ -44,7 +44,7 @@ class ProductRepositoryTest extends RepositoryTestBase {
         filter.setPurchasePriceMax(new BigDecimal(10000));
         filter.setSellingPriceMin(new BigDecimal(1000));
         filter.setSellingPriceMax(new BigDecimal(20000));
-        filter.setIncludesVat(CommonConstants.NO);
+        filter.setIncludesVat(SimpleStatus.NO.name());
         filter.setRackId(2l);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_PATTERN);
         filter.setExpiredDateMin(LocalDate.parse("2021-01-01", formatter));
@@ -60,7 +60,7 @@ class ProductRepositoryTest extends RepositoryTestBase {
             hasProperty("categoryCode", is("000000002")),
             hasProperty("purchasePrice", is(NumberUtils.toScaledBigDecimal(8000.00))),
             hasProperty("sellingPrice", is(NumberUtils.toScaledBigDecimal(12000.00))),
-            hasProperty("vatIncluded", is(CommonConstants.NO)),
+            hasProperty("vatIncluded", is(SimpleStatus.NO.name())),
             hasProperty("rackId", is(2l)),
             hasProperty("expiredDate", allOf(
                 hasProperty("year", is(2022)),

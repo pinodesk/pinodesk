@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/toscabox-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toscabox.desktop.controller.supplier.SupplierEditController">
+<VBox fx:id="contentPane" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/toscabox-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toscabox.desktop.controller.supplier.SupplierEditController">
    <children>
       <AnchorPane>
          <children>
@@ -155,7 +155,7 @@
                         <Button fx:id="btnAddContact" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnAddContact" styleClass="btn-primary" text="%btn.addcontact" textFill="WHITE" />
                      </children>
                   </HBox>
-                  <TableView fx:id="tblSupplierContact" maxHeight="220.0" prefWidth="509.0">
+                  <TableView fx:id="tblSupplierContact" maxHeight="227.0" prefWidth="509.0">
                      <columns>
                         <TableColumn fx:id="colName" minWidth="150.0" prefWidth="75.0" text="%lbl.name" />
                         <TableColumn fx:id="colPhone" minWidth="150.0" prefWidth="75.0" text="%lbl.phone" />

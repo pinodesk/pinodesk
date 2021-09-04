@@ -60,6 +60,7 @@ public abstract class CommonDataFilterController<T> extends CommonContentPaneCon
                 return;
             }
         });
+        resetControls();
     }
 
     protected abstract void initDataFilterControlValues();
