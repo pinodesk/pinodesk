@@ -48,8 +48,10 @@ public class SupplierFilterController extends CommonDataFilterController<Supplie
             tfAddress.setText(currentFilter.getAddress());
             tfWebsite.setText(currentFilter.getWebsite());
             if (StringUtils.isNotBlank(currentFilter.getType())) {
-                ComboBoxUtils.select(cbType, () -> cbType.getItems().stream()
-                        .filter(vm -> currentFilter.getType().equals(vm.getValue())).findAny().orElseThrow());
+                ComboBoxUtils.select(
+                        cbType,
+                        () -> cbType.getItems().stream().filter(vm -> currentFilter.getType().equals(vm.getValue()))
+                                .findAny().orElseThrow());
             }
         }
     }
@@ -81,7 +83,9 @@ public class SupplierFilterController extends CommonDataFilterController<Supplie
     @Override
     protected void initDataFilterControlActions() {
         TextFieldUtils.setDigitTextFields(tfPhone);
-        ComboBoxUtils.initSimple(cbType, new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
+        ComboBoxUtils.initSimple(
+                cbType,
+                new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
                 new SimpleComboBoxModel(SupplierType.WHOLESALER.name(), translate("lbl.wholesaler")),
                 new SimpleComboBoxModel(SupplierType.RETAILER.name(), translate("lbl.retailer")));
     }

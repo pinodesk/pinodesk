@@ -11,8 +11,8 @@ import toscabox.desktop.viewmodel.CustomerFilterVM;
 
 public interface CustomerRepository extends CommonRepository<Customer> {
 
-	List<Customer> filter(CustomerFilterVM filter);
-    
+    List<Customer> filter(CustomerFilterVM filter);
+
     Long createCustomer(CustomerAddVM customerAdd);
 
     Integer updateCustomer(CustomerEditVM customerEdit);

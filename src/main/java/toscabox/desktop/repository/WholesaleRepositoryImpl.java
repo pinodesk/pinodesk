@@ -8,5 +8,5 @@ import toscabox.desktop.domain.Wholesale;
 
 @Repository
 public class WholesaleRepositoryImpl extends AbstractRepository<Wholesale> implements WholesaleRepository {
-    
+
 }

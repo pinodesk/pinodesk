@@ -20,7 +20,7 @@ cache:
 
 build:
   stage: build
-  script: mvn $MAVEN_CLI_OPTS test-compile -U 
+  script: mvn $MAVEN_CLI_OPTS spotless:check test-compile -U 
   allow_failure: false
 
 test:

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import toscabox.desktop.domain.DrugCategoryBase;
 
 @Repository
-public class DrugCategoryBaseRepositoryImpl extends AbstractRepository<DrugCategoryBase> implements DrugCategoryBaseRepository {
-    
+public class DrugCategoryBaseRepositoryImpl extends AbstractRepository<DrugCategoryBase>
+        implements DrugCategoryBaseRepository {
+
 }

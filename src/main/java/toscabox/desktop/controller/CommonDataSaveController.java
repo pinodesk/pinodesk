@@ -111,13 +111,17 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
 
     protected void registerRequiredFields(Control... controls) {
         if (ArrayUtils.isNotEmpty(controls)) {
-            Arrays.stream(controls).forEach(control -> validationSupport.registerValidator(control,
-                    Validator.createEmptyValidator(translate(MessageCode.ERROR_REQUIRED))));
+            Arrays.stream(controls).forEach(
+                    control -> validationSupport.registerValidator(
+                            control,
+                            Validator.createEmptyValidator(translate(MessageCode.ERROR_REQUIRED))));
         }
     }
 
     protected void registerWhitespaceValidator(Control control, boolean required) {
-        validationSupport.registerValidator(control, required,
+        validationSupport.registerValidator(
+                control,
+                required,
                 CommonValidator.createWhitespaceValidator(translate(MessageCode.ERROR_EMPTY_OR_BLANK)));
     }
 
@@ -126,7 +130,9 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
     }
 
     protected void registerEmailValidator(Control control, boolean required) {
-        validationSupport.registerValidator(control, required,
+        validationSupport.registerValidator(
+                control,
+                required,
                 CommonValidator.createEmailValidator(translate(MessageCode.ERROR_INVALID_EMAIL_FORMAT)));
     }
 
@@ -135,7 +141,9 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
     }
 
     protected void registerDomainValidator(Control control, boolean required) {
-        validationSupport.registerValidator(control, required,
+        validationSupport.registerValidator(
+                control,
+                required,
                 CommonValidator.createDomainValidator(translate(MessageCode.ERROR_INVALID_DOMAIN_FORMAT)));
     }
 

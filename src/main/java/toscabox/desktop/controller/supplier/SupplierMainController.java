@@ -128,10 +128,14 @@ public class SupplierMainController extends BaseController {
             SupplierType type = SupplierType.valueOf(vm.getType());
             return SupplierType.WHOLESALER.equals(type) ? translate("lbl.wholesaler") : translate("lbl.retailer");
         });
-        TableViewUtils.initTableColumn(colCreatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), SupplierVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), SupplierVM::getUpdatedAt);
+        TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                SupplierVM::getCreatedAt);
+        TableViewUtils.initTableColumn(
+                colUpdatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                SupplierVM::getUpdatedAt);
         tableSupplier.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableSupplier.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

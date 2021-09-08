@@ -15,7 +15,8 @@ public class RackRepositoryImpl extends AbstractRepository<Rack> implements Rack
 
     @Override
     public List<Rack> filter(String keyword, int limit) {
-        return read(new Where().containsIgnoreCase(Rack.C_NAME, keyword).orContainsIgnoreCase(Rack.C_CODE, keyword),
+        return read(
+                new Where().containsIgnoreCase(Rack.C_NAME, keyword).orContainsIgnoreCase(Rack.C_CODE, keyword),
                 new Limit(limit));
     }
 

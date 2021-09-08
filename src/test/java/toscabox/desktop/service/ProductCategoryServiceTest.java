@@ -76,7 +76,9 @@ class ProductCategoryServiceTest extends BaseServiceTest {
     @Test
     void testGetProductCategoryById_idNotFound_shouldThrowDomainException() {
         when(productCategoryRepository.readOne(anyLong())).thenReturn(Optional.empty());
-        DomainException ex = assertThrows(DomainException.class, () -> productCategoryService.getProductCategoryById(1L));
+        DomainException ex = assertThrows(
+                DomainException.class,
+                () -> productCategoryService.getProductCategoryById(1L));
         assertEquals(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_ID, ex.getError());
         verify(productCategoryRepository).readOne(anyLong());
     }

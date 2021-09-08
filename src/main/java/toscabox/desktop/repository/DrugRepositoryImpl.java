@@ -8,5 +8,5 @@ import toscabox.desktop.domain.Drug;
 
 @Repository
 public class DrugRepositoryImpl extends AbstractRepository<Drug> implements DrugRepository {
-    
+
 }

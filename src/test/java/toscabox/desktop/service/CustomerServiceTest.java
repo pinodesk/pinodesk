@@ -36,7 +36,7 @@ import toscabox.desktop.viewmodel.CustomerFilterVM;
 import toscabox.desktop.viewmodel.CustomerVM;
 
 class CustomerServiceTest extends BaseServiceTest {
-    
+
     @Mock
     private CustomerRepository customerRepository;
 

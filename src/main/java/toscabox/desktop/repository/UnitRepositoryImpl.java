@@ -15,7 +15,8 @@ public class UnitRepositoryImpl extends AbstractRepository<Unit> implements Unit
 
     @Override
     public List<Unit> filter(String keyword, int limit) {
-        return read(new Where().containsIgnoreCase(Unit.C_NAME, keyword).orContainsIgnoreCase(Unit.C_LABEL, keyword),
+        return read(
+                new Where().containsIgnoreCase(Unit.C_NAME, keyword).orContainsIgnoreCase(Unit.C_LABEL, keyword),
                 new Limit(limit));
     }
 

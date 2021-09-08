@@ -42,41 +42,40 @@ public class CustomerRepositoryImpl extends AbstractRepository<Customer> impleme
         return read(where);
     }
 
-    // @formatter:off
     @Override
     public Long createCustomer(CustomerAddVM customerAdd) {
-        return insert(new String[] {
-            Customer.C_NAME,
-            Customer.C_CODE,
-            Customer.C_PHONE,
-            Customer.C_EMAIL,
-            Customer.C_ADDRESS
-        }, new Object[] {
-            customerAdd.getName(),
-            customerAdd.getCode(),
-            customerAdd.getPhone(),
-            customerAdd.getEmail(),
-            customerAdd.getAddress()
-        });
+        return insert(
+                new String[] {
+                        Customer.C_NAME,
+                        Customer.C_CODE,
+                        Customer.C_PHONE,
+                        Customer.C_EMAIL,
+                        Customer.C_ADDRESS },
+                new Object[] {
+                        customerAdd.getName(),
+                        customerAdd.getCode(),
+                        customerAdd.getPhone(),
+                        customerAdd.getEmail(),
+                        customerAdd.getAddress() });
     }
 
     @Override
     public Integer updateCustomer(CustomerEditVM customerEdit) {
-        return update(new String[] {
-            Customer.C_NAME,
-            Customer.C_CODE,
-            Customer.C_PHONE,
-            Customer.C_EMAIL,
-            Customer.C_ADDRESS
-        }, new Object[] {
-            customerEdit.getName(),
-            customerEdit.getCode(),
-            customerEdit.getPhone(),
-            customerEdit.getEmail(),
-            customerEdit.getAddress()
-        }, customerEdit.getId());
+        return update(
+                new String[] {
+                        Customer.C_NAME,
+                        Customer.C_CODE,
+                        Customer.C_PHONE,
+                        Customer.C_EMAIL,
+                        Customer.C_ADDRESS },
+                new Object[] {
+                        customerEdit.getName(),
+                        customerEdit.getCode(),
+                        customerEdit.getPhone(),
+                        customerEdit.getEmail(),
+                        customerEdit.getAddress() },
+                customerEdit.getId());
     }
-    // @formatter:on
 
     @Override
     public boolean existsByCode(String code, Long... excludedIds) {
@@ -107,8 +106,10 @@ public class CustomerRepositoryImpl extends AbstractRepository<Customer> impleme
 
     @Override
     public String findMaxCodeByPrefix(String prefix) {
-        return readOne(new Where().startsWith(Customer.C_CODE, prefix),
-                new Order().by(Customer.C_CODE, Direction.DESCENDING), true).map(Customer::getCode).orElse(null);
+        return readOne(
+                new Where().startsWith(Customer.C_CODE, prefix),
+                new Order().by(Customer.C_CODE, Direction.DESCENDING),
+                true).map(Customer::getCode).orElse(null);
     }
 
 }

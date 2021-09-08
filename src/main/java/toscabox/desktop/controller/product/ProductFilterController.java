@@ -112,10 +112,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
             tfSellingPriceMax.setText(toStringOrNull(sellingPriceMax));
             tfSellingPriceMin.setText(toStringOrNull(sellingPriceMin));
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
-            tfExpiredDateMax.setPlainText(expiredDateMax == null ? null
-                    : expiredDateMax.format(dateFormatter));
-            tfExpiredDateMin.setPlainText(expiredDateMin == null ? null
-                    : expiredDateMin.format(dateFormatter));
+            tfExpiredDateMax.setPlainText(expiredDateMax == null ? null : expiredDateMax.format(dateFormatter));
+            tfExpiredDateMin.setPlainText(expiredDateMin == null ? null : expiredDateMin.format(dateFormatter));
             if (categoryId != null) {
                 ComboBoxUtils.select(cbCategory, () -> productCategoryService.getProductCategoryById(categoryId));
             }
@@ -126,8 +124,10 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
                 ComboBoxUtils.select(cbRack, () -> rackService.getRackById(rackId));
             }
             if (StringUtils.isNotBlank(includesVat)) {
-                ComboBoxUtils.select(cbIncludesVat, () -> cbIncludesVat.getItems().stream()
-                        .filter(vm -> includesVat.equals(vm.getValue())).findAny().orElseThrow());
+                ComboBoxUtils.select(
+                        cbIncludesVat,
+                        () -> cbIncludesVat.getItems().stream().filter(vm -> includesVat.equals(vm.getValue()))
+                                .findAny().orElseThrow());
             }
         }
     }
@@ -218,25 +218,29 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
 
     @Override
     protected void initDataFilterControlActions() {
-        ComboBoxUtils.initAutoComplete(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
+        ComboBoxUtils.initAutoComplete(
+                cbCategory,
+                new ProductCategoryComboBoxKeyEventHandler(cbCategory),
                 new ProductCategoryComboBoxConverter(cbCategory));
-        ComboBoxUtils.initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit),
-                new UnitComboBoxConverter(cbUnit));
-        ComboBoxUtils.initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack),
-                new RackComboBoxConverter(cbRack));
-        ComboBoxUtils.initSimple(cbIncludesVat, new SimpleComboBoxModel(null, StringConstants.EMPTY),
+        ComboBoxUtils
+                .initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit), new UnitComboBoxConverter(cbUnit));
+        ComboBoxUtils
+                .initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack), new RackComboBoxConverter(cbRack));
+        ComboBoxUtils.initSimple(
+                cbIncludesVat,
+                new SimpleComboBoxModel(null, StringConstants.EMPTY),
                 new SimpleComboBoxModel(SimpleStatus.YES.name(), translate("lbl.yes")),
                 new SimpleComboBoxModel(SimpleStatus.NO.name(), translate("lbl.no")));
-        // @formatter:off
+
         TextFieldUtils.setDigitTextFields(
                 tfBarcode,
                 tfSellingPriceMin,
-                tfSellingPriceMax,  
-                tfPurchasePriceMin, 
-                tfPurchasePriceMax, 
+                tfSellingPriceMax,
+                tfPurchasePriceMin,
+                tfPurchasePriceMax,
                 tfQuantityMin,
                 tfQuantityMax);
-        // @formatter:on
+
     }
 
 }

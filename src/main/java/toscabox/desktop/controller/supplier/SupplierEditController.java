@@ -117,7 +117,8 @@ public class SupplierEditController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colName, SupplierContactAddVM::getName);
         TableViewUtils.setColumnValue(colPhone, SupplierContactAddVM::getPhone);
         TableViewUtils.setColumnValue(colEmail, SupplierContactAddVM::getEmail);
-        ComboBoxUtils.initSimple(cbType,
+        ComboBoxUtils.initSimple(
+                cbType,
                 new SimpleComboBoxModel(SupplierType.WHOLESALER.name(), translate("lbl.wholesaler")),
                 new SimpleComboBoxModel(SupplierType.RETAILER.name(), translate("lbl.retailer")));
         TextFieldUtils.setDigitTextFields(tfPhone);
@@ -132,8 +133,10 @@ public class SupplierEditController extends CommonDataSaveController {
         tfEmail.setText(currentSupplier.getEmail());
         tfAddress.setText(currentSupplier.getAddress());
         tfWebsite.setText(currentSupplier.getWebsite());
-        ComboBoxUtils.select(cbType, () -> cbType.getItems().stream()
-                .filter(vm -> currentSupplier.getType().equals(vm.getValue())).findAny().orElseThrow());
+        ComboBoxUtils.select(
+                cbType,
+                () -> cbType.getItems().stream().filter(vm -> currentSupplier.getType().equals(vm.getValue())).findAny()
+                        .orElseThrow());
         List<SupplierContactAddVM> contacts = supplierService.getSupplierContacts(currentSupplier.getId());
         tblSupplierContact.getItems().addAll(contacts);
     }

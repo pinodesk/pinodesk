@@ -12,7 +12,9 @@ public class ConfigurationRepositoryImpl extends AbstractRepository<Configuratio
 
     @Override
     public Integer updateConfigurationByCode(String code, String value) {
-        return update(new String[] { Configuration.C_VALUE }, new Object[] { value },
+        return update(
+                new String[] { Configuration.C_VALUE },
+                new Object[] { value },
                 new Where().equals(Configuration.C_CODE, code));
     }
 

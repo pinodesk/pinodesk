@@ -51,21 +51,25 @@ class ProductRepositoryTest extends RepositoryTestBase {
         filter.setExpiredDateMax(LocalDate.parse("2022-12-31", formatter));
         List<ProductVM> products = productRepository.filter(filter, "id");
         assertThat(products, hasSize(1));
-        assertThat(products.get(0), allOf(
-            hasProperty("code", is("P00003")),
-            hasProperty("barcode", is("111100001")),
-            hasProperty("name", is("Potato BBQ")),
-            hasProperty("quantity", is(100)),
-            hasProperty("unitId", is(1l)),
-            hasProperty("categoryCode", is("000000002")),
-            hasProperty("purchasePrice", is(NumberUtils.toScaledBigDecimal(8000.00))),
-            hasProperty("sellingPrice", is(NumberUtils.toScaledBigDecimal(12000.00))),
-            hasProperty("vatIncluded", is(SimpleStatus.NO.name())),
-            hasProperty("rackId", is(2l)),
-            hasProperty("expiredDate", allOf(
-                hasProperty("year", is(2022)),
-                hasProperty("monthValue", is(4)),
-                hasProperty("dayOfMonth", is(1))))));
+        assertThat(
+                products.get(0),
+                allOf(
+                        hasProperty("code", is("P00003")),
+                        hasProperty("barcode", is("111100001")),
+                        hasProperty("name", is("Potato BBQ")),
+                        hasProperty("quantity", is(100)),
+                        hasProperty("unitId", is(1l)),
+                        hasProperty("categoryCode", is("000000002")),
+                        hasProperty("purchasePrice", is(NumberUtils.toScaledBigDecimal(8000.00))),
+                        hasProperty("sellingPrice", is(NumberUtils.toScaledBigDecimal(12000.00))),
+                        hasProperty("vatIncluded", is(SimpleStatus.NO.name())),
+                        hasProperty("rackId", is(2l)),
+                        hasProperty(
+                                "expiredDate",
+                                allOf(
+                                        hasProperty("year", is(2022)),
+                                        hasProperty("monthValue", is(4)),
+                                        hasProperty("dayOfMonth", is(1))))));
 
         filter = new ProductFilterVM();
         products = productRepository.filter(filter, "en");

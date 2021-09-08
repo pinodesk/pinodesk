@@ -48,61 +48,57 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
         return read(where);
     }
 
-    // @formatter:off
     @Override
     public List<Supplier> findByKeyword(String keyword) {
-        Where where = new Where()
-            .containsIgnoreCase(Supplier.C_NAME, keyword)
-            .orContainsIgnoreCase(Supplier.C_EMAIL, keyword)
-            .orContains(Supplier.C_CODE, keyword)
-            .orContains(Supplier.C_PHONE, keyword)
-            .orContainsIgnoreCase(Supplier.C_WEBSITE, keyword)
-            .orContainsIgnoreCase(Supplier.C_ADDRESS, keyword);
+        Where where = new Where().containsIgnoreCase(Supplier.C_NAME, keyword)
+                .orContainsIgnoreCase(Supplier.C_EMAIL, keyword).orContains(Supplier.C_CODE, keyword)
+                .orContains(Supplier.C_PHONE, keyword).orContainsIgnoreCase(Supplier.C_WEBSITE, keyword)
+                .orContainsIgnoreCase(Supplier.C_ADDRESS, keyword);
         return read(where);
     }
 
     @Override
     public Long createSupplier(SupplierAddVM supplierAdd) {
-        return insert(new String[] {
-            Supplier.C_NAME,
-            Supplier.C_CODE,
-            Supplier.C_PHONE,
-            Supplier.C_EMAIL,
-            Supplier.C_WEBSITE,
-            Supplier.C_ADDRESS,
-            Supplier.C_TYPE
-        }, new Object[] {
-            supplierAdd.getName(),
-            supplierAdd.getCode(),
-            supplierAdd.getPhone(),
-            supplierAdd.getEmail(),
-            supplierAdd.getWebsite(),
-            supplierAdd.getAddress(),
-            supplierAdd.getType()
-        });
+        return insert(
+                new String[] {
+                        Supplier.C_NAME,
+                        Supplier.C_CODE,
+                        Supplier.C_PHONE,
+                        Supplier.C_EMAIL,
+                        Supplier.C_WEBSITE,
+                        Supplier.C_ADDRESS,
+                        Supplier.C_TYPE },
+                new Object[] {
+                        supplierAdd.getName(),
+                        supplierAdd.getCode(),
+                        supplierAdd.getPhone(),
+                        supplierAdd.getEmail(),
+                        supplierAdd.getWebsite(),
+                        supplierAdd.getAddress(),
+                        supplierAdd.getType() });
     }
 
     @Override
     public Integer updateSupplier(SupplierEditVM supplierEdit) {
-        return update(new String[] {
-            Supplier.C_NAME,
-            Supplier.C_CODE,
-            Supplier.C_PHONE,
-            Supplier.C_EMAIL,
-            Supplier.C_WEBSITE,
-            Supplier.C_ADDRESS,
-            Supplier.C_TYPE
-        }, new Object[] {
-            supplierEdit.getName(),
-            supplierEdit.getCode(),
-            supplierEdit.getPhone(),
-            supplierEdit.getEmail(),
-            supplierEdit.getWebsite(),
-            supplierEdit.getAddress(),
-            supplierEdit.getType()
-        }, supplierEdit.getId());
+        return update(
+                new String[] {
+                        Supplier.C_NAME,
+                        Supplier.C_CODE,
+                        Supplier.C_PHONE,
+                        Supplier.C_EMAIL,
+                        Supplier.C_WEBSITE,
+                        Supplier.C_ADDRESS,
+                        Supplier.C_TYPE },
+                new Object[] {
+                        supplierEdit.getName(),
+                        supplierEdit.getCode(),
+                        supplierEdit.getPhone(),
+                        supplierEdit.getEmail(),
+                        supplierEdit.getWebsite(),
+                        supplierEdit.getAddress(),
+                        supplierEdit.getType() },
+                supplierEdit.getId());
     }
-    // @formatter:on
 
     @Override
     public boolean existsByCode(String code, Long... excludedIds) {
@@ -133,8 +129,10 @@ public class SupplierRepositoryImpl extends AbstractRepository<Supplier> impleme
 
     @Override
     public String findMaxCodeByPrefix(String prefix) {
-        return readOne(new Where().startsWith(Supplier.C_CODE, prefix),
-                new Order().by(Supplier.C_CODE, Direction.DESCENDING), true).map(Supplier::getCode).orElse(null);
+        return readOne(
+                new Where().startsWith(Supplier.C_CODE, prefix),
+                new Order().by(Supplier.C_CODE, Direction.DESCENDING),
+                true).map(Supplier::getCode).orElse(null);
     }
 
 }

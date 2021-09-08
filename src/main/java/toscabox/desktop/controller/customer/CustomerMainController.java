@@ -116,9 +116,13 @@ public class CustomerMainController extends BaseController {
         TableViewUtils.setColumnValue(colPhone, CustomerVM::getPhone);
         TableViewUtils.setColumnValue(colEmail, CustomerVM::getEmail);
         TableViewUtils.setColumnValue(colAddress, CustomerVM::getAddress);
-        TableViewUtils.initTableColumn(colCreatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+        TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 CustomerVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt, new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+        TableViewUtils.initTableColumn(
+                colUpdatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 CustomerVM::getUpdatedAt);
         tableCustomer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableCustomer.setOnMouseClicked(event -> {

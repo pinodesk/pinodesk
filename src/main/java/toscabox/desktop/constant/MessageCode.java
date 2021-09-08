@@ -3,7 +3,7 @@ package toscabox.desktop.constant;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
 
 public enum MessageCode implements IMessage {
-    
+
     ERROR_INCOMPLETE_FORM,
     ERROR_REQUIRED,
     ERROR_EMPTY_OR_BLANK,
@@ -34,7 +34,7 @@ public enum MessageCode implements IMessage {
     ERROR_PRODUCT_EXISTS_BY_CODE,
     ERROR_PRODUCT_EXISTS_BY_BARCODE,
     ERROR_PRODUCT_EXISTS_BY_NAME_AND_UNIT,
-    
+
     // Drug category
     ERROR_DRUG_CATEGORY_NOT_FOUND_BY_ID,
 
@@ -58,7 +58,7 @@ public enum MessageCode implements IMessage {
     ERROR_CUSTOMER_EXISTS_BY_CODE,
     ERROR_CUSTOMER_EXISTS_BY_EMAIL,
     ERROR_CUSTOMER_EXISTS_BY_PHONE,
-    
+
     // Supplier
     SUCCESS_ADD_SUPPLIER,
     SUCCESS_ADD_SUPPLIER_CONTACT,
@@ -70,12 +70,12 @@ public enum MessageCode implements IMessage {
     ERROR_SUPPLIER_NOT_FOUND_BY_ID,
     ERROR_SUPPLIER_EXISTS_BY_CODE,
     ERROR_SUPPLIER_EXISTS_BY_EMAIL,
-    ERROR_SUPPLIER_EXISTS_BY_PHONE, 
-    
+    ERROR_SUPPLIER_EXISTS_BY_PHONE,
+
     // Supplier contact
     ERROR_SUPPLIER_CONTACT_EXISTS_BY_EMAIL,
-    ERROR_SUPPLIER_CONTACT_EXISTS_BY_PHONE, 
-    
+    ERROR_SUPPLIER_CONTACT_EXISTS_BY_PHONE,
+
     // Purchase
     SUCCESS_ADD_PURCHASE,
     SUCCESS_EDIT_PURCHASE,

@@ -122,57 +122,53 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         Where where = new Where();
         if (StringUtils.isNotBlank(keyword)) {
             keyword = keyword.trim();
-            where.containsIgnoreCase("p.name", keyword)
-                    .orContains("p.code", keyword)
-                    .orContains("p.barcode", keyword)
-                    .orContains("pc.code", keyword)
-                    .orContainsIgnoreCase("pc.name", keyword);
+            where.containsIgnoreCase("p.name", keyword).orContains("p.code", keyword).orContains("p.barcode", keyword)
+                    .orContains("pc.code", keyword).orContainsIgnoreCase("pc.name", keyword);
             sb.append(where.getClause());
             sb.append(" AND p.deleted_at IS NULL ");
         } else {
-            sb.append(" WHERE p.deleted_at IS NULL ");   
+            sb.append(" WHERE p.deleted_at IS NULL ");
         }
         List<Object> params = where.getValues();
         params.add(0, languageCode);
         return performSelect(sb.toString(), params, ProductVM.class);
     }
 
-    // @formatter:off
     @Override
     public Integer updateProduct(ProductEditVM productEdit) {
-        return update(new String[] {
-            Product.C_NAME,
-            Product.C_DESCRIPTION,
-            Product.C_CODE,
-            Product.C_BARCODE,
-            Product.C_CATEGORY_CODE,
-            Product.C_UNIT_ID,
-            Product.C_UNIT_LABEL,
-            Product.C_QUANTITY,
-            Product.C_PURCHASE_PRICE,
-            Product.C_SELLING_PRICE,
-            Product.C_VAT_INCLUDED,
-            Product.C_EXPIRED_DATE,
-            Product.C_RACK_ID,
-            Product.C_RACK_CODE
-        }, new Object[] {
-            productEdit.getName(),
-            productEdit.getDescription(),
-            productEdit.getCode(),
-            productEdit.getBarcode(),
-            productEdit.getProductCategory().getCode(),
-            productEdit.getUnit().getId(),
-            productEdit.getUnit().getLabel(),
-            productEdit.getQuantity(),
-            productEdit.getPurchasePrice(),
-            productEdit.getSellingPrice(),
-            productEdit.getVatIncluded(),
-            productEdit.getExpiredDate(),
-            productEdit.getRack() == null ? null : productEdit.getRack().getId(),
-            productEdit.getRack() == null ? null : productEdit.getRack().getCode()
-        }, productEdit.getId());
+        return update(
+                new String[] {
+                        Product.C_NAME,
+                        Product.C_DESCRIPTION,
+                        Product.C_CODE,
+                        Product.C_BARCODE,
+                        Product.C_CATEGORY_CODE,
+                        Product.C_UNIT_ID,
+                        Product.C_UNIT_LABEL,
+                        Product.C_QUANTITY,
+                        Product.C_PURCHASE_PRICE,
+                        Product.C_SELLING_PRICE,
+                        Product.C_VAT_INCLUDED,
+                        Product.C_EXPIRED_DATE,
+                        Product.C_RACK_ID,
+                        Product.C_RACK_CODE },
+                new Object[] {
+                        productEdit.getName(),
+                        productEdit.getDescription(),
+                        productEdit.getCode(),
+                        productEdit.getBarcode(),
+                        productEdit.getProductCategory().getCode(),
+                        productEdit.getUnit().getId(),
+                        productEdit.getUnit().getLabel(),
+                        productEdit.getQuantity(),
+                        productEdit.getPurchasePrice(),
+                        productEdit.getSellingPrice(),
+                        productEdit.getVatIncluded(),
+                        productEdit.getExpiredDate(),
+                        productEdit.getRack() == null ? null : productEdit.getRack().getId(),
+                        productEdit.getRack() == null ? null : productEdit.getRack().getCode() },
+                productEdit.getId());
     }
-    // @formatter:on
 
     @Override
     public boolean existsByCode(String code, Long... excludedIds) {
@@ -201,40 +197,39 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         return exists(where);
     }
 
-    // @formatter:off
     @Override
     public Long createProduct(ProductAddVM productAdd) {
-        return insert(new String[] {
-            Product.C_NAME,
-            Product.C_DESCRIPTION,
-            Product.C_CODE,
-            Product.C_BARCODE,
-            Product.C_CATEGORY_CODE,
-            Product.C_UNIT_ID,
-            Product.C_UNIT_LABEL,
-            Product.C_QUANTITY,
-            Product.C_PURCHASE_PRICE,
-            Product.C_SELLING_PRICE,
-            Product.C_VAT_INCLUDED,
-            Product.C_EXPIRED_DATE,
-            Product.C_RACK_ID,
-            Product.C_RACK_CODE
-        }, new Object[] {
-            productAdd.getName(),
-            productAdd.getDescription(),
-            productAdd.getCode(),
-            productAdd.getBarcode(),
-            productAdd.getProductCategory().getCode(),
-            productAdd.getUnit().getId(),
-            productAdd.getUnit().getLabel(),
-            productAdd.getQuantity(),
-            productAdd.getPurchasePrice(),
-            productAdd.getSellingPrice(),
-            productAdd.getVatIncluded(),
-            productAdd.getExpiredDate(),
-            productAdd.getRack() == null ? null : productAdd.getRack().getId(),
-            productAdd.getRack() == null ? null : productAdd.getRack().getCode()});
+        return insert(
+                new String[] {
+                        Product.C_NAME,
+                        Product.C_DESCRIPTION,
+                        Product.C_CODE,
+                        Product.C_BARCODE,
+                        Product.C_CATEGORY_CODE,
+                        Product.C_UNIT_ID,
+                        Product.C_UNIT_LABEL,
+                        Product.C_QUANTITY,
+                        Product.C_PURCHASE_PRICE,
+                        Product.C_SELLING_PRICE,
+                        Product.C_VAT_INCLUDED,
+                        Product.C_EXPIRED_DATE,
+                        Product.C_RACK_ID,
+                        Product.C_RACK_CODE },
+                new Object[] {
+                        productAdd.getName(),
+                        productAdd.getDescription(),
+                        productAdd.getCode(),
+                        productAdd.getBarcode(),
+                        productAdd.getProductCategory().getCode(),
+                        productAdd.getUnit().getId(),
+                        productAdd.getUnit().getLabel(),
+                        productAdd.getQuantity(),
+                        productAdd.getPurchasePrice(),
+                        productAdd.getSellingPrice(),
+                        productAdd.getVatIncluded(),
+                        productAdd.getExpiredDate(),
+                        productAdd.getRack() == null ? null : productAdd.getRack().getId(),
+                        productAdd.getRack() == null ? null : productAdd.getRack().getCode() });
     }
-    // @formatter:on
 
 }

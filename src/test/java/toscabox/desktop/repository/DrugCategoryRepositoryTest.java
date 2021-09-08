@@ -27,11 +27,13 @@ class DrugCategoryRepositoryTest extends RepositoryTestBase {
         long drugCategoryBaseId = 1;
         List<DrugCategory> drugCategories = drugCategoryRepository.filter(keyword, drugCategoryBaseId);
         assertThat(drugCategories, hasSize(2));
-        assertThat(drugCategories, hasItems(
-                hasProperty("code", is("PERMENKESRI01")),
-                hasProperty("name", is("Obat Bebas Terbatas")), 
-                hasProperty("code", is("PERMENKESRI02")),
-                hasProperty("name", is("Obat Bebas"))));
+        assertThat(
+                drugCategories,
+                hasItems(
+                        hasProperty("code", is("PERMENKESRI01")),
+                        hasProperty("name", is("Obat Bebas Terbatas")),
+                        hasProperty("code", is("PERMENKESRI02")),
+                        hasProperty("name", is("Obat Bebas"))));
     }
 
 }

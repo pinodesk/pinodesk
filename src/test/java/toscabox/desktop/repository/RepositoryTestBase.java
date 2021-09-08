@@ -66,8 +66,8 @@ public abstract class RepositoryTestBase {
         }
 
         @Bean
-        public IDatabaseConnection databaseConnection(DataSource dataSource)
-                throws SQLException, DatabaseUnitException {
+        public IDatabaseConnection databaseConnection(DataSource dataSource) throws SQLException,
+                DatabaseUnitException {
             DatabaseDataSourceConnection databaseConnection = new DatabaseDataSourceConnection(dataSource);
             DatabaseConfig databaseConfig = databaseConnection.getConfig();
             databaseConfig.setProperty(DatabaseConfig.FEATURE_ALLOW_EMPTY_FIELDS, true);

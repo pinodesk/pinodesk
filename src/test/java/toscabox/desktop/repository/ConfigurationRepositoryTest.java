@@ -30,8 +30,12 @@ class ConfigurationRepositoryTest extends RepositoryTestBase {
         Optional<Configuration> configuration = configurationRepository
                 .readOne(new Where().equals(Configuration.C_CODE, LANGUAGE_CODE));
         assertThat(configuration.isPresent(), is(true));
-        assertThat(configuration.get(), allOf(hasProperty(Configuration.C_ID, is(2l)),
-                hasProperty(Configuration.C_CODE, is(LANGUAGE_CODE)), hasProperty(Configuration.C_VALUE, is("id"))));
+        assertThat(
+                configuration.get(),
+                allOf(
+                        hasProperty(Configuration.C_ID, is(2l)),
+                        hasProperty(Configuration.C_CODE, is(LANGUAGE_CODE)),
+                        hasProperty(Configuration.C_VALUE, is("id"))));
     }
 
 }

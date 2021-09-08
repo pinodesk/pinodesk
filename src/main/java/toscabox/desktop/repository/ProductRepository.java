@@ -11,7 +11,7 @@ import toscabox.desktop.viewmodel.ProductFilterVM;
 import toscabox.desktop.viewmodel.ProductVM;
 
 public interface ProductRepository extends CommonRepository<Product> {
-    
+
     List<ProductVM> filter(ProductFilterVM filter, String languageCode);
 
     List<ProductVM> findByKeyword(String keyword, String languageCode);

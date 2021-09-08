@@ -24,7 +24,9 @@ public class ProductCategoryService extends BaseService {
     private ConfigurationService configurationService;
 
     public ProductCategoryVM getProductCategoryById(Long id) {
-        return objectConverter.convertOptionalOrThrow(productCategoryRepository.readOne(id), ProductCategoryVM.class,
+        return objectConverter.convertOptionalOrThrow(
+                productCategoryRepository.readOne(id),
+                ProductCategoryVM.class,
                 new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_ID));
     }
 

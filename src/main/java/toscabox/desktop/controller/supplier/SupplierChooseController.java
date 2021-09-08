@@ -64,10 +64,14 @@ public class SupplierChooseController extends CommonDataChooseController<Supplie
         TableViewUtils.setColumnValue(colEmail, SupplierVM::getEmail);
         TableViewUtils.setColumnValue(colAddress, SupplierVM::getAddress);
         TableViewUtils.setColumnValue(colWebsite, SupplierVM::getWebsite);
-        TableViewUtils.initTableColumn(colCreatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), SupplierVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), SupplierVM::getUpdatedAt);
+        TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                SupplierVM::getCreatedAt);
+        TableViewUtils.initTableColumn(
+                colUpdatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                SupplierVM::getUpdatedAt);
         tblSupplier.setPlaceholder(new Label(translate("lbl.nodata")));
         tblSupplier.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

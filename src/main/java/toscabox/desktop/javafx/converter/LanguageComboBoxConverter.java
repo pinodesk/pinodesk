@@ -20,5 +20,5 @@ public class LanguageComboBoxConverter extends DefaultStringConverterAdapter<Loc
         Locale currentLocale = new Locale(currentLanguageCode);
         return locale.getDisplayLanguage(currentLocale);
     }
-    
+
 }

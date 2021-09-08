@@ -9,8 +9,8 @@ import toscabox.desktop.viewmodel.PurchaseFilterVM;
 import toscabox.desktop.viewmodel.PurchaseVM;
 
 public interface PurchaseRepository extends CommonRepository<Purchase> {
-    
-	List<PurchaseVM> filter(PurchaseFilterVM filter);
-    
-	boolean existsByOrderNumberAndSupplierId(String orderNumber, Long supplierId);
+
+    List<PurchaseVM> filter(PurchaseFilterVM filter);
+
+    boolean existsByOrderNumberAndSupplierId(String orderNumber, Long supplierId);
 }

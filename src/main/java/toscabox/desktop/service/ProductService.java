@@ -56,8 +56,8 @@ public class ProductService extends BaseService {
         return productRepository.findByKeyword(keyword, languageCode);
     }
 
-    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER,
-            CacheNameConstants.PRODUCTS_BY_KEYWORD }, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public boolean updateProduct(ProductEditVM productEdit) {
 
@@ -99,15 +99,15 @@ public class ProductService extends BaseService {
         return countUpdated > 0;
     }
 
-    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER,
-            CacheNameConstants.PRODUCTS_BY_KEYWORD }, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public void removeProducts(List<Long> ids) {
         productRepository.delete(new Where().in(DataModel.C_ID, ids));
     }
 
-    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER,
-            CacheNameConstants.PRODUCTS_BY_KEYWORD }, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public Long createProduct(ProductAddVM productAdd) {
 

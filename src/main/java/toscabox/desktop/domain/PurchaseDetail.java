@@ -31,10 +31,10 @@ public class PurchaseDetail extends DataModel {
 
     @DataColumn(C_PRODUCT_PRICE)
     private BigDecimal productPrice;
-    
+
     @DataColumn(C_SUBTOTAL)
     private BigDecimal subtotal;
-    
+
     @Override
     public String tableName() {
         return TABLE_NAME;

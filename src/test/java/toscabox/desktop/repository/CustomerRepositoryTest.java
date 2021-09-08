@@ -39,30 +39,33 @@ class CustomerRepositoryTest extends RepositoryTestBase {
         filter.setAddress("Jakarta");
         List<Customer> customers = customerRepository.filter(filter);
         assertThat(customers, hasSize(1));
-        assertThat(customers.get(0), allOf(
-            hasProperty("id", is(1l)),
-            hasProperty("code", is("202104010001")),
-            hasProperty("name", is("Muhammad")),
-            hasProperty("phone", is("088890909001")),
-            hasProperty("email", is("muhammad@gmail.com")),
-            hasProperty("address", is("Jakarta"))));
+        assertThat(
+                customers.get(0),
+                allOf(
+                        hasProperty("id", is(1l)),
+                        hasProperty("code", is("202104010001")),
+                        hasProperty("name", is("Muhammad")),
+                        hasProperty("phone", is("088890909001")),
+                        hasProperty("email", is("muhammad@gmail.com")),
+                        hasProperty("address", is("Jakarta"))));
         filter = new CustomerFilterVM();
         customers = customerRepository.filter(filter);
         assertThat(customers, hasSize(2));
-        assertThat(customers,
+        assertThat(
+                customers,
                 hasItems(
-                    hasProperty("id", is(1l)),
-                    hasProperty("id", is(2l)),
-                    hasProperty("code", is("202104010001")),
-                    hasProperty("code", is("202104010002")),
-                    hasProperty("name", is("Muhammad")),
-                    hasProperty("name", is("Ismail")),
-                    hasProperty("phone", is("088890909001")),
-                    hasProperty("phone", is("088890909002")),
-                    hasProperty("email", is("muhammad@gmail.com")),
-                    hasProperty("email", is("ismail@gmail.com")),
-                    hasProperty("address", is("Jakarta")),
-                    hasProperty("address", is("Pekalongan"))));
+                        hasProperty("id", is(1l)),
+                        hasProperty("id", is(2l)),
+                        hasProperty("code", is("202104010001")),
+                        hasProperty("code", is("202104010002")),
+                        hasProperty("name", is("Muhammad")),
+                        hasProperty("name", is("Ismail")),
+                        hasProperty("phone", is("088890909001")),
+                        hasProperty("phone", is("088890909002")),
+                        hasProperty("email", is("muhammad@gmail.com")),
+                        hasProperty("email", is("ismail@gmail.com")),
+                        hasProperty("address", is("Jakarta")),
+                        hasProperty("address", is("Pekalongan"))));
     }
 
     @Test

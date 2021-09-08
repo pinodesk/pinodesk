@@ -215,31 +215,35 @@ public class ProductEditController extends CommonDataSaveController {
             calculateTaxAndProfit();
             calculateWholesaleTaxAndProfit();
         });
-        ComboBoxUtils.initAutoComplete(cbCategory, new ProductCategoryComboBoxKeyEventHandler(cbCategory),
+        ComboBoxUtils.initAutoComplete(
+                cbCategory,
+                new ProductCategoryComboBoxKeyEventHandler(cbCategory),
                 new ProductCategoryComboBoxConverter(cbCategory));
-        ComboBoxUtils.initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit),
-                new UnitComboBoxConverter(cbUnit));
-        ComboBoxUtils.initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack),
-                new RackComboBoxConverter(cbRack));
-        ComboBoxUtils.initAutoComplete(cbDrugCategory, new DrugCategoryComboBoxKeyEventHandler(cbDrugCategory),
+        ComboBoxUtils
+                .initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit), new UnitComboBoxConverter(cbUnit));
+        ComboBoxUtils
+                .initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack), new RackComboBoxConverter(cbRack));
+        ComboBoxUtils.initAutoComplete(
+                cbDrugCategory,
+                new DrugCategoryComboBoxKeyEventHandler(cbDrugCategory),
                 new DrugCategoryComboBoxConverter(cbDrugCategory));
         tfSellingPrice1.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
         tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
-        // @formatter:off
+
         TextFieldUtils.setDigitTextFields(
                 tfBarcode,
-                tfSellingPrice, 
-                tfPurchasePrice, 
-                tfQuantity, 
-                tfPrescriptionPrice, 
+                tfSellingPrice,
+                tfPurchasePrice,
+                tfQuantity,
+                tfPrescriptionPrice,
                 tfPurchaseQuantity1,
-                tfPurchaseQuantity2, 
-                tfPurchaseQuantity3, 
-                tfSellingPrice1, 
+                tfPurchaseQuantity2,
+                tfPurchaseQuantity3,
+                tfSellingPrice1,
                 tfSellingPrice2,
                 tfSellingPrice3);
-        // @formatter:on
+
     }
 
     @Override
@@ -258,9 +262,11 @@ public class ProductEditController extends CommonDataSaveController {
                 chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
         chkIncludesVat.setSelected(SimpleStatus.YES.equals(SimpleStatus.valueOf(currentProduct.getVatIncluded())));
         LocalDate expiredDate = currentProduct.getExpiredDate();
-        tfExpiredDate.setPlainText(expiredDate == null ? null
-                : expiredDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
-        ComboBoxUtils.select(cbCategory,
+        tfExpiredDate.setPlainText(
+                expiredDate == null ?
+                        null : expiredDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        ComboBoxUtils.select(
+                cbCategory,
                 () -> productCategoryService.getProductCategoryById(currentProduct.getCategoryId()));
         ComboBoxUtils.select(cbUnit, () -> unitService.getUnitById(currentProduct.getUnitId()));
         ComboBoxUtils.select(cbRack, () -> {
@@ -292,31 +298,29 @@ public class ProductEditController extends CommonDataSaveController {
             Integer purchaseQuantity = wholesale.getPurchaseQuantity();
             BigDecimal sellingPrice = wholesale.getSellingPrice();
             switch (i) {
-                case 0:
-                    tfPurchaseQuantity1.setText(purchaseQuantity.toString());
-                    tfSellingPrice1.setText(sellingPrice.setScale(0).toString());
-                    break;
-                case 1:
-                    tfPurchaseQuantity2.setText(purchaseQuantity.toString());
-                    tfSellingPrice2.setText(sellingPrice.setScale(0).toString());
-                    break;
-                case 2:
-                    tfPurchaseQuantity3.setText(purchaseQuantity.toString());
-                    tfSellingPrice3.setText(sellingPrice.setScale(0).toString());
-                    break;
-                default:
-                    // Do nothing
+            case 0:
+                tfPurchaseQuantity1.setText(purchaseQuantity.toString());
+                tfSellingPrice1.setText(sellingPrice.setScale(0).toString());
+                break;
+            case 1:
+                tfPurchaseQuantity2.setText(purchaseQuantity.toString());
+                tfSellingPrice2.setText(sellingPrice.setScale(0).toString());
+                break;
+            case 2:
+                tfPurchaseQuantity3.setText(purchaseQuantity.toString());
+                tfSellingPrice3.setText(sellingPrice.setScale(0).toString());
+                break;
+            default:
+                // Do nothing
             }
         }
     }
 
-    // @formatter:off
     private void calculate(
-            TextField _tfSellingPrice, 
-            TextField _tfVat, 
+            TextField _tfSellingPrice,
+            TextField _tfVat,
             TextField _tfSellingPriceBeforeTax,
             TextField _tfProfit) {
-    // @formatter:on
 
         boolean includesVat = chkIncludesVat.isSelected();
         double sellingPrice = NumberUtils.toDouble(StringUtils.defaultIfBlank(_tfSellingPrice.getText(), null));
@@ -328,8 +332,9 @@ public class ProductEditController extends CommonDataSaveController {
         _tfVat.setText(BigDecimal.valueOf(vatAmount).setScale(0, RoundingMode.HALF_EVEN).toString());
         _tfSellingPriceBeforeTax
                 .setText(BigDecimal.valueOf(sellingPriceBeforeTax).setScale(0, RoundingMode.HALF_EVEN).toString());
-        _tfProfit.setText(BigDecimal.valueOf(profitAmount).setScale(0, RoundingMode.HALF_EVEN).toString() + " ("
-                + BigDecimal.valueOf(profitPercentage).setScale(2, RoundingMode.HALF_EVEN).toString() + "%)");
+        _tfProfit.setText(
+                BigDecimal.valueOf(profitAmount).setScale(0, RoundingMode.HALF_EVEN).toString() + " ("
+                        + BigDecimal.valueOf(profitPercentage).setScale(2, RoundingMode.HALF_EVEN).toString() + "%)");
     }
 
     private void calculateTaxAndProfit() {
@@ -357,15 +362,17 @@ public class ProductEditController extends CommonDataSaveController {
         registerWhitespaceValidator(tfPurchasePrice);
         registerWhitespaceValidator(tfSellingPrice);
         vs.registerValidator(cbDrugCategory, false, (c, v) -> {
-            // @formatter:off
-            boolean condition1 = v == null && !StringUtils.isAllBlank(
-                    tfPrescriptionPrice.getText(),
-                    tfIndication.getText(), 
-                    tfContraindication.getText());
-            // @formatter:on
+
+            boolean condition1 = v == null && !StringUtils
+                    .isAllBlank(tfPrescriptionPrice.getText(), tfIndication.getText(), tfContraindication.getText());
+
             boolean condition2 = v != null && !isProductCategoryDrugs();
-            return ValidationResult.fromErrorIf(c, translate(
-                    condition1 ? MessageCode.ERROR_EMPTY_OR_BLANK : MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS),
+            return ValidationResult.fromErrorIf(
+                    c,
+                    translate(
+                            condition1 ?
+                                    MessageCode.ERROR_EMPTY_OR_BLANK :
+                                    MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS),
                     condition1 || condition2);
         });
         revalidateOnChange(vs);
@@ -373,7 +380,10 @@ public class ProductEditController extends CommonDataSaveController {
 
     private void revalidateOnChange(ValidationSupport vs) {
         ComboBoxUtils.onSelectedItemChanged(cbCategory, (ov, nv) -> vs.revalidate(cbDrugCategory));
-        TextFieldUtils.onTextChanged((ov, nv) -> vs.revalidate(cbDrugCategory), tfPrescriptionPrice, tfIndication,
+        TextFieldUtils.onTextChanged(
+                (ov, nv) -> vs.revalidate(cbDrugCategory),
+                tfPrescriptionPrice,
+                tfIndication,
                 tfContraindication);
     }
 
@@ -407,8 +417,9 @@ public class ProductEditController extends CommonDataSaveController {
             drug.setDrugCategoryId(drugCategory.getId());
             drug.setDrugCategoryCode(drugCategory.getCode());
             drug.setDrugCategoryName(drugCategory.getName());
-            drug.setPrescriptionPrice(StringUtils.isBlank(strPrescriptionPrice) ? null
-                    : toScaledBigDecimal(tfPrescriptionPrice.getText()));
+            drug.setPrescriptionPrice(
+                    StringUtils.isBlank(strPrescriptionPrice) ?
+                            null : toScaledBigDecimal(tfPrescriptionPrice.getText()));
             drug.setIndication(tfIndication.getText());
             drug.setContraindication(tfIndication.getText());
             productEdit.setDrug(drug);

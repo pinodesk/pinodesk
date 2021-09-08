@@ -10,9 +10,9 @@ import toscabox.desktop.viewmodel.SupplierEditVM;
 import toscabox.desktop.viewmodel.SupplierFilterVM;
 
 public interface SupplierRepository extends CommonRepository<Supplier> {
-    
-	List<Supplier> filter(SupplierFilterVM filter);
-    
+
+    List<Supplier> filter(SupplierFilterVM filter);
+
     List<Supplier> findByKeyword(String keyword);
 
     Long createSupplier(SupplierAddVM supplierAdd);

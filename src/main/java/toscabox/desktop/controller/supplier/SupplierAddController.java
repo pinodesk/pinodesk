@@ -118,7 +118,8 @@ public class SupplierAddController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colPhone, SupplierContactAddVM::getPhone);
         TableViewUtils.setColumnValue(colEmail, SupplierContactAddVM::getEmail);
         TextFieldUtils.setDigitTextFields(tfPhone);
-        ComboBoxUtils.initSimple(cbType,
+        ComboBoxUtils.initSimple(
+                cbType,
                 new SimpleComboBoxModel(SupplierType.WHOLESALER.name(), translate("lbl.wholesaler")),
                 new SimpleComboBoxModel(SupplierType.RETAILER.name(), translate("lbl.retailer")));
         ComboBoxUtils.selectIndex(cbType, 0);

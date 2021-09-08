@@ -15,8 +15,10 @@ public class DrugCategoryRepositoryImpl extends AbstractRepository<DrugCategory>
 
     @Override
     public List<DrugCategory> filter(String keyword, Long drugCategoryBaseId) {
-        return read(new Where().equals(DrugCategory.C_CATEGORY_BASE_ID, drugCategoryBaseId)
-                .andContainsIgnoreCase(DrugCategory.C_NAME, keyword), new Limit(10));
+        return read(
+                new Where().equals(DrugCategory.C_CATEGORY_BASE_ID, drugCategoryBaseId)
+                        .andContainsIgnoreCase(DrugCategory.C_NAME, keyword),
+                new Limit(10));
     }
 
 }

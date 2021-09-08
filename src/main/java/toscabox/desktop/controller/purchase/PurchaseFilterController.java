@@ -89,19 +89,22 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
                 tfDueDateMin.setText(currentFilter.getDueDateMin().format(dateFormatter));
             }
             if (currentFilter.getPaymentMethod() != null) {
-                ComboBoxUtils.select(cbPaymentMethod,
+                ComboBoxUtils.select(
+                        cbPaymentMethod,
                         () -> cbPaymentMethod.getItems().stream()
                                 .filter(vm -> currentFilter.getPaymentMethod().name().equals(vm.getValue())).findAny()
                                 .orElseThrow());
             }
             if (currentFilter.getPaymentPeriodUnit() != null) {
-                ComboBoxUtils.select(cbPaymentPeriod,
+                ComboBoxUtils.select(
+                        cbPaymentPeriod,
                         () -> cbPaymentPeriod.getItems().stream()
                                 .filter(vm -> currentFilter.getPaymentPeriodUnit().name().equals(vm.getValue()))
                                 .findAny().orElseThrow());
             }
             if (currentFilter.getPaymentStatus() != null) {
-                ComboBoxUtils.select(cbPaymentStatus,
+                ComboBoxUtils.select(
+                        cbPaymentStatus,
                         () -> cbPaymentStatus.getItems().stream()
                                 .filter(vm -> currentFilter.getPaymentStatus().name().equals(vm.getValue())).findAny()
                                 .orElseThrow());
@@ -120,12 +123,15 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         SimpleComboBoxModel selectedPaymentMethod = ComboBoxUtils.getSelectedItem(cbPaymentMethod);
         SimpleComboBoxModel selectedPaymentPeriod = ComboBoxUtils.getSelectedItem(cbPaymentPeriod);
         SimpleComboBoxModel selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
-        filter.setPaymentMethod(selectedPaymentMethod == null || selectedPaymentMethod.getValue().isEmpty() ? null
-                : PaymentMethod.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentMethod).getValue()));
-        filter.setPaymentPeriodUnit(selectedPaymentPeriod == null || selectedPaymentPeriod.getValue().isEmpty() ? null
-                : PaymentPeriodUnit.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentPeriod).getValue()));
-        filter.setPaymentStatus(selectedPaymentStatus == null || selectedPaymentStatus.getValue().isEmpty() ? null
-                : PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue()));
+        filter.setPaymentMethod(
+                selectedPaymentMethod == null || selectedPaymentMethod.getValue().isEmpty() ?
+                        null : PaymentMethod.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentMethod).getValue()));
+        filter.setPaymentPeriodUnit(
+                selectedPaymentPeriod == null || selectedPaymentPeriod.getValue().isEmpty() ?
+                        null : PaymentPeriodUnit.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentPeriod).getValue()));
+        filter.setPaymentStatus(
+                selectedPaymentStatus == null || selectedPaymentStatus.getValue().isEmpty() ?
+                        null : PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue()));
         filter.setSupplierId(selectedSupplier == null ? null : selectedSupplier.getId());
         filter.setTotalPaymentMax(toBigDecimalOrNull(tfTotalPaymentMax.getText()));
         filter.setTotalPaymentMin(toBigDecimalOrNull(tfTotalPaymentMin.getText()));
@@ -136,7 +142,12 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
 
     @Override
     protected void resetControls() {
-        TextFieldUtils.setTextEmpty(tfOrderNumber, tfSupplier, tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax,
+        TextFieldUtils.setTextEmpty(
+                tfOrderNumber,
+                tfSupplier,
+                tfTotalPaymentMax,
+                tfTotalPaymentMin,
+                tfTotalProductMax,
                 tfTotalProductMin);
         tfOrderDateMax.setPlainText("");
         tfOrderDateMin.setPlainText("");
@@ -155,14 +166,20 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     @Override
     protected void initDataFilterControlActions() {
         TextFieldUtils.setDigitTextFields(tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax, tfTotalProductMin);
-        ComboBoxUtils.initSimple(cbPaymentMethod, new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
+        ComboBoxUtils.initSimple(
+                cbPaymentMethod,
+                new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
                 new SimpleComboBoxModel(PaymentMethod.CASH.name(), translate("lbl.cash")),
                 new SimpleComboBoxModel(PaymentMethod.CREDIT.name(), translate("lbl.credit")));
-        ComboBoxUtils.initSimple(cbPaymentPeriod, new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
+        ComboBoxUtils.initSimple(
+                cbPaymentPeriod,
+                new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
                 new SimpleComboBoxModel(PaymentPeriodUnit.DAY.name(), translate("lbl.day")),
                 new SimpleComboBoxModel(PaymentPeriodUnit.WEEK.name(), translate("lbl.week")),
                 new SimpleComboBoxModel(PaymentPeriodUnit.MONTH.name(), translate("lbl.month")));
-        ComboBoxUtils.initSimple(cbPaymentStatus, new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
+        ComboBoxUtils.initSimple(
+                cbPaymentStatus,
+                new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
                 new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate("lbl.paid")),
                 new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate("lbl.unpaid")));
         tfSupplier.focusedProperty().addListener((o, ov, nv) -> {

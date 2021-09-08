@@ -7,9 +7,9 @@ import toscabox.desktop.constant.DomainError;
 
 @AllArgsConstructor
 @Data
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 public class DomainException extends RuntimeException {
-    
+
     /**
      *
      */

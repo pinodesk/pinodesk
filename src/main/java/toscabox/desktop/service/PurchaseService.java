@@ -58,8 +58,9 @@ public class PurchaseService extends BaseService {
         purchase.setPaymentPeriodCount(po.getPaymentPeriodCount());
         purchase.setPaymentPeriodUnit(po.getPaymentPeriodUnit() == null ? null : po.getPaymentPeriodUnit().name());
         purchase.setPaymentDueDate(po.getDueDate());
-        purchase.setPaymentStatus(po.getPaymentMethod().equals(PaymentMethod.CASH) ? PaymentStatus.PAID.name()
-                : PaymentStatus.UNPAID.name());
+        purchase.setPaymentStatus(
+                po.getPaymentMethod().equals(PaymentMethod.CASH) ?
+                        PaymentStatus.PAID.name() : PaymentStatus.UNPAID.name());
         purchase.setSupplierId(po.getSupplierId());
         purchase.setTax(po.getTax());
         purchase.setDiscount(po.getDiscount());
@@ -77,8 +78,10 @@ public class PurchaseService extends BaseService {
             Integer lastQuantity = product.getQuantity();
             product.setPurchasePrice(purchaseProduct.getPurchasePrice());
             product.setSellingPrice(purchaseProduct.getSellingPrice());
-            product.setQuantity(lastQuantity == null ? purchaseProduct.getPurchaseQuantity()
-                    : lastQuantity + purchaseProduct.getPurchaseQuantity());
+            product.setQuantity(
+                    lastQuantity == null ?
+                            purchaseProduct.getPurchaseQuantity() :
+                            lastQuantity + purchaseProduct.getPurchaseQuantity());
             productRepository.update(product);
         }
         return purchaseId;

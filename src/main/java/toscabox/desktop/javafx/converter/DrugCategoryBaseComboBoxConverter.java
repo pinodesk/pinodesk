@@ -15,5 +15,5 @@ public class DrugCategoryBaseComboBoxConverter extends DefaultStringConverterAda
     protected String getDisplayText(DrugCategoryBaseVM vm) {
         return vm.getName();
     }
-    
+
 }

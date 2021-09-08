@@ -12,7 +12,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.mainClass>toscabox.desktop.Main</project.mainClass>
-        <java.version>11</java.version>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
@@ -259,6 +258,19 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.13.0</version>
+                <configuration>
+                    <java>
+                        <removeUnusedImports />
+                        <eclipse>
+                            <file>${basedir}/custom-formatter.xml</file>
+                          </eclipse>
+                    </java>
+                </configuration>
             </plugin>
         </plugins>
     </build>

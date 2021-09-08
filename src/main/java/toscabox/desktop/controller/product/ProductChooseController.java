@@ -83,20 +83,38 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
         TableViewUtils.setColumnValue(colCategory, ProductVM::getCategoryName);
         TableViewUtils.setColumnValue(colUnit, ProductVM::getUnitLabel);
         TableViewUtils.setColumnValue(colRack, ProductVM::getRackName);
-        TableViewUtils.initTableColumn(colQuantity, new NumberCellFactory<>(locale), ProductVM::getQuantity,
+        TableViewUtils.initTableColumn(
+                colQuantity,
+                new NumberCellFactory<>(locale),
+                ProductVM::getQuantity,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colPurchasePrice, new NumberCellFactory<>(locale), ProductVM::getPurchasePrice,
+        TableViewUtils.initTableColumn(
+                colPurchasePrice,
+                new NumberCellFactory<>(locale),
+                ProductVM::getPurchasePrice,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colSellingPrice, new NumberCellFactory<>(locale), ProductVM::getSellingPrice,
+        TableViewUtils.initTableColumn(
+                colSellingPrice,
+                new NumberCellFactory<>(locale),
+                ProductVM::getSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colPurchasePrice, new NumberCellFactory<>(locale), ProductVM::getPurchasePrice,
+        TableViewUtils.initTableColumn(
+                colPurchasePrice,
+                new NumberCellFactory<>(locale),
+                ProductVM::getPurchasePrice,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colExpiredDate, new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
+        TableViewUtils.initTableColumn(
+                colExpiredDate,
+                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 ProductVM::getExpiredDate);
-        TableViewUtils.initTableColumn(colCreatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), ProductVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), ProductVM::getUpdatedAt);
+        TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                ProductVM::getCreatedAt);
+        TableViewUtils.initTableColumn(
+                colUpdatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                ProductVM::getUpdatedAt);
         tblProduct.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
                 btnChoose.fire();

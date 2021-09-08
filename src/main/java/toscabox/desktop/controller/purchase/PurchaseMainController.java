@@ -168,22 +168,43 @@ public class PurchaseMainController extends BaseController {
             String periodUnit = PaymentPeriodUnit.valueOf(vm.getPaymentPeriodUnit()).name().toLowerCase();
             return vm.getPaymentPeriodCount() + " " + translate("lbl." + periodUnit);
         });
-        TableViewUtils.initTableColumn(colTotalProduct, new NumberCellFactory<>(locale), PurchaseVM::getTotalProduct,
+        TableViewUtils.initTableColumn(
+                colTotalProduct,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getTotalProduct,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colTotalPayment, new NumberCellFactory<>(locale), PurchaseVM::getTotalPayment,
+        TableViewUtils.initTableColumn(
+                colTotalPayment,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getTotalPayment,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colTax, new NumberCellFactory<>(locale), PurchaseVM::getTax,
+        TableViewUtils.initTableColumn(
+                colTax,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getTax,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colDiscount, new NumberCellFactory<>(locale), PurchaseVM::getDiscount,
+        TableViewUtils.initTableColumn(
+                colDiscount,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getDiscount,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colTotalPurchase, new NumberCellFactory<>(locale), PurchaseVM::getTotalPurchase,
+        TableViewUtils.initTableColumn(
+                colTotalPurchase,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getTotalPurchase,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colOrderDate, new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
+        TableViewUtils.initTableColumn(
+                colOrderDate,
+                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PurchaseVM::getOrderDate);
-        TableViewUtils.initTableColumn(colCreatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), PurchaseVM::getCreatedAt);
-        TableViewUtils.initTableColumn(colUpdatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN), PurchaseVM::getUpdatedAt);
+        TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                PurchaseVM::getCreatedAt);
+        TableViewUtils.initTableColumn(
+                colUpdatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                PurchaseVM::getUpdatedAt);
         tblPurchase.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblPurchase.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

@@ -44,21 +44,21 @@ public class SupplierService extends BaseService {
 
     @Cacheable(CacheNameConstants.SUPPLIERS_BY_KEYWORD)
     public List<SupplierVM> searchSuppliersByKeyword(String keyword) {
-        List<Supplier> suppliers = StringUtils.isBlank(keyword) ? supplierRepository.read()
-                : supplierRepository.findByKeyword(keyword.trim());
+        List<Supplier> suppliers = StringUtils.isBlank(keyword) ?
+                supplierRepository.read() : supplierRepository.findByKeyword(keyword.trim());
         return objectConverter.convertList(suppliers, SupplierVM.class);
     }
 
-    @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER,
-            CacheNameConstants.SUPPLIERS_BY_KEYWORD }, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER, CacheNameConstants.SUPPLIERS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public void removeSuppliers(List<Long> ids) {
         supplierRepository.delete(ids);
         supplierContactRepository.delete(new Where().in(SupplierContact.C_SUPPLIER_ID, ids));
     }
 
-    @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER,
-            CacheNameConstants.SUPPLIERS_BY_KEYWORD }, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER, CacheNameConstants.SUPPLIERS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public Long createSupplier(SupplierAddVM supplier, List<SupplierContactAddVM> contacts) {
         if (supplierRepository.existsByCode(supplier.getCode())) {
@@ -92,8 +92,8 @@ public class SupplierService extends BaseService {
         return supplierContactRepository.createSupplierContact(contact);
     }
 
-    @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER,
-            CacheNameConstants.SUPPLIERS_BY_KEYWORD }, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER, CacheNameConstants.SUPPLIERS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public boolean updateSupplier(SupplierEditVM supplier, List<SupplierContactAddVM> contacts) {
         Long supplierId = supplier.getId();

@@ -73,7 +73,10 @@ public class GoogleProductCategoriesGenerator {
         return results;
     }
 
-    private List<String> process(List<String> line, List<String> lastChecked, List<String> lastResult,
+    private List<String> process(
+            List<String> line,
+            List<String> lastChecked,
+            List<String> lastResult,
             List<List<String>> results) {
 
         List<String> result = new ArrayList<>();
@@ -97,8 +100,12 @@ public class GoogleProductCategoriesGenerator {
         return result;
     }
 
-    private List<String> processLineWithDifferentColumnsCount(int col, List<String> line, List<String> lastChecked,
-            List<String> lastResult, List<List<String>> results) {
+    private List<String> processLineWithDifferentColumnsCount(
+            int col,
+            List<String> line,
+            List<String> lastChecked,
+            List<String> lastResult,
+            List<List<String>> results) {
 
         List<String> result = new ArrayList<>();
         if (col == 1) {

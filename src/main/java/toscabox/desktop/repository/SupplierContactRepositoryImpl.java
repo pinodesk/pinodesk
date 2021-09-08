@@ -16,22 +16,20 @@ import toscabox.desktop.viewmodel.SupplierContactAddVM;
 public class SupplierContactRepositoryImpl extends AbstractRepository<SupplierContact>
         implements SupplierContactRepository {
 
-    // @formatter:off
     @Override
     public Long createSupplierContact(SupplierContactAddVM supplierContact) {
-        return insert(new String[] {
-            SupplierContact.C_SUPPLIER_ID,
-            SupplierContact.C_NAME,
-            SupplierContact.C_PHONE,
-            SupplierContact.C_EMAIL
-        }, new Object[] {
-            supplierContact.getSupplierId(),
-            supplierContact.getName(),
-            supplierContact.getPhone(),
-            supplierContact.getEmail()
-        });
+        return insert(
+                new String[] {
+                        SupplierContact.C_SUPPLIER_ID,
+                        SupplierContact.C_NAME,
+                        SupplierContact.C_PHONE,
+                        SupplierContact.C_EMAIL },
+                new Object[] {
+                        supplierContact.getSupplierId(),
+                        supplierContact.getName(),
+                        supplierContact.getPhone(),
+                        supplierContact.getEmail() });
     }
-    // @formatter:on
 
     @Override
     public boolean existsByEmailAndSupplierId(String email, Long supplierId, Long... excludeIds) {

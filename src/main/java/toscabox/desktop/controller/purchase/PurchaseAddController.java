@@ -254,10 +254,12 @@ public class PurchaseAddController extends CommonDataSaveController {
     protected void initDataSaveControlActions() {
         Locale locale = resources.getLocale();
         TextFieldUtils.onTextChanged((ov, nv) -> calculateDueDate(), tfOrderDate);
-        ComboBoxUtils.initSimple(cbPaymentMethod,
+        ComboBoxUtils.initSimple(
+                cbPaymentMethod,
                 new SimpleComboBoxModel(PaymentMethod.CASH.name(), translate("lbl.cash")),
                 new SimpleComboBoxModel(PaymentMethod.CREDIT.name(), translate("lbl.credit")));
-        ComboBoxUtils.initSimple(cbPeriodUnit,
+        ComboBoxUtils.initSimple(
+                cbPeriodUnit,
                 new SimpleComboBoxModel(PaymentPeriodUnit.DAY.name(), translate("lbl.day")),
                 new SimpleComboBoxModel(PaymentPeriodUnit.WEEK.name(), translate("lbl.week")),
                 new SimpleComboBoxModel(PaymentPeriodUnit.MONTH.name(), translate("lbl.month")));
@@ -266,7 +268,8 @@ public class PurchaseAddController extends CommonDataSaveController {
             String str = String.valueOf(num);
             periodCountModels.add(new SimpleComboBoxModel(str, str));
         });
-        ComboBoxUtils.initSimple(cbPeriodCount,
+        ComboBoxUtils.initSimple(
+                cbPeriodCount,
                 periodCountModels.toArray(new SimpleComboBoxModel[periodCountModels.size()]));
         ComboBoxUtils.selectIndex(cbPaymentMethod, 0);
         ComboBoxUtils.selectIndex(cbPeriodUnit, 0);
@@ -296,16 +299,28 @@ public class PurchaseAddController extends CommonDataSaveController {
         TextFieldUtils.setDigitTextFields(tfDiscount, tfTax, tfSellingPrice, tfPurchasePrice, tfProductQuantity);
         TableViewUtils.setColumnValue(colProductName, purchaseProduct -> purchaseProduct.getProduct().getName());
         TableViewUtils.setColumnValue(colUnit, purchaseProduct -> purchaseProduct.getProduct().getUnitLabel());
-        TableViewUtils.setColumnValue(colProductCategory,
-                purchaseProduct -> purchaseProduct.getProduct().getCategoryName());
-        TableViewUtils.initTableColumn(colPurchasePrice, new NumberCellFactory<>(locale),
-                PurchaseProductVM::getPurchasePrice, StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colQuantity, new NumberCellFactory<>(locale),
-                PurchaseProductVM::getPurchaseQuantity, StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colSubtotal, new NumberCellFactory<>(locale),
-                PurchaseProductVM::getSubtotalPurchase, StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(colSellingPrice, new NumberCellFactory<>(locale),
-                PurchaseProductVM::getSellingPrice, StyleConstants.ALIGN_RIGHT);
+        TableViewUtils
+                .setColumnValue(colProductCategory, purchaseProduct -> purchaseProduct.getProduct().getCategoryName());
+        TableViewUtils.initTableColumn(
+                colPurchasePrice,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getPurchasePrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colQuantity,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getPurchaseQuantity,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colSubtotal,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getSubtotalPurchase,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colSellingPrice,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
         disableOnValidationError(btnSaveAndAdd);
         TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchase(), tfTax, tfDiscount);
     }
@@ -318,11 +333,17 @@ public class PurchaseAddController extends CommonDataSaveController {
     @Override
     protected void registerValidator(ValidationSupport vs) {
         registerRequiredFields(tfOrderNumber, tfOrderDate, tfSupplierName);
-        vs.registerValidator(tblPurchaseProduct, (c, v) -> ValidationResult.fromErrorIf(c,
-                translate(MessageCode.ERROR_REQUIRED), tblPurchaseProduct.getItems().isEmpty()));
+        vs.registerValidator(
+                tblPurchaseProduct,
+                (c, v) -> ValidationResult.fromErrorIf(
+                        c,
+                        translate(MessageCode.ERROR_REQUIRED),
+                        tblPurchaseProduct.getItems().isEmpty()));
         vs.registerValidator(tfOrderDate, (c, v) -> {
             LocalDate orderDate = parseDateQuietly(tfOrderDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-            return ValidationResult.fromErrorIf(c, translate(MessageCode.ERROR_PURCHASE_ORDER_DATE_GREATER_THAN_TODAY),
+            return ValidationResult.fromErrorIf(
+                    c,
+                    translate(MessageCode.ERROR_PURCHASE_ORDER_DATE_GREATER_THAN_TODAY),
                     orderDate != null && orderDate.isAfter(LocalDate.now()));
         });
         revalidateOnChange(vs);
@@ -338,15 +359,19 @@ public class PurchaseAddController extends CommonDataSaveController {
         PaymentMethod paymentMethod = PaymentMethod.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentMethod).getValue());
         PurchaseOrderVM po = new PurchaseOrderVM();
         po.setOrderNumber(tfOrderNumber.getText().trim());
-        po.setOrderDate(LocalDate.parse(tfOrderDate.getText(),
-                DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        po.setOrderDate(
+                LocalDate.parse(
+                        tfOrderDate.getText(),
+                        DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
         po.setSupplierId(selectedSupplier.getId());
         po.setPaymentMethod(paymentMethod);
         if (PaymentMethod.CREDIT.equals(paymentMethod)) {
             po.setPaymentPeriodCount(Integer.valueOf(ComboBoxUtils.getSelectedItem(cbPeriodCount).getValue()));
             po.setPaymentPeriodUnit(PaymentPeriodUnit.valueOf(ComboBoxUtils.getSelectedItem(cbPeriodUnit).getValue()));
-            po.setDueDate(LocalDate.parse(tfDueDate.getText(),
-                    DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+            po.setDueDate(
+                    LocalDate.parse(
+                            tfDueDate.getText(),
+                            DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
         }
         po.setTotalProduct(totalProduct);
         po.setTotalPayment(totalPayment);
@@ -376,18 +401,19 @@ public class PurchaseAddController extends CommonDataSaveController {
                 .valueOf(ComboBoxUtils.getSelectedItem(cbPeriodUnit).getValue());
         LocalDate dueDate = null;
         switch (periodUnit) {
-            case DAY:
-                dueDate = orderDate.plusDays(periodCount);
-                break;
-            case WEEK:
-                dueDate = orderDate.plusWeeks(periodCount);
-                break;
-            case MONTH:
-                dueDate = orderDate.plusMonths(periodCount);
-                break;
+        case DAY:
+            dueDate = orderDate.plusDays(periodCount);
+            break;
+        case WEEK:
+            dueDate = orderDate.plusWeeks(periodCount);
+            break;
+        case MONTH:
+            dueDate = orderDate.plusMonths(periodCount);
+            break;
         }
-        tfDueDate.setText(dueDate == null ? null
-                : dueDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        tfDueDate.setText(
+                dueDate == null ?
+                        null : dueDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
     }
 
     private void setSelectedSupplier(SupplierVM vm) {
@@ -400,8 +426,13 @@ public class PurchaseAddController extends CommonDataSaveController {
             tfSupplierAddress.setText(vm.getAddress());
             tfSupplierWebsite.setText(vm.getWebsite());
         } else if (selectedSupplier == null) {
-            TextFieldUtils.setTextEmpty(tfSupplierName, tfSupplierCode, tfSupplierEmail, tfSupplierPhone,
-                    tfSupplierAddress, tfSupplierWebsite);
+            TextFieldUtils.setTextEmpty(
+                    tfSupplierName,
+                    tfSupplierCode,
+                    tfSupplierEmail,
+                    tfSupplierPhone,
+                    tfSupplierAddress,
+                    tfSupplierWebsite);
         }
     }
 
@@ -416,8 +447,15 @@ public class PurchaseAddController extends CommonDataSaveController {
             tfSellingPrice.setText(toStringOrNull(vm.getSellingPrice()));
             tfPurchasePrice.setText(toStringOrNull(vm.getPurchasePrice()));
         } else if (selectedProduct == null) {
-            TextFieldUtils.setTextEmpty(tfProductName, tfProductBarcode, tfProductCategory, tfProductCode,
-                    tfProductUnit, tfSellingPrice, tfPurchasePrice, tfProductQuantity);
+            TextFieldUtils.setTextEmpty(
+                    tfProductName,
+                    tfProductBarcode,
+                    tfProductCategory,
+                    tfProductCode,
+                    tfProductUnit,
+                    tfSellingPrice,
+                    tfPurchasePrice,
+                    tfProductQuantity);
         }
     }
 

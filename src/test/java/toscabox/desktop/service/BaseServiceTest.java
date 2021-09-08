@@ -13,7 +13,7 @@ import org.mockito.quality.Strictness;
 @MockitoSettings(strictness = Strictness.WARN)
 @ExtendWith(MockitoExtension.class)
 public abstract class BaseServiceTest {
-    
+
     @Spy
     protected ObjectMapper objectMapper = createObjectMapper();
 
