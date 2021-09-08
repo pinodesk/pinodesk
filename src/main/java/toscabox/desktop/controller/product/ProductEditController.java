@@ -258,8 +258,8 @@ public class ProductEditController extends CommonDataSaveController {
                 chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
         chkIncludesVat.setSelected(SimpleStatus.YES.equals(SimpleStatus.valueOf(currentProduct.getVatIncluded())));
         LocalDate expiredDate = currentProduct.getExpiredDate();
-        tfExpiredDate.setPlainText(
-                expiredDate == null ? null : expiredDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        tfExpiredDate.setPlainText(expiredDate == null ? null
+                : expiredDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
         ComboBoxUtils.select(cbCategory,
                 () -> productCategoryService.getProductCategoryById(currentProduct.getCategoryId()));
         ComboBoxUtils.select(cbUnit, () -> unitService.getUnitById(currentProduct.getUnitId()));
@@ -373,9 +373,8 @@ public class ProductEditController extends CommonDataSaveController {
 
     private void revalidateOnChange(ValidationSupport vs) {
         ComboBoxUtils.onSelectedItemChanged(cbCategory, (ov, nv) -> vs.revalidate(cbDrugCategory));
-        TextFieldUtils.onTextChanged(tfPrescriptionPrice, (ov, nv) -> vs.revalidate(cbDrugCategory));
-        TextFieldUtils.onTextChanged(tfIndication, (ov, nv) -> vs.revalidate(cbDrugCategory));
-        TextFieldUtils.onTextChanged(tfContraindication, (ov, nv) -> vs.revalidate(cbDrugCategory));
+        TextFieldUtils.onTextChanged((ov, nv) -> vs.revalidate(cbDrugCategory), tfPrescriptionPrice, tfIndication,
+                tfContraindication);
     }
 
     private boolean isProductCategoryDrugs() {

@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="697.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/toscabox-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toscabox.desktop.controller.purchase.PurchaseAddController">
+<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="697.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/toscabox-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toscabox.desktop.controller.purchase.PurchaseAddController">
    <children>
       <VBox AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -89,12 +89,26 @@
                                                 <Font size="13.0" />
                                              </font>
                                           </Label>
-                                          <ComboBox fx:id="cbPaymentMethod" maxWidth="1.7976931348623157E308" prefWidth="270.0">
+                                          <ComboBox fx:id="cbPaymentMethod" maxWidth="1.7976931348623157E308" prefWidth="158.0">
                                              <styleClass>
                                                 <String fx:value="combo-box-autocomplete" />
                                                 <String fx:value="border-primary" />
                                              </styleClass>
                                           </ComboBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label fx:id="lblDueDate" disable="true" text="%lbl.duedate">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="tfDueDate" disable="true" editable="false" styleClass="input-primary">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </TextField>
                                        </children>
                                     </VBox>
                                  </children>
@@ -137,12 +151,26 @@
                                  <children>
                                     <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label fx:id="lblDueDate" disable="true" text="%lbl.duedate">
+                                          <Label text="%lbl.discount">
                                              <font>
                                                 <Font size="13.0" />
                                              </font>
                                           </Label>
-                                          <TextField fx:id="tfDueDate" disable="true" editable="false" styleClass="input-primary">
+                                          <TextField fx:id="tfDiscount" styleClass="input-primary">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </TextField>
+                                       </children>
+                                    </VBox>
+                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="%lbl.tax">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <TextField fx:id="tfTax" styleClass="input-primary">
                                              <font>
                                                 <Font size="13.0" />
                                              </font>
@@ -456,6 +484,20 @@
                                     </AnchorPane>
                                     <AnchorPane>
                                        <children>
+                                          <Label text="%lbl.totalproduct" AnchorPane.leftAnchor="0.0">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lblTotalProduct" layoutX="106.0" text="0" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane>
+                                       <children>
                                           <Label text="%lbl.totalpurchase" AnchorPane.leftAnchor="0.0">
                                              <font>
                                                 <Font size="13.0" />
@@ -470,12 +512,40 @@
                                     </AnchorPane>
                                     <AnchorPane>
                                        <children>
-                                          <Label text="%lbl.totalproduct" AnchorPane.leftAnchor="0.0">
+                                          <Label text="%lbl.discount" AnchorPane.leftAnchor="0.0">
                                              <font>
                                                 <Font size="13.0" />
                                              </font>
                                           </Label>
-                                          <Label fx:id="lblTotalProduct" layoutX="106.0" text="0" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                                          <Label fx:id="lblDiscount" layoutX="106.0" text="0" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane>
+                                       <children>
+                                          <Label text="%lbl.tax" AnchorPane.leftAnchor="0.0">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lblTax" layoutX="106.0" text="0" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane>
+                                       <children>
+                                          <Label text="%lbl.totalpayment" AnchorPane.leftAnchor="0.0">
+                                             <font>
+                                                <Font size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <Label fx:id="lblTotalPayment" alignment="CENTER_RIGHT" layoutX="114.0" text="0" AnchorPane.rightAnchor="0.0">
                                              <font>
                                                 <Font size="13.0" />
                                              </font>

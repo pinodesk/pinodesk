@@ -61,6 +61,9 @@ public class PurchaseService extends BaseService {
         purchase.setPaymentStatus(po.getPaymentMethod().equals(PaymentMethod.CASH) ? PaymentStatus.PAID.name()
                 : PaymentStatus.UNPAID.name());
         purchase.setSupplierId(po.getSupplierId());
+        purchase.setTax(po.getTax());
+        purchase.setDiscount(po.getDiscount());
+        purchase.setTotalPurchase(po.getTotalPurchase());
         Long purchaseId = purchaseRepository.create(purchase);
         for (PurchaseProductVM purchaseProduct : po.getPurchaseProducts()) {
             PurchaseDetail pd = new PurchaseDetail();

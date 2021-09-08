@@ -198,9 +198,8 @@ public class ProductAddController extends CommonDataSaveController {
 
     private void revalidateOnChange(ValidationSupport vs) {
         ComboBoxUtils.onSelectedItemChanged(cbCategory, (ov, nv) -> vs.revalidate(cbDrugCategory));
-        TextFieldUtils.onTextChanged(tfPrescriptionPrice, (ov, nv) -> vs.revalidate(cbDrugCategory));
-        TextFieldUtils.onTextChanged(tfIndication, (ov, nv) -> vs.revalidate(cbDrugCategory));
-        TextFieldUtils.onTextChanged(tfContraindication, (ov, nv) -> vs.revalidate(cbDrugCategory));
+        TextFieldUtils.onTextChanged((ov, nv) -> vs.revalidate(cbDrugCategory), tfPrescriptionPrice, tfIndication,
+                tfContraindication);
     }
 
     @Override

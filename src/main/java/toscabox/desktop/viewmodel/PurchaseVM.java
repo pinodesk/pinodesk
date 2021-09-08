@@ -23,4 +23,7 @@ public class PurchaseVM {
     private String paymentPeriodUnit;
     private LocalDate paymentDueDate;
     private String paymentStatus;
+    private BigDecimal discount;
+    private BigDecimal tax;
+    private BigDecimal totalPurchase;
 }

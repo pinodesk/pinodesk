@@ -20,7 +20,10 @@ public class PurchaseOrderVM {
     private LocalDate dueDate;
     private Integer totalProduct;
     private BigDecimal totalPayment;
+    private BigDecimal totalPurchase;
     private List<PurchaseProductVM> purchaseProducts;
+    private BigDecimal discount;
+    private BigDecimal tax;
 
     @Data
     public static class PurchaseProductVM {

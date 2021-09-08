@@ -74,6 +74,15 @@ public class PurchaseMainController extends BaseController {
     private TableColumn<PurchaseVM, BigDecimal> colTotalPayment;
 
     @FXML
+    private TableColumn<PurchaseVM, BigDecimal> colTotalPurchase;
+
+    @FXML
+    private TableColumn<PurchaseVM, BigDecimal> colTax;
+
+    @FXML
+    private TableColumn<PurchaseVM, BigDecimal> colDiscount;
+
+    @FXML
     private TableColumn<PurchaseVM, String> colPaymentMethod;
 
     @FXML
@@ -162,6 +171,12 @@ public class PurchaseMainController extends BaseController {
         TableViewUtils.initTableColumn(colTotalProduct, new NumberCellFactory<>(locale), PurchaseVM::getTotalProduct,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colTotalPayment, new NumberCellFactory<>(locale), PurchaseVM::getTotalPayment,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(colTax, new NumberCellFactory<>(locale), PurchaseVM::getTax,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(colDiscount, new NumberCellFactory<>(locale), PurchaseVM::getDiscount,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(colTotalPurchase, new NumberCellFactory<>(locale), PurchaseVM::getTotalPurchase,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colOrderDate, new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PurchaseVM::getOrderDate);

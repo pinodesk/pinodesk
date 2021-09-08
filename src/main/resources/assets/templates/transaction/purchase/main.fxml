@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/toscabox-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toscabox.desktop.controller.purchase.PurchaseMainController">
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/toscabox-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toscabox.desktop.controller.purchase.PurchaseMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -52,6 +52,9 @@
           <TableColumn fx:id="colOrderDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl.orderdate" />
             <TableColumn fx:id="colSupplierName" minWidth="-Infinity" prefWidth="200.0" text="%lbl.suppliername" />
             <TableColumn fx:id="colTotalProduct" minWidth="-Infinity" prefWidth="150.0" text="%lbl.totalproduct" />
+            <TableColumn fx:id="colTotalPurchase" minWidth="-Infinity" prefWidth="200.0" text="%lbl.totalpurchase" />
+            <TableColumn fx:id="colDiscount" minWidth="-Infinity" prefWidth="200.0" text="%lbl.discount" />
+            <TableColumn fx:id="colTax" minWidth="-Infinity" prefWidth="200.0" text="%lbl.tax" />
             <TableColumn fx:id="colTotalPayment" minWidth="-Infinity" prefWidth="200.0" text="%lbl.totalpayment" />
             <TableColumn fx:id="colPaymentMethod" minWidth="-Infinity" prefWidth="200.0" text="%lbl.paymentmethod" />
             <TableColumn fx:id="colPaymentPeriod" minWidth="-Infinity" prefWidth="200.0" text="%lbl.paymentperiod" />
