@@ -401,15 +401,15 @@ public class PurchaseAddController extends CommonDataSaveController {
                 .valueOf(ComboBoxUtils.getSelectedItem(cbPeriodUnit).getValue());
         LocalDate dueDate = null;
         switch (periodUnit) {
-        case DAY:
-            dueDate = orderDate.plusDays(periodCount);
-            break;
-        case WEEK:
-            dueDate = orderDate.plusWeeks(periodCount);
-            break;
-        case MONTH:
-            dueDate = orderDate.plusMonths(periodCount);
-            break;
+            case DAY:
+                dueDate = orderDate.plusDays(periodCount);
+                break;
+            case WEEK:
+                dueDate = orderDate.plusWeeks(periodCount);
+                break;
+            case MONTH:
+                dueDate = orderDate.plusMonths(periodCount);
+                break;
         }
         tfDueDate.setText(
                 dueDate == null ?

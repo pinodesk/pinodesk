@@ -3,7 +3,8 @@ package toscabox.desktop.constant;
 import java.util.Optional;
 
 public enum ContactType {
-    CUSTOMER, SUPPLIER;
+    CUSTOMER,
+    SUPPLIER;
 
     public static Optional<ContactType> of(String name) {
         for (ContactType ct : values()) {

@@ -298,20 +298,20 @@ public class ProductEditController extends CommonDataSaveController {
             Integer purchaseQuantity = wholesale.getPurchaseQuantity();
             BigDecimal sellingPrice = wholesale.getSellingPrice();
             switch (i) {
-            case 0:
-                tfPurchaseQuantity1.setText(purchaseQuantity.toString());
-                tfSellingPrice1.setText(sellingPrice.setScale(0).toString());
-                break;
-            case 1:
-                tfPurchaseQuantity2.setText(purchaseQuantity.toString());
-                tfSellingPrice2.setText(sellingPrice.setScale(0).toString());
-                break;
-            case 2:
-                tfPurchaseQuantity3.setText(purchaseQuantity.toString());
-                tfSellingPrice3.setText(sellingPrice.setScale(0).toString());
-                break;
-            default:
-                // Do nothing
+                case 0:
+                    tfPurchaseQuantity1.setText(purchaseQuantity.toString());
+                    tfSellingPrice1.setText(sellingPrice.setScale(0).toString());
+                    break;
+                case 1:
+                    tfPurchaseQuantity2.setText(purchaseQuantity.toString());
+                    tfSellingPrice2.setText(sellingPrice.setScale(0).toString());
+                    break;
+                case 2:
+                    tfPurchaseQuantity3.setText(purchaseQuantity.toString());
+                    tfSellingPrice3.setText(sellingPrice.setScale(0).toString());
+                    break;
+                default:
+                    // Do nothing
             }
         }
     }

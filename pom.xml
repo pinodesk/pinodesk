@@ -267,7 +267,7 @@
                     <java>
                         <removeUnusedImports />
                         <eclipse>
-                            <file>${basedir}/custom-formatter.xml</file>
+                            <file>${basedir}/formatter.xml</file>
                           </eclipse>
                     </java>
                 </configuration>

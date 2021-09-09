@@ -136,14 +136,14 @@ public abstract class BaseController {
 
     private String getAlertHeaderMessageCode(AlertType type) {
         switch (type) {
-        case INFORMATION:
-            return "lbl.information";
-        case ERROR:
-            return "lbl.error";
-        case CONFIRMATION:
-            return "lbl.confirmation";
-        default:
-            return "";
+            case INFORMATION:
+                return "lbl.information";
+            case ERROR:
+                return "lbl.error";
+            case CONFIRMATION:
+                return "lbl.confirmation";
+            default:
+                return "";
         }
     }
 
@@ -165,18 +165,18 @@ public abstract class BaseController {
         dialogPane.getButtonTypes().clear();
         dialogPane.getStylesheets().add(getClass().getResource("/assets/css/toscabox-desktop.css").toExternalForm());
         switch (type) {
-        case INFORMATION:
-        case ERROR:
-            dialogPane.getButtonTypes().add(btnTypeOk);
-            dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
-            break;
-        case CONFIRMATION:
-            dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
-            dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
-            dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
-            break;
-        default:
-            break;
+            case INFORMATION:
+            case ERROR:
+                dialogPane.getButtonTypes().add(btnTypeOk);
+                dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
+                break;
+            case CONFIRMATION:
+                dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
+                dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
+                dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
+                break;
+            default:
+                break;
         }
         dialogPane.applyCss();
         HBox buttonContainer = (HBox) dialogPane.lookup(".container");

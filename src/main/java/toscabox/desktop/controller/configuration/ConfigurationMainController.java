@@ -102,13 +102,7 @@ public class ConfigurationMainController extends BaseController {
         tfVatPercentage.setText(configurationMap.get(ConfigurationConstants.VAT_PERCENTAGE));
         cbDrugCategoryBase.setItems(FXCollections.observableList(drugCategoryBases));
         cbLanguage.setItems(locales);
-        ComboBoxUtils.select(
-                cbDrugCategoryBase,
-                () -> drugCategoryBases.stream()
-                        .filter(
-                                base -> configurationMap.get(ConfigurationConstants.DRUG_CATEGORY_BASE_ID)
-                                        .equals(base.getId().toString()))
-                        .findAny().get());
+        ComboBoxUtils.select(cbDrugCategoryBase, () -> getSelectedDrugCategoryBase(configurationMap));
         ComboBoxUtils.select(cbLanguage, () -> locales.stream().filter(locale -> {
             String configLanguageCode = configurationMap.get(ConfigurationConstants.LANGUAGE_CODE);
             return new Locale(configLanguageCode).getLanguage().equals(locale.getLanguage());
@@ -118,6 +112,13 @@ public class ConfigurationMainController extends BaseController {
     @Override
     protected Stage getCurrentStage() {
         return null;
+    }
+
+    private DrugCategoryBaseVM getSelectedDrugCategoryBase(Map<String, String> configurationMap) {
+        String categoryBaseId = configurationMap.get(ConfigurationConstants.DRUG_CATEGORY_BASE_ID);
+        List<DrugCategoryBaseVM> drugCategoryBases = drugCategoryService.getAllDrugCategoryBases();
+        return drugCategoryBases.stream().filter(base -> base.getId().equals(Long.valueOf(categoryBaseId))).findAny()
+                .orElseThrow();
     }
 
 }

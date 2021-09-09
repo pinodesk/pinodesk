@@ -181,14 +181,12 @@ public class ProductAddController extends CommonDataSaveController {
         registerWhitespaceValidator(tfCode);
         registerWhitespaceValidator(tfPurchasePrice);
         registerWhitespaceValidator(tfSellingPrice);
-        vs.registerValidator(cbDrugCategory, false, (c, v) -> {
-
-            boolean condition1 = v == null && !StringUtils
+        vs.registerValidator(cbDrugCategory, false, (control, value) -> {
+            boolean condition1 = value == null && !StringUtils
                     .isAllBlank(tfPrescriptionPrice.getText(), tfIndication.getText(), tfContraindication.getText());
-
-            boolean condition2 = v != null && !isProductCategoryDrugs();
+            boolean condition2 = value != null && !isProductCategoryDrugs();
             return ValidationResult.fromErrorIf(
-                    c,
+                    control,
                     translate(
                             condition1 ?
                                     MessageCode.ERROR_EMPTY_OR_BLANK :
