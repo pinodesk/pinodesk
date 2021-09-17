@@ -6,6 +6,7 @@ create table if not exists purchase (
 	supplier_id bigint not null,
 	order_number varchar(64) not null,
 	order_date date not null,
+	order_status varchar(8) not null, -- DRAFT, ACTIVE, COMPLETE
 	total_product int not null,
 	total_purchase decimal(12,2) not null,
 	total_payment decimal(12,2) not null,
@@ -14,7 +15,7 @@ create table if not exists purchase (
 	payment_period_unit varchar(5),	-- DAY, WEEK, MONTH
 	payment_due_date date,
 	payment_status varchar(6), -- PAID, UNPAID
-	discount decimal(12,2) default 0,
+	discount decimal(12,2) default 0,	
 	tax decimal(12,2) default 0,
 	primary key (id),
 	index idx_purchase__deleted_at (deleted_at),
