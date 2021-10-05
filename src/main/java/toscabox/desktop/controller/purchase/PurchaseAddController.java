@@ -1,5 +1,12 @@
 package toscabox.desktop.controller.purchase;
 
+import static com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toBigDecimalOrZero;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toIntegerOrZero;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrDefault;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrNull;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -202,7 +209,7 @@ public class PurchaseAddController extends CommonDataSaveController {
             purchaseProduct.setProduct(selectedProduct);
             purchaseProduct.setPurchasePrice(purchasePrice);
             purchaseProduct.setPurchaseQuantity(purchaseQuantity);
-            purchaseProduct.setSellingPrice(toBigDecimalOrDefault(tfSellingPrice.getText(), null));
+            purchaseProduct.setSellingPrice(toBigDecimalOrNull(tfSellingPrice.getText()));
             purchaseProduct.setSubtotalPurchase(subtotalPurchase);
             int indexProduct = getProductIndexInTable(selectedProduct, tblPurchaseProduct);
             if (indexProduct != -1) {
@@ -340,7 +347,7 @@ public class PurchaseAddController extends CommonDataSaveController {
                         translate(MessageCode.ERROR_REQUIRED),
                         tblPurchaseProduct.getItems().isEmpty()));
         vs.registerValidator(tfOrderDate, (c, v) -> {
-            LocalDate orderDate = parseDateQuietly(tfOrderDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+            LocalDate orderDate = parseLocalDateQuietly(tfOrderDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
             return ValidationResult.fromErrorIf(
                     c,
                     translate(MessageCode.ERROR_PURCHASE_ORDER_DATE_GREATER_THAN_TODAY),
@@ -391,7 +398,7 @@ public class PurchaseAddController extends CommonDataSaveController {
     }
 
     private void calculateDueDate() {
-        LocalDate orderDate = parseDateQuietly(tfOrderDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        LocalDate orderDate = parseLocalDateQuietly(tfOrderDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
         if (orderDate == null) {
             tfDueDate.setText(null);
             return;

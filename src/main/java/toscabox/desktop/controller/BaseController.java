@@ -2,14 +2,10 @@ package toscabox.desktop.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -21,7 +17,6 @@ import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
@@ -247,82 +242,6 @@ public abstract class BaseController {
         dialogPane.setExpandableContent(expContent);
 
         alert.showAndWait();
-    }
-
-    protected LocalDate parseDateQuietly(String str, String pattern) {
-        try {
-            return LocalDate.parse(str, DateTimeFormatter.ofPattern(pattern));
-        } catch (DateTimeParseException e) {
-            return null;
-        }
-    }
-
-    protected LocalDate parseLocalDateQuietly(String str, String pattern) {
-        try {
-            return LocalDate.parse(str, DateTimeFormatter.ofPattern(pattern));
-        } catch (DateTimeParseException e) {
-            return null;
-        }
-    }
-
-    protected String toStringOrDefault(BigDecimal num, String dflt) {
-        return num == null ? dflt : num.setScale(0).toString();
-    }
-
-    protected String toStringOrNull(BigDecimal num) {
-        return toStringOrDefault(num, null);
-    }
-
-    protected String toStringOrEmpty(BigDecimal num) {
-        return toStringOrDefault(num, "");
-    }
-
-    protected String toStringOrDefault(Integer num, String dflt) {
-        return num == null ? dflt : num.toString();
-    }
-
-    protected String toStringOrNull(Integer num) {
-        return toStringOrDefault(num, null);
-    }
-
-    protected String toStringOrEmpty(Integer num) {
-        return toStringOrDefault(num, "");
-    }
-
-    protected String toStringOrDefault(Long num, String dflt) {
-        return num == null ? dflt : num.toString();
-    }
-
-    protected String toStringOrNull(Long num) {
-        return toStringOrDefault(num, null);
-    }
-
-    protected String toStringOrEmpty(Long num) {
-        return toStringOrDefault(num, "");
-    }
-
-    protected BigDecimal toBigDecimalOrDefault(String str, BigDecimal dflt) {
-        return StringUtils.isNumeric(str) ? NumberUtils.toScaledBigDecimal(str) : dflt;
-    }
-
-    protected BigDecimal toBigDecimalOrNull(String str) {
-        return toBigDecimalOrDefault(str, null);
-    }
-
-    protected BigDecimal toBigDecimalOrZero(String str) {
-        return toBigDecimalOrDefault(str, BigDecimal.ZERO);
-    }
-
-    protected Integer toIntegerOrDefault(String str, Integer dflt) {
-        return StringUtils.isNumeric(str) ? Integer.valueOf(str) : dflt;
-    }
-
-    protected Integer toIntegerOrNull(String str) {
-        return toIntegerOrDefault(str, null);
-    }
-
-    protected Integer toIntegerOrZero(String str) {
-        return toIntegerOrDefault(str, 0);
     }
 
     protected String formatNumber(Number number) {

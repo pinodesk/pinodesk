@@ -1,5 +1,10 @@
 package toscabox.desktop.controller.purchase;
 
+import static com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toIntegerOrNull;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrNull;
+
 import java.time.format.DateTimeFormatter;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
@@ -116,10 +121,10 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     protected PurchaseFilterVM getFreshFilterValues() {
         PurchaseFilterVM filter = new PurchaseFilterVM();
         filter.setOrderNumber(tfOrderNumber.getText());
-        filter.setOrderDateMax(parseDateQuietly(tfOrderDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setOrderDateMin(parseDateQuietly(tfOrderDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setDueDateMax(parseDateQuietly(tfDueDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setDueDateMin(parseDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setOrderDateMax(parseLocalDateQuietly(tfOrderDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setOrderDateMin(parseLocalDateQuietly(tfOrderDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setDueDateMax(parseLocalDateQuietly(tfDueDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setDueDateMin(parseLocalDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         SimpleComboBoxModel selectedPaymentMethod = ComboBoxUtils.getSelectedItem(cbPaymentMethod);
         SimpleComboBoxModel selectedPaymentPeriod = ComboBoxUtils.getSelectedItem(cbPaymentPeriod);
         SimpleComboBoxModel selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
