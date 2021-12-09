@@ -2,11 +2,17 @@
 # https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Maven.gitlab-ci.yml
 # https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 
-image: maven:3.8.1-adoptopenjdk-11-openj9
+image: adoptopenjdk/openjdk16:alpine-slim
 
 variables:
+  MAVEN_OPTS: "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
+    --add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED \
+    --add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED \
+    --add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED \
+    --add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED"
   MAVEN_CLI_OPTS: "--show-version \
     --batch-mode \
+    --no-transfer-progress \
     -Duser.timezone=Asia/Jakarta \
     -Dhttps.protocols=TLSv1.2 \
     -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository \
@@ -20,7 +26,7 @@ cache:
 
 build:
   stage: build
-  script: mvn $MAVEN_CLI_OPTS spotless:check test-compile -U 
+  script: ./mvnw $MAVEN_CLI_OPTS spotless:check test-compile -U 
   allow_failure: false
 
 test:
@@ -28,7 +34,7 @@ test:
     JACOCO_REPORT_HTML: $CI_PROJECT_DIR/target/site/jacoco/index.html
   stage: test
   script:
-    - mvn $MAVEN_CLI_OPTS verify -U 
+    - ./mvnw $MAVEN_CLI_OPTS verify -U 
     - if [ -f $JACOCO_REPORT_HTML ]; then cat $JACOCO_REPORT_HTML | grep -o "Total[^%]*%"; fi
   allow_failure: false
   coverage: "/Total.*?([0-9]{1,3})%/"
