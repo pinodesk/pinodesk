@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="600.0" style="-fx-background-color: white;" stylesheets="@../../../css/toscabox-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toscabox.desktop.controller.supplier.SupplierFilterController">
+<VBox fx:id="contentPane" prefWidth="600.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.supplier.SupplierFilterController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>

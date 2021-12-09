@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="565.0" style="-fx-background-color: white;" stylesheets="@../../../css/toscabox-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="toscabox.desktop.controller.supplier.SupplierContactAddController">
+<VBox fx:id="contentPane" prefWidth="565.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.supplier.SupplierContactAddController">
    <children>
       <AnchorPane>
          <children>

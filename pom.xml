@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>toscabox</groupId>
-    <artifactId>toscabox-desktop</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <groupId>pinus</groupId>
+    <artifactId>pinus-desktop</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Toscabox Desktop</name>
-    <description>Toscabox POS (Point-of-Sale) Desktop App</description>
+    <name>Pinus Desktop</name>
+    <description>Pinus POS (Point-of-Sale) Desktop App</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.mainClass>toscabox.desktop.Main</project.mainClass>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <project.mainClass>pinus.desktop.Main</project.mainClass>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
+        <java.version>16</java.version>
     </properties>
 
     <dependencyManagement>
@@ -140,17 +141,17 @@
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
             <artifactId>sequel</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>develop-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
             <artifactId>pandora</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>develop-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
             <artifactId>toolbox</artifactId>
-            <version>master-SNAPSHOT</version>
+            <version>develop-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.flywaydb</groupId>
@@ -217,10 +218,10 @@
                 <version>0.8.6</version>
                 <configuration>
                     <excludes>
-                        <exclude>toscabox/desktop/domain/*</exclude>
-                        <exclude>toscabox/desktop/constant/*</exclude>
-                        <exclude>toscabox/desktop/misc/*</exclude>
-                        <exclude>toscabox/desktop/viewmodel/*</exclude>
+                        <exclude>pinus/desktop/domain/*</exclude>
+                        <exclude>pinus/desktop/constant/*</exclude>
+                        <exclude>pinus/desktop/misc/*</exclude>
+                        <exclude>pinus/desktop/viewmodel/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -268,7 +269,7 @@
                         <removeUnusedImports />
                         <eclipse>
                             <file>${basedir}/formatter.xml</file>
-                          </eclipse>
+                        </eclipse>
                     </java>
                 </configuration>
             </plugin>
@@ -291,8 +292,8 @@
                                     <goal>package</goal>
                                 </goals>
                                 <configuration>
-                                    <name>Toscabox</name>
-                                    <displayName>Toscabox</displayName>
+                                    <name>Pinus</name>
+                                    <displayName>Pinus</displayName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
                                 </configuration>
