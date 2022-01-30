@@ -1,5 +1,5 @@
 create table if not exists customer (
-	id bigint not null auto_increment,
+	id IDENTITY NOT NULL PRIMARY KEY,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
@@ -7,9 +7,9 @@ create table if not exists customer (
 	name varchar(256) not null,
 	phone varchar(16),
 	email varchar(256),
-	address varchar(512),
-	primary key (id),
-	index idx_customer__deleted_at (deleted_at),
-	index idx_customer__code (code),
-	index idx_customer__code__deleted_at (code, deleted_at)
+	address varchar(512)
 );
+
+create index idx_customer__deleted_at on customer (deleted_at);
+create index idx_customer__code on customer (code);
+create index idx_customer__code__deleted_at on customer (code, deleted_at);

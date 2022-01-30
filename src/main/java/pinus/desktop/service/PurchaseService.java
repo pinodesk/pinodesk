@@ -51,7 +51,7 @@ public class PurchaseService extends BaseService {
         }
         Purchase purchase = new Purchase();
         purchase.setOrderDate(po.getOrderDate());
-        purchase.setOrderNumber(po.getOrderNumber());
+        purchase.setInvoiceNumber(po.getOrderNumber());
         purchase.setTotalProduct(po.getTotalProduct());
         purchase.setTotalPayment(po.getTotalPayment());
         purchase.setPaymentMethod(po.getPaymentMethod().name());
@@ -76,8 +76,8 @@ public class PurchaseService extends BaseService {
             purchaseDetailRepository.create(pd);
             Product product = productRepository.readOne(purchaseProduct.getProduct().getId()).orElseThrow();
             Integer lastQuantity = product.getQuantity();
-            product.setPurchasePrice(purchaseProduct.getPurchasePrice());
-            product.setSellingPrice(purchaseProduct.getSellingPrice());
+            // product.setPurchasePrice(purchaseProduct.getPurchasePrice());
+            // product.setSellingPrice(purchaseProduct.getSellingPrice());
             product.setQuantity(
                     lastQuantity == null ?
                             purchaseProduct.getPurchaseQuantity() :

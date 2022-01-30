@@ -16,6 +16,10 @@ public abstract class CommonContentPaneController extends BaseController {
 
     private List<EventHandler<KeyEvent>> contentPaneKeyPressedHandlers = new ArrayList<>();
 
+    protected void setFocusedToContentPane() {
+        setFocused(contentPane);
+    }
+
     @Override
     protected Stage getCurrentStage() {
         return (Stage) contentPane.getScene().getWindow();

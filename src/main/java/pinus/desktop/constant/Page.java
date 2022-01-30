@@ -11,6 +11,9 @@ public enum Page implements IPage {
     MASTER_PRODUCT_EDIT("master/product/edit"),
     MASTER_PRODUCT_FILTER("master/product/filter"),
     MASTER_PRODUCT_CHOOSE("master/product/choose"),
+    MASTER_PRODUCT_CHOOSE_CATEGORY("master/product/choose-category"),
+    MASTER_PRODUCT_CHOOSE_UNIT("master/product/choose-unit"),
+    MASTER_PRODUCT_CHOOSE_DRUG_CATEGORY("master/product/choose-drug-category"),
 
     MASTER_CUSTOMER_MAIN("master/customer/main"),
     MASTER_CUSTOMER_FILTER("master/customer/filter"),

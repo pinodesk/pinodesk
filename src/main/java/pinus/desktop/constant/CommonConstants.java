@@ -12,4 +12,5 @@ public interface CommonConstants {
     String CODE_PREFIX_DATE_PATTERN = "yyyyMMdd";
     String PAGE_TEMPLATE_DIR = "/assets/templates/";
     String RESOURCE_BUNDLE_PACKAGE = "pinus.desktop.lang";
+    String EMPTY_DATE_MASK = "____-__-__";
 }

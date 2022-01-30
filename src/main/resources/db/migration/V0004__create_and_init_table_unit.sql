@@ -1,13 +1,13 @@
 create table if not exists unit (
-	id bigint not null auto_increment,
+	id IDENTITY NOT NULL PRIMARY KEY,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
 	label varchar(32) not null,
-	name varchar(128) not null,
-	primary key (id),
-	index idx_unit__deleted_at (deleted_at)
+	name varchar(128) not null
 );
+
+create index idx_unit__deleted_at on unit (deleted_at);
 
 insert into unit (id, created_at, updated_at, deleted_at, label, name) values
 (null, current_timestamp, current_timestamp, NULL, 'PCS', 'Pieces'),

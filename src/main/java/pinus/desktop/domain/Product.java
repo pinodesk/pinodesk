@@ -1,7 +1,7 @@
 package pinus.desktop.domain;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDate;
 
 import com.gitlab.muhammadkholidb.sequel.annotation.DataColumn;
 import com.gitlab.muhammadkholidb.sequel.model.DataModel;
@@ -23,13 +23,11 @@ public class Product extends DataModel {
     public static final String C_UNIT_ID = "unit_id";
     public static final String C_UNIT_LABEL = "unit_label";
     public static final String C_CATEGORY_CODE = "category_code";
-    public static final String C_PURCHASE_PRICE = "purchase_price";
-    public static final String C_SELLING_PRICE = "selling_price";
-    public static final String C_VAT_INCLUDED = "vat_included";
-    public static final String C_RACK_ID = "rack_id";
-    public static final String C_RACK_CODE = "rack_code";
-    public static final String C_RACK_NAME = "rack_name";
-    public static final String C_EXPIRED_DATE = "expired_date";
+    public static final String C_GENERAL_SELLING_PRICE = "general_selling_price";
+    public static final String C_PRESCRIPTION_SELLING_PRICE = "prescription_selling_price";
+    public static final String C_AVERAGE_BUYING_PRICE = "average_buying_price";
+    public static final String C_CLOSEST_EXPIRED_DATE = "closest_expired_date";
+    public static final String C_STATUS = "status";
 
     @DataColumn(C_CODE)
     private String code;
@@ -55,26 +53,20 @@ public class Product extends DataModel {
     @DataColumn(C_UNIT_LABEL)
     private String unitLabel;
 
-    @DataColumn(C_PURCHASE_PRICE)
-    private BigDecimal purchasePrice;
+    @DataColumn(C_GENERAL_SELLING_PRICE)
+    private BigDecimal generalSellingPrice;
 
-    @DataColumn(C_SELLING_PRICE)
-    private BigDecimal sellingPrice;
+    @DataColumn(C_PRESCRIPTION_SELLING_PRICE)
+    private BigDecimal prescriptionSellingPrice;
 
-    @DataColumn(C_VAT_INCLUDED)
-    private String vatIncluded;
+    @DataColumn(C_AVERAGE_BUYING_PRICE)
+    private BigDecimal averageBuyingPrice;
 
-    @DataColumn(C_RACK_ID)
-    private Long rackId;
+    @DataColumn(C_CLOSEST_EXPIRED_DATE)
+    private LocalDate closestExpiredDate;
 
-    @DataColumn(C_RACK_CODE)
-    private String rackCode;
-
-    @DataColumn(C_RACK_NAME)
-    private String rackName;
-
-    @DataColumn(C_EXPIRED_DATE)
-    private Date expiredDate;
+    @DataColumn(C_STATUS)
+    private String status;
 
     @Override
     public String tableName() {

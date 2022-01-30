@@ -6,12 +6,12 @@ import java.util.List;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
 import javafx.collections.ObservableList;
@@ -142,11 +142,8 @@ public class SupplierEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void registerValidator(ValidationSupport vs) {
-        registerRequiredFields(tfName);
-        registerWhitespaceValidator(tfName);
-        registerEmailValidator(tfEmail, false);
-        registerDomainValidator(tfWebsite, false);
+    protected void validate(ControlValidator validator) {
+        // TODO Auto-generated method stub
     }
 
     @Override

@@ -1,115 +1,170 @@
 package pinus.desktop.repository;
 
+import static com.gitlab.muhammadkholidb.sequel.utility.SQLUtils.likeValueContains;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
+import com.gitlab.muhammadkholidb.sequel.utility.SQLUtils;
+import com.gitlab.muhammadkholidb.sequel.utility.WhereParamsHelper;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import pinus.desktop.constant.ProductStatus;
 import pinus.desktop.domain.Product;
 import pinus.desktop.domain.ProductCategory;
-import pinus.desktop.viewmodel.ProductAddVM;
-import pinus.desktop.viewmodel.ProductEditVM;
+import pinus.desktop.viewmodel.ProductCategoryVM;
 import pinus.desktop.viewmodel.ProductFilterVM;
 import pinus.desktop.viewmodel.ProductVM;
+import pinus.desktop.viewmodel.SearchProductsByFilterVM;
+import pinus.desktop.viewmodel.UnitVM;
 
 @Repository
 public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepository {
 
     @Override
     public List<ProductVM> filter(ProductFilterVM filter, String languageCode) {
-        String name = filter.getName();
-        String code = filter.getCode();
-        String barcode = filter.getBarcode();
-        String categoryCode = filter.getCategoryCode();
-        Long unitId = filter.getUnitId();
-        Integer quantityMax = filter.getQuantityMax();
-        Integer quantityMin = filter.getQuantityMin();
-        BigDecimal purchasePriceMax = filter.getPurchasePriceMax();
-        BigDecimal purchasePriceMin = filter.getPurchasePriceMin();
-        BigDecimal sellingPriceMax = filter.getSellingPriceMax();
-        BigDecimal sellingPriceMin = filter.getSellingPriceMin();
-        LocalDate expiredDateMax = filter.getExpiredDateMax();
-        LocalDate expiredDateMin = filter.getExpiredDateMin();
-        Long rackId = filter.getRackId();
-        String includesVat = filter.getIncludesVat();
+        WhereParamsHelper whereParamsHelper = where(filter);
         StringBuilder sb = new StringBuilder();
         sb.append(" SELECT p.*, pc.id as category_id, pc.code as category_code, pc.name as category_name ");
-        sb.append(" FROM ").append(Product.TABLE_NAME).append(" p ");
-        sb.append(" LEFT JOIN ").append(ProductCategory.TABLE_NAME).append(" pc ")
-                .append(" ON pc.code = p.category_code AND pc.deleted_at IS NULL AND pc.language_code = ? ");
+        sb.append(" FROM product p ");
+        sb.append(
+                " LEFT JOIN product_category pc ON pc.code = p.category_code AND pc.deleted_at IS NULL AND pc.language_code = ? ");
         sb.append(" WHERE p.deleted_at IS NULL ");
-        List<Object> params = new ArrayList<>();
-        params.add(languageCode);
+        sb.append(whereParamsHelper.getQueryAppend());
+        whereParamsHelper.getParams().add(0, languageCode);
+        return performSelect(sb.toString(), whereParamsHelper.getParams(), ProductVM.class);
+    }
+
+    @Override
+    public List<SearchProductsByFilterVM> queryByFilter(ProductFilterVM filter, String languageCode) {
+        String sql = """
+                select
+                    a.id,
+                    a.code,
+                    a.barcode,
+                    a.name,
+                    a.description,
+                    a.unit_id,
+                    a.unit_label,
+                    b.id as category_id,
+                    b.name as category_name,
+                    a.quantity,
+                    a.general_selling_price,
+                    a.prescription_selling_price,
+                    a.average_buying_price,
+                    a.closest_expired_date,
+                    a.updated_at,
+                    a.status
+                from product a
+                inner join product_category b on b.code = a.category_code and b.language_code = ?
+                where a.deleted_at is null
+                """;
+        WhereParamsHelper whereParamsHelper = where(filter);
+        sql = sql + whereParamsHelper.getQueryAppend().toString();
+        whereParamsHelper.getParams().add(0, languageCode);
+        return performSelect(sql, whereParamsHelper.getParams(), SearchProductsByFilterVM.class);
+    }
+
+    private WhereParamsHelper where(ProductFilterVM filter) {
+        String name = filter.getName();
+        String description = filter.getDescription();
+        String code = filter.getCode();
+        String barcode = filter.getBarcode();
+        ProductCategoryVM category = filter.getCategory();
+        UnitVM unit = filter.getUnit();
+        ProductStatus status = filter.getStatus();
+        Integer quantityMax = filter.getStockQuantityMax();
+        Integer quantityMin = filter.getStockQuantityMin();
+        BigDecimal generalSellingPriceMax = filter.getGeneralSellingPriceMax();
+        BigDecimal generalSellingPriceMin = filter.getGeneralSellingPriceMin();
+        BigDecimal prescriptionSellingPriceMax = filter.getPrescriptionSellingPriceMax();
+        BigDecimal prescriptionSellingPriceMin = filter.getPrescriptionSellingPriceMin();
+        WhereParamsHelper helper = new WhereParamsHelper();
         if (StringUtils.isNotBlank(name)) {
-            sb.append(" AND LOWER(p.name) LIKE ? ");
-            params.add(StringUtils.join("%", name.toLowerCase(), "%"));
+            helper.getQueryAppend().append(" AND LOWER(a.name) LIKE ? ");
+            helper.getParams().add(likeValueContains(name.toLowerCase()));
+        }
+        if (StringUtils.isNotBlank(description)) {
+            helper.getQueryAppend().append(" AND LOWER(a.description) LIKE ? ");
+            helper.getParams().add(likeValueContains(description.toLowerCase()));
         }
         if (StringUtils.isNotBlank(code)) {
-            sb.append(" AND LOWER(p.code) LIKE ? ");
-            params.add(StringUtils.join("%", code.toLowerCase(), "%"));
+            helper.getQueryAppend().append(" AND LOWER(a.code) LIKE ? ");
+            helper.getParams().add(likeValueContains(code.toLowerCase()));
         }
         if (StringUtils.isNotBlank(barcode)) {
-            sb.append(" AND LOWER(p.barcode) LIKE ? ");
-            params.add(StringUtils.join("%", barcode.toLowerCase(), "%"));
+            helper.getQueryAppend().append(" AND LOWER(a.barcode) LIKE ? ");
+            helper.getParams().add(likeValueContains(barcode.toLowerCase()));
         }
-        if (StringUtils.isNotBlank(categoryCode)) {
-            sb.append(" AND pc.code = ? ");
-            params.add(categoryCode);
+        if (category != null) {
+            helper.getQueryAppend().append(" AND a.category_code = ? ");
+            helper.getParams().add(category.getCode());
         }
-        if (unitId != null) {
-            sb.append(" AND p.unit_id = ? ");
-            params.add(unitId);
+        if (unit != null) {
+            helper.getQueryAppend().append(" AND a.unit_id = ? ");
+            helper.getParams().add(unit.getId());
         }
         if (quantityMin != null) {
-            sb.append(" AND p.quantity >= ? ");
-            params.add(quantityMin);
+            helper.getQueryAppend().append(" AND a.quantity >= ? ");
+            helper.getParams().add(quantityMin);
         }
         if (quantityMax != null) {
-            sb.append(" AND p.quantity <= ? ");
-            params.add(quantityMax);
+            helper.getQueryAppend().append(" AND a.quantity <= ? ");
+            helper.getParams().add(quantityMax);
         }
-        if (purchasePriceMin != null) {
-            sb.append(" AND p.purchase_price >= ? ");
-            params.add(purchasePriceMin);
+        if (generalSellingPriceMin != null) {
+            helper.getQueryAppend().append(" AND a.general_selling_price >= ? ");
+            helper.getParams().add(generalSellingPriceMin);
         }
-        if (purchasePriceMax != null) {
-            sb.append(" AND p.purchase_price <= ? ");
-            params.add(purchasePriceMax);
+        if (generalSellingPriceMax != null) {
+            helper.getQueryAppend().append(" AND a.general_selling_price <= ? ");
+            helper.getParams().add(generalSellingPriceMax);
         }
-        if (sellingPriceMin != null) {
-            sb.append(" AND p.selling_price >= ? ");
-            params.add(sellingPriceMin);
+        if (prescriptionSellingPriceMin != null) {
+            helper.getQueryAppend().append(" AND a.prescription_selling_price >= ? ");
+            helper.getParams().add(prescriptionSellingPriceMin);
         }
-        if (sellingPriceMax != null) {
-            sb.append(" AND p.selling_price <= ? ");
-            params.add(sellingPriceMax);
+        if (prescriptionSellingPriceMax != null) {
+            helper.getQueryAppend().append(" AND a.prescription_selling_price <= ? ");
+            helper.getParams().add(prescriptionSellingPriceMax);
         }
-        if (expiredDateMin != null) {
-            sb.append(" AND p.expired_date >= ? ");
-            params.add(expiredDateMin);
+        if (status != null) {
+            helper.getQueryAppend().append(" AND a.status = ? ");
+            helper.getParams().add(status.name());
         }
-        if (expiredDateMax != null) {
-            sb.append(" AND p.expired_date <= ? ");
-            params.add(expiredDateMax);
+        appendQueryForProductExpiry(filter, helper);
+        return helper;
+    }
+
+    private void appendQueryForProductExpiry(ProductFilterVM filter, WhereParamsHelper helper) {
+        LocalDate expiredDateMax = filter.getExpiredDateMax();
+        LocalDate expiredDateMin = filter.getExpiredDateMin();
+        String batchNumber = filter.getBatchNumber();
+        if (ObjectUtils.anyNotNull(expiredDateMax, expiredDateMin) || StringUtils.isNotBlank(batchNumber)) {
+            helper.getQueryAppend().append(" and (select count(c.id) from product_expiry c where c.product_id = a.id ");
+            if (expiredDateMax != null) {
+                helper.getQueryAppend().append(" and c.expired_date <= ? ");
+                helper.getParams().add(expiredDateMax);
+            }
+            if (expiredDateMin != null) {
+                helper.getQueryAppend().append(" and c.expired_date >= ? ");
+                helper.getParams().add(expiredDateMin);
+            }
+            if (StringUtils.isNotBlank(batchNumber)) {
+                helper.getQueryAppend().append(" and c.batch_number like ? ");
+                helper.getParams().add(SQLUtils.likeValueContains(batchNumber));
+            }
+            helper.getQueryAppend().append(" ) > 0 ");
         }
-        if (rackId != null) {
-            sb.append(" AND p.rack_id = ? ");
-            params.add(rackId);
-        }
-        if (StringUtils.isNotBlank(includesVat)) {
-            sb.append(" AND p.vat_included = ? ");
-            params.add(includesVat);
-        }
-        return performSelect(sb.toString(), params, ProductVM.class);
     }
 
     @Override
@@ -132,42 +187,6 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         List<Object> params = where.getValues();
         params.add(0, languageCode);
         return performSelect(sb.toString(), params, ProductVM.class);
-    }
-
-    @Override
-    public Integer updateProduct(ProductEditVM productEdit) {
-        return update(
-                new String[] {
-                        Product.C_NAME,
-                        Product.C_DESCRIPTION,
-                        Product.C_CODE,
-                        Product.C_BARCODE,
-                        Product.C_CATEGORY_CODE,
-                        Product.C_UNIT_ID,
-                        Product.C_UNIT_LABEL,
-                        Product.C_QUANTITY,
-                        Product.C_PURCHASE_PRICE,
-                        Product.C_SELLING_PRICE,
-                        Product.C_VAT_INCLUDED,
-                        Product.C_EXPIRED_DATE,
-                        Product.C_RACK_ID,
-                        Product.C_RACK_CODE },
-                new Object[] {
-                        productEdit.getName(),
-                        productEdit.getDescription(),
-                        productEdit.getCode(),
-                        productEdit.getBarcode(),
-                        productEdit.getProductCategory().getCode(),
-                        productEdit.getUnit().getId(),
-                        productEdit.getUnit().getLabel(),
-                        productEdit.getQuantity(),
-                        productEdit.getPurchasePrice(),
-                        productEdit.getSellingPrice(),
-                        productEdit.getVatIncluded(),
-                        productEdit.getExpiredDate(),
-                        productEdit.getRack() == null ? null : productEdit.getRack().getId(),
-                        productEdit.getRack() == null ? null : productEdit.getRack().getCode() },
-                productEdit.getId());
     }
 
     @Override
@@ -195,41 +214,6 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
             where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
         }
         return exists(where);
-    }
-
-    @Override
-    public Long createProduct(ProductAddVM productAdd) {
-        return insert(
-                new String[] {
-                        Product.C_NAME,
-                        Product.C_DESCRIPTION,
-                        Product.C_CODE,
-                        Product.C_BARCODE,
-                        Product.C_CATEGORY_CODE,
-                        Product.C_UNIT_ID,
-                        Product.C_UNIT_LABEL,
-                        Product.C_QUANTITY,
-                        Product.C_PURCHASE_PRICE,
-                        Product.C_SELLING_PRICE,
-                        Product.C_VAT_INCLUDED,
-                        Product.C_EXPIRED_DATE,
-                        Product.C_RACK_ID,
-                        Product.C_RACK_CODE },
-                new Object[] {
-                        productAdd.getName(),
-                        productAdd.getDescription(),
-                        productAdd.getCode(),
-                        productAdd.getBarcode(),
-                        productAdd.getProductCategory().getCode(),
-                        productAdd.getUnit().getId(),
-                        productAdd.getUnit().getLabel(),
-                        productAdd.getQuantity(),
-                        productAdd.getPurchasePrice(),
-                        productAdd.getSellingPrice(),
-                        productAdd.getVatIncluded(),
-                        productAdd.getExpiredDate(),
-                        productAdd.getRack() == null ? null : productAdd.getRack().getId(),
-                        productAdd.getRack() == null ? null : productAdd.getRack().getCode() });
     }
 
 }

@@ -186,11 +186,10 @@
 }
 
 .date-picker {
-/*    -fx-border-insets: 0;
+    /*    -fx-border-insets: 0;
     -fx-background-insets: 0;
     -fx-padding: 0;*/
 }
-
 
 .date-picker:contains-focus {
     -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-control-inner-background;
@@ -226,12 +225,14 @@
     -fx-page-information-visible: false;
 }
 
-.pagination > .page {
+.pagination>.page {
     -fx-min-height: 0;
 }
 
+
 /* Remove spacing */
-.pagination > .pagination-control > .control-box {
+
+.pagination>.pagination-control>.control-box {
     -fx-spacing: 0;
     -fx-font-size: 13px;
     font-size: 13px;
@@ -239,11 +240,13 @@
     -fx-alignment: top-left;
 }
 
+
 /* You can control the actual button sizes here */
-.pagination > .pagination-control > .control-box > .number-button,
-.pagination > .pagination-control > .control-box > .bullet-button,
-.pagination > .pagination-control > .control-box > .left-arrow-button,
-.pagination > .pagination-control > .control-box > .right-arrow-button {
+
+.pagination>.pagination-control>.control-box>.number-button,
+.pagination>.pagination-control>.control-box>.bullet-button,
+.pagination>.pagination-control>.control-box>.left-arrow-button,
+.pagination>.pagination-control>.control-box>.right-arrow-button {
     -fx-background-insets: 0;
     -fx-background-color: #dddddd;
     -fx-min-width: 30;
@@ -253,18 +256,22 @@
     -fx-background-radius: 0 0 0 0;
 }
 
+
 /* Colors on hover */
-.pagination > .pagination-control > .control-box > .number-button:hover,
-.pagination > .pagination-control > .control-box > .bullet-button:hover,
-.pagination > .pagination-control > .control-box > .left-arrow-button:hover,
-.pagination > .pagination-control > .control-box > .right-arrow-button:hover {
+
+.pagination>.pagination-control>.control-box>.number-button:hover,
+.pagination>.pagination-control>.control-box>.bullet-button:hover,
+.pagination>.pagination-control>.control-box>.left-arrow-button:hover,
+.pagination>.pagination-control>.control-box>.right-arrow-button:hover {
     -fx-background-insets: 0;
     -fx-background-color: lightgray;
 }
 
+
 /* Selected toggle color */
-.pagination > .pagination-control > .control-box > .number-button:selected,
-.pagination > .pagination-control > .control-box > .bullet-button:selected{
+
+.pagination>.pagination-control>.control-box>.number-button:selected,
+.pagination>.pagination-control>.control-box>.bullet-button:selected {
     -fx-background-insets: 0;
     -fx-background-color: #008167;
     -fx-text-fill: white;
@@ -327,7 +334,7 @@
     -fx-background-radius: 0 0 0 0;
 }
 
-.split-menu-button.btn-primary > .label {
+.split-menu-button.btn-primary>.label {
     -fx-background-color: #009c7c;
     background-color: #009c7c;
     -fx-border-radius: 0 0 0 0;
@@ -338,13 +345,13 @@
     -fx-text-fill: white;
 }
 
-.split-menu-button.btn-primary:hover > .label,
-.split-menu-button.btn-primary:focused > .label {
+.split-menu-button.btn-primary:hover>.label,
+.split-menu-button.btn-primary:focused>.label {
     -fx-background-color: #008167;
     background-color: #008167;
 }
 
-.split-menu-button.btn-primary > .arrow-button {
+.split-menu-button.btn-primary>.arrow-button {
     -fx-background-color: #009c7c;
     background-color: #009c7c;
     -fx-border-radius: 0 0 0 0;
@@ -355,15 +362,51 @@
     -fx-text-fill: white;
 }
 
-.split-menu-button.btn-primary:hover > .arrow-button,
-.split-menu-button.btn-primary:focused > .arrow-button {
+.split-menu-button.btn-primary:hover>.arrow-button,
+.split-menu-button.btn-primary:focused>.arrow-button {
     -fx-background-color: #008167;
     background-color: #008167;
 }
 
-.split-menu-button.btn-primary > .arrow-button > .arrow {
+.split-menu-button.btn-primary>.arrow-button>.arrow {
     -fx-background-color: white;
     background-color: white;
     -fx-border-color: white;
     border-color: white;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: white;
+}
+
+.tab-pane .tab-header-area {
+    -fx-padding: 0 10 0 10;
+}
+
+.tab-header-area .tab {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-border-radius: 0;
+    -fx-border-insets: 0;
+    -fx-border-width: 0 1 0 0;
+    -fx-border-color: white;
+    -fx-background-color: #afafaf;
+}
+
+.tab-header-area .tab:hover {
+    -fx-background-color: #727272;
+}
+
+.tab-header-area .tab:selected {
+    -fx-background-color: #009c7c;
+}
+
+.tab-header-area .tab:selected:hover {
+    -fx-background-color: #008167;
+}
+
+.tab-header-area .tab .tab-label {
+    -fx-text-fill: white;
 }
