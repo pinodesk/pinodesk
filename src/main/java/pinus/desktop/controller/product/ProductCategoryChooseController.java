@@ -1,0 +1,101 @@
+package pinus.desktop.controller.product;
+
+import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.controller.CommonDataChooseController;
+import pinus.desktop.service.ProductCategoryService;
+import pinus.desktop.viewmodel.ProductCategoryVM;
+
+public class ProductCategoryChooseController extends CommonDataChooseController<ProductCategoryVM> {
+
+    @FXML
+    private TextField tfSearch;
+
+    @FXML
+    private TableView<ProductCategoryVM> tblProductCategory;
+
+    @FXML
+    private TableColumn<ProductCategoryVM, String> colCode;
+
+    @FXML
+    private TableColumn<ProductCategoryVM, String> colName;
+
+    @FXML
+    private TableColumn<ProductCategoryVM, String> colDescription;
+
+    private ProductCategoryService productCategoryService;
+
+    @Override
+    protected void initDataChooseControlActions() {
+        TableViewUtils.setColumnValue(colCode, ProductCategoryVM::getCode);
+        TableViewUtils.setColumnValue(colName, ProductCategoryVM::getName);
+        TableViewUtils.setColumnValue(colDescription, ProductCategoryVM::getDescription);
+        registerKeyListener();
+        setFocused(contentPane);
+    }
+
+    @Override
+    protected void initDataChooseControlValues() {
+        // Nothing to do
+    }
+
+    @Override
+    protected ProductCategoryVM getSelectedData() {
+        return tblProductCategory.getSelectionModel().getSelectedItem();
+    }
+
+    @Override
+    protected void initServices(ApplicationContext ctx) {
+        productCategoryService = ctx.getBean(ProductCategoryService.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void searchProductCategories() {
+        String keyword = tfSearch.getText();
+        if (StringUtils.isBlank(keyword)) {
+            return;
+        }
+        tblProductCategory.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblProductCategory.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(() -> productCategoryService.searchProductCategoryByKeyword(keyword))
+                .thenAccept(categories -> Platform.runLater(() -> {
+                    if (categories.isEmpty()) {
+                        tblProductCategory.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                    }
+                    tblProductCategory.setItems(FXCollections.observableList(categories));
+                    tblProductCategory.getSortOrder().setAll(colName); // Always sort by name after searching
+                }));
+    }
+
+    private void registerKeyListener() {
+        tblProductCategory.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                btnChoose.fire();
+            }
+        });
+        tblProductCategory.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                btnChoose.fire();
+            }
+        });
+        tfSearch.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                searchProductCategories();
+            }
+        });
+    }
+
+}

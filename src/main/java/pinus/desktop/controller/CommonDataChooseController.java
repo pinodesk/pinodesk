@@ -1,11 +1,14 @@
 package pinus.desktop.controller;
 
+import java.util.Optional;
+
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
+import pinus.desktop.viewmodel.ChooseResultVM;
 
 public abstract class CommonDataChooseController<T> extends CommonContentPaneController {
 
@@ -17,12 +20,13 @@ public abstract class CommonDataChooseController<T> extends CommonContentPaneCon
 
     @FXML
     void onActionBtnChoose(ActionEvent event) {
-        setPageData(getSelectedData());
+        setPageData(new ChooseResultVM<>(false, Optional.ofNullable(getSelectedData())));
         close();
     }
 
     @FXML
     void onActionBtnCancel(ActionEvent event) {
+        setPageData(new ChooseResultVM<>(true, Optional.empty()));
         close();
     }
 

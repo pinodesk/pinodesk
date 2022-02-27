@@ -2,21 +2,27 @@ package pinus.desktop.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
+
+import javax.validation.ConstraintViolationException;
 
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
@@ -29,6 +35,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -38,6 +45,7 @@ import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.DomainError;
+import pinus.desktop.constant.Page;
 import pinus.desktop.constant.StringConstants;
 import pinus.desktop.exception.DomainException;
 import pinus.desktop.utility.SpringUtils;
@@ -116,6 +124,10 @@ public abstract class BaseController {
         displayError(String.format("%s. (%s)", translate(err.messageCode()), err.code()));
     }
 
+    private void handleConstraintViolationException(ConstraintViolationException e) {
+        log.error("Error ConstraintViolationException", e);
+    }
+
     protected String translate(String messageCode) {
         try {
             return resources.getString(messageCode);
@@ -188,8 +200,16 @@ public abstract class BaseController {
         return displayError(translate(messageCode.toString()));
     }
 
-    protected AlertResult displayError(Collection<IMessage> messageCodes) {
-        List<String> messages = messageCodes.stream().map(this::translate).collect(Collectors.toList());
+    protected AlertResult displayError(Collection<?> messageCodes) {
+        List<String> messages = messageCodes.stream().map(val -> {
+            if (val instanceof String str) {
+                return str;
+            }
+            if (val instanceof IMessage im) {
+                return translate(im);
+            }
+            return null;
+        }).filter(Objects::nonNull).toList();
         String message = StringUtils.join(messages, "\n");
         return displayError(message);
     }
@@ -250,6 +270,101 @@ public abstract class BaseController {
         df.setGroupingUsed(true);
         df.setRoundingMode(RoundingMode.HALF_UP);
         return df.format(number);
+    }
+
+    protected String toStringOrDefault(BigDecimal num, String dflt) {
+        return num == null ? dflt : num.setScale(0).toString();
+    }
+
+    protected String toStringOrNull(BigDecimal num) {
+        return toStringOrDefault(num, null);
+    }
+
+    protected String toStringOrEmpty(BigDecimal num) {
+        return toStringOrDefault(num, "");
+    }
+
+    protected String toStringOrDefault(Integer num, String dflt) {
+        return num == null ? dflt : num.toString();
+    }
+
+    protected String toStringOrNull(Integer num) {
+        return toStringOrDefault(num, null);
+    }
+
+    protected String toStringOrEmpty(Integer num) {
+        return toStringOrDefault(num, "");
+    }
+
+    protected String toStringOrDefault(Long num, String dflt) {
+        return num == null ? dflt : num.toString();
+    }
+
+    protected String toStringOrNull(Long num) {
+        return toStringOrDefault(num, null);
+    }
+
+    protected String toStringOrEmpty(Long num) {
+        return toStringOrDefault(num, "");
+    }
+
+    protected BigDecimal toBigDecimalOrDefault(String str, BigDecimal dflt) {
+        return StringUtils.isNumeric(str) ? NumberUtils.toScaledBigDecimal(str) : dflt;
+    }
+
+    protected BigDecimal toBigDecimalOrNull(String str) {
+        return toBigDecimalOrDefault(str, null);
+    }
+
+    protected BigDecimal toBigDecimalOrZero(String str) {
+        return toBigDecimalOrDefault(str, BigDecimal.ZERO);
+    }
+
+    protected Integer toIntegerOrDefault(String str, Integer dflt) {
+        return StringUtils.isNumeric(str) ? Integer.valueOf(str) : dflt;
+    }
+
+    protected Integer toIntegerOrNull(String str) {
+        return toIntegerOrDefault(str, null);
+    }
+
+    protected Integer toIntegerOrZero(String str) {
+        return toIntegerOrDefault(str, 0);
+    }
+
+    private String conditionalString(boolean condition, String strIfTrue, String strIfFalse) {
+        return condition ? strIfTrue : strIfFalse;
+    }
+
+    protected <T> void setChooserOnFocus(TextField tf, Page page, Consumer<T> outputConsumer, Node nextFocusNode) {
+        tf.focusedProperty().addListener((o, ov, nv) -> {
+            if (Boolean.TRUE.equals(nv)) {
+                StageUtils.modal(page, false, we -> outputConsumer.accept(getPageData()));
+                if (nextFocusNode != null) {
+                    setFocused(nextFocusNode);
+                }
+            }
+        });
+    }
+
+    protected <T> void setProductCategoryChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
+        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setUnitChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
+        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE_UNIT, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setDrugCategoryChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
+        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE_DRUG_CATEGORY, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setProductChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
+        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setSupplierChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
+        setChooserOnFocus(tf, Page.MASTER_SUPPLIER_CHOOSE, outputConsumer, nextFocusNode);
     }
 
 }

@@ -3,9 +3,9 @@ package pinus.desktop.controller.customer;
 import java.util.Arrays;
 
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
-import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
@@ -69,10 +69,8 @@ public class CustomerEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void registerValidator(ValidationSupport vs) {
-        registerRequiredFields(tfName);
-        registerWhitespaceValidator(tfName);
-        registerEmailValidator(tfEmail, false);
+    protected void validate(ControlValidator validator) {
+        // TODO Auto-generated method stub
     }
 
     @Override

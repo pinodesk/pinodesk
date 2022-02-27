@@ -1,9 +1,9 @@
 package pinus.desktop.controller.customer;
 
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
+import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
-import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
@@ -55,7 +55,6 @@ public class CustomerAddController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlActions() {
         TextFieldUtils.setDigitTextFields(tfPhone);
-        disableOnValidationError(btnSaveAndAdd);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyConstants.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();
@@ -71,10 +70,8 @@ public class CustomerAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void registerValidator(ValidationSupport vs) {
-        registerRequiredFields(tfName);
-        registerWhitespaceValidator(tfName);
-        registerEmailValidator(tfEmail, false);
+    protected void validate(ControlValidator validator) {
+        // TODO Auto-generated method stub
     }
 
     @Override

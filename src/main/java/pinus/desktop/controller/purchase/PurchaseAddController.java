@@ -1,11 +1,6 @@
 package pinus.desktop.controller.purchase;
 
 import static com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
-import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
-import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toBigDecimalOrZero;
-import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toIntegerOrZero;
-import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrDefault;
-import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -20,15 +15,13 @@ import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
-import org.controlsfx.validation.ValidationResult;
-import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
-import javafx.collections.ListChangeListener.Change;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -328,7 +321,6 @@ public class PurchaseAddController extends CommonDataSaveController {
                 new NumberCellFactory<>(locale),
                 PurchaseProductVM::getSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
-        disableOnValidationError(btnSaveAndAdd);
         TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchase(), tfTax, tfDiscount);
     }
 
@@ -338,27 +330,8 @@ public class PurchaseAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void registerValidator(ValidationSupport vs) {
-        registerRequiredFields(tfOrderNumber, tfOrderDate, tfSupplierName);
-        vs.registerValidator(
-                tblPurchaseProduct,
-                (c, v) -> ValidationResult.fromErrorIf(
-                        c,
-                        translate(MessageCode.ERROR_REQUIRED),
-                        tblPurchaseProduct.getItems().isEmpty()));
-        vs.registerValidator(tfOrderDate, (c, v) -> {
-            LocalDate orderDate = parseLocalDateQuietly(tfOrderDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-            return ValidationResult.fromErrorIf(
-                    c,
-                    translate(MessageCode.ERROR_PURCHASE_ORDER_DATE_GREATER_THAN_TODAY),
-                    orderDate != null && orderDate.isAfter(LocalDate.now()));
-        });
-        revalidateOnChange(vs);
-    }
-
-    private void revalidateOnChange(ValidationSupport vs) {
-        tblPurchaseProduct.getItems()
-                .addListener((Change<? extends PurchaseProductVM> listener) -> vs.revalidate(tblPurchaseProduct));
+    protected void validate(ControlValidator validator) {
+        // TODO Auto-generated method stub
     }
 
     @Override

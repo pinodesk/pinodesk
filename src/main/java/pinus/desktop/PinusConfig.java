@@ -2,6 +2,8 @@ package pinus.desktop;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import javax.validation.Validation;
+import javax.validation.Validator;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,6 +76,11 @@ public class PinusConfig {
         ClassicConfiguration config = new ClassicConfiguration();
         config.setDataSource(dataSource());
         return new Flyway(config);
+    }
+
+    @Bean
+    public Validator validator() {
+        return Validation.buildDefaultValidatorFactory().getValidator();
     }
 
 }

@@ -13,7 +13,7 @@ public class UnitComboBoxConverter extends DefaultStringConverterAdapter<UnitVM>
 
     @Override
     protected String getDisplayText(UnitVM unit) {
-        return unit.getLabel() + " (" + unit.getName() + ")";
+        return unit.getLabel();
     }
 
 }

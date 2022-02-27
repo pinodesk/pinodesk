@@ -1,65 +1,67 @@
 package pinus.desktop.controller.product;
 
-import static com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
-import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrNull;
-import static org.apache.commons.lang3.math.NumberUtils.toInt;
-import static org.apache.commons.lang3.math.NumberUtils.toScaledBigDecimal;
-
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Locale;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
+import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
+import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
+import com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-import org.controlsfx.validation.ValidationResult;
-import org.controlsfx.validation.ValidationSupport;
 import org.springframework.context.ApplicationContext;
 
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CommonConstants;
-import pinus.desktop.constant.ConfigurationConstants;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.MessageCode;
-import pinus.desktop.constant.SimpleStatus;
+import pinus.desktop.constant.ProductStatus;
+import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.CommonDataSaveController;
-import pinus.desktop.javafx.converter.DrugCategoryComboBoxConverter;
-import pinus.desktop.javafx.converter.ProductCategoryComboBoxConverter;
-import pinus.desktop.javafx.converter.RackComboBoxConverter;
-import pinus.desktop.javafx.converter.UnitComboBoxConverter;
-import pinus.desktop.javafx.listener.DrugCategoryComboBoxKeyEventHandler;
-import pinus.desktop.javafx.listener.ProductCategoryComboBoxKeyEventHandler;
-import pinus.desktop.javafx.listener.RackComboBoxKeyEventHandler;
-import pinus.desktop.javafx.listener.UnitComboBoxKeyEventHandler;
-import pinus.desktop.service.ConfigurationService;
 import pinus.desktop.service.DrugCategoryService;
 import pinus.desktop.service.DrugService;
 import pinus.desktop.service.ProductCategoryService;
 import pinus.desktop.service.ProductService;
-import pinus.desktop.service.RackService;
 import pinus.desktop.service.UnitService;
-import pinus.desktop.service.WholesaleService;
+import pinus.desktop.viewmodel.ChooseResultVM;
 import pinus.desktop.viewmodel.DrugCategoryVM;
 import pinus.desktop.viewmodel.DrugVM;
 import pinus.desktop.viewmodel.ProductCategoryVM;
 import pinus.desktop.viewmodel.ProductEditVM;
-import pinus.desktop.viewmodel.ProductVM;
-import pinus.desktop.viewmodel.RackVM;
+import pinus.desktop.viewmodel.ProductExpiryAddVM;
+import pinus.desktop.viewmodel.ProductExpiryVM;
+import pinus.desktop.viewmodel.ProductPriceVM;
+import pinus.desktop.viewmodel.ProductStockVM;
+import pinus.desktop.viewmodel.SearchProductsByFilterVM;
 import pinus.desktop.viewmodel.UnitVM;
-import pinus.desktop.viewmodel.WholesaleVM;
 
 public class ProductEditController extends CommonDataSaveController {
+
+    @FXML
+    private TabPane tabPaneEditProduct;
 
     @FXML
     private TextField tfName;
@@ -74,43 +76,19 @@ public class ProductEditController extends CommonDataSaveController {
     private TextField tfDescription;
 
     @FXML
-    private ComboBox<ProductCategoryVM> cbCategory;
+    private TextField tfCategory;
 
     @FXML
-    private TextField tfQuantity;
+    private TextField tfUnit;
 
     @FXML
-    private ComboBox<UnitVM> cbUnit;
+    private ComboBox<SimpleComboBoxModel> cbStatus;
 
     @FXML
-    private TextField tfPurchasePrice;
+    private VBox vboxMedicine;
 
     @FXML
-    private TextField tfSellingPrice;
-
-    @FXML
-    private CheckBox chkIncludesVat;
-
-    @FXML
-    private TextField tfSellingPriceBeforeTax;
-
-    @FXML
-    private TextField tfVat;
-
-    @FXML
-    private TextField tfProfit;
-
-    @FXML
-    private MaskedTextField tfExpiredDate;
-
-    @FXML
-    private ComboBox<RackVM> cbRack;
-
-    @FXML
-    private ComboBox<DrugCategoryVM> cbDrugCategory;
-
-    @FXML
-    private TextField tfPrescriptionPrice;
+    private TextField tfDrugCategory;
 
     @FXML
     private TextField tfIndication;
@@ -119,69 +97,142 @@ public class ProductEditController extends CommonDataSaveController {
     private TextField tfContraindication;
 
     @FXML
-    private TextField tfPurchaseQuantity1;
+    private TextField tfGeneralSellingPrice;
 
     @FXML
-    private TextField tfPurchaseQuantity2;
+    private VBox vboxPresciptionSellPrice;
 
     @FXML
-    private TextField tfPurchaseQuantity3;
+    private TextField tfPrescriptionSellingPrice;
 
     @FXML
-    private TextField tfSellingPrice1;
+    private TextField tfPriceRemarks;
 
     @FXML
-    private TextField tfSellingPrice2;
+    private TextField tfStockQuantity;
 
     @FXML
-    private TextField tfSellingPrice3;
+    private TextField tfStockRemarks;
 
     @FXML
-    private TextField tfVat1;
+    private TextField tfBatchNumber;
 
     @FXML
-    private TextField tfVat2;
+    private MaskedTextField tfExpiredDate;
 
     @FXML
-    private TextField tfVat3;
+    private TextField tfExpiryQuantity;
 
     @FXML
-    private TextField tfProfit1;
+    private TextField tfExpiryRemarks;
 
     @FXML
-    private TextField tfProfit2;
+    private TableView<ProductPriceVM> tblPrice;
 
     @FXML
-    private TextField tfProfit3;
+    private TableColumn<ProductPriceVM, BigDecimal> colGeneralSellingPrice;
 
     @FXML
-    private TextField tfSellingPriceBeforeTax1;
+    private TableColumn<ProductPriceVM, BigDecimal> colPrescripionSellingPrice;
 
     @FXML
-    private TextField tfSellingPriceBeforeTax2;
+    private TableColumn<ProductPriceVM, String> colProductPricePurchaseInvoiceNumber;
 
     @FXML
-    private TextField tfSellingPriceBeforeTax3;
+    private TableColumn<ProductPriceVM, String> colProductPriceActivity;
 
-    private ProductVM currentProduct;
+    @FXML
+    private TableColumn<ProductPriceVM, String> colProductPriceRemarks;
 
-    private BigDecimal vatPercentage;
+    @FXML
+    private TableColumn<ProductPriceVM, Long> colProductPriceUser;
+
+    @FXML
+    private TableColumn<ProductPriceVM, LocalDateTime> colProductPriceCreatedAt;
+
+    @FXML
+    private TableView<ProductStockVM> tblStock;
+
+    @FXML
+    private TableColumn<ProductStockVM, Integer> colQuantityIn;
+
+    @FXML
+    private TableColumn<ProductStockVM, Integer> colQuantityOut;
+
+    @FXML
+    private TableColumn<ProductStockVM, Integer> colFinalQuantity;
+
+    @FXML
+    private TableColumn<ProductStockVM, String> colProductStockPurchaseInvoiceNumber;
+
+    @FXML
+    private TableColumn<ProductStockVM, String> colProductStockSaleInvoceNumber;
+
+    @FXML
+    private TableColumn<ProductStockVM, String> colProductStockActivity;
+
+    @FXML
+    private TableColumn<ProductStockVM, String> colProductStockRemarks;
+
+    @FXML
+    private TableColumn<ProductStockVM, Long> colProductStockUser;
+
+    @FXML
+    private TableColumn<ProductStockVM, LocalDateTime> colProductStockCreatedAt;
+
+    @FXML
+    private TableView<ProductExpiryVM> tblExpiry;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, String> colBatchNumber;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, LocalDate> colExpiredDate;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, Integer> colProductExpiryQuantityIn;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, Integer> colProductExpiryQuantityOut;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, Integer> colProductExpiryFinalQuantity;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, String> colProductExpiryPurchaseInvoiceNumber;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, String> colProductExpirySaleInvoiceNumber;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, String> colProductExpiryActivity;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, String> colProductExpiryRemarks;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, Long> colProductExpiryUser;
+
+    @FXML
+    private TableColumn<ProductExpiryVM, LocalDateTime> colProductExpiryCreatedAt;
+
+    private SearchProductsByFilterVM currentProduct;
 
     private ProductService productService;
 
     private ProductCategoryService productCategoryService;
 
-    private RackService rackService;
-
     private UnitService unitService;
-
-    private DrugService drugService;
 
     private DrugCategoryService drugCategoryService;
 
-    private WholesaleService wholesaleService;
+    private DrugService drugService;
 
-    private ConfigurationService configurationService;
+    private ProductCategoryVM selectedProductCategory;
+
+    private UnitVM selectedUnit;
+
+    private DrugCategoryVM selectedDrugCategory;
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
@@ -194,266 +245,318 @@ public class ProductEditController extends CommonDataSaveController {
         }
     }
 
-    @Override
-    protected void initServices(ApplicationContext ctx) {
-        productService = ctx.getBean(ProductService.class);
-        productCategoryService = ctx.getBean(ProductCategoryService.class);
-        rackService = ctx.getBean(RackService.class);
-        unitService = ctx.getBean(UnitService.class);
-        drugService = ctx.getBean(DrugService.class);
-        drugCategoryService = ctx.getBean(DrugCategoryService.class);
-        wholesaleService = ctx.getBean(WholesaleService.class);
-        configurationService = ctx.getBean(ConfigurationService.class);
+    @FXML
+    void onActionBtnAddExpiry(ActionEvent event) {
+        if (StringUtils.isAllBlank(tfExpiredDate.getPlainText(), tfExpiryQuantity.getText())) {
+            return;
+        }
+        ControlValidator cv = new ControlValidator(resources);
+        cv.validateCustom(this::isInvalidExpiredDate, MessageCode.ERROR_INVALID_DATE_FORMAT);
+        cv.validateCustom(this::isExpiryQuantityRequired, MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
+        ValidationResult result = cv.getResult();
+        if (!result.isValid()) {
+            displayError(result.getMessages());
+            return;
+        }
+        ProductExpiryAddVM vm = new ProductExpiryAddVM();
+        vm.setProductId(currentProduct.getId());
+        vm.setBatchNumber(tfBatchNumber.getText());
+        vm.setExpiredDate(
+                DateTimeUtils.parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        vm.setQuantity(toIntegerOrNull(tfExpiryQuantity.getText()));
+        vm.setRemarks(tfExpiryRemarks.getText());
+        productService.addProductExpiry(vm, Activity.EDIT_PRODUCT);
+        loadProductExpiry(currentProduct.getId());
+        TextFieldUtils.setTextEmpty(tfBatchNumber, tfExpiryQuantity, tfExpiryRemarks);
+        tfExpiredDate.setPlainText("");
     }
 
     @Override
     protected void initDataSaveControlActions() {
-        tfPurchasePrice.setOnKeyTyped(event -> {
-            calculateTaxAndProfit();
-            calculateWholesaleTaxAndProfit();
-        });
-        tfSellingPrice.setOnKeyTyped(event -> calculateTaxAndProfit());
-        chkIncludesVat.selectedProperty().addListener((observable, oldValue, newValue) -> {
-            calculateTaxAndProfit();
-            calculateWholesaleTaxAndProfit();
-        });
-        ComboBoxUtils.initAutoComplete(
-                cbCategory,
-                new ProductCategoryComboBoxKeyEventHandler(cbCategory),
-                new ProductCategoryComboBoxConverter(cbCategory));
-        ComboBoxUtils
-                .initAutoComplete(cbUnit, new UnitComboBoxKeyEventHandler(cbUnit), new UnitComboBoxConverter(cbUnit));
-        ComboBoxUtils
-                .initAutoComplete(cbRack, new RackComboBoxKeyEventHandler(cbRack), new RackComboBoxConverter(cbRack));
-        ComboBoxUtils.initAutoComplete(
-                cbDrugCategory,
-                new DrugCategoryComboBoxKeyEventHandler(cbDrugCategory),
-                new DrugCategoryComboBoxConverter(cbDrugCategory));
-        tfSellingPrice1.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
-        tfSellingPrice2.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
-        tfSellingPrice3.setOnKeyTyped(event -> calculateWholesaleTaxAndProfit());
-
+        Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(
                 tfBarcode,
-                tfSellingPrice,
-                tfPurchasePrice,
-                tfQuantity,
-                tfPrescriptionPrice,
-                tfPurchaseQuantity1,
-                tfPurchaseQuantity2,
-                tfPurchaseQuantity3,
-                tfSellingPrice1,
-                tfSellingPrice2,
-                tfSellingPrice3);
+                tfGeneralSellingPrice,
+                tfPrescriptionSellingPrice,
+                tfStockQuantity,
+                tfExpiryQuantity);
+        setProductCategoryChooser(tfCategory, this::handleSelectedProductCategory, tfUnit.getParent());
+        setUnitChooser(tfUnit, this::handleSelectedUnit, cbStatus);
+        setDrugCategoryChooser(tfDrugCategory, this::handleSelectedDrugCategory, tfIndication);
+        ComboBoxUtils.initSimple(
+                cbStatus,
+                new SimpleComboBoxModel(ProductStatus.ACTIVE.name(), translate(CommonLabel.LBL_ACTIVE.toString())),
+                new SimpleComboBoxModel(ProductStatus.INACTIVE.name(), translate(CommonLabel.LBL_INACTIVE.toString())));
+        ComboBoxUtils.selectIndex(cbStatus, 0);
+        initTableProductPrice(locale);
+        initTableProductStock();
+        initTableProductExpiry(locale);
+    }
 
+    private void initTableProductExpiry(Locale locale) {
+        TableViewUtils.setColumnValue(colBatchNumber, ProductExpiryVM::getBatchNumber);
+        TableViewUtils.initTableColumn(
+                colExpiredDate,
+                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
+                ProductExpiryVM::getExpiredDate);
+        TableViewUtils.initTableColumn(
+                colProductExpiryQuantityIn,
+                new NumberCellFactory<>(locale),
+                ProductExpiryVM::getQuantityIn,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colProductExpiryQuantityOut,
+                new NumberCellFactory<>(locale),
+                ProductExpiryVM::getQuantityOut,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colProductExpiryFinalQuantity,
+                new NumberCellFactory<>(locale),
+                ProductExpiryVM::getFinalQuantity,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.setColumnValue(colProductExpiryPurchaseInvoiceNumber, ProductExpiryVM::getPurchaseInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductExpirySaleInvoiceNumber, ProductExpiryVM::getSaleInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductExpiryActivity, ProductExpiryVM::getActivity);
+        TableViewUtils.setColumnValue(colProductExpiryRemarks, ProductExpiryVM::getRemarks);
+        TableViewUtils.setColumnValue(colProductExpiryUser, ProductExpiryVM::getUserId);
+        TableViewUtils.initTableColumn(
+                colProductExpiryCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                ProductExpiryVM::getCreatedAt);
+    }
+
+    private void initTableProductStock() {
+        TableViewUtils.setColumnValue(colQuantityIn, ProductStockVM::getQuantityIn);
+        TableViewUtils.setColumnValue(colQuantityOut, ProductStockVM::getQuantityOut);
+        TableViewUtils.setColumnValue(colFinalQuantity, ProductStockVM::getFinalQuantity);
+        TableViewUtils.setColumnValue(colProductStockPurchaseInvoiceNumber, ProductStockVM::getPurchaseInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductStockSaleInvoceNumber, ProductStockVM::getSaleInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductStockActivity, ProductStockVM::getActivity);
+        TableViewUtils.setColumnValue(colProductStockRemarks, ProductStockVM::getRemarks);
+        TableViewUtils.setColumnValue(colProductStockUser, ProductStockVM::getUserId);
+        TableViewUtils.initTableColumn(
+                colProductStockCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                ProductStockVM::getCreatedAt);
+    }
+
+    private void initTableProductPrice(Locale locale) {
+        TableViewUtils.initTableColumn(
+                colGeneralSellingPrice,
+                new NumberCellFactory<>(locale),
+                ProductPriceVM::getGeneralSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colPrescripionSellingPrice,
+                new NumberCellFactory<>(locale),
+                ProductPriceVM::getPrescriptionSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.setColumnValue(colProductPricePurchaseInvoiceNumber, ProductPriceVM::getPurchaseInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductPriceActivity, ProductPriceVM::getActivity);
+        TableViewUtils.setColumnValue(colProductPriceRemarks, ProductPriceVM::getRemarks);
+        TableViewUtils.setColumnValue(colProductPriceUser, ProductPriceVM::getUserId);
+        TableViewUtils.initTableColumn(
+                colProductPriceCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                ProductPriceVM::getCreatedAt);
     }
 
     @Override
     protected void initDataSaveControlValues() {
-        String vatPercentageBase = configurationService.getConfiguration(ConfigurationConstants.VAT_PERCENTAGE);
-        vatPercentage = toScaledBigDecimal(vatPercentageBase).divide(new BigDecimal(100));
         currentProduct = getPageData();
+        Long productId = currentProduct.getId();
+        selectedProductCategory = productCategoryService.getProductCategoryById(currentProduct.getCategoryId());
+        selectedUnit = unitService.getUnitById(currentProduct.getUnitId());
         tfName.setText(currentProduct.getName());
         tfCode.setText(currentProduct.getCode());
         tfBarcode.setText(currentProduct.getBarcode());
         tfDescription.setText(currentProduct.getDescription());
-        tfQuantity.setText(toStringOrNull(currentProduct.getQuantity()));
-        tfPurchasePrice.setText(toStringOrNull(currentProduct.getPurchasePrice()));
-        tfSellingPrice.setText(toStringOrNull(currentProduct.getSellingPrice()));
-        chkIncludesVat.setText(
-                chkIncludesVat.getText() + " (" + vatPercentage.multiply(new BigDecimal(100)).setScale(0) + "%)");
-        chkIncludesVat.setSelected(SimpleStatus.YES.equals(SimpleStatus.valueOf(currentProduct.getVatIncluded())));
-        LocalDate expiredDate = currentProduct.getExpiredDate();
-        tfExpiredDate.setPlainText(
-                expiredDate == null ?
-                        null : expiredDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        tfCategory.setText(selectedProductCategory.getName());
+        tfUnit.setText(selectedUnit.getLabel());
         ComboBoxUtils.select(
-                cbCategory,
-                () -> productCategoryService.getProductCategoryById(currentProduct.getCategoryId()));
-        ComboBoxUtils.select(cbUnit, () -> unitService.getUnitById(currentProduct.getUnitId()));
-        ComboBoxUtils.select(cbRack, () -> {
-            Long rackId = currentProduct.getRackId();
-            return rackId == null ? null : rackService.getRackById(rackId);
-        });
-        initDrugControlsValues();
-        initWholesaleControlsValues();
-        calculateTaxAndProfit();
-        calculateWholesaleTaxAndProfit();
-    }
-
-    private void initDrugControlsValues() {
-        DrugVM drug = drugService.getDrugByProductId(currentProduct.getId());
-        if (drug != null) {
-            DrugCategoryVM selectedDrugCategory = drugCategoryService.getDrugCategoryById(drug.getDrugCategoryId());
-            cbDrugCategory.getItems().add(selectedDrugCategory);
-            cbDrugCategory.getSelectionModel().select(selectedDrugCategory);
-            tfPrescriptionPrice.setText(toStringOrNull(drug.getPrescriptionPrice()));
+                cbStatus,
+                () -> cbStatus.getItems().stream().filter(vm -> vm.getValue().equals(currentProduct.getStatus()))
+                        .findAny().orElseThrow());
+        if (isProductCategoryDrugSelected()) {
+            DrugVM drug = drugService.getDrugByProductId(currentProduct.getId());
+            selectedDrugCategory = drugCategoryService.getDrugCategoryById(drug.getDrugCategoryId());
+            tfDrugCategory.setText(selectedDrugCategory.getName());
             tfIndication.setText(drug.getIndication());
             tfContraindication.setText(drug.getContraindication());
+            vboxMedicine.setDisable(false);
+            vboxPresciptionSellPrice.setDisable(false);
         }
-    }
-
-    private void initWholesaleControlsValues() {
-        List<WholesaleVM> wholesales = wholesaleService.getWholesalesByProductId(currentProduct.getId());
-        for (int i = 0; i < wholesales.size(); i++) {
-            WholesaleVM wholesale = wholesales.get(i);
-            Integer purchaseQuantity = wholesale.getPurchaseQuantity();
-            BigDecimal sellingPrice = wholesale.getSellingPrice();
-            switch (i) {
-                case 0:
-                    tfPurchaseQuantity1.setText(purchaseQuantity.toString());
-                    tfSellingPrice1.setText(sellingPrice.setScale(0).toString());
-                    break;
-                case 1:
-                    tfPurchaseQuantity2.setText(purchaseQuantity.toString());
-                    tfSellingPrice2.setText(sellingPrice.setScale(0).toString());
-                    break;
-                case 2:
-                    tfPurchaseQuantity3.setText(purchaseQuantity.toString());
-                    tfSellingPrice3.setText(sellingPrice.setScale(0).toString());
-                    break;
-                default:
-                    // Do nothing
-            }
-        }
-    }
-
-    private void calculate(
-            TextField _tfSellingPrice,
-            TextField _tfVat,
-            TextField _tfSellingPriceBeforeTax,
-            TextField _tfProfit) {
-
-        boolean includesVat = chkIncludesVat.isSelected();
-        double sellingPrice = NumberUtils.toDouble(StringUtils.defaultIfBlank(_tfSellingPrice.getText(), null));
-        double purchasePrice = NumberUtils.toDouble(StringUtils.defaultIfBlank(tfPurchasePrice.getText(), null));
-        double vatAmount = includesVat ? sellingPrice * vatPercentage.doubleValue() : 0;
-        double sellingPriceBeforeTax = includesVat ? sellingPrice - vatAmount : sellingPrice;
-        double profitAmount = includesVat ? sellingPriceBeforeTax - purchasePrice : sellingPrice - purchasePrice;
-        double profitPercentage = purchasePrice == 0 ? profitAmount * 100 : profitAmount / purchasePrice * 100;
-        _tfVat.setText(BigDecimal.valueOf(vatAmount).setScale(0, RoundingMode.HALF_EVEN).toString());
-        _tfSellingPriceBeforeTax
-                .setText(BigDecimal.valueOf(sellingPriceBeforeTax).setScale(0, RoundingMode.HALF_EVEN).toString());
-        _tfProfit.setText(
-                BigDecimal.valueOf(profitAmount).setScale(0, RoundingMode.HALF_EVEN).toString() + " ("
-                        + BigDecimal.valueOf(profitPercentage).setScale(2, RoundingMode.HALF_EVEN).toString() + "%)");
-    }
-
-    private void calculateTaxAndProfit() {
-        calculate(tfSellingPrice, tfVat, tfSellingPriceBeforeTax, tfProfit);
-
-    }
-
-    private void calculateWholesaleTaxAndProfit() {
-        if (StringUtils.isNoneBlank(tfPurchaseQuantity1.getText(), tfSellingPrice1.getText())) {
-            calculate(tfSellingPrice1, tfVat1, tfSellingPriceBeforeTax1, tfProfit1);
-        }
-        if (StringUtils.isNoneBlank(tfPurchaseQuantity2.getText(), tfSellingPrice2.getText())) {
-            calculate(tfSellingPrice2, tfVat2, tfSellingPriceBeforeTax2, tfProfit2);
-        }
-        if (StringUtils.isNoneBlank(tfPurchaseQuantity3.getText(), tfSellingPrice3.getText())) {
-            calculate(tfSellingPrice3, tfVat3, tfSellingPriceBeforeTax3, tfProfit3);
-        }
-    }
-
-    @Override
-    protected void registerValidator(ValidationSupport vs) {
-        registerRequiredFields(tfName, tfCode, tfPurchasePrice, tfSellingPrice, cbCategory, cbUnit);
-        registerWhitespaceValidator(tfName);
-        registerWhitespaceValidator(tfCode);
-        registerWhitespaceValidator(tfPurchasePrice);
-        registerWhitespaceValidator(tfSellingPrice);
-        vs.registerValidator(cbDrugCategory, false, (c, v) -> {
-
-            boolean condition1 = v == null && !StringUtils
-                    .isAllBlank(tfPrescriptionPrice.getText(), tfIndication.getText(), tfContraindication.getText());
-
-            boolean condition2 = v != null && !isProductCategoryDrugs();
-            return ValidationResult.fromErrorIf(
-                    c,
-                    translate(
-                            condition1 ?
-                                    MessageCode.ERROR_EMPTY_OR_BLANK :
-                                    MessageCode.ERROR_INCORRECT_PRODUCT_CATEGORY_DRUGS),
-                    condition1 || condition2);
-        });
-        revalidateOnChange(vs);
-    }
-
-    private void revalidateOnChange(ValidationSupport vs) {
-        ComboBoxUtils.onSelectedItemChanged(cbCategory, (ov, nv) -> vs.revalidate(cbDrugCategory));
-        TextFieldUtils.onTextChanged(
-                (ov, nv) -> vs.revalidate(cbDrugCategory),
-                tfPrescriptionPrice,
-                tfIndication,
-                tfContraindication);
-    }
-
-    private boolean isProductCategoryDrugs() {
-        ProductCategoryVM category = ComboBoxUtils.getSelectedItem(cbCategory);
-        return category != null && category.getCode().equals(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
+        loadProductPrice(productId);
+        loadProductStock(productId);
+        loadProductExpiry(productId);
     }
 
     @Override
     protected Object save() {
         ProductEditVM productEdit = new ProductEditVM();
-        productEdit.setId(currentProduct.getId());
         productEdit.setName(tfName.getText());
         productEdit.setCode(tfCode.getText());
         productEdit.setBarcode(tfBarcode.getText());
         productEdit.setDescription(tfDescription.getText());
-        productEdit.setQuantity(tfQuantity.getText() == null ? null : toInt(tfQuantity.getText()));
-        productEdit.setPurchasePrice(toScaledBigDecimal(tfPurchasePrice.getText()));
-        productEdit.setSellingPrice(toScaledBigDecimal(tfSellingPrice.getText()));
-        productEdit.setVatIncluded(chkIncludesVat.isSelected() ? SimpleStatus.YES.name() : SimpleStatus.NO.name());
-        productEdit.setUnit(cbUnit.getSelectionModel().getSelectedItem());
-        productEdit.setProductCategory(cbCategory.getSelectionModel().getSelectedItem());
+        productEdit.setProductCategory(selectedProductCategory);
+        productEdit.setUnit(selectedUnit);
+        SimpleComboBoxModel status = ComboBoxUtils.getSelectedItem(cbStatus);
+        productEdit.setStatus(ProductStatus.valueOf(status.getValue()));
+        productEdit.setDrugCategory(selectedDrugCategory);
+        productEdit.setIndication(tfIndication.getText());
+        productEdit.setContraindication(tfContraindication.getText());
+        productEdit.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellingPrice.getText()));
+        productEdit.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellingPrice.getText()));
+        productEdit.setPriceRemarks(tfPriceRemarks.getText());
+        productEdit.setStockQuantity(toIntegerOrNull(tfStockQuantity.getText()));
+        productEdit.setStockRemarks(tfStockRemarks.getText());
         String expiredDate = tfExpiredDate.getTextMasked();
-        productEdit.setExpiredDate(parseLocalDateQuietly(expiredDate, CommonConstants.DATE_DISPLAY_PATTERN));
-        productEdit.setRack(cbRack.getSelectionModel().getSelectedItem());
-        if (ComboBoxUtils.hasItemSelected(cbDrugCategory)) {
-            DrugCategoryVM drugCategory = ComboBoxUtils.getSelectedItem(cbDrugCategory);
-            String strPrescriptionPrice = tfPrescriptionPrice.getText();
-            DrugVM drug = new DrugVM();
-            drug.setProductId(currentProduct.getId());
-            drug.setDrugCategoryId(drugCategory.getId());
-            drug.setDrugCategoryCode(drugCategory.getCode());
-            drug.setDrugCategoryName(drugCategory.getName());
-            drug.setPrescriptionPrice(
-                    StringUtils.isBlank(strPrescriptionPrice) ?
-                            null : toScaledBigDecimal(tfPrescriptionPrice.getText()));
-            drug.setIndication(tfIndication.getText());
-            drug.setContraindication(tfIndication.getText());
-            productEdit.setDrug(drug);
-        }
-        productEdit.setWholesales(loadWholesales());
-        return productService.updateProduct(productEdit);
+        productEdit
+                .setExpiredDate(DateTimeUtils.parseLocalDateQuietly(expiredDate, CommonConstants.DATE_DISPLAY_PATTERN));
+        productEdit.setBatchNumber(tfBatchNumber.getText());
+        productEdit.setExpiryQuantity(toIntegerOrNull(tfExpiryQuantity.getText()));
+        productEdit.setExpiryRemarks(tfExpiryRemarks.getText());
+        productService.updateProduct(productEdit, currentProduct.getId());
+        return true;
     }
 
-    private List<WholesaleVM> loadWholesales() {
-        List<WholesaleVM> wholesales = new ArrayList<>();
-        if (StringUtils.isNoneBlank(tfPurchaseQuantity1.getText(), tfSellingPrice1.getText())) {
-            WholesaleVM wholesale = new WholesaleVM();
-            wholesale.setProductId(currentProduct.getId());
-            wholesale.setPurchaseQuantity(toInt(tfPurchaseQuantity1.getText()));
-            wholesale.setSellingPrice(toScaledBigDecimal(tfSellingPrice1.getText()));
-            wholesales.add(wholesale);
+    @Override
+    protected void validate(ControlValidator validator) {
+        validator.validateBlank(tfName, MessageCode.ERROR_EMPTY_NAME);
+        validator.validateBlank(tfCode, MessageCode.ERROR_EMPTY_CODE);
+        validator.validateBlank(tfCategory, MessageCode.ERROR_EMPTY_CATEGORY);
+        validator.validateBlank(tfUnit, MessageCode.ERROR_EMPTY_UNIT);
+        validator.validateCustom(this::isDrugCategoryRequired, MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
+        validator.validateCustom(this::isInvalidExpiredDate, MessageCode.ERROR_INVALID_DATE_FORMAT);
+        validator.validateCustom(this::isExpiryQuantityRequired, MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
+        validator.validateCustom(
+                this::isExpiryQuantityExceedStockQuantity,
+                MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
+    }
+
+    private boolean isDrugCategoryRequired() {
+        return isProductCategoryDrugSelected() && selectedDrugCategory == null;
+    }
+
+    private boolean isInvalidExpiredDate() {
+        Integer expiryQty = toIntegerOrZero(tfExpiryQuantity.getText());
+        LocalDate expiredDate = DateTimeUtils
+                .parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        boolean isExpiredDateRequired = expiryQty > 0 && expiredDate == null;
+        boolean isExpiredDateInvalid = StringUtils.isNotBlank(tfExpiredDate.getPlainText())
+                && (expiredDate == null || expiredDate.isBefore(LocalDate.now()));
+        return isExpiredDateRequired || isExpiredDateInvalid;
+    }
+
+    private boolean isExpiryQuantityExceedStockQuantity() {
+        Integer expiryQty = toIntegerOrZero(tfExpiryQuantity.getText());
+        Integer stockQty = toIntegerOrNull(tfStockQuantity.getText());
+        return stockQty != null && expiryQty.compareTo(stockQty) > 0;
+    }
+
+    private boolean isExpiryQuantityRequired() {
+        return StringUtils.isNotBlank(tfExpiredDate.getPlainText()) && StringUtils.isBlank(tfExpiryQuantity.getText());
+    }
+
+    private boolean isProductCategoryDrugSelected() {
+        return selectedProductCategory != null
+                && selectedProductCategory.getCode().equals(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
+    }
+
+    @Override
+    protected void initServices(ApplicationContext ctx) {
+        productService = ctx.getBean(ProductService.class);
+        productCategoryService = ctx.getBean(ProductCategoryService.class);
+        unitService = ctx.getBean(UnitService.class);
+        drugCategoryService = ctx.getBean(DrugCategoryService.class);
+        drugService = ctx.getBean(DrugService.class);
+    }
+
+    private void handleSelectedProductCategory(ChooseResultVM<ProductCategoryVM> result) {
+        if (result == null || result.isCancelled()) {
+            return;
         }
-        if (StringUtils.isNoneBlank(tfPurchaseQuantity2.getText(), tfSellingPrice2.getText())) {
-            WholesaleVM wholesale = new WholesaleVM();
-            wholesale.setProductId(currentProduct.getId());
-            wholesale.setPurchaseQuantity(toInt(tfPurchaseQuantity2.getText()));
-            wholesale.setSellingPrice(toScaledBigDecimal(tfSellingPrice2.getText()));
-            wholesales.add(wholesale);
+        result.getData().ifPresentOrElse(category -> {
+            selectedProductCategory = category;
+            tfCategory.setText(category.getName());
+            boolean isDrug = isProductCategoryDrugSelected();
+            vboxMedicine.setDisable(!isDrug);
+            vboxPresciptionSellPrice.setDisable(!isDrug);
+            TextFieldUtils.setTextEmpty(tfDrugCategory, tfIndication, tfContraindication, tfPrescriptionSellingPrice);
+        }, () -> {
+            selectedProductCategory = null;
+            selectedDrugCategory = null;
+            vboxMedicine.setDisable(true);
+            vboxPresciptionSellPrice.setDisable(true);
+            TextFieldUtils.setTextEmpty(
+                    tfCategory,
+                    tfDrugCategory,
+                    tfIndication,
+                    tfContraindication,
+                    tfPrescriptionSellingPrice);
+        });
+    }
+
+    public void handleSelectedUnit(ChooseResultVM<UnitVM> result) {
+        if (result == null || result.isCancelled()) {
+            return;
         }
-        if (StringUtils.isNoneBlank(tfPurchaseQuantity3.getText(), tfSellingPrice3.getText())) {
-            WholesaleVM wholesale = new WholesaleVM();
-            wholesale.setProductId(currentProduct.getId());
-            wholesale.setPurchaseQuantity(toInt(tfPurchaseQuantity3.getText()));
-            wholesale.setSellingPrice(toScaledBigDecimal(tfSellingPrice3.getText()));
-            wholesales.add(wholesale);
+        result.getData().ifPresentOrElse(unit -> {
+            selectedUnit = unit;
+            tfUnit.setText(unit.getLabel());
+        }, () -> {
+            selectedUnit = null;
+            tfUnit.setText("");
+        });
+    }
+
+    public void handleSelectedDrugCategory(ChooseResultVM<DrugCategoryVM> result) {
+        if (result == null || result.isCancelled()) {
+            return;
         }
-        return wholesales;
+        result.getData().ifPresentOrElse(drugCategory -> {
+            selectedDrugCategory = drugCategory;
+            tfDrugCategory.setText(drugCategory.getName());
+        }, () -> {
+            selectedDrugCategory = null;
+            tfDrugCategory.setText("");
+        });
+    }
+
+    private void loadProductExpiry(Long productId) {
+        tblExpiry.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblExpiry.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(() -> productService.getProductExpiryByProductId(productId))
+                .thenAccept(list -> Platform.runLater(() -> {
+                    if (list.isEmpty()) {
+                        tblExpiry.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                    }
+                    tblExpiry.setItems(FXCollections.observableList(list));
+                }));
+    }
+
+    private void loadProductStock(Long productId) {
+        tblStock.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblStock.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(() -> productService.getProductStockByProductId(productId))
+                .thenAccept(list -> Platform.runLater(() -> {
+                    if (list.isEmpty()) {
+                        tblStock.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                    }
+                    tblStock.setItems(FXCollections.observableList(list));
+                }));
+    }
+
+    private void loadProductPrice(Long productId) {
+        tblPrice.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblPrice.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(() -> productService.getProductPriceByProductId(productId))
+                .thenAccept(list -> Platform.runLater(() -> {
+                    if (list.isEmpty()) {
+                        tblPrice.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                    }
+                    tblPrice.setItems(FXCollections.observableList(list));
+                }));
     }
 
 }

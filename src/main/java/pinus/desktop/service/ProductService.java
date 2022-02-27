@@ -5,7 +5,6 @@ import java.util.List;
 import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -13,21 +12,32 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
+import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.DomainError;
 import pinus.desktop.domain.Drug;
-import pinus.desktop.domain.Wholesale;
+import pinus.desktop.domain.Product;
+import pinus.desktop.domain.ProductExpiry;
+import pinus.desktop.domain.ProductPrice;
+import pinus.desktop.domain.ProductStock;
 import pinus.desktop.exception.DomainException;
 import pinus.desktop.repository.DrugRepository;
+import pinus.desktop.repository.ProductExpiryRepository;
+import pinus.desktop.repository.ProductPriceRepository;
 import pinus.desktop.repository.ProductRepository;
-import pinus.desktop.repository.WholesaleRepository;
-import pinus.desktop.viewmodel.DrugVM;
+import pinus.desktop.repository.ProductStockRepository;
+import pinus.desktop.viewmodel.DrugCategoryVM;
 import pinus.desktop.viewmodel.ProductAddVM;
 import pinus.desktop.viewmodel.ProductEditVM;
+import pinus.desktop.viewmodel.ProductExpiryAddVM;
+import pinus.desktop.viewmodel.ProductExpiryVM;
 import pinus.desktop.viewmodel.ProductFilterVM;
+import pinus.desktop.viewmodel.ProductPriceVM;
+import pinus.desktop.viewmodel.ProductStockVM;
 import pinus.desktop.viewmodel.ProductVM;
-import pinus.desktop.viewmodel.WholesaleVM;
+import pinus.desktop.viewmodel.SearchProductsByFilterVM;
 
 @Service
 public class ProductService extends BaseService {
@@ -42,12 +52,18 @@ public class ProductService extends BaseService {
     private DrugRepository drugRepository;
 
     @Autowired
-    private WholesaleRepository wholesaleRepository;
+    private ProductPriceRepository productPriceRepository;
+
+    @Autowired
+    private ProductStockRepository productStockRepository;
+
+    @Autowired
+    private ProductExpiryRepository productExpiryRepository;
 
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
-    public List<ProductVM> searchProduct(ProductFilterVM param) {
+    public List<SearchProductsByFilterVM> searchProductsByFilter(ProductFilterVM filter) {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        return productRepository.filter(param, languageCode);
+        return productRepository.queryByFilter(filter, languageCode);
     }
 
     @Cacheable(CacheNameConstants.PRODUCTS_BY_KEYWORD)
@@ -59,15 +75,17 @@ public class ProductService extends BaseService {
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
-    public boolean updateProduct(ProductEditVM productEdit) {
+    public void updateProduct(ProductEditVM productEdit, Long productId) {
 
-        Long productId = productEdit.getId();
+        validateConstraints(productEdit);
+
+        String activityName = Activity.EDIT_PRODUCT.name();
         String code = productEdit.getCode();
         String barcode = productEdit.getBarcode();
+        String categoryCode = productEdit.getProductCategory().getCode();
 
-        if (!productRepository.exists(productId)) {
-            throw new DomainException(DomainError.PRODUCT_NOT_FOUND_BY_ID);
-        }
+        Product product = productRepository.readOne(productId)
+                .orElseThrow(() -> new DomainException(DomainError.PRODUCT_NOT_FOUND_BY_ID));
 
         if (productRepository.existsByCode(code, productId)) {
             throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_CODE);
@@ -81,22 +99,87 @@ public class ProductService extends BaseService {
             throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_NAME_AND_UNIT);
         }
 
-        Integer countUpdated = productRepository.updateProduct(productEdit);
-
-        DrugVM drug = productEdit.getDrug();
-        if (drug != null) {
-            drugRepository.delete(new Where().equals(Drug.C_PRODUCT_ID, productEdit.getId()), true);
-            drugRepository.create(objectConverter.convertObject(drug, Drug.class));
+        if (CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS.equals(categoryCode)) {
+            DrugCategoryVM drugCategory = productEdit.getDrugCategory();
+            drugRepository.readOne(new Where().equals(Drug.C_PRODUCT_ID, productId)).ifPresentOrElse(drug -> {
+                drug.setDrugCategoryId(drugCategory.getId());
+                drug.setIndication(productEdit.getIndication());
+                drug.setContraindication(productEdit.getContraindication());
+                drugRepository.update(drug);
+            }, () -> {
+                Drug drug = new Drug();
+                drug.setProductId(productId);
+                drug.setDrugCategoryId(drugCategory.getId());
+                drug.setIndication(productEdit.getIndication());
+                drug.setContraindication(productEdit.getContraindication());
+                drugRepository.create(drug);
+            });
+        } else {
+            drugRepository.delete(new Where().equals(Drug.C_PRODUCT_ID, productId), true);
         }
 
-        List<WholesaleVM> wholesales = productEdit.getWholesales();
-        if (ObjectUtils.isNotEmpty(wholesales)) {
-            wholesaleRepository.delete(new Where().equals(Wholesale.C_PRODUCT_ID, productEdit.getId()), true);
-            wholesales.forEach(
-                    wholesale -> wholesaleRepository.create(objectConverter.convertObject(wholesale, Wholesale.class)));
+        if (productEdit.getGeneralSellingPrice() != null) {
+            product.setGeneralSellingPrice(productEdit.getGeneralSellingPrice());
+            ProductPrice pp = new ProductPrice();
+            pp.setProductId(productId);
+            pp.setGeneralSellingPrice(productEdit.getGeneralSellingPrice());
+            pp.setPrescriptionSellingPrice(productEdit.getPrescriptionSellingPrice());
+            pp.setRemarks(productEdit.getPriceRemarks());
+            pp.setActivity(activityName);
+            pp.setUserId(1l);
+            productPriceRepository.create(pp);
         }
 
-        return countUpdated > 0;
+        if (productEdit.getPrescriptionSellingPrice() != null) {
+            product.setPrescriptionSellingPrice(productEdit.getPrescriptionSellingPrice());
+        }
+
+        if (productEdit.getStockQuantity() != null) {
+            product.setQuantity(productEdit.getStockQuantity());
+            ProductStock ps = new ProductStock();
+            ps.setProductId(productId);
+            ps.setFinalQuantity(productEdit.getStockQuantity());
+            ps.setRemarks(productEdit.getStockRemarks());
+            ps.setActivity(activityName);
+            ps.setUserId(1l);
+            productStockRepository.create(ps);
+        }
+
+        if (productEdit.getExpiredDate() != null) {
+            productStockRepository.findTopByProductId(productId).ifPresentOrElse(ps -> {
+                Integer expiryFinalQuantity = productExpiryRepository.findTopByProductId(productId)
+                        .map(ProductExpiry::getFinalQuantity).orElse(0);
+                Integer totalExpiryQuantity = expiryFinalQuantity + productEdit.getExpiryQuantity();
+                if (totalExpiryQuantity > ps.getFinalQuantity()) {
+                    throw new DomainException(DomainError.PRODUCT_EXPIRY_QUANTITY_EXCEEDS_PRODUCT_STOCK);
+                }
+                ProductExpiry px = new ProductExpiry();
+                px.setProductId(productId);
+                px.setExpiredDate(productEdit.getExpiredDate());
+                px.setBatchNumber(productEdit.getBatchNumber());
+                px.setQuantityIn(productEdit.getExpiryQuantity());
+                px.setFinalQuantity(totalExpiryQuantity);
+                px.setUserId(1l);
+                px.setActivity(activityName);
+                px.setRemarks(productEdit.getExpiryRemarks());
+                productExpiryRepository.create(px);
+            }, () -> {
+                throw new DomainException(DomainError.PRODUCT_EXPIRY_QUANTITY_EXCEEDS_PRODUCT_STOCK);
+            });
+        }
+
+        productExpiryRepository.findTopByProductIdOrderByExpiredDate(productId)
+                .ifPresent(px -> product.setClosestExpiredDate(px.getExpiredDate()));
+
+        product.setCode(code);
+        product.setBarcode(barcode);
+        product.setName(productEdit.getName());
+        product.setDescription(productEdit.getDescription());
+        product.setUnitId(productEdit.getUnit().getId());
+        product.setUnitLabel(productEdit.getUnit().getLabel());
+        product.setCategoryCode(categoryCode);
+        product.setStatus(productEdit.getStatus().name());
+        productRepository.update(product);
     }
 
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
@@ -109,10 +192,14 @@ public class ProductService extends BaseService {
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
-    public Long createProduct(ProductAddVM productAdd) {
+    public void createProduct(ProductAddVM productAdd) {
 
+        validateConstraints(productAdd);
+
+        String activityName = Activity.ADD_PRODUCT.name();
         String code = productAdd.getCode();
         String barcode = productAdd.getBarcode();
+        String categoryCode = productAdd.getProductCategory().getCode();
 
         if (productRepository.existsByCode(code)) {
             throw new DomainException(DomainError.PRODUCT_EXISTS_BY_CODE);
@@ -126,23 +213,109 @@ public class ProductService extends BaseService {
             throw new DomainException(DomainError.PRODUCT_EXISTS_BY_NAME_AND_UNIT);
         }
 
-        Long productId = productRepository.createProduct(productAdd);
+        Product product = new Product();
+        product.setCode(code);
+        product.setBarcode(barcode);
+        product.setName(productAdd.getName());
+        product.setDescription(productAdd.getDescription());
+        product.setQuantity(productAdd.getStockQuantity());
+        product.setUnitId(productAdd.getUnit().getId());
+        product.setUnitLabel(productAdd.getUnit().getLabel());
+        product.setCategoryCode(categoryCode);
+        product.setGeneralSellingPrice(productAdd.getGeneralSellingPrice());
+        product.setPrescriptionSellingPrice(productAdd.getPrescriptionSellingPrice());
+        product.setClosestExpiredDate(productAdd.getExpiredDate());
+        product.setStatus(productAdd.getStatus().name());
 
-        DrugVM drug = productAdd.getDrug();
-        if (drug != null) {
+        Long productId = productRepository.create(product);
+
+        if (CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS.equals(categoryCode)) {
+            DrugCategoryVM drugCategory = productAdd.getDrugCategory();
+            Drug drug = new Drug();
             drug.setProductId(productId);
-            drugRepository.create(objectConverter.convertObject(drug, Drug.class));
+            drug.setDrugCategoryId(drugCategory.getId());
+            drug.setIndication(productAdd.getIndication());
+            drug.setContraindication(productAdd.getContraindication());
+            drugRepository.create(drug);
         }
 
-        List<WholesaleVM> wholesales = productAdd.getWholesales();
-        if (ObjectUtils.isNotEmpty(wholesales)) {
-            wholesales.forEach(wholesale -> {
-                wholesale.setProductId(productId);
-                wholesaleRepository.create(objectConverter.convertObject(wholesale, Wholesale.class));
+        if (productAdd.getGeneralSellingPrice() != null) {
+            ProductPrice pp = new ProductPrice();
+            pp.setProductId(productId);
+            pp.setGeneralSellingPrice(productAdd.getGeneralSellingPrice());
+            pp.setPrescriptionSellingPrice(productAdd.getPrescriptionSellingPrice());
+            pp.setRemarks(productAdd.getPriceRemarks());
+            pp.setActivity(activityName);
+            pp.setUserId(1l);
+            productPriceRepository.create(pp);
+        }
+
+        if (productAdd.getStockQuantity() != null) {
+            ProductStock ps = new ProductStock();
+            ps.setProductId(productId);
+            ps.setFinalQuantity(productAdd.getStockQuantity());
+            ps.setRemarks(productAdd.getStockRemarks());
+            ps.setActivity(activityName);
+            ps.setUserId(1l);
+            productStockRepository.create(ps);
+        }
+
+        if (productAdd.getExpiredDate() != null) {
+            ProductExpiry px = new ProductExpiry();
+            px.setProductId(productId);
+            px.setExpiredDate(productAdd.getExpiredDate());
+            px.setBatchNumber(productAdd.getBatchNumber());
+            px.setQuantityIn(productAdd.getExpiryQuantity());
+            px.setFinalQuantity(productAdd.getExpiryQuantity());
+            px.setUserId(1l);
+            px.setActivity(activityName);
+            px.setRemarks(productAdd.getExpiryRemarks());
+            productExpiryRepository.create(px);
+        }
+    }
+
+    public List<ProductPriceVM> getProductPriceByProductId(Long productId) {
+        return objectConverter.convertList(productPriceRepository.findByProductId(productId), ProductPriceVM.class);
+    }
+
+    public List<ProductExpiryVM> getProductExpiryByProductId(Long productId) {
+        return objectConverter.convertList(productExpiryRepository.findByProductId(productId), ProductExpiryVM.class);
+    }
+
+    public List<ProductStockVM> getProductStockByProductId(Long productId) {
+        return objectConverter.convertList(productStockRepository.findByProductId(productId), ProductStockVM.class);
+    }
+
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
+    @Transactional
+    public void addProductExpiry(ProductExpiryAddVM productExpiryAddVM, Activity activity) {
+        Long productId = productExpiryAddVM.getProductId();
+        productStockRepository.findTopByProductId(productId).ifPresentOrElse(ps -> {
+            Integer expiryFinalQuantity = productExpiryRepository.findTopByProductId(productId)
+                    .map(ProductExpiry::getFinalQuantity).orElse(0);
+            Integer totalExpiryQuantity = expiryFinalQuantity + productExpiryAddVM.getQuantity();
+            if (totalExpiryQuantity > ps.getFinalQuantity()) {
+                throw new DomainException(DomainError.PRODUCT_EXPIRY_QUANTITY_EXCEEDS_PRODUCT_STOCK);
+            }
+            ProductExpiry px = new ProductExpiry();
+            px.setProductId(productId);
+            px.setExpiredDate(productExpiryAddVM.getExpiredDate());
+            px.setBatchNumber(productExpiryAddVM.getBatchNumber());
+            px.setQuantityIn(productExpiryAddVM.getQuantity());
+            px.setFinalQuantity(totalExpiryQuantity);
+            px.setActivity(activity.name());
+            px.setUserId(1l);
+            productExpiryRepository.create(px);
+            productExpiryRepository.findTopByProductIdOrderByExpiredDate(productId).ifPresent(productExpiry -> {
+                productRepository.update(
+                        new String[] { Product.C_CLOSEST_EXPIRED_DATE },
+                        new Object[] { productExpiry.getExpiredDate() },
+                        productId);
             });
-        }
-
-        return productId;
+        }, () -> {
+            throw new DomainException(DomainError.PRODUCT_EXPIRY_QUANTITY_EXCEEDS_PRODUCT_STOCK);
+        });
     }
 
 }

@@ -4,13 +4,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
-import com.gitlab.muhammadkholidb.pandora.factory.BooleanImageCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
@@ -26,59 +25,57 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
-import pinus.desktop.constant.SimpleStatus;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.service.ProductService;
 import pinus.desktop.viewmodel.ProductFilterVM;
-import pinus.desktop.viewmodel.ProductVM;
+import pinus.desktop.viewmodel.SearchProductsByFilterVM;
 
 public class ProductMainController extends BaseController {
 
     @FXML
-    private TableView<ProductVM> tableProduct;
+    private TableView<SearchProductsByFilterVM> tblProduct;
 
     @FXML
-    private TableColumn<ProductVM, String> colCode;
+    private TableColumn<SearchProductsByFilterVM, String> colCode;
 
     @FXML
-    private TableColumn<ProductVM, String> colName;
+    private TableColumn<SearchProductsByFilterVM, String> colStatus;
 
     @FXML
-    private TableColumn<ProductVM, String> colCategory;
+    private TableColumn<SearchProductsByFilterVM, String> colBarcode;
 
     @FXML
-    private TableColumn<ProductVM, Integer> colQuantity;
+    private TableColumn<SearchProductsByFilterVM, String> colName;
 
     @FXML
-    private TableColumn<ProductVM, String> colUnit;
+    private TableColumn<SearchProductsByFilterVM, String> colCategory;
 
     @FXML
-    private TableColumn<ProductVM, BigDecimal> colPurchasePrice;
+    private TableColumn<SearchProductsByFilterVM, Integer> colQuantity;
 
     @FXML
-    private TableColumn<ProductVM, BigDecimal> colSellingPrice;
+    private TableColumn<SearchProductsByFilterVM, String> colUnit;
 
     @FXML
-    private TableColumn<ProductVM, String> colIncludesVat;
+    private TableColumn<SearchProductsByFilterVM, BigDecimal> colPrescriptionSellingPrice;
 
     @FXML
-    private TableColumn<ProductVM, LocalDate> colExpiredDate;
+    private TableColumn<SearchProductsByFilterVM, BigDecimal> colGeneralSellingPrice;
 
     @FXML
-    private TableColumn<ProductVM, String> colRack;
+    private TableColumn<SearchProductsByFilterVM, BigDecimal> colAverageBuyingPrice;
 
     @FXML
-    private TableColumn<ProductVM, LocalDateTime> colCreatedAt;
+    private TableColumn<SearchProductsByFilterVM, LocalDate> colClosestExpiry;
 
     @FXML
-    private TableColumn<ProductVM, LocalDateTime> colUpdatedAt;
+    private TableColumn<SearchProductsByFilterVM, LocalDateTime> colUpdatedAt;
 
     @FXML
     private Label lblRows;
@@ -100,20 +97,24 @@ public class ProductMainController extends BaseController {
     void onActionBtnFilter(ActionEvent event) {
         setPageData(productFilter);
         StageUtils.modal(Page.MASTER_PRODUCT_FILTER, false, we -> {
-            productFilter = getPageData();
+            ProductFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            productFilter = result;
             searchProducts();
         });
     }
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-        ObservableList<ProductVM> items = tableProduct.getSelectionModel().getSelectedItems();
+        ObservableList<SearchProductsByFilterVM> items = tblProduct.getSelectionModel().getSelectedItems();
         if (!items.isEmpty()) {
             AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PRODUCTS);
             if (result.isConfirmed()) {
-                productService.removeProducts(items.stream().map(ProductVM::getId).collect(Collectors.toList()));
-                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PRODUCTS);
+                productService.removeProducts(items.stream().map(SearchProductsByFilterVM::getId).toList());
                 searchProducts();
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PRODUCTS);
             }
         }
     }
@@ -142,87 +143,72 @@ public class ProductMainController extends BaseController {
 
     private void initTableProduct() {
         Locale locale = resources.getLocale();
-        TableViewUtils.setColumnValue(colCode, ProductVM::getCode);
-        TableViewUtils.setColumnValue(colName, ProductVM::getName);
-        TableViewUtils.setColumnValue(colCategory, ProductVM::getCategoryName);
-        TableViewUtils.setColumnValue(colUnit, ProductVM::getUnitLabel);
-        TableViewUtils.setColumnValue(colRack, ProductVM::getRackName);
+        TableViewUtils.setColumnValue(colCode, SearchProductsByFilterVM::getCode);
+        TableViewUtils.setColumnValue(colBarcode, SearchProductsByFilterVM::getBarcode);
+        TableViewUtils.setColumnValue(colName, SearchProductsByFilterVM::getName);
+        TableViewUtils.setColumnValue(colCategory, SearchProductsByFilterVM::getCategoryName);
+        TableViewUtils.setColumnValue(colUnit, SearchProductsByFilterVM::getUnitLabel);
+        TableViewUtils.setColumnValue(colStatus, SearchProductsByFilterVM::getStatus);
         TableViewUtils.initTableColumn(
                 colQuantity,
                 new NumberCellFactory<>(locale),
-                ProductVM::getQuantity,
+                SearchProductsByFilterVM::getQuantity,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colPurchasePrice,
+                colGeneralSellingPrice,
                 new NumberCellFactory<>(locale),
-                ProductVM::getPurchasePrice,
+                SearchProductsByFilterVM::getGeneralSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colSellingPrice,
+                colPrescriptionSellingPrice,
                 new NumberCellFactory<>(locale),
-                ProductVM::getSellingPrice,
+                SearchProductsByFilterVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colPurchasePrice,
-                new NumberCellFactory<>(locale),
-                ProductVM::getPurchasePrice,
-                StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colIncludesVat,
-                new BooleanImageCellFactory<>(val -> SimpleStatus.YES.name().equals(val)),
-                ProductVM::getVatIncluded,
-                StyleConstants.ALIGN_CENTER);
-        TableViewUtils.initTableColumn(
-                colExpiredDate,
+                colClosestExpiry,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                ProductVM::getExpiredDate);
-        TableViewUtils.initTableColumn(
-                colCreatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                ProductVM::getCreatedAt);
+                SearchProductsByFilterVM::getClosestExpiredDate);
         TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                ProductVM::getUpdatedAt);
-        tableProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+                SearchProductsByFilterVM::getUpdatedAt);
+        tblProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
     private void registerKeyListener() {
-        tableProduct.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+        tblProduct.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
                 handleActionTableProduct();
             }
         });
-        tableProduct.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
+        tblProduct.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
                 handleActionTableProduct();
             }
         });
     }
 
     private void handleActionTableProduct() {
-        if (TableViewUtils.hasItemSelected(tableProduct)) {
-            setPageData(TableViewUtils.getSelectedItem(tableProduct));
-            StageUtils.modal(Page.MASTER_PRODUCT_EDIT, false, event -> {
-                if (Boolean.TRUE.equals(getPageData())) {
-                    searchProducts();
-                }
+        if (TableViewUtils.hasItemSelected(tblProduct)) {
+            setPageData(TableViewUtils.getSelectedItem(tblProduct));
+            StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> {
+                searchProducts();
             });
         }
     }
 
-    @SuppressWarnings("unchecked")
     private void searchProducts() {
-        tableProduct.setPlaceholder(new Label(translate("lbl.loadingdata")));
-        tableProduct.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> productService.searchProduct(productFilter))
+        tblProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblProduct.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(() -> productService.searchProductsByFilter(productFilter))
                 .thenAccept(products -> Platform.runLater(() -> {
                     if (products.isEmpty()) {
-                        tableProduct.setPlaceholder(new Label(translate("lbl.nodata")));
+                        tblProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                     }
-                    tableProduct.setItems(FXCollections.observableList(products));
-                    tableProduct.getSortOrder().setAll(colName); // Always sort by name after searching
+                    tblProduct.setItems(FXCollections.observableList(products));
+                    TableViewUtils.sortDescending(tblProduct, colUpdatedAt); // Always sort by updated at after
+                                                                             // searching
                     lblRows.setText(products.size() + "");
                 }));
     }

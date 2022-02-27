@@ -4,23 +4,24 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import lombok.Data;
+import pinus.desktop.constant.ProductStatus;
 
 @Data
 public class ProductFilterVM {
     private String name;
+    private String description;
     private String code;
     private String barcode;
-    private Long categoryId;
-    private String categoryCode;
-    private BigDecimal purchasePriceMin;
-    private BigDecimal purchasePriceMax;
-    private BigDecimal sellingPriceMin;
-    private BigDecimal sellingPriceMax;
-    private Integer quantityMin;
-    private Integer quantityMax;
-    private Long rackId;
-    private Long unitId;
+    private ProductCategoryVM category;
+    private UnitVM unit;
+    private ProductStatus status;
+    private BigDecimal generalSellingPriceMin;
+    private BigDecimal generalSellingPriceMax;
+    private BigDecimal prescriptionSellingPriceMin;
+    private BigDecimal prescriptionSellingPriceMax;
+    private Integer stockQuantityMin;
+    private Integer stockQuantityMax;
     private LocalDate expiredDateMin;
     private LocalDate expiredDateMax;
-    private String includesVat;
+    private String batchNumber;
 }

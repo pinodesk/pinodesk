@@ -1,5 +1,5 @@
 create table if not exists product_category (
-	id bigint not null auto_increment,
+	id IDENTITY NOT NULL PRIMARY KEY,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
@@ -7,14 +7,14 @@ create table if not exists product_category (
 	language_code char(2) not null,
 	code varchar(64) not null,
 	name varchar(256) not null,
-	description varchar(512),
-	primary key (id),
-	index idx_product_category__code (code),
-	index idx_product_category__deleted_at (deleted_at),
-	index idx_product_category__code__deleted_at (code, deleted_at),
-	index idx_product_category__language_code__code (language_code, code),
-	index idx_product_category__language_code__code__deleted_at (language_code, code, deleted_at)
+	description varchar(512)
 );
+
+create index idx_product_category__deleted_at on product_category (deleted_at);
+create index idx_product_category__code on product_category (code);
+create index idx_product_category__code__deleted_at on product_category (code, deleted_at);
+create index idx_product_category__language_code__code on product_category (language_code, code);
+create index idx_product_category__language_code__code__deleted_at on product_category (language_code, code, deleted_at);
 
 insert into product_category (id, created_at, updated_at, deleted_at, parent_category_id, language_code, code, name, description) values
 (100000001, current_timestamp, current_timestamp, NULL, NULL, 'en', '000000001', 'Animals & Pet Supplies', NULL),
@@ -11025,7 +11025,9 @@ insert into product_category (id, created_at, updated_at, deleted_at, parent_cat
 (200505828, current_timestamp, current_timestamp, NULL, 200002907, 'id', '000505828', 'Perlengkapan Ostomi', NULL),
 (200505830, current_timestamp, current_timestamp, NULL, 200002986, 'id', '000505830', 'Pembuka Surat', NULL),
 (200505831, current_timestamp, current_timestamp, NULL, 200002174, 'id', '000505831', 'Pisau Pemotong & Pengikis', NULL),
-(200505832, current_timestamp, current_timestamp, NULL, 200004171, 'id', '000505832', 'Perlengkapan Kain Masak', NULL);
+(200505832, current_timestamp, current_timestamp, NULL, 200004171, 'id', '000505832', 'Perlengkapan Kain Masak', NULL),
+(100505833, current_timestamp, current_timestamp, NULL, NULL, 'en', '000505833', 'Uncategorized', NULL),
+(200505833, current_timestamp, current_timestamp, NULL, NULL, 'id', '000505833', 'Tidak Dikategorikan', NULL);
 
 alter table product_category
 add constraint fk_product_category__parent_category_id 

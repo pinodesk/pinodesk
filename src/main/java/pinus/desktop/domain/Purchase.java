@@ -16,7 +16,7 @@ public class Purchase extends DataModel {
     public static final String TABLE_NAME = "purchase";
 
     public static final String C_SUPPLIER_ID = "supplier_id";
-    public static final String C_ORDER_NUMBER = "order_number";
+    public static final String C_INVOICE_NUMBER = "invoice_number";
     public static final String C_ORDER_DATE = "order_date";
     public static final String C_TOTAL_PAYMENT = "total_payment";
     public static final String C_TOTAL_PURCHASE = "total_purchase";
@@ -32,8 +32,8 @@ public class Purchase extends DataModel {
     @DataColumn(C_SUPPLIER_ID)
     private Long supplierId;
 
-    @DataColumn(C_ORDER_NUMBER)
-    private String orderNumber;
+    @DataColumn(C_INVOICE_NUMBER)
+    private String invoiceNumber;
 
     @DataColumn(C_ORDER_DATE)
     private LocalDate orderDate;
