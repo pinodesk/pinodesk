@@ -16,7 +16,7 @@ public class PurchaseDetail extends DataModel {
 
     public static final String C_PURCHASE_ID = "purchase_id";
     public static final String C_PRODUCT_ID = "product_id";
-    public static final String C_PRODUCT_PRICE = "product_price";
+    public static final String C_BUYING_PRICE = "buying_price";
     public static final String C_QUANTITY = "quantity";
     public static final String C_SUBTOTAL = "subtotal";
 
@@ -29,8 +29,8 @@ public class PurchaseDetail extends DataModel {
     @DataColumn(C_QUANTITY)
     private Integer quantity;
 
-    @DataColumn(C_PRODUCT_PRICE)
-    private BigDecimal productPrice;
+    @DataColumn(C_BUYING_PRICE)
+    private BigDecimal buyingPrice;
 
     @DataColumn(C_SUBTOTAL)
     private BigDecimal subtotal;

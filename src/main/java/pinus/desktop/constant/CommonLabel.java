@@ -7,7 +7,9 @@ public enum CommonLabel implements IMessage {
     LBL_NO_DATA,
     LBL_ACTIVE,
     LBL_INACTIVE,
-    BTN_SAVE_AND_COPY;
+    BTN_SAVE_AND_COPY, 
+    LBL_PAID, 
+    LBL_UNPAID;
 
     @Override
     public String toString() {

@@ -18,29 +18,26 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
     @Override
     public List<PurchaseVM> filter(PurchaseFilterVM filter) {
         StringBuilder sb = new StringBuilder();
-        sb.append(
-                " select a.*, b.id as supplier_id, b.name as supplier_name from purchase a inner join supplier b on b.id = a.supplier_id ");
+        sb.append("""
+                select a.*, b.id as supplier_id, b.name as supplier_name
+                from purchase a
+                inner join supplier b on b.id = a.supplier_id
+                """);
         Where where = new Where();
-        if (StringUtils.isNotBlank(filter.getOrderNumber())) {
-            where.containsIgnoreCase("a.order_number", filter.getOrderNumber().trim());
+        if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
+            where.containsIgnoreCase("a.invoice_number", filter.getInvoiceNumber().trim());
         }
-        if (filter.getOrderDateMin() != null) {
-            where.andGreaterThanOrEqual("a.order_date", filter.getOrderDateMin());
+        if (filter.getInvoiceDateMin() != null) {
+            where.andGreaterThanOrEqual("a.invoice_date", filter.getInvoiceDateMin());
         }
-        if (filter.getOrderDateMax() != null) {
-            where.andLowerThanOrEqual("a.order_date", filter.getOrderDateMax());
+        if (filter.getInvoiceDateMax() != null) {
+            where.andLowerThanOrEqual("a.invoice_date", filter.getInvoiceDateMax());
         }
         if (filter.getDueDateMin() != null) {
             where.andGreaterThanOrEqual("a.payment_due_date", filter.getDueDateMin());
         }
         if (filter.getDueDateMax() != null) {
-            where.andLowerThanOrEqual("a.payment_due_date", filter.getOrderDateMax());
-        }
-        if (filter.getPaymentMethod() != null) {
-            where.andEquals("a.payment_method", filter.getPaymentMethod().name());
-        }
-        if (filter.getPaymentPeriodUnit() != null) {
-            where.andEquals("a.payment_period_unit", filter.getPaymentPeriodUnit().name());
+            where.andLowerThanOrEqual("a.payment_due_date", filter.getInvoiceDateMax());
         }
         if (filter.getPaymentStatus() != null) {
             where.andEquals("a.payment_status", filter.getPaymentStatus().name());

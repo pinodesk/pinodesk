@@ -4,17 +4,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import lombok.Data;
-import pinus.desktop.constant.PaymentMethod;
-import pinus.desktop.constant.PaymentPeriodUnit;
 import pinus.desktop.constant.PaymentStatus;
 
 @Data
 public class PurchaseFilterVM {
-    private String orderNumber;
-    private LocalDate orderDateMin;
-    private LocalDate orderDateMax;
-    private PaymentMethod paymentMethod;
-    private PaymentPeriodUnit paymentPeriodUnit;
+    private String invoiceNumber;
+    private LocalDate invoiceDateMin;
+    private LocalDate invoiceDateMax;
     private LocalDate dueDateMin;
     private LocalDate dueDateMax;
     private Long supplierId;

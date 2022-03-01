@@ -17,13 +17,10 @@ public class Purchase extends DataModel {
 
     public static final String C_SUPPLIER_ID = "supplier_id";
     public static final String C_INVOICE_NUMBER = "invoice_number";
-    public static final String C_ORDER_DATE = "order_date";
+    public static final String C_INVOICE_DATE = "invoice_date";
     public static final String C_TOTAL_PAYMENT = "total_payment";
     public static final String C_TOTAL_PURCHASE = "total_purchase";
     public static final String C_TOTAL_PRODUCT = "total_product";
-    public static final String C_PAYMENT_METHOD = "payment_method";
-    public static final String C_PAYMENT_PERIOD_COUNT = "payment_period_count";
-    public static final String C_PAYMENT_PERIOD_UNIT = "payment_period_unit";
     public static final String C_PAYMENT_DUE_DATE = "payment_due_date";
     public static final String C_PAYMENT_STATUS = "payment_status";
     public static final String C_DISCOUNT = "discount";
@@ -35,8 +32,8 @@ public class Purchase extends DataModel {
     @DataColumn(C_INVOICE_NUMBER)
     private String invoiceNumber;
 
-    @DataColumn(C_ORDER_DATE)
-    private LocalDate orderDate;
+    @DataColumn(C_INVOICE_DATE)
+    private LocalDate invoiceDate;
 
     @DataColumn(C_TOTAL_PRODUCT)
     private Integer totalProduct;
@@ -46,15 +43,6 @@ public class Purchase extends DataModel {
 
     @DataColumn(C_TOTAL_PURCHASE)
     private BigDecimal totalPurchase;
-
-    @DataColumn(C_PAYMENT_METHOD)
-    private String paymentMethod;
-
-    @DataColumn(C_PAYMENT_PERIOD_COUNT)
-    private Integer paymentPeriodCount;
-
-    @DataColumn(C_PAYMENT_PERIOD_UNIT)
-    private String paymentPeriodUnit;
 
     @DataColumn(C_PAYMENT_DUE_DATE)
     private LocalDate paymentDueDate;

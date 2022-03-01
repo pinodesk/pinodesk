@@ -14,13 +14,10 @@ public class PurchaseVM {
     private LocalDateTime deletedAt;
     private Long supplierId;
     private String supplierName;
-    private String orderNumber;
-    private LocalDate orderDate;
+    private String invoiceNumber;
+    private LocalDate invoiceDate;
     private Integer totalProduct;
     private BigDecimal totalPayment;
-    private String paymentMethod;
-    private Integer paymentPeriodCount;
-    private String paymentPeriodUnit;
     private LocalDate paymentDueDate;
     private String paymentStatus;
     private BigDecimal discount;

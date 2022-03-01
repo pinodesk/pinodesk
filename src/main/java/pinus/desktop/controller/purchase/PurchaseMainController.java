@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
@@ -26,15 +25,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
-import pinus.desktop.constant.PaymentMethod;
-import pinus.desktop.constant.PaymentPeriodUnit;
 import pinus.desktop.constant.PaymentStatus;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.BaseController;
@@ -83,19 +80,10 @@ public class PurchaseMainController extends BaseController {
     private TableColumn<PurchaseVM, BigDecimal> colDiscount;
 
     @FXML
-    private TableColumn<PurchaseVM, String> colPaymentMethod;
-
-    @FXML
-    private TableColumn<PurchaseVM, String> colPaymentPeriod;
-
-    @FXML
     private TableColumn<PurchaseVM, String> colPaymentStatus;
 
     @FXML
     private TableColumn<PurchaseVM, LocalDate> colDueDate;
-
-    @FXML
-    private TableColumn<PurchaseVM, LocalDateTime> colCreatedAt;
 
     @FXML
     private TableColumn<PurchaseVM, LocalDateTime> colUpdatedAt;
@@ -131,7 +119,7 @@ public class PurchaseMainController extends BaseController {
         if (!items.isEmpty()) {
             AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PURCHASES);
             if (result.isConfirmed()) {
-                purchaseService.removePurchases(items.stream().map(PurchaseVM::getId).collect(Collectors.toList()));
+                purchaseService.removePurchases(items.stream().map(PurchaseVM::getId).toList());
                 displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PURCHASES);
                 searchPurchases();
             }
@@ -148,25 +136,13 @@ public class PurchaseMainController extends BaseController {
     protected void initControlActions() {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
         Locale locale = new Locale(languageCode);
-        TableViewUtils.setColumnValue(colOrderNumber, PurchaseVM::getOrderNumber);
-        TableViewUtils.setColumnValue(colOrderDate, PurchaseVM::getOrderDate);
+        TableViewUtils.setColumnValue(colOrderNumber, PurchaseVM::getInvoiceNumber);
+        TableViewUtils.setColumnValue(colOrderDate, PurchaseVM::getInvoiceDate);
         TableViewUtils.setColumnValue(colDueDate, PurchaseVM::getPaymentDueDate);
         TableViewUtils.setColumnValue(colSupplierName, PurchaseVM::getSupplierName);
-        TableViewUtils.setColumnValue(colPaymentMethod, vm -> {
-            PaymentMethod pm = PaymentMethod.valueOf(vm.getPaymentMethod());
-            return PaymentMethod.CASH.equals(pm) ? translate("lbl.cash") : translate("lbl.credit");
-        });
         TableViewUtils.setColumnValue(colPaymentStatus, vm -> {
             PaymentStatus ps = PaymentStatus.valueOf(vm.getPaymentStatus());
-            return PaymentStatus.PAID.equals(ps) ? translate("lbl.paid") : translate("lbl.unpaid");
-        });
-        TableViewUtils.setColumnValue(colPaymentPeriod, vm -> {
-            PaymentMethod pm = PaymentMethod.valueOf(vm.getPaymentMethod());
-            if (PaymentMethod.CASH.equals(pm)) {
-                return null;
-            }
-            String periodUnit = PaymentPeriodUnit.valueOf(vm.getPaymentPeriodUnit()).name().toLowerCase();
-            return vm.getPaymentPeriodCount() + " " + translate("lbl." + periodUnit);
+            return PaymentStatus.PAID.equals(ps) ? translate(CommonLabel.LBL_PAID) : translate(CommonLabel.LBL_UNPAID);
         });
         TableViewUtils.initTableColumn(
                 colTotalProduct,
@@ -196,11 +172,7 @@ public class PurchaseMainController extends BaseController {
         TableViewUtils.initTableColumn(
                 colOrderDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                PurchaseVM::getOrderDate);
-        TableViewUtils.initTableColumn(
-                colCreatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                PurchaseVM::getCreatedAt);
+                PurchaseVM::getInvoiceDate);
         TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
@@ -229,19 +201,17 @@ public class PurchaseMainController extends BaseController {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private void searchPurchases() {
-        tblPurchase.setPlaceholder(new Label(translate("lbl.loadingdata")));
+        tblPurchase.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tblPurchase.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> purchaseService.searchPurchases(purchaseFilter))
                 .thenAccept(purchases -> Platform.runLater(() -> {
                     if (purchases.isEmpty()) {
-                        tblPurchase.setPlaceholder(new Label(translate("lbl.nodata")));
+                        tblPurchase.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                     }
                     tblPurchase.setItems(FXCollections.observableList(purchases));
-                    colCreatedAt.setSortType(SortType.DESCENDING);
-                    tblPurchase.getSortOrder().setAll(colCreatedAt);
+                    TableViewUtils.sortDescending(tblPurchase, colUpdatedAt);
                     lblRows.setText(purchases.size() + "");
                 }));
     }
@@ -250,9 +220,7 @@ public class PurchaseMainController extends BaseController {
         if (TableViewUtils.hasItemSelected(tblPurchase)) {
             setPageData(TableViewUtils.getSelectedItem(tblPurchase));
             StageUtils.modal(Page.TRANSACTION_PURCHASE_EDIT, false, event -> {
-                if (Boolean.TRUE.equals(getPageData())) {
-                    searchPurchases();
-                }
+                searchPurchases();
             });
         }
     }
