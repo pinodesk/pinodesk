@@ -46,8 +46,10 @@ public class PurchaseService extends BaseService {
     @CacheEvict(value = { CacheNameConstants.PURCHASES_BY_FILTER }, allEntries = true)
     @Transactional
     public Long createPurchase(PurchaseOrderVM po) {
-        // if (purchaseRepository.existsByOrderNumberAndSupplierId(po.getOrderNumber(), po.getSupplierId())) {
-        //     throw new DomainException(DomainError.PURCHASE_EXISTS_BY_ORDER_NUMBER_AND_SUPPLIER_ID);
+        // if (purchaseRepository.existsByOrderNumberAndSupplierId(po.getOrderNumber(),
+        // po.getSupplierId())) {
+        // throw new
+        // DomainException(DomainError.PURCHASE_EXISTS_BY_ORDER_NUMBER_AND_SUPPLIER_ID);
         // }
         // Purchase purchase = new Purchase();
         // purchase.setOrderDate(po.getOrderDate());
@@ -56,33 +58,35 @@ public class PurchaseService extends BaseService {
         // purchase.setTotalPayment(po.getTotalPayment());
         // purchase.setPaymentMethod(po.getPaymentMethod().name());
         // purchase.setPaymentPeriodCount(po.getPaymentPeriodCount());
-        // purchase.setPaymentPeriodUnit(po.getPaymentPeriodUnit() == null ? null : po.getPaymentPeriodUnit().name());
+        // purchase.setPaymentPeriodUnit(po.getPaymentPeriodUnit() == null ? null :
+        // po.getPaymentPeriodUnit().name());
         // purchase.setPaymentDueDate(po.getDueDate());
         // purchase.setPaymentStatus(
-        //         po.getPaymentMethod().equals(PaymentMethod.CASH) ?
-        //                 PaymentStatus.PAID.name() : PaymentStatus.UNPAID.name());
+        // po.getPaymentMethod().equals(PaymentMethod.CASH) ?
+        // PaymentStatus.PAID.name() : PaymentStatus.UNPAID.name());
         // purchase.setSupplierId(po.getSupplierId());
         // purchase.setTax(po.getTax());
         // purchase.setDiscount(po.getDiscount());
         // purchase.setTotalPurchase(po.getTotalPurchase());
         // Long purchaseId = purchaseRepository.create(purchase);
         // for (PurchaseProductVM purchaseProduct : po.getPurchaseProducts()) {
-        //     PurchaseDetail pd = new PurchaseDetail();
-        //     pd.setPurchaseId(purchaseId);
-        //     pd.setProductId(purchaseProduct.getProduct().getId());
-        //     pd.setProductPrice(purchaseProduct.getPurchasePrice());
-        //     pd.setQuantity(purchaseProduct.getPurchaseQuantity());
-        //     pd.setSubtotal(purchaseProduct.getSubtotalPurchase());
-        //     purchaseDetailRepository.create(pd);
-        //     Product product = productRepository.readOne(purchaseProduct.getProduct().getId()).orElseThrow();
-        //     Integer lastQuantity = product.getQuantity();
-        //     // product.setPurchasePrice(purchaseProduct.getPurchasePrice());
-        //     // product.setSellingPrice(purchaseProduct.getSellingPrice());
-        //     product.setQuantity(
-        //             lastQuantity == null ?
-        //                     purchaseProduct.getPurchaseQuantity() :
-        //                     lastQuantity + purchaseProduct.getPurchaseQuantity());
-        //     productRepository.update(product);
+        // PurchaseDetail pd = new PurchaseDetail();
+        // pd.setPurchaseId(purchaseId);
+        // pd.setProductId(purchaseProduct.getProduct().getId());
+        // pd.setProductPrice(purchaseProduct.getPurchasePrice());
+        // pd.setQuantity(purchaseProduct.getPurchaseQuantity());
+        // pd.setSubtotal(purchaseProduct.getSubtotalPurchase());
+        // purchaseDetailRepository.create(pd);
+        // Product product =
+        // productRepository.readOne(purchaseProduct.getProduct().getId()).orElseThrow();
+        // Integer lastQuantity = product.getQuantity();
+        // // product.setPurchasePrice(purchaseProduct.getPurchasePrice());
+        // // product.setSellingPrice(purchaseProduct.getSellingPrice());
+        // product.setQuantity(
+        // lastQuantity == null ?
+        // purchaseProduct.getPurchaseQuantity() :
+        // lastQuantity + purchaseProduct.getPurchaseQuantity());
+        // productRepository.update(product);
         // }
         // return purchaseId;
         return null;
