@@ -1,9 +1,9 @@
-package pinus.desktop.utility;
+package pinus.desktop.util;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public class SpringUtils {
+public final class SpringUtils {
 
     private SpringUtils() {
     }

@@ -48,7 +48,9 @@ public class GoogleProductCategoriesGenerator {
             }
             writer.flush();
         } catch (Exception e) {
-            log.error("Failed to parse product categories: " + e.getMessage(), e);
+            if (log.isErrorEnabled()) {
+                log.error("Failed to parse product categories: " + e.getMessage(), e);
+            }
         }
     }
 

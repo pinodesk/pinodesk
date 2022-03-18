@@ -15,7 +15,7 @@ public interface ProductRepository extends CommonRepository<Product> {
 
     List<SearchProductsByFilterVM> queryByFilter(ProductFilterVM filter, String languageCode);
 
-    List<ProductVM> findByKeyword(String keyword, String languageCode);
+    List<SearchProductsByFilterVM> findByKeyword(String keyword, String languageCode);
 
     boolean existsByCode(String code, Long... excludedIds);
 

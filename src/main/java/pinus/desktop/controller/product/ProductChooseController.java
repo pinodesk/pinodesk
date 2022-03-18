@@ -22,99 +22,95 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import pinus.desktop.constant.CommonConstants;
-import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.CommonDataChooseController;
-import pinus.desktop.service.ConfigurationService;
 import pinus.desktop.service.ProductService;
-import pinus.desktop.utility.SpringUtils;
-import pinus.desktop.viewmodel.ProductVM;
+import pinus.desktop.util.SpringUtils;
+import pinus.desktop.viewmodel.SearchProductsByFilterVM;
 
-public class ProductChooseController extends CommonDataChooseController<ProductVM> {
+public class ProductChooseController extends CommonDataChooseController<SearchProductsByFilterVM> {
 
     @FXML
     private TextField tfSearch;
 
     @FXML
-    private TableView<ProductVM> tblProduct;
+    private TableView<SearchProductsByFilterVM> tblProduct;
 
     @FXML
-    private TableColumn<ProductVM, String> colCode;
+    private TableColumn<SearchProductsByFilterVM, String> colCode;
 
     @FXML
-    private TableColumn<ProductVM, String> colName;
+    private TableColumn<SearchProductsByFilterVM, String> colStatus;
 
     @FXML
-    private TableColumn<ProductVM, String> colCategory;
+    private TableColumn<SearchProductsByFilterVM, String> colBarcode;
 
     @FXML
-    private TableColumn<ProductVM, Integer> colQuantity;
+    private TableColumn<SearchProductsByFilterVM, String> colName;
 
     @FXML
-    private TableColumn<ProductVM, String> colUnit;
+    private TableColumn<SearchProductsByFilterVM, String> colCategory;
 
     @FXML
-    private TableColumn<ProductVM, BigDecimal> colPurchasePrice;
+    private TableColumn<SearchProductsByFilterVM, Integer> colQuantity;
 
     @FXML
-    private TableColumn<ProductVM, BigDecimal> colSellingPrice;
+    private TableColumn<SearchProductsByFilterVM, String> colUnit;
 
     @FXML
-    private TableColumn<ProductVM, LocalDate> colExpiredDate;
+    private TableColumn<SearchProductsByFilterVM, BigDecimal> colPrescriptionSellingPrice;
 
     @FXML
-    private TableColumn<ProductVM, String> colRack;
+    private TableColumn<SearchProductsByFilterVM, BigDecimal> colGeneralSellingPrice;
 
     @FXML
-    private TableColumn<ProductVM, LocalDateTime> colCreatedAt;
+    private TableColumn<SearchProductsByFilterVM, BigDecimal> colAverageBuyingPrice;
 
     @FXML
-    private TableColumn<ProductVM, LocalDateTime> colUpdatedAt;
+    private TableColumn<SearchProductsByFilterVM, LocalDate> colClosestExpiry;
 
-    private ConfigurationService configurationService;
+    @FXML
+    private TableColumn<SearchProductsByFilterVM, LocalDateTime> colUpdatedAt;
+
     private ProductService productService;
 
     @Override
     protected void initDataChooseControlActions() {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        Locale locale = new Locale(languageCode);
-        TableViewUtils.setColumnValue(colCode, ProductVM::getCode);
-        TableViewUtils.setColumnValue(colName, ProductVM::getName);
-        TableViewUtils.setColumnValue(colCategory, ProductVM::getCategoryName);
-        TableViewUtils.setColumnValue(colUnit, ProductVM::getUnitLabel);
-        TableViewUtils.setColumnValue(colRack, ProductVM::getRackName);
+        Locale locale = resources.getLocale();
+        TableViewUtils.setColumnValue(colCode, SearchProductsByFilterVM::getCode);
+        TableViewUtils.setColumnValue(colBarcode, SearchProductsByFilterVM::getBarcode);
+        TableViewUtils.setColumnValue(colName, SearchProductsByFilterVM::getName);
+        TableViewUtils.setColumnValue(colCategory, SearchProductsByFilterVM::getCategoryName);
+        TableViewUtils.setColumnValue(colUnit, SearchProductsByFilterVM::getUnitLabel);
+        TableViewUtils.setColumnValue(colStatus, SearchProductsByFilterVM::getStatus);
         TableViewUtils.initTableColumn(
                 colQuantity,
                 new NumberCellFactory<>(locale),
-                ProductVM::getQuantity,
+                SearchProductsByFilterVM::getQuantity,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colPurchasePrice,
+                colAverageBuyingPrice,
                 new NumberCellFactory<>(locale),
-                ProductVM::getPurchasePrice,
+                SearchProductsByFilterVM::getAverageBuyingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colSellingPrice,
+                colGeneralSellingPrice,
                 new NumberCellFactory<>(locale),
-                ProductVM::getSellingPrice,
+                SearchProductsByFilterVM::getGeneralSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colPurchasePrice,
+                colPrescriptionSellingPrice,
                 new NumberCellFactory<>(locale),
-                ProductVM::getPurchasePrice,
+                SearchProductsByFilterVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colExpiredDate,
+                colClosestExpiry,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                ProductVM::getExpiredDate);
-        TableViewUtils.initTableColumn(
-                colCreatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                ProductVM::getCreatedAt);
+                SearchProductsByFilterVM::getClosestExpiredDate);
         TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                ProductVM::getUpdatedAt);
+                SearchProductsByFilterVM::getUpdatedAt);
         tblProduct.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
                 btnChoose.fire();
@@ -139,17 +135,15 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
     }
 
     @Override
-    protected ProductVM getSelectedData() {
+    protected SearchProductsByFilterVM getSelectedData() {
         return tblProduct.getSelectionModel().getSelectedItem();
     }
 
     @Override
     protected void initServices(ApplicationContext ctx) {
-        configurationService = SpringUtils.getBean(ConfigurationService.class);
         productService = SpringUtils.getBean(ProductService.class);
     }
 
-    @SuppressWarnings("unchecked")
     private void searchProducts() {
         tblProduct.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tblProduct.setItems(FXCollections.observableArrayList());
@@ -159,7 +153,7 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
                         tblProduct.setPlaceholder(new Label(translate("lbl.nodata")));
                     }
                     tblProduct.setItems(FXCollections.observableList(products));
-                    tblProduct.getSortOrder().setAll(colName); // Always sort by name after searching
+                    TableViewUtils.sortAscending(tblProduct, colName);
                 }));
     }
 

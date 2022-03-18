@@ -10,5 +10,4 @@ public class SupplierFilterVM {
     private String email;
     private String website;
     private String address;
-    private String type;
 }

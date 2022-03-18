@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefHeight="400.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.product.ProductChooseController">
+<VBox fx:id="contentPane" prefHeight="400.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.product.ProductChooseController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -39,16 +39,17 @@
       </HBox>
       <TableView fx:id="tblProduct" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
          <columns>
-            <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl.code" />
             <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="300.0" text="%lbl.name" />
-            <TableColumn fx:id="colUnit" minWidth="-Infinity" prefWidth="100.0" text="%lbl.unit" />
             <TableColumn fx:id="colQuantity" minWidth="-Infinity" prefWidth="100.0" text="%lbl.quantity" />
+            <TableColumn fx:id="colUnit" minWidth="-Infinity" prefWidth="100.0" text="%lbl.unit" />
             <TableColumn fx:id="colCategory" minWidth="-Infinity" prefWidth="200.0" text="%lbl.category" />
-            <TableColumn fx:id="colPurchasePrice" minWidth="-Infinity" prefWidth="100.0" text="%lbl.purchaseprice" />
-            <TableColumn fx:id="colSellingPrice" minWidth="-Infinity" prefWidth="100.0" text="%lbl.sellingprice" />
-            <TableColumn fx:id="colExpiredDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl.expireddate" />
-            <TableColumn fx:id="colRack" minWidth="-Infinity" prefWidth="150.0" text="%lbl.rack" />
-            <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl.createdat" />
+            <TableColumn fx:id="colGeneralSellingPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_general_selling_price" />
+            <TableColumn fx:id="colPrescriptionSellingPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_prescription_selling_price" />
+            <TableColumn fx:id="colAverageBuyingPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_average_buying_price" />
+            <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl.code" />
+            <TableColumn fx:id="colBarcode" minWidth="-Infinity" prefWidth="150.0" text="%lbl.barcode" />
+            <TableColumn fx:id="colClosestExpiry" minWidth="-Infinity" prefWidth="150.0" text="%lbl_closest_expiry" />
+            <TableColumn fx:id="colStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_status" />
             <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl.updatedat" />
          </columns>
          <VBox.margin>

@@ -15,7 +15,7 @@ import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.Page;
 import pinus.desktop.service.ConfigurationService;
-import pinus.desktop.utility.SpringUtils;
+import pinus.desktop.util.SpringUtils;
 
 public class Pinus extends Application {
 

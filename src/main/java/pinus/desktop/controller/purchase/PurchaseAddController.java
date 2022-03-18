@@ -1,17 +1,18 @@
 package pinus.desktop.controller.purchase;
 
-import static com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.formatOrDefault;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toBigDecimalOrZero;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toIntegerOrNull;
+import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrEmpty;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.function.Predicate;
-import java.util.stream.IntStream;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
@@ -19,9 +20,13 @@ import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
+import com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -30,45 +35,45 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import pinus.desktop.constant.CommonConstants;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
-import pinus.desktop.constant.PaymentMethod;
-import pinus.desktop.constant.PaymentPeriodUnit;
+import pinus.desktop.constant.PaymentStatus;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.CommonDataSaveController;
 import pinus.desktop.service.PurchaseService;
-import pinus.desktop.utility.SpringUtils;
-import pinus.desktop.viewmodel.ProductVM;
-import pinus.desktop.viewmodel.PurchaseOrderVM;
-import pinus.desktop.viewmodel.PurchaseOrderVM.PurchaseProductVM;
+import pinus.desktop.util.ProductUtils;
+import pinus.desktop.util.SpringUtils;
+import pinus.desktop.viewmodel.ChooseResultVM;
+import pinus.desktop.viewmodel.PurchaseAddVM;
+import pinus.desktop.viewmodel.PurchaseAddVM.PurchaseProductVM;
+import pinus.desktop.viewmodel.SearchProductsByFilterVM;
 import pinus.desktop.viewmodel.SupplierVM;
 
 public class PurchaseAddController extends CommonDataSaveController {
 
     @FXML
-    private TextField tfOrderNumber;
+    private TextField tfSupplier;
 
     @FXML
-    private MaskedTextField tfOrderDate;
+    private Button btnNewSupplier;
 
     @FXML
-    private ComboBox<SimpleComboBoxModel> cbPaymentMethod;
+    private TextField tfInvoiceNumber;
 
     @FXML
-    private ComboBox<SimpleComboBoxModel> cbPeriodCount;
+    private MaskedTextField tfInvoiceDate;
 
     @FXML
-    private ComboBox<SimpleComboBoxModel> cbPeriodUnit;
+    private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
 
     @FXML
-    private TextField tfDueDate;
+    private VBox vboxDueDate;
 
     @FXML
-    private Label lblPeriod;
-
-    @FXML
-    private Label lblDueDate;
+    private MaskedTextField tfDueDate;
 
     @FXML
     private TextField tfDiscount;
@@ -77,52 +82,40 @@ public class PurchaseAddController extends CommonDataSaveController {
     private TextField tfTax;
 
     @FXML
-    private TextField tfSupplierName;
+    private TextField tfProduct;
 
     @FXML
-    private TextField tfSupplierCode;
-
-    @FXML
-    private TextField tfSupplierPhone;
-
-    @FXML
-    private TextField tfSupplierEmail;
-
-    @FXML
-    private TextField tfSupplierAddress;
-
-    @FXML
-    private TextField tfSupplierWebsite;
-
-    @FXML
-    private Button btnNewSupplier;
-
-    @FXML
-    private TextField tfProductName;
-
-    @FXML
-    private TextField tfProductCode;
-
-    @FXML
-    private TextField tfProductBarcode;
+    private Button btnNewProduct;
 
     @FXML
     private TextField tfProductCategory;
 
     @FXML
-    private TextField tfProductQuantity;
+    private VBox vboxUnit;
 
     @FXML
     private TextField tfProductUnit;
 
     @FXML
-    private TextField tfPurchasePrice;
+    private TextField tfProductQuantity;
 
     @FXML
-    private TextField tfSellingPrice;
+    private TextField tfBuyingPrice;
 
     @FXML
-    private Button btnNewProduct;
+    private TextField tfGeneralSellingPrice;
+
+    @FXML
+    private VBox vboxPrescriptionSellingPrice;
+
+    @FXML
+    private TextField tfPrescriptionSellingPrice;
+
+    @FXML
+    private TextField tfBatchNumber;
+
+    @FXML
+    private MaskedTextField tfExpiredDate;
 
     @FXML
     private Button btnAddProduct;
@@ -137,28 +130,34 @@ public class PurchaseAddController extends CommonDataSaveController {
     private TableColumn<PurchaseProductVM, String> colProductCategory;
 
     @FXML
-    private TableColumn<PurchaseProductVM, Integer> colQuantity;
-
-    @FXML
     private TableColumn<PurchaseProductVM, String> colUnit;
 
     @FXML
-    private TableColumn<PurchaseProductVM, BigDecimal> colPurchasePrice;
+    private TableColumn<PurchaseProductVM, Integer> colQuantity;
+
+    @FXML
+    private TableColumn<PurchaseProductVM, BigDecimal> colBuyingPrice;
 
     @FXML
     private TableColumn<PurchaseProductVM, BigDecimal> colSubtotal;
 
     @FXML
-    private TableColumn<PurchaseProductVM, BigDecimal> colSellingPrice;
+    private TableColumn<PurchaseProductVM, BigDecimal> colGeneralSellingPrice;
 
     @FXML
-    private Label lblCurrencySymbol;
+    private TableColumn<PurchaseProductVM, BigDecimal> colPrescriptionSellingPrice;
 
     @FXML
-    private Label lblTotalPurchase;
+    private TableColumn<PurchaseProductVM, String> colBactchNumber;
+
+    @FXML
+    private TableColumn<PurchaseProductVM, LocalDate> colExpiredDate;
 
     @FXML
     private Label lblTotalProduct;
+
+    @FXML
+    private Label lblTotalPurchase;
 
     @FXML
     private Label lblDiscount;
@@ -172,48 +171,15 @@ public class PurchaseAddController extends CommonDataSaveController {
     @FXML
     private Button btnSaveAndAdd;
 
+    private SearchProductsByFilterVM selectedProduct;
     private SupplierVM selectedSupplier;
-    private ProductVM selectedProduct;
-    private Integer totalProduct = 0;
-    private BigDecimal totalPurchase = BigDecimal.ZERO;
-    private BigDecimal totalPayment = BigDecimal.ZERO;
-    private BigDecimal discount = BigDecimal.ZERO;
-    private BigDecimal tax = BigDecimal.ZERO;
+    private Integer totalProduct;
+    private BigDecimal totalPurchase;
+    private BigDecimal totalPayment;
+    private BigDecimal discount;
+    private BigDecimal tax;
 
     private PurchaseService purchaseService;
-
-    @FXML
-    void onActionBtnSaveAndAdd(ActionEvent event) {
-        processDataSave();
-        if (isLastDataSaved()) {
-            displayInfo(MessageCode.SUCCESS_ADD_PURCHASE);
-            resetControls();
-        }
-    }
-
-    @FXML
-    void onActionBtnAddProduct(ActionEvent event) {
-        BigDecimal purchasePrice = toBigDecimalOrZero(tfPurchasePrice.getText());
-        Integer purchaseQuantity = toIntegerOrZero(tfProductQuantity.getText());
-        BigDecimal sellingPrice = toBigDecimalOrNull(tfSellingPrice.getText());
-        if (isValidProductValues(purchaseQuantity, purchasePrice, sellingPrice)) {
-            BigDecimal subtotalPurchase = purchasePrice.multiply(new BigDecimal(purchaseQuantity));
-            PurchaseProductVM purchaseProduct = new PurchaseProductVM();
-            purchaseProduct.setProduct(selectedProduct);
-            purchaseProduct.setPurchasePrice(purchasePrice);
-            purchaseProduct.setPurchaseQuantity(purchaseQuantity);
-            purchaseProduct.setSellingPrice(toBigDecimalOrNull(tfSellingPrice.getText()));
-            purchaseProduct.setSubtotalPurchase(subtotalPurchase);
-            int indexProduct = getProductIndexInTable(selectedProduct, tblPurchaseProduct);
-            if (indexProduct != -1) {
-                tblPurchaseProduct.getItems().remove(indexProduct);
-            }
-            tblPurchaseProduct.getItems().add(purchaseProduct);
-            this.selectedProduct = null;
-            setSelectedProduct(null);
-            calculatePurchase();
-        }
-    }
 
     @FXML
     void onActionBtnNewProduct(ActionEvent event) {
@@ -234,15 +200,183 @@ public class PurchaseAddController extends CommonDataSaveController {
     }
 
     @FXML
-    void onActionBtnRemoveProduct(ActionEvent event) {
-        PurchaseProductVM selected = tblPurchaseProduct.getSelectionModel().getSelectedItem();
-        if (selected != null) {
-            tblPurchaseProduct.getItems().remove(selected);
-            totalProduct = totalProduct - selected.getPurchaseQuantity();
-            totalPayment = totalPayment.subtract(selected.getSubtotalPurchase());
-            lblTotalPurchase.setText(toStringOrDefault(totalPayment, "0"));
-            lblTotalProduct.setText(toStringOrDefault(totalProduct, "0"));
+    void onActionBtnAddProduct(ActionEvent event) {
+        boolean isProductSelected = selectedProduct != null;
+        boolean isProductCategoryDrugs = isProductSelected
+                && ProductUtils.isProductCategoryDrugs(selectedProduct.getCategoryCode());
+        ControlValidator cv = new ControlValidator(resources);
+        cv.validateCustom(() -> !isProductSelected, MessageCode.ERROR_EMPTY_PRODUCT);
+        cv.validatePositive(tfProductQuantity, MessageCode.ERROR_INVALID_QUANTITY);
+        cv.validatePositive(tfBuyingPrice, MessageCode.ERROR_INVALID_BUYING_PRICE);
+        if (StringUtils.isNotBlank(tfGeneralSellingPrice.getText())) {
+            cv.validatePositive(tfGeneralSellingPrice, MessageCode.ERROR_INVALID_GENERAL_SELLING_PRICE);
         }
+        if (StringUtils.isNotBlank(tfPrescriptionSellingPrice.getText()) && isProductCategoryDrugs) {
+            cv.validatePositive(tfPrescriptionSellingPrice, MessageCode.ERROR_INVALID_PRESCRIPTION_SELLING_PRICE);
+        }
+        LocalDate expiredDate = DateTimeUtils
+                .parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        cv.validateCustom(
+                () -> StringUtils.isNotBlank(tfExpiredDate.getPlainText()) && expiredDate == null,
+                MessageCode.ERROR_INVALID_EXPIRED_DATE);
+        ValidationResult validationResult = cv.getResult();
+        if (!validationResult.isValid()) {
+            displayError(validationResult.getMessages());
+            return;
+        }
+        Integer quantity = toIntegerOrNull(tfProductQuantity.getText());
+        BigDecimal buyingPrice = toBigDecimalOrNull(tfBuyingPrice.getText());
+        BigDecimal generalSellingPrice = toBigDecimalOrNull(tfGeneralSellingPrice.getText());
+        PurchaseProductVM purchaseProduct = new PurchaseProductVM();
+        purchaseProduct.setProduct(selectedProduct);
+        purchaseProduct.setQuantity(quantity);
+        purchaseProduct.setBuyingPrice(buyingPrice);
+        purchaseProduct.setSubtotal(buyingPrice.multiply(BigDecimal.valueOf(quantity)));
+        purchaseProduct.setGeneralSellingPrice(generalSellingPrice);
+        if (isProductCategoryDrugs) {
+            BigDecimal prescriptionSellingPrice = toBigDecimalOrNull(tfPrescriptionSellingPrice.getText());
+            purchaseProduct.setPrescriptionSellingPrice(prescriptionSellingPrice);
+        }
+        purchaseProduct.setBatchNumber(tfBatchNumber.getText());
+        purchaseProduct.setExpiredDate(expiredDate);
+        int idx = getProductIndexInTable(selectedProduct, tblPurchaseProduct);
+        if (idx != -1) {
+            tblPurchaseProduct.getItems().remove(idx);
+        }
+        tblPurchaseProduct.getItems().add(purchaseProduct);
+        selectedProduct = null;
+        TextFieldUtils.setTextEmpty(
+                tfProduct,
+                tfProductCategory,
+                tfProductUnit,
+                tfProductQuantity,
+                tfBuyingPrice,
+                tfGeneralSellingPrice,
+                tfPrescriptionSellingPrice,
+                tfBatchNumber);
+        tfExpiredDate.setPlainText("");
+        calculatePurchaseSummary();
+    }
+
+    @FXML
+    void onActionBtnSaveAndAdd(ActionEvent event) {
+        processDataSave();
+        if (isLastDataSaved()) {
+            displayInfo(MessageCode.SUCCESS_ADD_PURCHASE);
+            resetControls();
+        }
+    }
+
+    @Override
+    protected void initDataSaveControlActions() {
+        setFocusedToContentPane();
+        ComboBoxUtils.initSimple(
+                cbPaymentStatus,
+                new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate(CommonLabel.LBL_UNPAID)));
+        Locale locale = resources.getLocale();
+        TextFieldUtils.setDigitTextFields(
+                tfDiscount,
+                tfTax,
+                tfBuyingPrice,
+                tfGeneralSellingPrice,
+                tfPrescriptionSellingPrice,
+                tfProductQuantity);
+        TableViewUtils.setColumnValue(colProductName, purchaseProduct -> purchaseProduct.getProduct().getName());
+        TableViewUtils.setColumnValue(colUnit, purchaseProduct -> purchaseProduct.getProduct().getUnitLabel());
+        TableViewUtils.setColumnValue(colBactchNumber, PurchaseProductVM::getBatchNumber);
+        TableViewUtils
+                .setColumnValue(colProductCategory, purchaseProduct -> purchaseProduct.getProduct().getCategoryName());
+        TableViewUtils.initTableColumn(
+                colBuyingPrice,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getBuyingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colQuantity,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getQuantity,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colSubtotal,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getSubtotal,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colGeneralSellingPrice,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getGeneralSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colPrescriptionSellingPrice,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getPrescriptionSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colExpiredDate,
+                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
+                PurchaseProductVM::getExpiredDate);
+        setProductChooser(tfProduct, this::handleSelectedProduct, tfProductQuantity);
+        setSupplierChooser(tfSupplier, this::handleSelectedSupplier, tfInvoiceNumber);
+        TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchaseSummary(), tfDiscount, tfTax);
+        ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
+            PaymentStatus status = PaymentStatus.valueOf(nv.getValue());
+            boolean isPaid = PaymentStatus.PAID.equals(status);
+            if (isPaid) {
+                tfDueDate.setPlainText("");
+            }
+            vboxDueDate.setDisable(isPaid);
+        });
+    }
+
+    @Override
+    protected void initDataSaveControlValues() {
+        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
+
+    }
+
+    @Override
+    protected Object save() {
+        PurchaseAddVM purchase = new PurchaseAddVM();
+        purchase.setSupplierId(selectedSupplier.getId());
+        purchase.setInvoiceNumber(tfInvoiceNumber.getText().trim());
+        purchase.setInvoiceDate(
+                DateTimeUtils.parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        PaymentStatus paymentStatus = PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue());
+        purchase.setPaymentStatus(paymentStatus);
+        if (PaymentStatus.UNPAID.equals(paymentStatus)) {
+            purchase.setPaymentDueDate(
+                    DateTimeUtils.parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        }
+        purchase.setDiscount(toBigDecimalOrNull(tfDiscount.getText()));
+        purchase.setTax(toBigDecimalOrNull(tfTax.getText()));
+        purchase.setTotalPayment(totalPayment);
+        purchase.setTotalProduct(totalProduct);
+        purchase.setTotalPurchase(totalPurchase);
+        purchase.setPurchaseProducts(tblPurchaseProduct.getItems());
+        purchaseService.createPurchase(purchase);
+        return true;
+    }
+
+    @Override
+    protected void validate(ControlValidator validator) {
+        validator.validateBlank(tfSupplier, MessageCode.ERROR_EMPTY_SUPPLIER);
+        validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
+        validator.validateCustom(() -> {
+            LocalDate invoiceDate = DateTimeUtils
+                    .parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+            return invoiceDate == null;
+        }, MessageCode.ERROR_INVALID_INVOICE_DATE);
+        validator.validateCustom(() -> {
+            SimpleComboBoxModel selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
+            if (PaymentStatus.UNPAID.name().equals(selected.getValue())) {
+                LocalDate dueDate = DateTimeUtils
+                        .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+                return dueDate == null;
+            }
+            return false;
+        }, MessageCode.ERROR_INVALID_DUE_DATE);
+        validator.validateCustom(() -> tblPurchaseProduct.getItems().isEmpty(), MessageCode.ERROR_EMPTY_PRODUCT);
     }
 
     @Override
@@ -250,236 +384,88 @@ public class PurchaseAddController extends CommonDataSaveController {
         purchaseService = SpringUtils.getBean(PurchaseService.class);
     }
 
-    @Override
-    protected void initDataSaveControlActions() {
-        Locale locale = resources.getLocale();
-        TextFieldUtils.onTextChanged((ov, nv) -> calculateDueDate(), tfOrderDate);
-        ComboBoxUtils.initSimple(
-                cbPaymentMethod,
-                new SimpleComboBoxModel(PaymentMethod.CASH.name(), translate("lbl.cash")),
-                new SimpleComboBoxModel(PaymentMethod.CREDIT.name(), translate("lbl.credit")));
-        ComboBoxUtils.initSimple(
-                cbPeriodUnit,
-                new SimpleComboBoxModel(PaymentPeriodUnit.DAY.name(), translate("lbl.day")),
-                new SimpleComboBoxModel(PaymentPeriodUnit.WEEK.name(), translate("lbl.week")),
-                new SimpleComboBoxModel(PaymentPeriodUnit.MONTH.name(), translate("lbl.month")));
-        List<SimpleComboBoxModel> periodCountModels = new ArrayList<>();
-        IntStream.rangeClosed(1, 30).forEach(num -> {
-            String str = String.valueOf(num);
-            periodCountModels.add(new SimpleComboBoxModel(str, str));
-        });
-        ComboBoxUtils.initSimple(
-                cbPeriodCount,
-                periodCountModels.toArray(new SimpleComboBoxModel[periodCountModels.size()]));
-        ComboBoxUtils.selectIndex(cbPaymentMethod, 0);
-        ComboBoxUtils.selectIndex(cbPeriodUnit, 0);
-        ComboBoxUtils.selectIndex(cbPeriodCount, 0);
-        ComboBoxUtils.onSelectedItemChanged(cbPaymentMethod, (ov, nv) -> {
-            PaymentMethod pm = PaymentMethod.valueOf(nv.getValue());
-            boolean isCreditPayment = PaymentMethod.CREDIT.equals(pm);
-            togglePaymentPeriodControls(!isCreditPayment);
-            if (isCreditPayment) {
-                calculateDueDate();
-            }
-        });
-        ComboBoxUtils.onSelectedItemChanged(cbPeriodCount, (ov, nv) -> calculateDueDate());
-        ComboBoxUtils.onSelectedItemChanged(cbPeriodUnit, (ov, nv) -> calculateDueDate());
-        tfSupplierName.focusedProperty().addListener((o, ov, nv) -> {
-            if (Boolean.TRUE.equals(nv)) {
-                StageUtils.modal(Page.MASTER_SUPPLIER_CHOOSE, false, we -> setSelectedSupplier(getPageData()));
-                setFocused(btnNewSupplier);
-            }
-        });
-        tfProductName.focusedProperty().addListener((o, ov, nv) -> {
-            if (Boolean.TRUE.equals(nv)) {
-                StageUtils.modal(Page.MASTER_PRODUCT_CHOOSE, false, we -> setSelectedProduct(getPageData()));
-                setFocused(tfProductQuantity);
-            }
-        });
-        TextFieldUtils.setDigitTextFields(tfDiscount, tfTax, tfSellingPrice, tfPurchasePrice, tfProductQuantity);
-        TableViewUtils.setColumnValue(colProductName, purchaseProduct -> purchaseProduct.getProduct().getName());
-        TableViewUtils.setColumnValue(colUnit, purchaseProduct -> purchaseProduct.getProduct().getUnitLabel());
-        TableViewUtils
-                .setColumnValue(colProductCategory, purchaseProduct -> purchaseProduct.getProduct().getCategoryName());
-        TableViewUtils.initTableColumn(
-                colPurchasePrice,
-                new NumberCellFactory<>(locale),
-                PurchaseProductVM::getPurchasePrice,
-                StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colQuantity,
-                new NumberCellFactory<>(locale),
-                PurchaseProductVM::getPurchaseQuantity,
-                StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colSubtotal,
-                new NumberCellFactory<>(locale),
-                PurchaseProductVM::getSubtotalPurchase,
-                StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colSellingPrice,
-                new NumberCellFactory<>(locale),
-                PurchaseProductVM::getSellingPrice,
-                StyleConstants.ALIGN_RIGHT);
-        TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchase(), tfTax, tfDiscount);
-    }
-
-    @Override
-    protected void initDataSaveControlValues() {
-        calculateDueDate();
-    }
-
-    @Override
-    protected void validate(ControlValidator validator) {
-        // TODO Auto-generated method stub
-    }
-
-    @Override
-    protected Object save() {
-        PaymentMethod paymentMethod = PaymentMethod.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentMethod).getValue());
-        PurchaseOrderVM po = new PurchaseOrderVM();
-        po.setOrderNumber(tfOrderNumber.getText().trim());
-        po.setOrderDate(
-                LocalDate.parse(
-                        tfOrderDate.getText(),
-                        DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
-        po.setSupplierId(selectedSupplier.getId());
-        po.setPaymentMethod(paymentMethod);
-        if (PaymentMethod.CREDIT.equals(paymentMethod)) {
-            po.setPaymentPeriodCount(Integer.valueOf(ComboBoxUtils.getSelectedItem(cbPeriodCount).getValue()));
-            po.setPaymentPeriodUnit(PaymentPeriodUnit.valueOf(ComboBoxUtils.getSelectedItem(cbPeriodUnit).getValue()));
-            po.setDueDate(
-                    LocalDate.parse(
-                            tfDueDate.getText(),
-                            DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
-        }
-        po.setTotalProduct(totalProduct);
-        po.setTotalPayment(totalPayment);
-        po.setPurchaseProducts(tblPurchaseProduct.getItems());
-        po.setDiscount(discount);
-        po.setTax(tax);
-        po.setTotalPurchase(totalPurchase);
-        return purchaseService.createPurchase(po);
-    }
-
-    private void togglePaymentPeriodControls(boolean disable) {
-        lblPeriod.disableProperty().set(disable);
-        lblDueDate.disableProperty().set(disable);
-        cbPeriodCount.disableProperty().set(disable);
-        cbPeriodUnit.disableProperty().set(disable);
-        tfDueDate.disableProperty().set(disable);
-    }
-
-    private void calculateDueDate() {
-        LocalDate orderDate = parseLocalDateQuietly(tfOrderDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-        if (orderDate == null) {
-            tfDueDate.setText(null);
+    public void handleSelectedProduct(ChooseResultVM<SearchProductsByFilterVM> result) {
+        if (result == null || result.isCancelled()) {
             return;
         }
-        Integer periodCount = Integer.valueOf(ComboBoxUtils.getSelectedItem(cbPeriodCount).getValue());
-        PaymentPeriodUnit periodUnit = PaymentPeriodUnit
-                .valueOf(ComboBoxUtils.getSelectedItem(cbPeriodUnit).getValue());
-        LocalDate dueDate = null;
-        switch (periodUnit) {
-            case DAY:
-                dueDate = orderDate.plusDays(periodCount);
-                break;
-            case WEEK:
-                dueDate = orderDate.plusWeeks(periodCount);
-                break;
-            case MONTH:
-                dueDate = orderDate.plusMonths(periodCount);
-                break;
-        }
-        tfDueDate.setText(
-                dueDate == null ?
-                        null : dueDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        vboxPrescriptionSellingPrice.setDisable(true);
+        result.getData().ifPresentOrElse(product -> {
+            selectedProduct = product;
+            tfProduct.setText(product.getName());
+            tfProductCategory.setText(product.getCategoryName());
+            tfProductUnit.setText(product.getUnitLabel());
+            tfGeneralSellingPrice.setText(toStringOrEmpty(product.getGeneralSellingPrice()));
+            tfPrescriptionSellingPrice.setText(toStringOrEmpty(product.getPrescriptionSellingPrice()));
+            if (ProductUtils.isProductCategoryDrugs(product.getCategoryCode())) {
+                vboxPrescriptionSellingPrice.setDisable(false);
+            }
+        }, () -> {
+            selectedProduct = null;
+            tfProduct.setText("");
+            tfProductCategory.setText("");
+            tfProductUnit.setText("");
+            tfGeneralSellingPrice.setText("");
+            tfPrescriptionSellingPrice.setText("");
+        });
     }
 
-    private void setSelectedSupplier(SupplierVM vm) {
-        if (vm != null) {
-            this.selectedSupplier = vm;
-            tfSupplierName.setText(vm.getName());
-            tfSupplierCode.setText(vm.getCode());
-            tfSupplierEmail.setText(vm.getEmail());
-            tfSupplierPhone.setText(vm.getPhone());
-            tfSupplierAddress.setText(vm.getAddress());
-            tfSupplierWebsite.setText(vm.getWebsite());
-        } else if (selectedSupplier == null) {
-            TextFieldUtils.setTextEmpty(
-                    tfSupplierName,
-                    tfSupplierCode,
-                    tfSupplierEmail,
-                    tfSupplierPhone,
-                    tfSupplierAddress,
-                    tfSupplierWebsite);
+    public void handleSelectedSupplier(ChooseResultVM<SupplierVM> result) {
+        if (result == null || result.isCancelled()) {
+            return;
         }
+        result.getData().ifPresentOrElse(supplier -> {
+            selectedSupplier = supplier;
+            tfSupplier.setText(supplier.getName());
+        }, () -> {
+            selectedSupplier = null;
+            tfSupplier.setText("");
+        });
     }
 
-    private void setSelectedProduct(ProductVM vm) {
-        if (vm != null) {
-            this.selectedProduct = vm;
-            tfProductName.setText(vm.getName());
-            tfProductBarcode.setText(vm.getBarcode());
-            tfProductCategory.setText(vm.getCategoryName());
-            tfProductCode.setText(vm.getCode());
-            tfProductUnit.setText(vm.getUnitLabel());
-            tfSellingPrice.setText(toStringOrNull(vm.getSellingPrice()));
-            tfPurchasePrice.setText(toStringOrNull(vm.getPurchasePrice()));
-        } else if (selectedProduct == null) {
-            TextFieldUtils.setTextEmpty(
-                    tfProductName,
-                    tfProductBarcode,
-                    tfProductCategory,
-                    tfProductCode,
-                    tfProductUnit,
-                    tfSellingPrice,
-                    tfPurchasePrice,
-                    tfProductQuantity);
-        }
+    private int getProductIndexInTable(SearchProductsByFilterVM product, TableView<PurchaseProductVM> table) {
+        Predicate<PurchaseProductVM> productExists = item -> item.getProduct().equals(product);
+        return TableViewUtils.getItemIndex(productExists, table);
+    }
+
+    private void calculatePurchaseSummary() {
+        Locale locale = resources.getLocale();
+        ObservableList<PurchaseProductVM> items = tblPurchaseProduct.getItems();
+        totalProduct = items.stream().map(PurchaseProductVM::getQuantity).reduce(0, Integer::sum);
+        totalPurchase = items.stream().map(PurchaseProductVM::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
+        discount = toBigDecimalOrZero(tfDiscount.getText());
+        tax = toBigDecimalOrZero(tfTax.getText());
+        totalPayment = totalPurchase.add(tax).subtract(discount);
+        lblDiscount.setText(formatOrDefault(discount, locale, "0"));
+        lblTax.setText(formatOrDefault(tax, locale, "0"));
+        lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
+        lblTotalPurchase.setText(formatOrDefault(totalPurchase, locale, "0"));
+        lblTotalPayment.setText(formatOrDefault(totalPayment, locale, "0"));
     }
 
     private void resetControls() {
         this.selectedSupplier = null;
         this.selectedProduct = null;
-        setSelectedProduct(null);
-        setSelectedSupplier(null);
-        ComboBoxUtils.selectIndex(cbPaymentMethod, 0);
-        ComboBoxUtils.selectIndex(cbPeriodCount, 0);
-        ComboBoxUtils.selectIndex(cbPeriodUnit, 0);
-        TextFieldUtils.setTextEmpty(tfOrderNumber, tfDueDate);
-        tfOrderDate.setPlainText("");
+        TextFieldUtils.setTextEmpty(
+                tfSupplier,
+                tfInvoiceNumber,
+                tfDiscount,
+                tfTax,
+                tfProduct,
+                tfProductCategory,
+                tfProductUnit,
+                tfProductQuantity,
+                tfBuyingPrice,
+                tfGeneralSellingPrice,
+                tfPrescriptionSellingPrice);
+        tfInvoiceDate.setPlainText("");
+        tfDueDate.setPlainText("");
+        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         tblPurchaseProduct.getItems().clear();
+        lblDiscount.setText("0");
+        lblTax.setText("0");
         lblTotalProduct.setText("0");
         lblTotalPurchase.setText("0");
-    }
-
-    private int getProductIndexInTable(ProductVM product, TableView<PurchaseProductVM> table) {
-        Predicate<PurchaseProductVM> productExists = item -> item.getProduct().equals(product);
-        return TableViewUtils.getItemIndex(productExists, table);
-    }
-
-    private boolean isValidProductValues(Integer purchaseQuantity, BigDecimal purchasePrice, BigDecimal sellingPrice) {
-        return selectedProduct != null && purchasePrice.compareTo(BigDecimal.ZERO) > 0 && purchaseQuantity > 0
-                && (sellingPrice == null || sellingPrice.compareTo(BigDecimal.ZERO) > 0);
-    }
-
-    private void calculatePurchase() {
-        tax = toBigDecimalOrZero(tfTax.getText());
-        discount = toBigDecimalOrZero(tfDiscount.getText());
-        totalPurchase = BigDecimal.ZERO;
-        totalPayment = BigDecimal.ZERO;
-        totalProduct = 0;
-        tblPurchaseProduct.getItems().forEach(item -> {
-            totalProduct = totalProduct + item.getPurchaseQuantity();
-            totalPurchase = totalPurchase.add(item.getSubtotalPurchase());
-        });
-        totalPayment = totalPurchase.subtract(discount).add(tax);
-        lblTotalPurchase.setText(formatNumber(totalPurchase));
-        lblTotalPayment.setText(formatNumber(totalPayment));
-        lblTotalProduct.setText(formatNumber(totalProduct));
-        lblTax.setText(formatNumber(tax));
-        lblDiscount.setText(formatNumber(discount));
+        lblTotalPayment.setText("0");
     }
 
 }

@@ -17,6 +17,7 @@ public class SearchProductsByFilterVM {
     private String unitLabel;
     private Long categoryId;
     private String categoryName;
+    private String categoryCode;
     private Integer quantity;
     private BigDecimal generalSellingPrice;
     private BigDecimal prescriptionSellingPrice;

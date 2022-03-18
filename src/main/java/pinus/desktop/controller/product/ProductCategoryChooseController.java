@@ -4,7 +4,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
@@ -62,21 +61,16 @@ public class ProductCategoryChooseController extends CommonDataChooseController<
         productCategoryService = ctx.getBean(ProductCategoryService.class);
     }
 
-    @SuppressWarnings("unchecked")
     private void searchProductCategories() {
-        String keyword = tfSearch.getText();
-        if (StringUtils.isBlank(keyword)) {
-            return;
-        }
         tblProductCategory.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tblProductCategory.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> productCategoryService.searchProductCategoryByKeyword(keyword))
+        AsyncUtils.supply(() -> productCategoryService.searchProductCategoryByKeyword(tfSearch.getText()))
                 .thenAccept(categories -> Platform.runLater(() -> {
                     if (categories.isEmpty()) {
                         tblProductCategory.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblProductCategory.setItems(FXCollections.observableList(categories));
-                    tblProductCategory.getSortOrder().setAll(colName); // Always sort by name after searching
+                    TableViewUtils.sortAscending(tblProductCategory, colName);
                 }));
     }
 

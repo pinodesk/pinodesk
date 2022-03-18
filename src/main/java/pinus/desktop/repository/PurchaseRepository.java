@@ -12,5 +12,5 @@ public interface PurchaseRepository extends CommonRepository<Purchase> {
 
     List<PurchaseVM> filter(PurchaseFilterVM filter);
 
-    boolean existsByOrderNumberAndSupplierId(String orderNumber, Long supplierId);
+    boolean existsByInvoiceNumberAndSupplierId(String orderNumber, Long supplierId);
 }

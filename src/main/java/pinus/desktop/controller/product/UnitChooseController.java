@@ -4,7 +4,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
@@ -58,21 +57,17 @@ public class UnitChooseController extends CommonDataChooseController<UnitVM> {
         unitService = ctx.getBean(UnitService.class);
     }
 
-    @SuppressWarnings("unchecked")
     private void searchProductCategories() {
-        String keyword = tfSearch.getText();
-        if (StringUtils.isBlank(keyword)) {
-            return;
-        }
         tblUnit.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tblUnit.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> unitService.searchUnitByKeyword(keyword)).thenAccept(units -> Platform.runLater(() -> {
-            if (units.isEmpty()) {
-                tblUnit.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
-            }
-            tblUnit.setItems(FXCollections.observableList(units));
-            tblUnit.getSortOrder().setAll(colName); // Always sort by name after searching
-        }));
+        AsyncUtils.supply(() -> unitService.searchUnitByKeyword(tfSearch.getText()))
+                .thenAccept(units -> Platform.runLater(() -> {
+                    if (units.isEmpty()) {
+                        tblUnit.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                    }
+                    tblUnit.setItems(FXCollections.observableList(units));
+                    TableViewUtils.sortAscending(tblUnit, colName);
+                }));
     }
 
     private void registerKeyListener() {

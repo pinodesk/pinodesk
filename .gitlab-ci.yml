@@ -26,7 +26,7 @@ cache:
 
 build:
   stage: build
-  script: ./mvnw $MAVEN_CLI_OPTS spotless:check test-compile -U 
+  script: ./mvnw $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U 
   allow_failure: false
 
 test:

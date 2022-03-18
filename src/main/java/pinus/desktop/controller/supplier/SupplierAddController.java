@@ -3,8 +3,6 @@ package pinus.desktop.controller.supplier;
 import java.util.List;
 
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
-import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
-import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
@@ -17,7 +15,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -25,7 +22,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
-import pinus.desktop.constant.SupplierType;
 import pinus.desktop.controller.CommonDataSaveController;
 import pinus.desktop.service.SupplierService;
 import pinus.desktop.viewmodel.SupplierAddVM;
@@ -56,9 +52,6 @@ public class SupplierAddController extends CommonDataSaveController {
 
     @FXML
     private Button btnAddContact;
-
-    @FXML
-    private ComboBox<SimpleComboBoxModel> cbType;
 
     @FXML
     private TableView<SupplierContactAddVM> tblSupplierContact;
@@ -118,11 +111,6 @@ public class SupplierAddController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colPhone, SupplierContactAddVM::getPhone);
         TableViewUtils.setColumnValue(colEmail, SupplierContactAddVM::getEmail);
         TextFieldUtils.setDigitTextFields(tfPhone);
-        ComboBoxUtils.initSimple(
-                cbType,
-                new SimpleComboBoxModel(SupplierType.WHOLESALER.name(), translate("lbl.wholesaler")),
-                new SimpleComboBoxModel(SupplierType.RETAILER.name(), translate("lbl.retailer")));
-        ComboBoxUtils.selectIndex(cbType, 0);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyConstants.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();
@@ -151,7 +139,6 @@ public class SupplierAddController extends CommonDataSaveController {
         supplier.setEmail(tfEmail.getText());
         supplier.setAddress(tfAddress.getText());
         supplier.setWebsite(tfWebsite.getText());
-        supplier.setType(ComboBoxUtils.getSelectedItem(cbType).getValue());
         return supplierService.createSupplier(supplier, tblSupplierContact.getItems());
     }
 

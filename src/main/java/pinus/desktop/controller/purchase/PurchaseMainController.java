@@ -37,7 +37,7 @@ import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.service.ConfigurationService;
 import pinus.desktop.service.PurchaseService;
-import pinus.desktop.utility.SpringUtils;
+import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.PurchaseFilterVM;
 import pinus.desktop.viewmodel.PurchaseVM;
 
