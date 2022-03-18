@@ -8,7 +8,9 @@ import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toString
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
@@ -17,6 +19,7 @@ import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
+import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
@@ -32,6 +35,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -200,6 +204,13 @@ public class PurchaseAddController extends CommonDataSaveController {
     }
 
     @FXML
+    void onActionBtnRemoveProduct(ActionEvent event) {
+        if (TableViewUtils.hasItemSelected(tblPurchaseProduct)) {
+            tblPurchaseProduct.getItems().remove(TableViewUtils.getSelectedItem(tblPurchaseProduct));
+        }
+    }
+
+    @FXML
     void onActionBtnAddProduct(ActionEvent event) {
         boolean isProductSelected = selectedProduct != null;
         boolean isProductCategoryDrugs = isProductSelected
@@ -316,6 +327,12 @@ public class PurchaseAddController extends CommonDataSaveController {
                 colExpiredDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PurchaseProductVM::getExpiredDate);
+        tblPurchaseProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tblPurchaseProduct.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                handleActionTablePurchaseProduct();
+            }
+        });
         setProductChooser(tfProduct, this::handleSelectedProduct, tfProductQuantity);
         setSupplierChooser(tfSupplier, this::handleSelectedSupplier, tfInvoiceNumber);
         TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchaseSummary(), tfDiscount, tfTax);
@@ -348,8 +365,8 @@ public class PurchaseAddController extends CommonDataSaveController {
             purchase.setPaymentDueDate(
                     DateTimeUtils.parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         }
-        purchase.setDiscount(toBigDecimalOrNull(tfDiscount.getText()));
-        purchase.setTax(toBigDecimalOrNull(tfTax.getText()));
+        purchase.setDiscount(discount);
+        purchase.setTax(tax);
         purchase.setTotalPayment(totalPayment);
         purchase.setTotalProduct(totalProduct);
         purchase.setTotalPurchase(totalPurchase);
@@ -467,6 +484,21 @@ public class PurchaseAddController extends CommonDataSaveController {
         lblTotalProduct.setText("0");
         lblTotalPurchase.setText("0");
         lblTotalPayment.setText("0");
+    }
+
+    private void handleActionTablePurchaseProduct() {
+        if (TableViewUtils.hasItemSelected(tblPurchaseProduct)) {
+            PurchaseProductVM selected = TableViewUtils.getSelectedItem(tblPurchaseProduct);
+            handleSelectedProduct(new ChooseResultVM<>(false, Optional.of(selected.getProduct())));
+            tfProductQuantity.setText(toStringOrEmpty(selected.getQuantity()));
+            tfBuyingPrice.setText(toStringOrEmpty(selected.getBuyingPrice()));
+            tfBatchNumber.setText(selected.getBatchNumber());
+            tfExpiredDate.setPlainText("");
+            if (selected.getExpiredDate() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
+                tfExpiredDate.setText(formatter.format(selected.getExpiredDate()));
+            }
+        }
     }
 
 }
