@@ -1,7 +1,6 @@
 package pinus.desktop.controller.supplier;
 
 import java.time.LocalDateTime;
-import java.util.stream.Collectors;
 
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
@@ -26,7 +25,6 @@ import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
-import pinus.desktop.constant.SupplierType;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.service.SupplierService;
 import pinus.desktop.viewmodel.SupplierFilterVM;
@@ -65,12 +63,6 @@ public class SupplierMainController extends BaseController {
     private TableColumn<SupplierVM, String> colWebsite;
 
     @FXML
-    private TableColumn<SupplierVM, String> colType;
-
-    @FXML
-    private TableColumn<SupplierVM, LocalDateTime> colCreatedAt;
-
-    @FXML
     private TableColumn<SupplierVM, LocalDateTime> colUpdatedAt;
 
     @FXML
@@ -104,7 +96,7 @@ public class SupplierMainController extends BaseController {
         if (!items.isEmpty()) {
             AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_SUPPLIERS);
             if (result.isConfirmed()) {
-                supplierService.removeSuppliers(items.stream().map(SupplierVM::getId).collect(Collectors.toList()));
+                supplierService.removeSuppliers(items.stream().map(SupplierVM::getId).toList());
                 displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_SUPPLIERS);
                 searchSuppliers();
             }
@@ -124,14 +116,6 @@ public class SupplierMainController extends BaseController {
         TableViewUtils.setColumnValue(colEmail, SupplierVM::getEmail);
         TableViewUtils.setColumnValue(colAddress, SupplierVM::getAddress);
         TableViewUtils.setColumnValue(colWebsite, SupplierVM::getWebsite);
-        TableViewUtils.setColumnValue(colType, vm -> {
-            SupplierType type = SupplierType.valueOf(vm.getType());
-            return SupplierType.WHOLESALER.equals(type) ? translate("lbl.wholesaler") : translate("lbl.retailer");
-        });
-        TableViewUtils.initTableColumn(
-                colCreatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                SupplierVM::getCreatedAt);
         TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
@@ -160,7 +144,6 @@ public class SupplierMainController extends BaseController {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private void searchSuppliers() {
         tableSupplier.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tableSupplier.setItems(FXCollections.observableArrayList());
@@ -171,7 +154,7 @@ public class SupplierMainController extends BaseController {
                         lblRows.setText("0");
                     }
                     tableSupplier.setItems(FXCollections.observableList(suppliers));
-                    tableSupplier.getSortOrder().setAll(colName); // Always sort by name after searching
+                    TableViewUtils.sortDescending(tableSupplier, colUpdatedAt);
                     lblRows.setText(suppliers.size() + "");
                 }));
     }

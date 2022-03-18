@@ -12,6 +12,7 @@ import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
 import com.gitlab.muhammadkholidb.sequel.utility.SQLUtils;
 import com.gitlab.muhammadkholidb.sequel.utility.WhereParamsHelper;
+import com.gitlab.muhammadkholidb.toolbox.data.ListBuilder;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -20,7 +21,6 @@ import org.springframework.stereotype.Repository;
 
 import pinus.desktop.constant.ProductStatus;
 import pinus.desktop.domain.Product;
-import pinus.desktop.domain.ProductCategory;
 import pinus.desktop.viewmodel.ProductCategoryVM;
 import pinus.desktop.viewmodel.ProductFilterVM;
 import pinus.desktop.viewmodel.ProductVM;
@@ -48,22 +48,9 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
     public List<SearchProductsByFilterVM> queryByFilter(ProductFilterVM filter, String languageCode) {
         String sql = """
                 select
-                    a.id,
-                    a.code,
-                    a.barcode,
-                    a.name,
-                    a.description,
-                    a.unit_id,
-                    a.unit_label,
+                    a.*,
                     b.id as category_id,
-                    b.name as category_name,
-                    a.quantity,
-                    a.general_selling_price,
-                    a.prescription_selling_price,
-                    a.average_buying_price,
-                    a.closest_expired_date,
-                    a.updated_at,
-                    a.status
+                    b.name as category_name
                 from product a
                 inner join product_category b on b.code = a.category_code and b.language_code = ?
                 where a.deleted_at is null
@@ -168,25 +155,30 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
     }
 
     @Override
-    public List<ProductVM> findByKeyword(String keyword, String languageCode) {
+    public List<SearchProductsByFilterVM> findByKeyword(String keyword, String languageCode) {
         StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT p.*, pc.id as category_id, pc.code as category_code, pc.name as category_name ");
-        sb.append(" FROM ").append(Product.TABLE_NAME).append(" p ");
-        sb.append(" LEFT JOIN ").append(ProductCategory.TABLE_NAME).append(" pc ")
-                .append(" ON pc.code = p.category_code AND pc.deleted_at IS NULL AND pc.language_code = ? ");
-        Where where = new Where();
+        sb.append("""
+                select
+                    a.*,
+                    b.id as category_id,
+                    b.name as category_name
+                from product a
+                inner join product_category b on b.code = a.category_code and b.language_code = ?
+                where a.deleted_at is null
+                """);
+        ListBuilder<Object> lb = new ListBuilder<>().add(languageCode);
         if (StringUtils.isNotBlank(keyword)) {
-            keyword = keyword.trim();
-            where.containsIgnoreCase("p.name", keyword).orContains("p.code", keyword).orContains("p.barcode", keyword)
-                    .orContains("pc.code", keyword).orContainsIgnoreCase("pc.name", keyword);
-            sb.append(where.getClause());
-            sb.append(" AND p.deleted_at IS NULL ");
-        } else {
-            sb.append(" WHERE p.deleted_at IS NULL ");
+            String likeValue = SQLUtils.likeValueContains(keyword.trim().toLowerCase());
+            sb.append("""
+                    and (lower(a.name) like ?
+                    or a.code like ?
+                    or a.barcode like ?
+                    or b.code like ?
+                    or lower(b.name) like ?)
+                    """);
+            lb.add(likeValue).add(likeValue).add(likeValue).add(likeValue).add(likeValue);
         }
-        List<Object> params = where.getValues();
-        params.add(0, languageCode);
-        return performSelect(sb.toString(), params, ProductVM.class);
+        return performSelect(sb.toString(), lb.build(), SearchProductsByFilterVM.class);
     }
 
     @Override

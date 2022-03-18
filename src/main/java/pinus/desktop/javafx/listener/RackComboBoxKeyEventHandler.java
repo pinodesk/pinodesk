@@ -10,7 +10,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
 import pinus.desktop.service.RackService;
-import pinus.desktop.utility.SpringUtils;
+import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.RackVM;
 
 public class RackComboBoxKeyEventHandler implements EventHandler<KeyEvent> {

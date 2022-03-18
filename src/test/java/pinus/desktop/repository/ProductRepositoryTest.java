@@ -1,26 +1,11 @@
 package pinus.desktop.repository;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-
-import java.math.BigDecimal;
 import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import pinus.desktop.constant.SimpleStatus;
-import pinus.desktop.viewmodel.ProductFilterVM;
-import pinus.desktop.viewmodel.ProductVM;
 
 @DatabaseSetup("ProductRepositoryTest.xml")
 class ProductRepositoryTest extends RepositoryTestBase {

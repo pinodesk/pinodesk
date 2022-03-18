@@ -19,7 +19,7 @@ import javafx.scene.control.TextField;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.controller.CommonDataChooseController;
 import pinus.desktop.service.SupplierService;
-import pinus.desktop.utility.SpringUtils;
+import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.SupplierVM;
 
 public class SupplierChooseController extends CommonDataChooseController<SupplierVM> {
@@ -49,9 +49,6 @@ public class SupplierChooseController extends CommonDataChooseController<Supplie
     private TableColumn<SupplierVM, String> colWebsite;
 
     @FXML
-    private TableColumn<SupplierVM, LocalDateTime> colCreatedAt;
-
-    @FXML
     private TableColumn<SupplierVM, LocalDateTime> colUpdatedAt;
 
     private SupplierService supplierService;
@@ -64,10 +61,6 @@ public class SupplierChooseController extends CommonDataChooseController<Supplie
         TableViewUtils.setColumnValue(colEmail, SupplierVM::getEmail);
         TableViewUtils.setColumnValue(colAddress, SupplierVM::getAddress);
         TableViewUtils.setColumnValue(colWebsite, SupplierVM::getWebsite);
-        TableViewUtils.initTableColumn(
-                colCreatedAt,
-                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                SupplierVM::getCreatedAt);
         TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
@@ -106,7 +99,6 @@ public class SupplierChooseController extends CommonDataChooseController<Supplie
         supplierService = SpringUtils.getBean(SupplierService.class);
     }
 
-    @SuppressWarnings("unchecked")
     private void searchSuppliers() {
         tblSupplier.setPlaceholder(new Label(translate("lbl.loadingdata")));
         tblSupplier.setItems(FXCollections.observableArrayList());
@@ -116,7 +108,7 @@ public class SupplierChooseController extends CommonDataChooseController<Supplie
                         tblSupplier.setPlaceholder(new Label(translate("lbl.nodata")));
                     }
                     tblSupplier.setItems(FXCollections.observableList(suppliers));
-                    tblSupplier.getSortOrder().setAll(colName); // Always sort by name after searching
+                    TableViewUtils.sortAscending(tblSupplier, colName);
                 }));
     }
 

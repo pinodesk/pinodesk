@@ -10,7 +10,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ComboBox;
 import javafx.scene.input.KeyEvent;
 import pinus.desktop.service.ProductCategoryService;
-import pinus.desktop.utility.SpringUtils;
+import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.ProductCategoryVM;
 
 public class ProductCategoryComboBoxKeyEventHandler implements EventHandler<KeyEvent> {

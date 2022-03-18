@@ -150,6 +150,11 @@ public class ProductMainController extends BaseController {
         TableViewUtils.setColumnValue(colUnit, SearchProductsByFilterVM::getUnitLabel);
         TableViewUtils.setColumnValue(colStatus, SearchProductsByFilterVM::getStatus);
         TableViewUtils.initTableColumn(
+                colAverageBuyingPrice,
+                new NumberCellFactory<>(locale),
+                SearchProductsByFilterVM::getAverageBuyingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
                 colQuantity,
                 new NumberCellFactory<>(locale),
                 SearchProductsByFilterVM::getQuantity,

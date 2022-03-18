@@ -4,7 +4,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
@@ -62,21 +61,16 @@ public class DrugCategoryChooseController extends CommonDataChooseController<Dru
         drugCategoryService = ctx.getBean(DrugCategoryService.class);
     }
 
-    @SuppressWarnings("unchecked")
     private void searchProductCategories() {
-        String keyword = tfSearch.getText();
-        if (StringUtils.isBlank(keyword)) {
-            return;
-        }
         tblDrugCategory.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tblDrugCategory.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> drugCategoryService.searchDrugCategoriesByKeyword(keyword))
+        AsyncUtils.supply(() -> drugCategoryService.searchDrugCategoriesByKeyword(tfSearch.getText()))
                 .thenAccept(categories -> Platform.runLater(() -> {
                     if (categories.isEmpty()) {
                         tblDrugCategory.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblDrugCategory.setItems(FXCollections.observableList(categories));
-                    tblDrugCategory.getSortOrder().setAll(colName); // Always sort by name after searching
+                    TableViewUtils.sortAscending(tblDrugCategory, colName);
                 }));
     }
 

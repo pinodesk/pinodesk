@@ -2,7 +2,6 @@ package pinus.desktop.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -13,8 +12,6 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-import javax.validation.ConstraintViolationException;
-
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
@@ -22,7 +19,6 @@ import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
@@ -48,7 +44,7 @@ import pinus.desktop.constant.DomainError;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.StringConstants;
 import pinus.desktop.exception.DomainException;
-import pinus.desktop.utility.SpringUtils;
+import pinus.desktop.util.SpringUtils;
 
 @Slf4j
 public abstract class BaseController {
@@ -106,11 +102,13 @@ public abstract class BaseController {
             if (Thread.getDefaultUncaughtExceptionHandler() == null) {
                 Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
                     Throwable rootCause = ExceptionUtils.getRootCause(e);
-                    if (rootCause instanceof DomainException) {
-                        handleDomainException((DomainException) rootCause);
+                    if (rootCause instanceof DomainException domainException) {
+                        handleDomainException(domainException);
                         return;
                     }
-                    log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
+                    if (log.isErrorEnabled()) {
+                        log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
+                    }
                     displayException(rootCause);
                 });
             }
@@ -124,15 +122,13 @@ public abstract class BaseController {
         displayError(String.format("%s. (%s)", translate(err.messageCode()), err.code()));
     }
 
-    private void handleConstraintViolationException(ConstraintViolationException e) {
-        log.error("Error ConstraintViolationException", e);
-    }
-
     protected String translate(String messageCode) {
         try {
             return resources.getString(messageCode);
         } catch (Exception e) {
-            log.warn("Failed to translate message code '{}': {}", messageCode, e.toString());
+            if (log.isWarnEnabled()) {
+                log.warn("Failed to translate message code '{}': {}", messageCode, e.toString());
+            }
             return messageCode;
         }
     }
@@ -270,70 +266,6 @@ public abstract class BaseController {
         df.setGroupingUsed(true);
         df.setRoundingMode(RoundingMode.HALF_UP);
         return df.format(number);
-    }
-
-    protected String toStringOrDefault(BigDecimal num, String dflt) {
-        return num == null ? dflt : num.setScale(0).toString();
-    }
-
-    protected String toStringOrNull(BigDecimal num) {
-        return toStringOrDefault(num, null);
-    }
-
-    protected String toStringOrEmpty(BigDecimal num) {
-        return toStringOrDefault(num, "");
-    }
-
-    protected String toStringOrDefault(Integer num, String dflt) {
-        return num == null ? dflt : num.toString();
-    }
-
-    protected String toStringOrNull(Integer num) {
-        return toStringOrDefault(num, null);
-    }
-
-    protected String toStringOrEmpty(Integer num) {
-        return toStringOrDefault(num, "");
-    }
-
-    protected String toStringOrDefault(Long num, String dflt) {
-        return num == null ? dflt : num.toString();
-    }
-
-    protected String toStringOrNull(Long num) {
-        return toStringOrDefault(num, null);
-    }
-
-    protected String toStringOrEmpty(Long num) {
-        return toStringOrDefault(num, "");
-    }
-
-    protected BigDecimal toBigDecimalOrDefault(String str, BigDecimal dflt) {
-        return StringUtils.isNumeric(str) ? NumberUtils.toScaledBigDecimal(str) : dflt;
-    }
-
-    protected BigDecimal toBigDecimalOrNull(String str) {
-        return toBigDecimalOrDefault(str, null);
-    }
-
-    protected BigDecimal toBigDecimalOrZero(String str) {
-        return toBigDecimalOrDefault(str, BigDecimal.ZERO);
-    }
-
-    protected Integer toIntegerOrDefault(String str, Integer dflt) {
-        return StringUtils.isNumeric(str) ? Integer.valueOf(str) : dflt;
-    }
-
-    protected Integer toIntegerOrNull(String str) {
-        return toIntegerOrDefault(str, null);
-    }
-
-    protected Integer toIntegerOrZero(String str) {
-        return toIntegerOrDefault(str, 0);
-    }
-
-    private String conditionalString(boolean condition, String strIfTrue, String strIfFalse) {
-        return condition ? strIfTrue : strIfFalse;
     }
 
     protected <T> void setChooserOnFocus(TextField tf, Page page, Consumer<T> outputConsumer, Node nextFocusNode) {

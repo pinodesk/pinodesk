@@ -65,7 +65,7 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
     }
 
     @Override
-    public boolean existsByOrderNumberAndSupplierId(String orderNumber, Long supplierId) {
+    public boolean existsByInvoiceNumberAndSupplierId(String orderNumber, Long supplierId) {
         return exists(
                 new Where().equals(Purchase.C_INVOICE_NUMBER, orderNumber)
                         .andEquals(Purchase.C_SUPPLIER_ID, supplierId));
