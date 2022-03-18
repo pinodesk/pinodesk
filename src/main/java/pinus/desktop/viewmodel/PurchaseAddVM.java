@@ -23,7 +23,7 @@ public class PurchaseAddVM {
 
     @Data
     public static class PurchaseProductVM {
-        private SearchProductsByFilterVM product;
+        private ProductVM product;
         private Integer quantity;
         private BigDecimal generalSellingPrice;
         private BigDecimal prescriptionSellingPrice;

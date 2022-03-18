@@ -53,7 +53,7 @@ import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.ChooseResultVM;
 import pinus.desktop.viewmodel.PurchaseAddVM;
 import pinus.desktop.viewmodel.PurchaseAddVM.PurchaseProductVM;
-import pinus.desktop.viewmodel.SearchProductsByFilterVM;
+import pinus.desktop.viewmodel.ProductVM;
 import pinus.desktop.viewmodel.SupplierVM;
 
 public class PurchaseAddController extends CommonDataSaveController {
@@ -175,7 +175,7 @@ public class PurchaseAddController extends CommonDataSaveController {
     @FXML
     private Button btnSaveAndAdd;
 
-    private SearchProductsByFilterVM selectedProduct;
+    private ProductVM selectedProduct;
     private SupplierVM selectedSupplier;
     private Integer totalProduct;
     private BigDecimal totalPurchase;
@@ -402,7 +402,7 @@ public class PurchaseAddController extends CommonDataSaveController {
         purchaseService = SpringUtils.getBean(PurchaseService.class);
     }
 
-    public void handleSelectedProduct(ChooseResultVM<SearchProductsByFilterVM> result) {
+    public void handleSelectedProduct(ChooseResultVM<ProductVM> result) {
         if (result == null || result.isCancelled()) {
             return;
         }
@@ -440,7 +440,7 @@ public class PurchaseAddController extends CommonDataSaveController {
         });
     }
 
-    private int getProductIndexInTable(SearchProductsByFilterVM product, TableView<PurchaseProductVM> table) {
+    private int getProductIndexInTable(ProductVM product, TableView<PurchaseProductVM> table) {
         Predicate<PurchaseProductVM> productExists = item -> item.getProduct().equals(product);
         return TableViewUtils.getItemIndex(productExists, table);
     }

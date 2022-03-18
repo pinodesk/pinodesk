@@ -34,48 +34,48 @@ import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.service.ProductService;
 import pinus.desktop.viewmodel.ProductFilterVM;
-import pinus.desktop.viewmodel.SearchProductsByFilterVM;
+import pinus.desktop.viewmodel.ProductVM;
 
 public class ProductMainController extends BaseController {
 
     @FXML
-    private TableView<SearchProductsByFilterVM> tblProduct;
+    private TableView<ProductVM> tblProduct;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, String> colCode;
+    private TableColumn<ProductVM, String> colCode;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, String> colStatus;
+    private TableColumn<ProductVM, String> colStatus;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, String> colBarcode;
+    private TableColumn<ProductVM, String> colBarcode;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, String> colName;
+    private TableColumn<ProductVM, String> colName;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, String> colCategory;
+    private TableColumn<ProductVM, String> colCategory;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, Integer> colQuantity;
+    private TableColumn<ProductVM, Integer> colQuantity;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, String> colUnit;
+    private TableColumn<ProductVM, String> colUnit;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, BigDecimal> colPrescriptionSellingPrice;
+    private TableColumn<ProductVM, BigDecimal> colPrescriptionSellingPrice;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, BigDecimal> colGeneralSellingPrice;
+    private TableColumn<ProductVM, BigDecimal> colGeneralSellingPrice;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, BigDecimal> colAverageBuyingPrice;
+    private TableColumn<ProductVM, BigDecimal> colAverageBuyingPrice;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, LocalDate> colClosestExpiry;
+    private TableColumn<ProductVM, LocalDate> colClosestExpiry;
 
     @FXML
-    private TableColumn<SearchProductsByFilterVM, LocalDateTime> colUpdatedAt;
+    private TableColumn<ProductVM, LocalDateTime> colUpdatedAt;
 
     @FXML
     private Label lblRows;
@@ -108,11 +108,11 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-        ObservableList<SearchProductsByFilterVM> items = tblProduct.getSelectionModel().getSelectedItems();
+        ObservableList<ProductVM> items = tblProduct.getSelectionModel().getSelectedItems();
         if (!items.isEmpty()) {
             AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PRODUCTS);
             if (result.isConfirmed()) {
-                productService.removeProducts(items.stream().map(SearchProductsByFilterVM::getId).toList());
+                productService.removeProducts(items.stream().map(ProductVM::getId).toList());
                 searchProducts();
                 displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PRODUCTS);
             }
@@ -143,40 +143,40 @@ public class ProductMainController extends BaseController {
 
     private void initTableProduct() {
         Locale locale = resources.getLocale();
-        TableViewUtils.setColumnValue(colCode, SearchProductsByFilterVM::getCode);
-        TableViewUtils.setColumnValue(colBarcode, SearchProductsByFilterVM::getBarcode);
-        TableViewUtils.setColumnValue(colName, SearchProductsByFilterVM::getName);
-        TableViewUtils.setColumnValue(colCategory, SearchProductsByFilterVM::getCategoryName);
-        TableViewUtils.setColumnValue(colUnit, SearchProductsByFilterVM::getUnitLabel);
-        TableViewUtils.setColumnValue(colStatus, SearchProductsByFilterVM::getStatus);
+        TableViewUtils.setColumnValue(colCode, ProductVM::getCode);
+        TableViewUtils.setColumnValue(colBarcode, ProductVM::getBarcode);
+        TableViewUtils.setColumnValue(colName, ProductVM::getName);
+        TableViewUtils.setColumnValue(colCategory, ProductVM::getCategoryName);
+        TableViewUtils.setColumnValue(colUnit, ProductVM::getUnitLabel);
+        TableViewUtils.setColumnValue(colStatus, ProductVM::getStatus);
         TableViewUtils.initTableColumn(
                 colAverageBuyingPrice,
                 new NumberCellFactory<>(locale),
-                SearchProductsByFilterVM::getAverageBuyingPrice,
+                ProductVM::getAverageBuyingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colQuantity,
                 new NumberCellFactory<>(locale),
-                SearchProductsByFilterVM::getQuantity,
+                ProductVM::getQuantity,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colGeneralSellingPrice,
                 new NumberCellFactory<>(locale),
-                SearchProductsByFilterVM::getGeneralSellingPrice,
+                ProductVM::getGeneralSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colPrescriptionSellingPrice,
                 new NumberCellFactory<>(locale),
-                SearchProductsByFilterVM::getPrescriptionSellingPrice,
+                ProductVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colClosestExpiry,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                SearchProductsByFilterVM::getClosestExpiredDate);
+                ProductVM::getClosestExpiredDate);
         TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
-                SearchProductsByFilterVM::getUpdatedAt);
+                ProductVM::getUpdatedAt);
         tblProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
