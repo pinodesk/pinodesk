@@ -360,22 +360,23 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
+        LocalDate invoiceDate = DateTimeUtils
+                .parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        LocalDate dueDate = DateTimeUtils
+                .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        SimpleComboBoxModel selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
+        boolean isUnpaid = PaymentStatus.UNPAID.name().equals(selected.getValue());
         validator.validateBlank(tfSupplier, MessageCode.ERROR_EMPTY_SUPPLIER);
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
-        validator.validateCustom(() -> {
-            LocalDate invoiceDate = DateTimeUtils
-                    .parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-            return invoiceDate == null;
-        }, MessageCode.ERROR_INVALID_INVOICE_DATE);
-        validator.validateCustom(() -> {
-            SimpleComboBoxModel selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
-            if (PaymentStatus.UNPAID.name().equals(selected.getValue())) {
-                LocalDate dueDate = DateTimeUtils
-                        .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-                return dueDate == null;
-            }
-            return false;
-        }, MessageCode.ERROR_INVALID_DUE_DATE);
+        LocalDate today = LocalDate.now();
+        validator.validateCustom(() -> invoiceDate == null, MessageCode.ERROR_INVALID_INVOICE_DATE);
+        validator.validateCustom(
+                () -> invoiceDate != null && invoiceDate.isAfter(today),
+                MessageCode.ERROR_INVOICE_DATE_AFTER_TODAY);
+        validator.validateCustom(() -> isUnpaid && dueDate == null, MessageCode.ERROR_INVALID_DUE_DATE);
+        validator.validateCustom(
+                () -> isUnpaid && dueDate != null && dueDate.isBefore(today),
+                MessageCode.ERROR_DUE_DATE_BEFORE_TODAY);
         validator.validateCustom(() -> tblPurchaseProduct.getItems().isEmpty(), MessageCode.ERROR_EMPTY_PRODUCT);
     }
 
