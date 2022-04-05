@@ -13,7 +13,7 @@ create table if not exists product_price (
 	remarks varchar(128),
 	constraint fk_product_price__product_id foreign key (product_id) references product(id),
 	constraint fk_product_price__purchase_id foreign key (purchase_id) references purchase(id),
-	constraint fk_product_price__user_id foreign key (user_id) references user(id)
+	constraint fk_product_price__user_id foreign key (user_id) references "user" (id)
 );
 
 create index idx_product_price__deleted_at on product_price (deleted_at);

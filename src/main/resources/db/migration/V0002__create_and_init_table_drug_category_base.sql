@@ -12,6 +12,6 @@ create index idx_drug_category_base__deleted_at on drug_category_base(deleted_at
 create index idx_drug_category_base__code on drug_category_base(code);
 create index idx_drug_category_base__code__deleted_at on drug_category_base(code, deleted_at);
 
-insert into drug_category_base (id, created_at, updated_at, deleted_at, code, name, description) values
-(null, current_timestamp, current_timestamp, null, 'PERMENKESRI', 'Peraturan Menteri Kesehatan Indonesia', 'Permenkes No.917 Tahun 1993'),
-(null, current_timestamp, current_timestamp, null, 'USFDA', 'US Food and Drug Administration', 'General drug categories by US FDA');
+insert into drug_category_base (created_at, updated_at, deleted_at, code, name, description) values
+(current_timestamp, current_timestamp, null, 'PERMENKESRI', 'Peraturan Menteri Kesehatan Indonesia', 'Permenkes No.917 Tahun 1993'),
+(current_timestamp, current_timestamp, null, 'USFDA', 'US Food and Drug Administration', 'General drug categories by US FDA');

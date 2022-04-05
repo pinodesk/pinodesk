@@ -12,3 +12,7 @@ create table if not exists drug (
 );
 
 create index idx_drug__deleted_at on drug (deleted_at);
+
+-- Insert drugs from products
+insert into drug (created_at, updated_at, product_id, drug_category_id) 
+select now(), now(), id, 2 from product where category_code = '000000518';

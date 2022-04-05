@@ -14,11 +14,11 @@ create index idx_drug_category__deleted_at on drug_category (deleted_at);
 create index idx_drug_category__code on drug_category (code);
 create index idx_drug_category__code__deleted_at on drug_category (code, deleted_at);
 
-insert into drug_category (id, created_at, updated_at, deleted_at, drug_category_base_id, code, name, description) values
-(null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI01', 'Obat Bebas Terbatas', null),
-(null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI02', 'Obat Bebas', null),
-(null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI03', 'Obat Keras', null),
-(null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI04', 'Obat Wajib Apotek (OWA)', null),
-(null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI05', 'Obat Golongan Narkotika', null),
-(null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI06', 'Obat Psikotropika', null),
-(null, current_timestamp, current_timestamp, null, 1, 'PERMENKESRI07', 'Obat Herbal & Jamu', null);
+insert into drug_category (created_at, updated_at, deleted_at, drug_category_base_id, code, name, description) values
+(current_timestamp, current_timestamp, null, 1, 'PERMENKESRI01', 'Obat Bebas Terbatas', null),
+(current_timestamp, current_timestamp, null, 1, 'PERMENKESRI02', 'Obat Bebas', null),
+(current_timestamp, current_timestamp, null, 1, 'PERMENKESRI03', 'Obat Keras', null),
+(current_timestamp, current_timestamp, null, 1, 'PERMENKESRI04', 'Obat Wajib Apotek (OWA)', null),
+(current_timestamp, current_timestamp, null, 1, 'PERMENKESRI05', 'Obat Golongan Narkotika', null),
+(current_timestamp, current_timestamp, null, 1, 'PERMENKESRI06', 'Obat Psikotropika', null),
+(current_timestamp, current_timestamp, null, 1, 'PERMENKESRI07', 'Obat Herbal & Jamu', null);

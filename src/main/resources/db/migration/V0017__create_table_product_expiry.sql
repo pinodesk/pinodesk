@@ -18,7 +18,7 @@ create table if not exists product_expiry (
 	remarks varchar(128),
 	constraint fk_product_expiry__product_id foreign key (product_id) references product(id),
 	constraint fk_product_expiry__purchase_id foreign key (purchase_id) references purchase(id),
-	constraint fk_product_expiry__user_id foreign key (user_id) references user(id)
+	constraint fk_product_expiry__user_id foreign key (user_id) references "user" (id)
 );
 
 create index idx_product_expiry__deleted_at on product_expiry (deleted_at);

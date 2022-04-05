@@ -5,4 +5,4 @@ create table if not exists sale (
 	deleted_at timestamp
 );
 
-insert into sale (id, created_at, updated_at, deleted_at) values (null, current_timestamp, current_timestamp, null);
+insert into sale (created_at, updated_at, deleted_at) values (current_timestamp, current_timestamp, null);
