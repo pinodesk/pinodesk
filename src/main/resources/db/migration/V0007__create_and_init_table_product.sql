@@ -1,5 +1,5 @@
 create table if not exists product (
-	id IDENTITY NOT NULL PRIMARY KEY,
+	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
@@ -16,14 +16,14 @@ create table if not exists product (
     average_buying_price decimal(12,2) null,
 	closest_expired_date date null,
 	status varchar(8) not null, -- ACTIVE, INACTIVE
-	constraint fk_product__unit_id foreign key (unit_id) references unit(id)
+	primary key (id),
+	constraint fk_product__unit_id foreign key (unit_id) references unit(id),
+	index idx_product__deleted_at (deleted_at),
+	index idx_product__code (code),
+	index idx_product__barcode (barcode),
+	index idx_product__category_code (category_code),
+	index idx_product__id__unit_id (id, unit_id)
 );
-
-create index idx_product__deleted_at on product (deleted_at);
-create index idx_product__code on product (code);
-create index idx_product__barcode on product (barcode);
-create index idx_product__category_code on product (category_code);
-create index idx_product__id__unit_id on product (id, unit_id);
 
 insert into product (created_at, updated_at, deleted_at, code, name, description, unit_id, unit_label, category_code, status) values
 (current_timestamp, current_timestamp, NULL, '8999909085114', 'SAMPOERNA KRETEK 12', NULL, 1, 'PCS', '', 'ACTIVE'),

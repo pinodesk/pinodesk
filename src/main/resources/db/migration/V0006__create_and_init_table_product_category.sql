@@ -1,5 +1,5 @@
 create table if not exists product_category (
-	id IDENTITY NOT NULL PRIMARY KEY,
+	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
@@ -7,14 +7,14 @@ create table if not exists product_category (
 	language_code char(2) not null,
 	code varchar(64) not null,
 	name varchar(256) not null,
-	description varchar(512)
+	description varchar(512),
+	primary key (id),
+	index idx_product_category__code (code),
+	index idx_product_category__deleted_at (deleted_at),
+	index idx_product_category__code__deleted_at (code, deleted_at),
+	index idx_product_category__language_code__code (language_code, code),
+	index idx_product_category__language_code__code__deleted_at (language_code, code, deleted_at)
 );
-
-create index idx_product_category__deleted_at on product_category (deleted_at);
-create index idx_product_category__code on product_category (code);
-create index idx_product_category__code__deleted_at on product_category (code, deleted_at);
-create index idx_product_category__language_code__code on product_category (language_code, code);
-create index idx_product_category__language_code__code__deleted_at on product_category (language_code, code, deleted_at);
 
 insert into product_category (id, created_at, updated_at, deleted_at, parent_category_id, language_code, code, name, description) values
 (100000001, current_timestamp, current_timestamp, NULL, NULL, 'en', '000000001', 'Animals & Pet Supplies', NULL),
