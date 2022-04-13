@@ -219,7 +219,7 @@ public class PurchaseMainController extends BaseController {
     private void handleActionTablePurchase() {
         if (TableViewUtils.hasItemSelected(tblPurchase)) {
             setPageData(TableViewUtils.getSelectedItem(tblPurchase));
-            StageUtils.modal(Page.TRANSACTION_PURCHASE_EDIT, false, event -> {
+            StageUtils.modal(Page.TRANSACTION_PURCHASE_EDIT, event -> {
                 searchPurchases();
             });
         }
