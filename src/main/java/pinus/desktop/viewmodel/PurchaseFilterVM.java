@@ -14,6 +14,7 @@ public class PurchaseFilterVM {
     private LocalDate dueDateMin;
     private LocalDate dueDateMax;
     private Long supplierId;
+    private String supplierName;
     private BigDecimal totalPaymentMin;
     private BigDecimal totalPaymentMax;
     private Integer totalProductMin;

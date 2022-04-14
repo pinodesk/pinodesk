@@ -204,7 +204,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_PURCHASE);
         if (result.isConfirmed()) {
             purchaseService.removePurchases(List.of(currentPurchase.getId()));
-            displayInfo(MessageCode.SUCCESS_REMOVE_PRODUCT);
+            displayInfo(MessageCode.SUCCESS_REMOVE_PURCHASE);
             setPageData(Boolean.TRUE);
             close();
         }

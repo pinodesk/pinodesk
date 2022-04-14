@@ -108,7 +108,11 @@ public class PurchaseMainController extends BaseController {
     void onActionBtnFilter(ActionEvent event) {
         setPageData(purchaseFilter);
         StageUtils.modal(Page.TRANSACTION_PURCHASE_FILTER, false, we -> {
-            purchaseFilter = getPageData();
+            PurchaseFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            purchaseFilter = result;
             searchPurchases();
         });
     }

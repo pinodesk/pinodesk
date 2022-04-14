@@ -85,7 +85,11 @@ public class SupplierMainController extends BaseController {
     void onActionBtnFilter(ActionEvent event) {
         setPageData(supplierFilter);
         StageUtils.modal(Page.MASTER_SUPPLIER_FILTER, false, we -> {
-            supplierFilter = getPageData();
+            SupplierFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            supplierFilter = result;
             searchSuppliers();
         });
     }
