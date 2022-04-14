@@ -68,7 +68,7 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         if (currentFilter != null) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
-            tfSupplier.setText(toStringOrNull(currentFilter.getSupplierId()));
+            tfSupplier.setText(currentFilter.getSupplierName());
             tfTotalPaymentMax.setText(toStringOrNull(currentFilter.getTotalPaymentMax()));
             tfTotalPaymentMin.setText(toStringOrNull(currentFilter.getTotalPaymentMin()));
             tfTotalProductMax.setText(toStringOrNull(currentFilter.getTotalProductMax()));
@@ -109,7 +109,10 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         filter.setPaymentStatus(
                 selectedPaymentStatus == null || selectedPaymentStatus.getValue().isEmpty() ?
                         null : PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue()));
-        filter.setSupplierId(selectedSupplier == null ? null : selectedSupplier.getId());
+        if (selectedSupplier != null) {
+            filter.setSupplierId(selectedSupplier.getId());
+            filter.setSupplierName(selectedSupplier.getName());
+        }
         filter.setTotalPaymentMax(toBigDecimalOrNull(tfTotalPaymentMax.getText()));
         filter.setTotalPaymentMin(toBigDecimalOrNull(tfTotalPaymentMin.getText()));
         filter.setTotalProductMax(toIntegerOrNull(tfTotalProductMax.getText()));

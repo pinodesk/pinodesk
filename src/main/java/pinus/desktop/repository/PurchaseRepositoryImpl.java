@@ -1,10 +1,13 @@
 package pinus.desktop.repository;
 
+import java.util.Arrays;
 import java.util.List;
 
+import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
@@ -65,9 +68,12 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
     }
 
     @Override
-    public boolean existsByInvoiceNumberAndSupplierId(String orderNumber, Long supplierId) {
-        return exists(
-                new Where().equals(Purchase.C_INVOICE_NUMBER, orderNumber)
-                        .andEquals(Purchase.C_SUPPLIER_ID, supplierId));
+    public boolean existsByInvoiceNumberAndSupplierId(String orderNumber, Long supplierId, Long... excludePurchaseIds) {
+        Where where = new Where().equals(Purchase.C_INVOICE_NUMBER, orderNumber)
+                .andEquals(Purchase.C_SUPPLIER_ID, supplierId);
+        if (ArrayUtils.isNotEmpty(excludePurchaseIds)) {
+            where.andNotIn(DataModel.C_ID, Arrays.asList(excludePurchaseIds));
+        }
+        return exists(where);
     }
 }

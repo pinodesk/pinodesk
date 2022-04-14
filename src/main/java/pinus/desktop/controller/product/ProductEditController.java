@@ -59,7 +59,7 @@ import pinus.desktop.viewmodel.ProductExpiryAddVM;
 import pinus.desktop.viewmodel.ProductExpiryVM;
 import pinus.desktop.viewmodel.ProductPriceVM;
 import pinus.desktop.viewmodel.ProductStockVM;
-import pinus.desktop.viewmodel.SearchProductsByFilterVM;
+import pinus.desktop.viewmodel.ProductVM;
 import pinus.desktop.viewmodel.UnitVM;
 
 public class ProductEditController extends CommonDataSaveController {
@@ -220,7 +220,7 @@ public class ProductEditController extends CommonDataSaveController {
     @FXML
     private TableColumn<ProductExpiryVM, LocalDateTime> colProductExpiryCreatedAt;
 
-    private SearchProductsByFilterVM currentProduct;
+    private ProductVM currentProduct;
 
     private ProductService productService;
 

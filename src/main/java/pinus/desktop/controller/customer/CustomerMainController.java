@@ -86,7 +86,11 @@ public class CustomerMainController extends BaseController {
     void onActionBtnFilter(ActionEvent event) {
         setPageData(customerFilter);
         StageUtils.modal(Page.MASTER_CUSTOMER_FILTER, false, we -> {
-            customerFilter = getPageData();
+            CustomerFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            customerFilter = result;
             searchCustomers();
         });
     }

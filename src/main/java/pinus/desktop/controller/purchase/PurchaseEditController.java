@@ -9,14 +9,15 @@ import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toString
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
-import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
@@ -26,7 +27,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 import com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.collections.ObservableList;
@@ -48,15 +48,15 @@ import pinus.desktop.constant.PaymentStatus;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.CommonDataSaveController;
 import pinus.desktop.service.PurchaseService;
-import pinus.desktop.util.ProductUtils;
 import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.ChooseResultVM;
 import pinus.desktop.viewmodel.ProductVM;
-import pinus.desktop.viewmodel.PurchaseAddVM;
+import pinus.desktop.viewmodel.PurchaseEditVM;
 import pinus.desktop.viewmodel.PurchaseProductVM;
+import pinus.desktop.viewmodel.PurchaseVM;
 import pinus.desktop.viewmodel.SupplierVM;
 
-public class PurchaseAddController extends CommonDataSaveController {
+public class PurchaseEditController extends CommonDataSaveController {
 
     @FXML
     private TextField tfSupplier;
@@ -146,18 +146,6 @@ public class PurchaseAddController extends CommonDataSaveController {
     private TableColumn<PurchaseProductVM, BigDecimal> colSubtotal;
 
     @FXML
-    private TableColumn<PurchaseProductVM, BigDecimal> colGeneralSellingPrice;
-
-    @FXML
-    private TableColumn<PurchaseProductVM, BigDecimal> colPrescriptionSellingPrice;
-
-    @FXML
-    private TableColumn<PurchaseProductVM, String> colBactchNumber;
-
-    @FXML
-    private TableColumn<PurchaseProductVM, LocalDate> colExpiredDate;
-
-    @FXML
     private Label lblTotalProduct;
 
     @FXML
@@ -182,6 +170,8 @@ public class PurchaseAddController extends CommonDataSaveController {
     private BigDecimal totalPayment;
 
     private PurchaseService purchaseService;
+
+    private PurchaseVM currentPurchase;
 
     @FXML
     void onActionBtnNewProduct(ActionEvent event) {
@@ -210,20 +200,30 @@ public class PurchaseAddController extends CommonDataSaveController {
     }
 
     @FXML
+    void onActionBtnRemove(ActionEvent event) {
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_PURCHASE);
+        if (result.isConfirmed()) {
+            purchaseService.removePurchases(List.of(currentPurchase.getId()));
+            displayInfo(MessageCode.SUCCESS_REMOVE_PURCHASE);
+            setPageData(Boolean.TRUE);
+            close();
+        }
+    }
+
+    @FXML
     void onActionBtnAddProduct(ActionEvent event) {
         boolean isProductSelected = selectedProduct != null;
-        boolean isProductCategoryDrugs = isProductSelected
-                && ProductUtils.isProductCategoryDrugs(selectedProduct.getCategoryCode());
-        LocalDate expiredDate = DateTimeUtils
-                .parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-        ValidationResult validationResult = validateAddProduct(isProductSelected, isProductCategoryDrugs, expiredDate);
+        ControlValidator cv = new ControlValidator(resources);
+        cv.validateCustom(() -> !isProductSelected, MessageCode.ERROR_EMPTY_PRODUCT);
+        cv.validatePositive(tfProductQuantity, MessageCode.ERROR_INVALID_QUANTITY);
+        cv.validatePositive(tfBuyingPrice, MessageCode.ERROR_INVALID_BUYING_PRICE);
+        ValidationResult validationResult = cv.getResult();
         if (!validationResult.isValid()) {
             displayError(validationResult.getMessages());
             return;
         }
         Integer quantity = toIntegerOrNull(tfProductQuantity.getText());
         BigDecimal buyingPrice = toBigDecimalOrNull(tfBuyingPrice.getText());
-        BigDecimal generalSellingPrice = toBigDecimalOrNull(tfGeneralSellingPrice.getText());
         PurchaseProductVM purchaseProduct = new PurchaseProductVM();
         purchaseProduct.setProductId(selectedProduct.getId());
         purchaseProduct.setProductName(selectedProduct.getName());
@@ -233,13 +233,6 @@ public class PurchaseAddController extends CommonDataSaveController {
         purchaseProduct.setQuantity(quantity);
         purchaseProduct.setBuyingPrice(buyingPrice);
         purchaseProduct.setSubtotal(buyingPrice.multiply(BigDecimal.valueOf(quantity)));
-        purchaseProduct.setGeneralSellingPrice(generalSellingPrice);
-        if (isProductCategoryDrugs) {
-            BigDecimal prescriptionSellingPrice = toBigDecimalOrNull(tfPrescriptionSellingPrice.getText());
-            purchaseProduct.setPrescriptionSellingPrice(prescriptionSellingPrice);
-        }
-        purchaseProduct.setBatchNumber(tfBatchNumber.getText());
-        purchaseProduct.setExpiredDate(expiredDate);
         int idx = getProductIndexInTable(selectedProduct, tblPurchaseProduct);
         if (idx != -1) {
             tblPurchaseProduct.getItems().remove(idx);
@@ -259,13 +252,13 @@ public class PurchaseAddController extends CommonDataSaveController {
         calculatePurchaseSummary();
     }
 
-    @FXML
-    void onActionBtnSaveAndAdd(ActionEvent event) {
-        processDataSave();
-        if (isLastDataSaved()) {
-            displayInfo(MessageCode.SUCCESS_ADD_PURCHASE);
-            resetControls();
+    @Override
+    protected void onActionBtnSave(ActionEvent event) {
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_EDIT_PURCHASE);
+        if (!result.isConfirmed()) {
+            return;
         }
+        super.onActionBtnSave(event);
     }
 
     @Override
@@ -285,7 +278,6 @@ public class PurchaseAddController extends CommonDataSaveController {
                 tfProductQuantity);
         TableViewUtils.setColumnValue(colProductName, PurchaseProductVM::getProductName);
         TableViewUtils.setColumnValue(colUnit, PurchaseProductVM::getProductUnitLabel);
-        TableViewUtils.setColumnValue(colBactchNumber, PurchaseProductVM::getBatchNumber);
         TableViewUtils.setColumnValue(colProductCategory, PurchaseProductVM::getProductCategoryName);
         TableViewUtils.initTableColumn(
                 colBuyingPrice,
@@ -302,20 +294,6 @@ public class PurchaseAddController extends CommonDataSaveController {
                 new NumberCellFactory<>(locale),
                 PurchaseProductVM::getSubtotal,
                 StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colGeneralSellingPrice,
-                new NumberCellFactory<>(locale),
-                PurchaseProductVM::getGeneralSellingPrice,
-                StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colPrescriptionSellingPrice,
-                new NumberCellFactory<>(locale),
-                PurchaseProductVM::getPrescriptionSellingPrice,
-                StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colExpiredDate,
-                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                PurchaseProductVM::getExpiredDate);
         tblPurchaseProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblPurchaseProduct.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
@@ -337,13 +315,43 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
-        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
-
+        Locale locale = resources.getLocale();
+        currentPurchase = getPageData();
+        List<PurchaseProductVM> products = purchaseService.getPurchaseProducts(currentPurchase.getId());
+        tblPurchaseProduct.getItems().addAll(products);
+        selectedSupplier = new SupplierVM();
+        selectedSupplier.setId(currentPurchase.getSupplierId());
+        selectedSupplier.setName(currentPurchase.getSupplierName());
+        LocalDate invoiceDate = currentPurchase.getInvoiceDate();
+        LocalDate paymentDueDate = currentPurchase.getPaymentDueDate();
+        PaymentStatus paymentStatus = PaymentStatus.valueOf(currentPurchase.getPaymentStatus());
+        BigDecimal discount = currentPurchase.getDiscount();
+        BigDecimal tax = currentPurchase.getTax();
+        totalProduct = currentPurchase.getTotalProduct();
+        totalPurchase = currentPurchase.getTotalPurchase();
+        totalPayment = currentPurchase.getTotalPayment();
+        tfSupplier.setText(currentPurchase.getSupplierName());
+        tfInvoiceNumber.setText(currentPurchase.getInvoiceNumber());
+        tfInvoiceDate.setText(invoiceDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        ComboBoxUtils.select(
+                cbPaymentStatus,
+                () -> cbPaymentStatus.getItems().stream().filter(vm -> vm.getValue().equals(paymentStatus.name()))
+                        .findAny().orElseThrow());
+        if (paymentDueDate != null) {
+            tfDueDate.setText(paymentDueDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        }
+        lblDiscount.setText(formatOrDefault(discount, locale, "0"));
+        lblTax.setText(formatOrDefault(tax, locale, "0"));
+        lblTotalPayment.setText(formatOrDefault(totalPayment, locale, "0"));
+        lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
+        lblTotalPurchase.setText(formatOrDefault(totalPurchase, locale, "0"));
+        tfDiscount.setText(toStringOrEmpty(discount));
+        tfTax.setText(toStringOrEmpty(tax));
     }
 
     @Override
     protected Object save() {
-        PurchaseAddVM purchase = new PurchaseAddVM();
+        PurchaseEditVM purchase = new PurchaseEditVM();
         purchase.setSupplierId(selectedSupplier.getId());
         purchase.setInvoiceNumber(tfInvoiceNumber.getText().trim());
         purchase.setInvoiceDate(
@@ -360,7 +368,7 @@ public class PurchaseAddController extends CommonDataSaveController {
         purchase.setTotalProduct(totalProduct);
         purchase.setTotalPurchase(totalPurchase);
         purchase.setPurchaseProducts(tblPurchaseProduct.getItems());
-        purchaseService.createPurchase(purchase);
+        purchaseService.updatePurchase(purchase, currentPurchase.getId());
         return true;
     }
 
@@ -401,18 +409,11 @@ public class PurchaseAddController extends CommonDataSaveController {
             tfProduct.setText(product.getName());
             tfProductCategory.setText(product.getCategoryName());
             tfProductUnit.setText(product.getUnitLabel());
-            tfGeneralSellingPrice.setText(toStringOrEmpty(product.getGeneralSellingPrice()));
-            tfPrescriptionSellingPrice.setText(toStringOrEmpty(product.getPrescriptionSellingPrice()));
-            if (ProductUtils.isProductCategoryDrugs(product.getCategoryCode())) {
-                vboxPrescriptionSellingPrice.setDisable(false);
-            }
         }, () -> {
             selectedProduct = null;
             tfProduct.setText("");
             tfProductCategory.setText("");
             tfProductUnit.setText("");
-            tfGeneralSellingPrice.setText("");
-            tfPrescriptionSellingPrice.setText("");
         });
     }
 
@@ -449,32 +450,6 @@ public class PurchaseAddController extends CommonDataSaveController {
         lblTotalPayment.setText(formatOrDefault(totalPayment, locale, "0"));
     }
 
-    private void resetControls() {
-        this.selectedSupplier = null;
-        this.selectedProduct = null;
-        TextFieldUtils.setTextEmpty(
-                tfSupplier,
-                tfInvoiceNumber,
-                tfDiscount,
-                tfTax,
-                tfProduct,
-                tfProductCategory,
-                tfProductUnit,
-                tfProductQuantity,
-                tfBuyingPrice,
-                tfGeneralSellingPrice,
-                tfPrescriptionSellingPrice);
-        tfInvoiceDate.setPlainText("");
-        tfDueDate.setPlainText("");
-        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
-        tblPurchaseProduct.getItems().clear();
-        lblDiscount.setText("0");
-        lblTax.setText("0");
-        lblTotalProduct.setText("0");
-        lblTotalPurchase.setText("0");
-        lblTotalPayment.setText("0");
-    }
-
     private void handleActionTablePurchaseProduct() {
         if (TableViewUtils.hasItemSelected(tblPurchaseProduct)) {
             PurchaseProductVM selected = TableViewUtils.getSelectedItem(tblPurchaseProduct);
@@ -496,23 +471,4 @@ public class PurchaseAddController extends CommonDataSaveController {
         }
     }
 
-    private ValidationResult validateAddProduct(
-            boolean isProductSelected,
-            boolean isProductCategoryDrugs,
-            LocalDate expiredDate) {
-        ControlValidator cv = new ControlValidator(resources);
-        cv.validateCustom(() -> !isProductSelected, MessageCode.ERROR_EMPTY_PRODUCT);
-        cv.validatePositive(tfProductQuantity, MessageCode.ERROR_INVALID_QUANTITY);
-        cv.validatePositive(tfBuyingPrice, MessageCode.ERROR_INVALID_BUYING_PRICE);
-        if (StringUtils.isNotBlank(tfGeneralSellingPrice.getText())) {
-            cv.validatePositive(tfGeneralSellingPrice, MessageCode.ERROR_INVALID_GENERAL_SELLING_PRICE);
-        }
-        if (StringUtils.isNotBlank(tfPrescriptionSellingPrice.getText()) && isProductCategoryDrugs) {
-            cv.validatePositive(tfPrescriptionSellingPrice, MessageCode.ERROR_INVALID_PRESCRIPTION_SELLING_PRICE);
-        }
-        cv.validateCustom(
-                () -> StringUtils.isNotBlank(tfExpiredDate.getPlainText()) && expiredDate == null,
-                MessageCode.ERROR_INVALID_EXPIRED_DATE);
-        return cv.getResult();
-    }
 }

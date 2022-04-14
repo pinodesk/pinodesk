@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
+import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.DomainError;
 import pinus.desktop.domain.Product;
 import pinus.desktop.domain.ProductExpiry;
@@ -28,8 +29,9 @@ import pinus.desktop.repository.ProductStockRepository;
 import pinus.desktop.repository.PurchaseDetailRepository;
 import pinus.desktop.repository.PurchaseRepository;
 import pinus.desktop.viewmodel.PurchaseAddVM;
-import pinus.desktop.viewmodel.PurchaseAddVM.PurchaseProductVM;
+import pinus.desktop.viewmodel.PurchaseEditVM;
 import pinus.desktop.viewmodel.PurchaseFilterVM;
+import pinus.desktop.viewmodel.PurchaseProductVM;
 import pinus.desktop.viewmodel.PurchaseVM;
 
 @Service
@@ -52,6 +54,9 @@ public class PurchaseService extends BaseService {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private ConfigurationService configurationService;
 
     @Cacheable(CacheNameConstants.PURCHASES_BY_FILTER)
     public List<PurchaseVM> searchPurchases(PurchaseFilterVM filter) {
@@ -83,15 +88,10 @@ public class PurchaseService extends BaseService {
         purchase.setTotalPurchase(purchaseAdd.getTotalPurchase());
         Long purchaseId = purchaseRepository.create(purchase);
         purchaseAdd.getPurchaseProducts().stream().forEach(purchaseProduct -> {
-            Long productId = purchaseProduct.getProduct().getId();
+            Long productId = purchaseProduct.getProductId();
             Integer purchaseQuantity = purchaseProduct.getQuantity();
             Product product = productRepository.readOne(productId).orElseThrow();
             createPurchaseDetail(purchaseId, purchaseProduct, productId, purchaseQuantity);
-            createProductPrice(activityName, invoiceNumber, purchaseId, purchaseProduct, productId);
-            Integer lastStockQuantity = productStockRepository.findTopByProductId(productId).stream()
-                    .map(ProductStock::getFinalQuantity).findAny().orElse(0);
-            Integer nextStockQuantity = lastStockQuantity + purchaseQuantity;
-            createProductStock(activityName, invoiceNumber, purchaseId, productId, purchaseQuantity, nextStockQuantity);
             if (purchaseProduct.getExpiredDate() != null) {
                 Integer lastExpiryQuantity = productExpiryRepository.findTopByProductId(productId).stream()
                         .map(ProductExpiry::getFinalQuantity).findAny().orElse(0);
@@ -104,7 +104,41 @@ public class PurchaseService extends BaseService {
                         purchaseQuantity,
                         lastExpiryQuantity);
             }
+            Integer lastStockQuantity = productStockRepository.findTopByProductId(productId).stream()
+                    .map(ProductStock::getFinalQuantity).findAny().orElse(0);
+            Integer nextStockQuantity = lastStockQuantity + purchaseQuantity;
+            createProductStock(activityName, invoiceNumber, purchaseId, productId, purchaseQuantity, nextStockQuantity);
+            createProductPrice(activityName, invoiceNumber, purchaseId, purchaseProduct, productId);
             updateProduct(purchaseProduct, productId, product, nextStockQuantity);
+        });
+    }
+
+    @CacheEvict(value = { CacheNameConstants.PURCHASES_BY_FILTER }, allEntries = true)
+    @Transactional
+    public void updatePurchase(PurchaseEditVM purchaseEdit, Long purchaseId) {
+        String invoiceNumber = purchaseEdit.getInvoiceNumber();
+        Purchase purchase = purchaseRepository.readOne(purchaseId)
+                .orElseThrow(() -> new DomainException(DomainError.PURCHASE_NOT_FOUND_BY_ID));
+        if (purchaseRepository
+                .existsByInvoiceNumberAndSupplierId(invoiceNumber, purchaseEdit.getSupplierId(), purchase.getId())) {
+            throw new DomainException(DomainError.PURCHASE_OTHER_EXISTS_BY_INVOICE_NUMBER_AND_SUPPLIER_ID);
+        }
+        purchase.setDiscount(purchaseEdit.getDiscount());
+        purchase.setInvoiceDate(purchaseEdit.getInvoiceDate());
+        purchase.setInvoiceNumber(invoiceNumber);
+        purchase.setPaymentDueDate(purchaseEdit.getPaymentDueDate());
+        purchase.setPaymentStatus(purchaseEdit.getPaymentStatus().name());
+        purchase.setSupplierId(purchaseEdit.getSupplierId());
+        purchase.setTax(purchaseEdit.getTax());
+        purchase.setTotalPayment(purchaseEdit.getTotalPayment());
+        purchase.setTotalProduct(purchaseEdit.getTotalProduct());
+        purchase.setTotalPurchase(purchaseEdit.getTotalPurchase());
+        purchaseRepository.update(purchase);
+        purchaseDetailRepository.deleteByPurchaseId(purchaseId);
+        purchaseEdit.getPurchaseProducts().stream().forEach(purchaseProduct -> {
+            Long productId = purchaseProduct.getProductId();
+            Integer purchaseQuantity = purchaseProduct.getQuantity();
+            createPurchaseDetail(purchaseId, purchaseProduct, productId, purchaseQuantity);
         });
     }
 
@@ -129,14 +163,18 @@ public class PurchaseService extends BaseService {
             Integer nextStockQuantity) {
         productExpiryRepository.findTopByProductIdOrderByExpiredDate(productId)
                 .ifPresent(px -> product.setClosestExpiredDate(px.getExpiredDate()));
-        List<PurchaseDetail> purchaseDetails = purchaseDetailRepository.findByProductId(productId);
-        BigDecimal averageBuyingPrice = purchaseDetails.stream().map(PurchaseDetail::getBuyingPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add).divide(BigDecimal.valueOf(purchaseDetails.size()));
+        BigDecimal averageBuyingPrice = calculateProductAverageBuyingPrice(productId);
         product.setAverageBuyingPrice(averageBuyingPrice);
         product.setGeneralSellingPrice(purchaseProduct.getGeneralSellingPrice());
         product.setPrescriptionSellingPrice(purchaseProduct.getPrescriptionSellingPrice());
         product.setQuantity(nextStockQuantity);
         productRepository.update(product);
+    }
+
+    private BigDecimal calculateProductAverageBuyingPrice(Long productId) {
+        List<PurchaseDetail> purchaseDetails = purchaseDetailRepository.findByProductId(productId);
+        return purchaseDetails.stream().map(PurchaseDetail::getBuyingPrice).reduce(BigDecimal.ZERO, BigDecimal::add)
+                .divide(BigDecimal.valueOf(purchaseDetails.size()));
     }
 
     private void createProductExpiry(
@@ -200,6 +238,11 @@ public class PurchaseService extends BaseService {
     public void removePurchases(List<Long> ids) {
         purchaseRepository.delete(ids);
         purchaseDetailRepository.delete(new Where().in(PurchaseDetail.C_PURCHASE_ID, ids));
+    }
+
+    public List<PurchaseProductVM> getPurchaseProducts(Long purchaseId) {
+        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
+        return purchaseDetailRepository.findByPurchaseIdJoinProducts(purchaseId, languageCode);
     }
 
 }

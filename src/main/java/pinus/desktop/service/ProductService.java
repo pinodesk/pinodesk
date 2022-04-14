@@ -36,7 +36,7 @@ import pinus.desktop.viewmodel.ProductExpiryVM;
 import pinus.desktop.viewmodel.ProductFilterVM;
 import pinus.desktop.viewmodel.ProductPriceVM;
 import pinus.desktop.viewmodel.ProductStockVM;
-import pinus.desktop.viewmodel.SearchProductsByFilterVM;
+import pinus.desktop.viewmodel.ProductVM;
 
 @Service
 public class ProductService extends BaseService {
@@ -60,13 +60,13 @@ public class ProductService extends BaseService {
     private ProductExpiryRepository productExpiryRepository;
 
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
-    public List<SearchProductsByFilterVM> searchProductsByFilter(ProductFilterVM filter) {
+    public List<ProductVM> searchProductsByFilter(ProductFilterVM filter) {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        return productRepository.queryByFilter(filter, languageCode);
+        return productRepository.findByFilter(filter, languageCode);
     }
 
     @Cacheable(CacheNameConstants.PRODUCTS_BY_KEYWORD)
-    public List<SearchProductsByFilterVM> searchProductsByKeyword(String keyword) {
+    public List<ProductVM> searchProductsByKeyword(String keyword) {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
         return productRepository.findByKeyword(keyword, languageCode);
     }

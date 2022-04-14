@@ -7,15 +7,12 @@ import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
 import pinus.desktop.domain.Product;
 import pinus.desktop.viewmodel.ProductFilterVM;
 import pinus.desktop.viewmodel.ProductVM;
-import pinus.desktop.viewmodel.SearchProductsByFilterVM;
 
 public interface ProductRepository extends CommonRepository<Product> {
 
-    List<ProductVM> filter(ProductFilterVM filter, String languageCode);
+    List<ProductVM> findByFilter(ProductFilterVM filter, String languageCode);
 
-    List<SearchProductsByFilterVM> queryByFilter(ProductFilterVM filter, String languageCode);
-
-    List<SearchProductsByFilterVM> findByKeyword(String keyword, String languageCode);
+    List<ProductVM> findByKeyword(String keyword, String languageCode);
 
     boolean existsByCode(String code, Long... excludedIds);
 

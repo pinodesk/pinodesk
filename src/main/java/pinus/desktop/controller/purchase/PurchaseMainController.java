@@ -108,7 +108,11 @@ public class PurchaseMainController extends BaseController {
     void onActionBtnFilter(ActionEvent event) {
         setPageData(purchaseFilter);
         StageUtils.modal(Page.TRANSACTION_PURCHASE_FILTER, false, we -> {
-            purchaseFilter = getPageData();
+            PurchaseFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            purchaseFilter = result;
             searchPurchases();
         });
     }
@@ -219,7 +223,7 @@ public class PurchaseMainController extends BaseController {
     private void handleActionTablePurchase() {
         if (TableViewUtils.hasItemSelected(tblPurchase)) {
             setPageData(TableViewUtils.getSelectedItem(tblPurchase));
-            StageUtils.modal(Page.TRANSACTION_PURCHASE_EDIT, false, event -> {
+            StageUtils.modal(Page.TRANSACTION_PURCHASE_EDIT, event -> {
                 searchPurchases();
             });
         }

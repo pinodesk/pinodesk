@@ -112,6 +112,11 @@
     background-color: #dddddd;
 }
 
+.bg-danger {
+    -fx-background-color: #ff7777;
+    background-color: #ff7777;
+}
+
 .bg-disabled {
     -fx-opacity: 0.4;
 }

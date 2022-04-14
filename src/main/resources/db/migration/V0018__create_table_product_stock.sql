@@ -1,5 +1,5 @@
 create table if not exists product_stock (
-	id IDENTITY NOT NULL PRIMARY KEY,
+	id bigint not null auto_increment,
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
@@ -14,16 +14,16 @@ create table if not exists product_stock (
 	user_id bigint not null,
 	activity varchar(128) not null,
 	remarks varchar(128),
+	primary key (id),
+	index idx_product_stock__deleted_at (deleted_at),
+	index idx_product_stock__product_id (product_id),
+	index idx_product_stock__product_id__deleted_at (product_id, deleted_at),
+	index idx_product_stock__purchase_id (purchase_id),
+	index idx_product_stock__purchase_id__deleted_at (purchase_id, deleted_at),
+	index idx_product_stock__sale_id (sale_id),
+	index idx_product_stock__sale_id__deleted_at (sale_id, deleted_at),
+	index idx_product_stock__user_id (user_id),
+	index idx_product_stock__user_id__deleted_at (user_id, deleted_at),
 	constraint fk_product_stock__product_id foreign key (product_id) references product(id),
 	constraint fk_product_stock__purchase_id foreign key (purchase_id) references purchase(id)
 );
-
-create index idx_product_stock__deleted_at on product_stock (deleted_at);
-create index idx_product_stock__product_id on product_stock (product_id);
-create index idx_product_stock__product_id__deleted_at on product_stock (product_id, deleted_at);
-create index idx_product_stock__purchase_id on product_stock (purchase_id);
-create index idx_product_stock__purchase_id__deleted_at on product_stock (purchase_id, deleted_at);
-create index idx_product_stock__sale_id on product_stock (sale_id);
-create index idx_product_stock__sale_id__deleted_at on product_stock (sale_id, deleted_at);
-create index idx_product_stock__user_id on product_stock (user_id);
-create index idx_product_stock__user_id__deleted_at on product_stock (user_id, deleted_at);

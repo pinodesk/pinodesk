@@ -24,28 +24,13 @@ import pinus.desktop.domain.Product;
 import pinus.desktop.viewmodel.ProductCategoryVM;
 import pinus.desktop.viewmodel.ProductFilterVM;
 import pinus.desktop.viewmodel.ProductVM;
-import pinus.desktop.viewmodel.SearchProductsByFilterVM;
 import pinus.desktop.viewmodel.UnitVM;
 
 @Repository
 public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepository {
 
     @Override
-    public List<ProductVM> filter(ProductFilterVM filter, String languageCode) {
-        WhereParamsHelper whereParamsHelper = where(filter);
-        StringBuilder sb = new StringBuilder();
-        sb.append(" SELECT p.*, pc.id as category_id, pc.code as category_code, pc.name as category_name ");
-        sb.append(" FROM product p ");
-        sb.append(
-                " LEFT JOIN product_category pc ON pc.code = p.category_code AND pc.deleted_at IS NULL AND pc.language_code = ? ");
-        sb.append(" WHERE p.deleted_at IS NULL ");
-        sb.append(whereParamsHelper.getQueryAppend());
-        whereParamsHelper.getParams().add(0, languageCode);
-        return performSelect(sb.toString(), whereParamsHelper.getParams(), ProductVM.class);
-    }
-
-    @Override
-    public List<SearchProductsByFilterVM> queryByFilter(ProductFilterVM filter, String languageCode) {
+    public List<ProductVM> findByFilter(ProductFilterVM filter, String languageCode) {
         String sql = """
                 select
                     a.*,
@@ -58,7 +43,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         WhereParamsHelper whereParamsHelper = where(filter);
         sql = sql + whereParamsHelper.getQueryAppend().toString();
         whereParamsHelper.getParams().add(0, languageCode);
-        return performSelect(sql, whereParamsHelper.getParams(), SearchProductsByFilterVM.class);
+        return performSelect(sql, whereParamsHelper.getParams(), ProductVM.class);
     }
 
     private WhereParamsHelper where(ProductFilterVM filter) {
@@ -155,7 +140,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
     }
 
     @Override
-    public List<SearchProductsByFilterVM> findByKeyword(String keyword, String languageCode) {
+    public List<ProductVM> findByKeyword(String keyword, String languageCode) {
         StringBuilder sb = new StringBuilder();
         sb.append("""
                 select
@@ -178,7 +163,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
                     """);
             lb.add(likeValue).add(likeValue).add(likeValue).add(likeValue).add(likeValue);
         }
-        return performSelect(sb.toString(), lb.build(), SearchProductsByFilterVM.class);
+        return performSelect(sb.toString(), lb.build(), ProductVM.class);
     }
 
     @Override

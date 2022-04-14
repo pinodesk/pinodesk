@@ -8,7 +8,7 @@ import lombok.Data;
 import pinus.desktop.constant.PaymentStatus;
 
 @Data
-public class PurchaseAddVM {
+public class PurchaseEditVM {
     private Long supplierId;
     private String invoiceNumber;
     private LocalDate invoiceDate;

@@ -32,7 +32,7 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
     }
 
     @FXML
-    void onActionBtnSave(ActionEvent event) {
+    protected void onActionBtnSave(ActionEvent event) {
         processDataSave();
         if (hasDataSaved) {
             setPageData(lastDataSaved);
@@ -41,7 +41,7 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
     }
 
     @FXML
-    void onActionBtnCancel(ActionEvent event) {
+    protected void onActionBtnCancel(ActionEvent event) {
         if (hasDataSaved) {
             setPageData(lastDataSaved);
         }

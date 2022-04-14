@@ -14,13 +14,13 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.purchase.PurchaseAddController">
+<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.purchase.PurchaseEditController">
    <children>
       <VBox AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <AnchorPane prefWidth="774.0" style="-fx-background-color: white;">
                <children>
-                  <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_add_purchase" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+                  <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_edit_purchase" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -29,6 +29,18 @@
                      </padding>
                   </Label>
                </children>
+            </AnchorPane>
+            <AnchorPane prefWidth="774.0" styleClass="bg-danger">
+               <children>
+                  <Label layoutX="14.0" layoutY="8.0" text="%lbl_warning_edit_purchase" textFill="WHITE" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </Label>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="10.0" />
+               </VBox.margin>
             </AnchorPane>
             <VBox spacing="10.0" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
                <children>
@@ -278,7 +290,7 @@
                                     </HBox>
                                     <HBox spacing="10.0">
                                        <children>
-                                          <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                          <VBox disable="true" spacing="5.0" HBox.hgrow="ALWAYS">
                                              <children>
                                                 <Label text="%lbl_batch_number">
                                                    <font>
@@ -292,7 +304,7 @@
                                                 </TextField>
                                              </children>
                                           </VBox>
-                                          <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                          <VBox disable="true" spacing="5.0" HBox.hgrow="ALWAYS">
                                              <children>
                                                 <Label text="%lbl_expired_date">
                                                    <font>
@@ -310,7 +322,7 @@
                                     </HBox>
                                     <HBox spacing="10.0">
                                        <children>
-                                          <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                          <VBox disable="true" spacing="5.0" HBox.hgrow="ALWAYS">
                                              <children>
                                                 <Label text="%lbl_general_selling_price">
                                                    <font>
@@ -370,10 +382,6 @@
                                     <TableColumn fx:id="colQuantity" minWidth="-Infinity" prefWidth="150.0" text="%lbl_quantity" />
                                     <TableColumn fx:id="colBuyingPrice" minWidth="-Infinity" prefWidth="150.0" text="%lbl_buying_price" />
                                     <TableColumn fx:id="colSubtotal" minWidth="-Infinity" prefWidth="150.0" text="%lbl_subtotal" />
-                                    <TableColumn fx:id="colGeneralSellingPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_general_selling_price" />
-                                    <TableColumn fx:id="colPrescriptionSellingPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_prescription_selling_price" />
-                                    <TableColumn fx:id="colBactchNumber" minWidth="-Infinity" prefWidth="150.0" text="%lbl_batch_number" />
-                                    <TableColumn fx:id="colExpiredDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_expired_date" />
                                  </columns>
                               </TableView>
                            </children>
@@ -482,7 +490,7 @@
             <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
                   <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
-                  <Button fx:id="btnSaveAndAdd" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSaveAndAdd" styleClass="btn-primary" text="%btn_save_and_add" textFill="WHITE" />
+                  <Button fx:id="btnRemove" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemove" styleClass="btn-danger" text="%btn_remove" textFill="WHITE" />
                   <Button fx:id="btnSave" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSave" styleClass="btn-primary" text="%btn_save" textFill="WHITE" />
                </children>
             </HBox>
