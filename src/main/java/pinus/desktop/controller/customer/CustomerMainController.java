@@ -24,6 +24,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.controller.BaseController;
@@ -154,12 +155,12 @@ public class CustomerMainController extends BaseController {
 
     @SuppressWarnings("unchecked")
     private void searchCustomers() {
-        tableCustomer.setPlaceholder(new Label(translate("lbl.loadingdata")));
+        tableCustomer.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tableCustomer.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> customerService.searchCustomers(customerFilter))
                 .thenAccept(customers -> Platform.runLater(() -> {
                     if (customers.isEmpty()) {
-                        tableCustomer.setPlaceholder(new Label(translate("lbl.nodata")));
+                        tableCustomer.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                     }
                     tableCustomer.setItems(FXCollections.observableList(customers));

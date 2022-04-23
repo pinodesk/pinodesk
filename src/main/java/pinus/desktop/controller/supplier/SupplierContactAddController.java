@@ -7,6 +7,7 @@ import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
@@ -61,7 +62,10 @@ public class SupplierContactAddController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
-        // TODO Auto-generated method stub
+        validator.validateBlank(tfName, MessageCode.ERROR_EMPTY_NAME);
+        validator.validateCustom(
+                () -> StringUtils.isAllBlank(tfPhone.getText(), tfEmail.getText()),
+                MessageCode.ERROR_EMPTY_PHONE_OR_EMAIL);
     }
 
     @Override

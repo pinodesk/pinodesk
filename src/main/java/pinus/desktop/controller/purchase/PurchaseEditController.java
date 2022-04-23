@@ -197,6 +197,9 @@ public class PurchaseEditController extends CommonDataSaveController {
             tblPurchaseProduct.getItems().remove(TableViewUtils.getSelectedItem(tblPurchaseProduct));
             calculatePurchaseSummary();
         }
+        if (tblPurchaseProduct.getItems().isEmpty()) {
+            tblPurchaseProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        }
     }
 
     @FXML
@@ -294,6 +297,7 @@ public class PurchaseEditController extends CommonDataSaveController {
                 new NumberCellFactory<>(locale),
                 PurchaseProductVM::getSubtotal,
                 StyleConstants.ALIGN_RIGHT);
+        tblPurchaseProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tblPurchaseProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblPurchaseProduct.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

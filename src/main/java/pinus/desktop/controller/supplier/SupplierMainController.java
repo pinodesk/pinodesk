@@ -23,6 +23,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.controller.BaseController;
@@ -149,12 +150,12 @@ public class SupplierMainController extends BaseController {
     }
 
     private void searchSuppliers() {
-        tableSupplier.setPlaceholder(new Label(translate("lbl.loadingdata")));
+        tableSupplier.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tableSupplier.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> supplierService.searchSuppliers(supplierFilter))
                 .thenAccept(suppliers -> Platform.runLater(() -> {
                     if (suppliers.isEmpty()) {
-                        tableSupplier.setPlaceholder(new Label(translate("lbl.nodata")));
+                        tableSupplier.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                     }
                     tableSupplier.setItems(FXCollections.observableList(suppliers));

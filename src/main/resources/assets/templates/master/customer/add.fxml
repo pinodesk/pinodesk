@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.customer.CustomerAddController">
+<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.customer.CustomerAddController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl.title.addcustomer" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_add_customer" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -42,7 +42,7 @@
                      <children>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.name">
+                              <Label text="%lbl_name">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -56,12 +56,12 @@
                         </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.code">
+                              <Label text="%lbl_code">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfCode" disable="true" styleClass="input-primary">
+                              <TextField fx:id="tfCode" editable="false" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -74,7 +74,7 @@
                      <children>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.phone">
+                              <Label text="%lbl_phone">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -88,7 +88,7 @@
                         </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.email">
+                              <Label text="%lbl_email">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -106,7 +106,7 @@
                      <children>
                         <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.address">
+                              <Label text="%lbl_address">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -134,9 +134,9 @@
          <children>
             <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
-                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn.cancel" textFill="WHITE" />
-                  <Button fx:id="btnSaveAndAdd" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSaveAndAdd" styleClass="btn-primary" text="%btn.saveandadd" textFill="WHITE" />
-                  <Button fx:id="btnSave" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSave" styleClass="btn-primary" text="%btn.save" textFill="WHITE" />
+                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
+                  <Button fx:id="btnSaveAndAdd" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSaveAndAdd" styleClass="btn-primary" text="%btn_save_and_add" textFill="WHITE" />
+                  <Button fx:id="btnSave" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSave" styleClass="btn-primary" text="%btn_save" textFill="WHITE" />
                </children>
             </HBox>
          </children>

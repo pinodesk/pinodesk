@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.configuration.ConfigurationMainController">
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.configuration.ConfigurationMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl.title.configuration" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_configuration" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -29,7 +29,7 @@
             <Insets left="10.0" right="10.0" top="10.0" />
          </VBox.margin>
          <children>
-            <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onActionBtnSave" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn.save" textFill="WHITE">
+            <Button fx:id="btnSave" mnemonicParsing="false" onAction="#onActionBtnSave" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_save" textFill="WHITE">
                <font>
                   <Font size="13.0" />
                </font>
@@ -42,7 +42,7 @@
                <children>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="%lbl.storename">
+                        <Label text="%lbl_store_name">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -56,7 +56,7 @@
                   </VBox>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="%lbl.storeaddress">
+                        <Label text="%lbl_store_address">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -70,7 +70,7 @@
                   </VBox>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="%lbl.vatpercentage">
+                        <Label text="%lbl_vat_percentage">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -84,7 +84,7 @@
                   </VBox>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="%lbl.drugcategorybase">
+                        <Label text="%lbl_drug_category_base">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -94,7 +94,7 @@
                   </VBox>
                   <VBox maxWidth="250.0" spacing="5.0">
                      <children>
-                        <Label text="%lbl.language">
+                        <Label text="%lbl_language">
                            <font>
                               <Font size="13.0" />
                            </font>
