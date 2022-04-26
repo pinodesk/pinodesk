@@ -6,7 +6,7 @@ create table if not exists purchase (
 	supplier_id bigint not null,
 	invoice_number varchar(64) not null,
 	invoice_date date not null,
-	payment_status varchar(6), -- PAID, UNPAID
+	payment_status varchar(6) not null, -- PAID, UNPAID
 	payment_due_date date,
 	discount decimal(12,2),	
 	tax decimal(12,2),
