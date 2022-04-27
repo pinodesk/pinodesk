@@ -1,10 +1,9 @@
-package pinus.desktop.controller.purchase;
+package pinus.desktop.controller.sale;
 
 import static com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
 import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrNull;
-
 import java.time.format.DateTimeFormatter;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
@@ -23,61 +22,65 @@ import pinus.desktop.constant.PaymentStatus;
 import pinus.desktop.constant.StringConstants;
 import pinus.desktop.controller.CommonDataFilterController;
 import pinus.desktop.viewmodel.ChooseResultVM;
-import pinus.desktop.viewmodel.PurchaseFilterVM;
-import pinus.desktop.viewmodel.SupplierVM;
+import pinus.desktop.viewmodel.CustomerVM;
+import pinus.desktop.viewmodel.SaleFilterVM;
 
-public class PurchaseFilterController extends CommonDataFilterController<PurchaseFilterVM> {
-
-    @FXML
-    private TextField tfInvoiceNumber;
-
-    @FXML
-    private MaskedTextField tfInvoiceDateMin;
-
-    @FXML
-    private MaskedTextField tfInvoiceDateMax;
-
-    @FXML
-    private TextField tfSupplier;
+public class SaleFilterController extends CommonDataFilterController<SaleFilterVM> {
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
 
     @FXML
-    private MaskedTextField tfDueDateMin;
-
-    @FXML
     private MaskedTextField tfDueDateMax;
 
     @FXML
-    private TextField tfTotalPaymentMin;
+    private MaskedTextField tfDueDateMin;
+
+    @FXML
+    private MaskedTextField tfCreatedDateMax;
+
+    @FXML
+    private MaskedTextField tfCreatedDateMin;
+
+    @FXML
+    private TextField tfInvoiceNumber;
+
+    @FXML
+    private TextField tfCustomer;
+
+    @FXML
+    private TextField tfDoctor;
 
     @FXML
     private TextField tfTotalPaymentMax;
 
     @FXML
-    private TextField tfTotalProductMin;
+    private TextField tfTotalPaymentMin;
 
     @FXML
     private TextField tfTotalProductMax;
 
-    private SupplierVM selectedSupplier;
+    @FXML
+    private TextField tfTotalProductMin;
+
+    private CustomerVM selectedCustomer;
 
     @Override
     protected void initDataFilterControlValues() {
         if (currentFilter != null) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
-            tfSupplier.setText(currentFilter.getSupplierName());
+            tfCustomer.setText(currentFilter.getCustomerName());
+            tfDoctor.setText(currentFilter.getDoctorName());
             tfTotalPaymentMax.setText(toStringOrNull(currentFilter.getTotalPaymentMax()));
             tfTotalPaymentMin.setText(toStringOrNull(currentFilter.getTotalPaymentMin()));
             tfTotalProductMax.setText(toStringOrNull(currentFilter.getTotalProductMax()));
             tfTotalProductMin.setText(toStringOrNull(currentFilter.getTotalProductMin()));
-            if (currentFilter.getInvoiceDateMin() != null) {
-                tfInvoiceDateMin.setText(currentFilter.getInvoiceDateMin().format(dateFormatter));
+            if (currentFilter.getCreatedDateMin() != null) {
+                tfCreatedDateMin.setText(currentFilter.getCreatedDateMin().format(dateFormatter));
             }
-            if (currentFilter.getInvoiceDateMax() != null) {
-                tfInvoiceDateMax.setText(currentFilter.getInvoiceDateMax().format(dateFormatter));
+            if (currentFilter.getCreatedDateMax() != null) {
+                tfCreatedDateMax.setText(currentFilter.getCreatedDateMax().format(dateFormatter));
             }
             if (currentFilter.getDueDateMax() != null) {
                 tfDueDateMax.setText(currentFilter.getDueDateMax().format(dateFormatter));
@@ -96,22 +99,32 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     }
 
     @Override
-    protected PurchaseFilterVM getFreshFilterValues() {
-        PurchaseFilterVM filter = new PurchaseFilterVM();
+    protected void initDataFilterControlActions() {
+        TextFieldUtils.setDigitTextFields(tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax, tfTotalProductMin);
+        ComboBoxUtils.initSimple(
+                cbPaymentStatus,
+                new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
+                new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate(CommonLabel.LBL_UNPAID)));
+    }
+
+    @Override
+    protected SaleFilterVM getFreshFilterValues() {
+        SaleFilterVM filter = new SaleFilterVM();
         filter.setInvoiceNumber(tfInvoiceNumber.getText());
-        filter.setInvoiceDateMax(
-                parseLocalDateQuietly(tfInvoiceDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setInvoiceDateMin(
-                parseLocalDateQuietly(tfInvoiceDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setCreatedDateMax(
+                parseLocalDateQuietly(tfCreatedDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setCreatedDateMin(
+                parseLocalDateQuietly(tfCreatedDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         filter.setDueDateMax(parseLocalDateQuietly(tfDueDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         filter.setDueDateMin(parseLocalDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         SimpleComboBoxModel selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
         filter.setPaymentStatus(
                 selectedPaymentStatus == null || selectedPaymentStatus.getValue().isEmpty() ?
                         null : PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue()));
-        if (selectedSupplier != null) {
-            filter.setSupplierId(selectedSupplier.getId());
-            filter.setSupplierName(selectedSupplier.getName());
+        if (selectedCustomer != null) {
+            filter.setCustomerId(selectedCustomer.getId());
+            filter.setCustomerName(selectedCustomer.getName());
         }
         filter.setTotalPaymentMax(toBigDecimalOrNull(tfTotalPaymentMax.getText()));
         filter.setTotalPaymentMin(toBigDecimalOrNull(tfTotalPaymentMin.getText()));
@@ -124,17 +137,18 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     protected void resetControls() {
         TextFieldUtils.setTextEmpty(
                 tfInvoiceNumber,
-                tfSupplier,
+                tfCustomer,
+                tfDoctor,
                 tfTotalPaymentMax,
                 tfTotalPaymentMin,
                 tfTotalProductMax,
                 tfTotalProductMin);
-        tfInvoiceDateMax.setPlainText("");
-        tfInvoiceDateMin.setPlainText("");
+        tfCreatedDateMax.setPlainText("");
+        tfCreatedDateMin.setPlainText("");
         tfDueDateMax.setPlainText("");
         tfDueDateMin.setPlainText("");
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
-        selectedSupplier = null;
+        selectedCustomer = null;
     }
 
     @Override
@@ -142,27 +156,16 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         // No services to initialize
     }
 
-    @Override
-    protected void initDataFilterControlActions() {
-        TextFieldUtils.setDigitTextFields(tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax, tfTotalProductMin);
-        ComboBoxUtils.initSimple(
-                cbPaymentStatus,
-                new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
-                new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate(CommonLabel.LBL_UNPAID)));
-        setSupplierChooser(tfSupplier, this::handleSelectedSupplier, tfTotalProductMin);
-    }
-
-    public void handleSelectedSupplier(ChooseResultVM<SupplierVM> result) {
+    public void handleSelectedCustomer(ChooseResultVM<CustomerVM> result) {
         if (result == null || result.isCancelled()) {
             return;
         }
-        result.getData().ifPresentOrElse(supplier -> {
-            selectedSupplier = supplier;
-            tfSupplier.setText(supplier.getName());
+        result.getData().ifPresentOrElse(customer -> {
+            selectedCustomer = customer;
+            tfCustomer.setText(customer.getName());
         }, () -> {
-            selectedSupplier = null;
-            tfSupplier.setText("");
+            selectedCustomer = null;
+            tfCustomer.setText("");
         });
     }
 

@@ -99,7 +99,15 @@ public class SaleMainController extends BaseController {
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        // Show filter sales dialog
+        setPageData(saleFilter);
+        StageUtils.modal(Page.TRANSACTION_SALE_FILTER, false, we -> {
+            SaleFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            saleFilter = result;
+            searchSales();
+        });
     }
 
     @FXML
@@ -166,6 +174,7 @@ public class SaleMainController extends BaseController {
 
     @Override
     protected void initControlValues() {
+        saleFilter = new SaleFilterVM();
         searchSales();
     }
 

@@ -153,7 +153,6 @@ public class CustomerMainController extends BaseController {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     private void searchCustomers() {
         tableCustomer.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tableCustomer.setItems(FXCollections.observableArrayList());
@@ -164,7 +163,7 @@ public class CustomerMainController extends BaseController {
                         lblRows.setText("0");
                     }
                     tableCustomer.setItems(FXCollections.observableList(customers));
-                    tableCustomer.getSortOrder().setAll(colName); // Always sort by name after searching
+                    TableViewUtils.sortDescending(tableCustomer, colUpdatedAt);
                     lblRows.setText(customers.size() + "");
                 }));
     }
