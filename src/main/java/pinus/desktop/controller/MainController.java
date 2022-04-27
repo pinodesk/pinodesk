@@ -77,6 +77,11 @@ public class MainController extends BaseController {
     }
 
     @FXML
+    void onActionBtnMenuSales(ActionEvent event) {
+        changeContent(Page.TRANSACTION_SALE_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
     void onActionBtnMenuConfiguration(ActionEvent event) {
         changeContent(Page.SETTINGS_CONFIGURATION_MAIN, (Button) event.getSource());
     }

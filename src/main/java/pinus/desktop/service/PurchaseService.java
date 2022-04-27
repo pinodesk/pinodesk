@@ -236,8 +236,8 @@ public class PurchaseService extends BaseService {
     @CacheEvict(value = { CacheNameConstants.PURCHASES_BY_FILTER }, allEntries = true)
     @Transactional
     public void removePurchases(List<Long> ids) {
-        purchaseRepository.delete(ids);
         purchaseDetailRepository.delete(new Where().in(PurchaseDetail.C_PURCHASE_ID, ids));
+        purchaseRepository.delete(ids);
     }
 
     public List<PurchaseProductVM> getPurchaseProducts(Long purchaseId) {

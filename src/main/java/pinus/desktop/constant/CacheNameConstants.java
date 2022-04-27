@@ -17,4 +17,5 @@ public interface CacheNameConstants {
     String SUPPLIERS_BY_KEYWORD = "SUPPLIERS_BY_KEYWORD";
     String LANGUAGES_ALL = "LANGUAGES_ALL";
     String PURCHASES_BY_FILTER = "PURCHASES_BY_FILTER";
+    String SALES_BY_FILTER = "SALES_BY_FILTER";
 }
