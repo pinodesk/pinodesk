@@ -207,6 +207,9 @@ public class PurchaseAddController extends CommonDataSaveController {
             tblPurchaseProduct.getItems().remove(TableViewUtils.getSelectedItem(tblPurchaseProduct));
             calculatePurchaseSummary();
         }
+        if (tblPurchaseProduct.getItems().isEmpty()) {
+            tblPurchaseProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        }
     }
 
     @FXML
@@ -316,6 +319,7 @@ public class PurchaseAddController extends CommonDataSaveController {
                 colExpiredDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PurchaseProductVM::getExpiredDate);
+        tblPurchaseProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tblPurchaseProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblPurchaseProduct.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

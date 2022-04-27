@@ -15,7 +15,7 @@
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl.title.choosesupplier" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_choose_supplier" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -30,7 +30,7 @@
             <Insets left="10.0" right="10.0" />
          </VBox.margin>
          <children>
-            <TextField fx:id="tfSearch" minHeight="30.0" promptText="%prompt.searchsuppliers" styleClass="input-primary" HBox.hgrow="ALWAYS">
+            <TextField fx:id="tfSearch" minHeight="30.0" promptText="%prompt_search_suppliers" styleClass="input-primary" HBox.hgrow="ALWAYS">
                <font>
                   <Font size="13.0" />
                </font>
@@ -39,13 +39,13 @@
       </HBox>
       <TableView fx:id="tblSupplier" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="200.0" text="%lbl.name" />
-          <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl.code" />
-            <TableColumn fx:id="colPhone" minWidth="-Infinity" prefWidth="200.0" text="%lbl.phone" />
-            <TableColumn fx:id="colEmail" minWidth="-Infinity" prefWidth="200.0" text="%lbl.email" />
-            <TableColumn fx:id="colWebsite" minWidth="-Infinity" prefWidth="200.0" text="%lbl.website" />
-            <TableColumn fx:id="colAddress" minWidth="-Infinity" prefWidth="300.0" text="%lbl.address" />
-            <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl.updatedat" />
+          <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
+          <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_code" />
+            <TableColumn fx:id="colPhone" minWidth="-Infinity" prefWidth="200.0" text="%lbl_phone" />
+            <TableColumn fx:id="colEmail" minWidth="-Infinity" prefWidth="200.0" text="%lbl_email" />
+            <TableColumn fx:id="colWebsite" minWidth="-Infinity" prefWidth="200.0" text="%lbl_website" />
+            <TableColumn fx:id="colAddress" minWidth="-Infinity" prefWidth="300.0" text="%lbl_address" />
+            <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
         </columns>
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -55,8 +55,8 @@
          <children>
             <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
-                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn.cancel" textFill="WHITE" />
-                  <Button fx:id="btnChoose" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnChoose" styleClass="btn-primary" text="%btn.choose" textFill="WHITE" />
+                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
+                  <Button fx:id="btnChoose" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnChoose" styleClass="btn-primary" text="%btn_choose" textFill="WHITE" />
                </children>
             </HBox>
          </children>

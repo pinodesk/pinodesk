@@ -22,6 +22,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import pinus.desktop.constant.CommonConstants;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.CommonDataChooseController;
 import pinus.desktop.service.ProductService;
@@ -145,12 +146,12 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
     }
 
     private void searchProducts() {
-        tblProduct.setPlaceholder(new Label(translate("lbl.loadingdata")));
+        tblProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tblProduct.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> productService.searchProductsByKeyword(tfSearch.getText()))
                 .thenAccept(products -> Platform.runLater(() -> {
                     if (products.isEmpty()) {
-                        tblProduct.setPlaceholder(new Label(translate("lbl.nodata")));
+                        tblProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblProduct.setItems(FXCollections.observableList(products));
                     TableViewUtils.sortAscending(tblProduct, colName);

@@ -17,6 +17,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import pinus.desktop.constant.CommonConstants;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.controller.CommonDataChooseController;
 import pinus.desktop.service.SupplierService;
 import pinus.desktop.util.SpringUtils;
@@ -65,7 +66,7 @@ public class SupplierChooseController extends CommonDataChooseController<Supplie
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 SupplierVM::getUpdatedAt);
-        tblSupplier.setPlaceholder(new Label(translate("lbl.nodata")));
+        tblSupplier.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tblSupplier.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
                 btnChoose.fire();
@@ -100,12 +101,12 @@ public class SupplierChooseController extends CommonDataChooseController<Supplie
     }
 
     private void searchSuppliers() {
-        tblSupplier.setPlaceholder(new Label(translate("lbl.loadingdata")));
+        tblSupplier.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tblSupplier.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> supplierService.searchSuppliersByKeyword(tfSearch.getText()))
                 .thenAccept(suppliers -> Platform.runLater(() -> {
                     if (suppliers.isEmpty()) {
-                        tblSupplier.setPlaceholder(new Label(translate("lbl.nodata")));
+                        tblSupplier.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblSupplier.setItems(FXCollections.observableList(suppliers));
                     TableViewUtils.sortAscending(tblSupplier, colName);

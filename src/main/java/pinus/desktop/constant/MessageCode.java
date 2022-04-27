@@ -33,6 +33,7 @@ public enum MessageCode implements IMessage {
     ERROR_EMPTY_SUPPLIER,
     ERROR_INVOICE_DATE_AFTER_TODAY,
     ERROR_DUE_DATE_BEFORE_TODAY,
+    ERROR_EMPTY_PHONE_OR_EMAIL,
 
     // Configuration
     SUCCESS_EDIT_CONFIGURATION,
@@ -100,6 +101,11 @@ public enum MessageCode implements IMessage {
     ERROR_PURCHASE_NOT_FOUND_BY_ID,
     CONFIRMATION_REMOVE_PURCHASE,
     CONFIRMATION_REMOVE_SELECTED_PURCHASES,
-    CONFIRMATION_EDIT_PURCHASE,
+    CONFIRMATION_EDIT_PURCHASE;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
 
 }

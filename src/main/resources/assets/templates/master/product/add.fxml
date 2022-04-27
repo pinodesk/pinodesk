@@ -167,11 +167,7 @@
                                           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                        </padding>
                                        <children>
-                                          <Label text="%lbl_medicine_and_drugs" textFill="#009c7c">
-                                             <font>
-                                                <Font name="System Bold" size="13.0" />
-                                             </font>
-                                          </Label>
+                                          <Label text="%lbl_medicine_and_drugs" textFill="#009c7c" />
                                           <VBox spacing="5.0">
                                              <children>
                                                 <Label text="%lbl_drug_category">

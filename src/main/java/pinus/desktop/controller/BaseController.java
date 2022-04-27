@@ -40,6 +40,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
 import pinus.desktop.constant.CommonConstants;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.DomainError;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.StringConstants;
@@ -137,23 +138,23 @@ public abstract class BaseController {
         return translate(messageCode.toString());
     }
 
-    private String getAlertHeaderMessageCode(AlertType type) {
+    private IMessage getAlertHeaderMessageCode(AlertType type) {
         switch (type) {
             case INFORMATION:
-                return "lbl.information";
+                return CommonLabel.LBL_INFORMATION;
             case ERROR:
-                return "lbl.error";
+                return CommonLabel.LBL_ERROR;
             case CONFIRMATION:
-                return "lbl.confirmation";
+                return CommonLabel.LBL_CONFIRMATION;
             default:
-                return "";
+                return null;
         }
     }
 
     protected AlertResult displayAlert(AlertType type, String message) {
-        ButtonType btnTypeOk = new ButtonType(translate("btn.ok"), ButtonData.OK_DONE);
-        ButtonType btnTypeYes = new ButtonType(translate("btn.yes"), ButtonData.YES);
-        ButtonType btnTypeNo = new ButtonType(translate("btn.no"), ButtonData.NO);
+        ButtonType btnTypeOk = new ButtonType(translate(CommonLabel.BTN_OK), ButtonData.OK_DONE);
+        ButtonType btnTypeYes = new ButtonType(translate(CommonLabel.BTN_YES), ButtonData.YES);
+        ButtonType btnTypeNo = new ButtonType(translate(CommonLabel.BTN_NO), ButtonData.NO);
         Alert alert = new Alert(type);
         alert.setTitle(CommonConstants.APP_TITLE);
         alert.setHeaderText(translate(getAlertHeaderMessageCode(type)));
@@ -230,7 +231,7 @@ public abstract class BaseController {
     protected void displayException(Throwable ex) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(CommonConstants.APP_TITLE);
-        alert.setHeaderText(translate("lbl.systemerror"));
+        alert.setHeaderText(translate(CommonLabel.LBL_SYSTEM_ERROR));
 
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setMinWidth(600);
@@ -240,7 +241,7 @@ public abstract class BaseController {
         ex.printStackTrace(pw);
         String exceptionText = sw.toString();
 
-        Label label = new Label(translate("lbl.details") + StringConstants.COLON);
+        Label label = new Label(translate(CommonLabel.LBL_DETAILS) + StringConstants.COLON);
 
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);

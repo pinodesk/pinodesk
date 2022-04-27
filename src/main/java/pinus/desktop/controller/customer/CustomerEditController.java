@@ -70,7 +70,7 @@ public class CustomerEditController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
-        // TODO Auto-generated method stub
+        validator.validateBlank(tfName, MessageCode.ERROR_EMPTY_NAME);
     }
 
     @Override

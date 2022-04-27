@@ -21,6 +21,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.controller.CommonDataSaveController;
@@ -99,13 +100,13 @@ public class SupplierEditController extends CommonDataSaveController {
             tblSupplierContact.getItems().removeAll(items);
         }
         if (tblSupplierContact.getItems().isEmpty()) {
-            tblSupplierContact.setPlaceholder(new Label(translate("lbl.nodata")));
+            tblSupplierContact.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         }
     }
 
     @Override
     protected void initDataSaveControlActions() {
-        tblSupplierContact.setPlaceholder(new Label(translate("lbl.nodata")));
+        tblSupplierContact.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tblSupplierContact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.setColumnValue(colName, SupplierContactAddVM::getName);
         TableViewUtils.setColumnValue(colPhone, SupplierContactAddVM::getPhone);
@@ -128,7 +129,7 @@ public class SupplierEditController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
-        // TODO Auto-generated method stub
+        validator.validateBlank(tfName, MessageCode.ERROR_EMPTY_NAME);
     }
 
     @Override
