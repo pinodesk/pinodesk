@@ -19,6 +19,7 @@ public enum Page implements IPage {
     MASTER_CUSTOMER_FILTER("master/customer/filter"),
     MASTER_CUSTOMER_ADD("master/customer/add"),
     MASTER_CUSTOMER_EDIT("master/customer/edit"),
+    MASTER_CUSTOMER_CHOOSE("master/customer/choose"),
 
     MASTER_SUPPLIER_MAIN("master/supplier/main"),
     MASTER_SUPPLIER_FILTER("master/supplier/filter"),

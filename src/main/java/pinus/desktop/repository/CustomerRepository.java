@@ -13,6 +13,8 @@ public interface CustomerRepository extends CommonRepository<Customer> {
 
     List<Customer> filter(CustomerFilterVM filter);
 
+    List<Customer> findByKeyword(String keyword);
+
     Long createCustomer(CustomerAddVM customerAdd);
 
     Integer updateCustomer(CustomerEditVM customerEdit);

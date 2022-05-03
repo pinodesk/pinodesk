@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.DomainError;
+import pinus.desktop.domain.Customer;
 import pinus.desktop.exception.DomainException;
 import pinus.desktop.repository.CustomerRepository;
 import pinus.desktop.viewmodel.CustomerAddVM;
@@ -30,6 +31,13 @@ public class CustomerService extends BaseService {
     @Cacheable(CacheNameConstants.CUSTOMERS_BY_FILTER)
     public List<CustomerVM> searchCustomers(CustomerFilterVM filter) {
         return objectConverter.convertList(customerRepository.filter(filter), CustomerVM.class);
+    }
+
+    @Cacheable(CacheNameConstants.CUSTOMERS_BY_KEYWORD)
+    public List<CustomerVM> searchCustomersByKeyword(String keyword) {
+        List<Customer> suppliers = StringUtils.isBlank(keyword) ?
+                customerRepository.read() : customerRepository.findByKeyword(keyword.trim());
+        return objectConverter.convertList(suppliers, CustomerVM.class);
     }
 
     @CacheEvict(value = CacheNameConstants.CUSTOMERS_BY_FILTER, allEntries = true)

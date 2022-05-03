@@ -106,6 +106,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
                 new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
                 new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate(CommonLabel.LBL_PAID)),
                 new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate(CommonLabel.LBL_UNPAID)));
+        setCustomerChooser(tfCustomer, this::handleSelectedCustomer, tfDoctor.getParent());
     }
 
     @Override
