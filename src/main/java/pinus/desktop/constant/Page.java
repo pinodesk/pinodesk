@@ -39,7 +39,9 @@ public enum Page implements IPage {
     TRANSACTION_SALE_MAIN("transaction/sale/main"),
     TRANSACTION_SALE_FILTER("transaction/sale/filter"),
     TRANSACTION_SALE_ADD("transaction/sale/add"),
-    TRANSACTION_SALE_EDIT("transaction/sale/edit"),;
+    TRANSACTION_SALE_EDIT("transaction/sale/edit"),
+
+    MASTER_DOCTOR_CHOOSE("master/doctor/choose"),;
 
     private final String templateName;
 
