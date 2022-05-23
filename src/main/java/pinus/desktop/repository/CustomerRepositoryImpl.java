@@ -43,6 +43,14 @@ public class CustomerRepositoryImpl extends AbstractRepository<Customer> impleme
     }
 
     @Override
+    public List<Customer> findByKeyword(String keyword) {
+        Where where = new Where().containsIgnoreCase(Customer.C_NAME, keyword)
+                .orContainsIgnoreCase(Customer.C_EMAIL, keyword).orContains(Customer.C_CODE, keyword)
+                .orContains(Customer.C_PHONE, keyword).orContainsIgnoreCase(Customer.C_ADDRESS, keyword);
+        return read(where);
+    }
+
+    @Override
     public Long createCustomer(CustomerAddVM customerAdd) {
         return insert(
                 new String[] {

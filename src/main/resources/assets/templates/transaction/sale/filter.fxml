@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.purchase.PurchaseFilterController">
+<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.sale.SaleFilterController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_filter_purchases" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_filter_sales" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -48,12 +48,12 @@
                         </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl_invoice_date_min">
+                              <Label text="%lbl_created_date_min">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <MaskedTextField fx:id="tfInvoiceDateMin" mask="####-##-##" styleClass="input-primary">
+                              <MaskedTextField fx:id="tfCreatedDateMin" mask="####-##-##" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -62,12 +62,12 @@
                         </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl_invoice_date_max">
+                              <Label text="%lbl_created_date_max">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <MaskedTextField fx:id="tfInvoiceDateMax" mask="####-##-##" styleClass="input-primary">
+                              <MaskedTextField fx:id="tfCreatedDateMax" mask="####-##-##" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -76,12 +76,12 @@
                         </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl_supplier">
+                              <Label text="%lbl_customer">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfSupplier" editable="false" styleClass="input-primary">
+                              <TextField fx:id="tfCustomer" editable="false" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -95,6 +95,35 @@
                   </HBox>
                   <HBox spacing="10.0">
                      <children>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl_doctor">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfDoctor" editable="false" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl_payment_status">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <ComboBox fx:id="cbPaymentStatus" maxWidth="1.7976931348623157E308" prefWidth="163.0">
+                                 <styleClass>
+                                    <String fx:value="combo-box-autocomplete" />
+                                    <String fx:value="input-primary" />
+                                 </styleClass>
+                              </ComboBox>
+                           </children>
+                        </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
                               <Label text="%lbl_due_date_min">
@@ -121,21 +150,6 @@
                                     <Font size="13.0" />
                                  </font>
                               </MaskedTextField>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_payment_status">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="cbPaymentStatus" maxWidth="1.7976931348623157E308" prefWidth="163.0">
-                                 <styleClass>
-                                    <String fx:value="combo-box-autocomplete" />
-                                    <String fx:value="input-primary" />
-                                 </styleClass>
-                              </ComboBox>
                            </children>
                         </VBox>
                      </children>
