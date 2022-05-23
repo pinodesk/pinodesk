@@ -304,4 +304,8 @@ public abstract class BaseController {
         setChooserOnFocus(tf, Page.MASTER_CUSTOMER_CHOOSE, outputConsumer, nextFocusNode);
     }
 
+    protected <T> void setDoctorChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
+        setChooserOnFocus(tf, Page.MASTER_DOCTOR_CHOOSE, outputConsumer, nextFocusNode);
+    }
+
 }

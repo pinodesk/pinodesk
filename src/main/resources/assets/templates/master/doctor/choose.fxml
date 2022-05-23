@@ -37,7 +37,7 @@
             </TextField>
          </children>
       </HBox>
-      <TableView fx:id="tblCustomer" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
+      <TableView fx:id="tblDoctor" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
           <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_code" />

@@ -23,6 +23,7 @@ import pinus.desktop.constant.StringConstants;
 import pinus.desktop.controller.CommonDataFilterController;
 import pinus.desktop.viewmodel.ChooseResultVM;
 import pinus.desktop.viewmodel.CustomerVM;
+import pinus.desktop.viewmodel.DoctorVM;
 import pinus.desktop.viewmodel.SaleFilterVM;
 
 public class SaleFilterController extends CommonDataFilterController<SaleFilterVM> {
@@ -64,6 +65,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
     private TextField tfTotalProductMin;
 
     private CustomerVM selectedCustomer;
+    private DoctorVM selectedDoctor;
 
     @Override
     protected void initDataFilterControlValues() {
@@ -107,6 +109,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
                 new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate(CommonLabel.LBL_PAID)),
                 new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate(CommonLabel.LBL_UNPAID)));
         setCustomerChooser(tfCustomer, this::handleSelectedCustomer, tfDoctor.getParent());
+        setDoctorChooser(tfDoctor, this::handleSelectedDoctor, cbPaymentStatus.getParent());
     }
 
     @Override
@@ -126,6 +129,10 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
         if (selectedCustomer != null) {
             filter.setCustomerId(selectedCustomer.getId());
             filter.setCustomerName(selectedCustomer.getName());
+        }
+        if (selectedDoctor != null) {
+            filter.setDoctorId(selectedDoctor.getId());
+            filter.setDoctorName(selectedDoctor.getName());
         }
         filter.setTotalPaymentMax(toBigDecimalOrNull(tfTotalPaymentMax.getText()));
         filter.setTotalPaymentMin(toBigDecimalOrNull(tfTotalPaymentMin.getText()));
@@ -150,6 +157,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
         tfDueDateMin.setPlainText("");
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         selectedCustomer = null;
+        selectedDoctor = null;
     }
 
     @Override
@@ -167,6 +175,19 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
         }, () -> {
             selectedCustomer = null;
             tfCustomer.setText("");
+        });
+    }
+
+    public void handleSelectedDoctor(ChooseResultVM<DoctorVM> result) {
+        if (result == null || result.isCancelled()) {
+            return;
+        }
+        result.getData().ifPresentOrElse(doctor -> {
+            selectedDoctor = doctor;
+            tfDoctor.setText(doctor.getName());
+        }, () -> {
+            selectedDoctor = null;
+            tfDoctor.setText("");
         });
     }
 
