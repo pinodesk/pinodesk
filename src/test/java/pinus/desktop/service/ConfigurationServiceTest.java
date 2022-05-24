@@ -3,14 +3,12 @@ package pinus.desktop.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,19 +41,19 @@ class ConfigurationServiceTest extends BaseServiceTest {
     void testGetConfiguration_shouldReturnValue() {
         Configuration configuration = new Configuration();
         configuration.setValue("value");
-        when(configurationRepository.readOne(any(Where.class))).thenReturn(Optional.of(configuration));
+        when(configurationRepository.findByCodeAndDeletedAtIsNull(anyString())).thenReturn(Optional.of(configuration));
         String value = configurationService.getConfiguration("code");
         assertNotNull(value);
         assertEquals("value", value);
-        verify(configurationRepository).readOne(any(Where.class));
+        verify(configurationRepository).findByCodeAndDeletedAtIsNull(anyString());
     }
 
     @Test
     void testGetConfiguration_notFound_shouldReturnNull() {
-        when(configurationRepository.readOne(any(Where.class))).thenReturn(Optional.empty());
+        when(configurationRepository.findByCodeAndDeletedAtIsNull(anyString())).thenReturn(Optional.empty());
         String value = configurationService.getConfiguration("code");
         assertNull(value);
-        verify(configurationRepository).readOne(any(Where.class));
+        verify(configurationRepository).findByCodeAndDeletedAtIsNull(anyString());
     }
 
 }

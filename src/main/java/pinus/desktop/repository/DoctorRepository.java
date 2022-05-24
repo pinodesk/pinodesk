@@ -2,12 +2,14 @@ package pinus.desktop.repository;
 
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.Doctor;
 
-public interface DoctorRepository extends CommonRepository<Doctor> {
+@Repository
+public interface DoctorRepository extends PagingAndSortingRepository<Doctor, Long>, DoctorRepositoryCustom {
 
-    List<Doctor> findByKeyword(String keyword);
+    List<Doctor> findByDeletedAtIsNull();
 
 }

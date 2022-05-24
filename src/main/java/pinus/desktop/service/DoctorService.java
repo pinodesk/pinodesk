@@ -21,7 +21,7 @@ public class DoctorService extends BaseService {
     @Cacheable(CacheNameConstants.DOCTORS_BY_KEYWORD)
     public List<DoctorVM> searchDoctorsByKeyword(String keyword) {
         List<Doctor> doctors = StringUtils.isBlank(keyword) ?
-                doctorRepository.read() : doctorRepository.findByKeyword(keyword.trim());
+                doctorRepository.findByDeletedAtIsNull() : doctorRepository.findByKeyword(keyword.trim());
         return objectConverter.convertList(doctors, DoctorVM.class);
     }
 

@@ -1,6 +1,5 @@
 package pinus.desktop.domain;
 
-import com.gitlab.muhammadkholidb.sequel.annotation.DataColumn;
 import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 
 import lombok.Data;
@@ -10,32 +9,15 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class Customer extends DataModel {
 
-    public static final String TABLE_NAME = "customer";
-
     public static final String C_CODE = "code";
     public static final String C_NAME = "name";
     public static final String C_PHONE = "phone";
     public static final String C_EMAIL = "email";
     public static final String C_ADDRESS = "address";
 
-    @DataColumn(C_CODE)
     private String code;
-
-    @DataColumn(C_NAME)
     private String name;
-
-    @DataColumn(C_PHONE)
     private String phone;
-
-    @DataColumn(C_EMAIL)
     private String email;
-
-    @DataColumn(C_ADDRESS)
     private String address;
-
-    @Override
-    public String tableName() {
-        return TABLE_NAME;
-    }
-
 }

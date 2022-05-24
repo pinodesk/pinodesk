@@ -25,7 +25,7 @@ class DrugCategoryRepositoryTest extends RepositoryTestBase {
     void testFilter_shouldReturnFilteredDrugCategories() {
         String keyword = "bebas";
         long drugCategoryBaseId = 1;
-        List<DrugCategory> drugCategories = drugCategoryRepository.filter(keyword, drugCategoryBaseId);
+        List<DrugCategory> drugCategories = drugCategoryRepository.findByKeyword(keyword, drugCategoryBaseId);
         assertThat(drugCategories, hasSize(2));
         assertThat(
                 drugCategories,

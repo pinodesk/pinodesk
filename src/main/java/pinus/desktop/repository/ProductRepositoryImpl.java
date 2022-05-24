@@ -4,20 +4,15 @@ import static com.gitlab.muhammadkholidb.sequel.utility.SQLUtils.likeValueContai
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
 import com.gitlab.muhammadkholidb.sequel.utility.SQLUtils;
 import com.gitlab.muhammadkholidb.sequel.utility.WhereParamsHelper;
 import com.gitlab.muhammadkholidb.toolbox.data.ListBuilder;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Repository;
 
 import pinus.desktop.constant.ProductStatus;
 import pinus.desktop.domain.Product;
@@ -26,8 +21,7 @@ import pinus.desktop.viewmodel.ProductFilterVM;
 import pinus.desktop.viewmodel.ProductVM;
 import pinus.desktop.viewmodel.UnitVM;
 
-@Repository
-public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepository {
+public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepositoryCustom {
 
     @Override
     public List<ProductVM> findByFilter(ProductFilterVM filter, String languageCode) {
@@ -164,33 +158,6 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
             lb.add(likeValue).add(likeValue).add(likeValue).add(likeValue).add(likeValue);
         }
         return performSelect(sb.toString(), lb.build(), ProductVM.class);
-    }
-
-    @Override
-    public boolean existsByCode(String code, Long... excludedIds) {
-        Where where = new Where().equals(Product.C_CODE, code);
-        if (ArrayUtils.isNotEmpty(excludedIds)) {
-            where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
-        }
-        return exists(where);
-    }
-
-    @Override
-    public boolean existsByBarcode(String barcode, Long... excludedIds) {
-        Where where = new Where().equals(Product.C_BARCODE, barcode);
-        if (ArrayUtils.isNotEmpty(excludedIds)) {
-            where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
-        }
-        return exists(where);
-    }
-
-    @Override
-    public boolean existsByNameAndUnit(String name, Long unitId, Long... excludedIds) {
-        Where where = new Where().equalsIgnoreCase(Product.C_NAME, name).andEquals(Product.C_UNIT_ID, unitId);
-        if (ArrayUtils.isNotEmpty(excludedIds)) {
-            where.andNotIn(DataModel.C_ID, Arrays.asList(excludedIds));
-        }
-        return exists(where);
     }
 
 }

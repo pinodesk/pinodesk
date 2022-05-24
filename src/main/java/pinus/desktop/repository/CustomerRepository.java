@@ -1,29 +1,37 @@
 package pinus.desktop.repository;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import pinus.desktop.domain.Customer;
-import pinus.desktop.viewmodel.CustomerAddVM;
-import pinus.desktop.viewmodel.CustomerEditVM;
-import pinus.desktop.viewmodel.CustomerFilterVM;
 
-public interface CustomerRepository extends CommonRepository<Customer> {
+@Repository
+public interface CustomerRepository extends PagingAndSortingRepository<Customer, Long>, CustomerRepositoryCustom {
 
-    List<Customer> filter(CustomerFilterVM filter);
+    List<Customer> findByDeletedAtIsNull();
 
-    List<Customer> findByKeyword(String keyword);
+    Optional<Customer> findByIdAndDeletedAtIsNull(long id);
 
-    Long createCustomer(CustomerAddVM customerAdd);
+    boolean existsByIdAndDeletedAtIsNull(long id);
 
-    Integer updateCustomer(CustomerEditVM customerEdit);
+    boolean existsByCodeIgnoreCaseAndDeletedAtIsNull(String code);
 
-    boolean existsByCode(String code, Long... excludedIds);
+    boolean existsByPhoneIgnoreCaseAndDeletedAtIsNull(String phone);
 
-    boolean existsByEmail(String email, Long... excludeIds);
+    boolean existsByEmailIgnoreCaseAndDeletedAtIsNull(String email);
 
-    boolean existsByPhone(String phone, Long... excludeIds);
+    Optional<Customer> findFirstByCodeStartingWithOrderByCodeDesc(String prefix);
 
-    String findMaxCodeByPrefix(String prefix);
+    @Transactional
+    @Modifying
+    @Query("update customer set updated_at=now(), deleted_at=now() where id in (:ids)")
+    Long deleteUpdateByIdIn(@Param("ids") List<Long> ids);
+
 }

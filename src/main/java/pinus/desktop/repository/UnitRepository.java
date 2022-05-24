@@ -1,13 +1,18 @@
 package pinus.desktop.repository;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.Unit;
 
-public interface UnitRepository extends CommonRepository<Unit> {
+@Repository
+public interface UnitRepository extends PagingAndSortingRepository<Unit, Long>, UnitRepositoryCustom {
 
-    List<Unit> filter(String keyword, int limit);
+    List<Unit> findByDeletedAtIsNull();
+
+    Optional<Unit> findByIdAndDeletedAtIsNull(Long id);
 
 }

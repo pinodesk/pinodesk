@@ -3,8 +3,7 @@ package pinus.desktop.service;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
-
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -60,7 +59,7 @@ public class PurchaseService extends BaseService {
 
     @Cacheable(CacheNameConstants.PURCHASES_BY_FILTER)
     public List<PurchaseVM> searchPurchases(PurchaseFilterVM filter) {
-        return purchaseRepository.filter(filter);
+        return purchaseRepository.findByFilter(filter);
     }
 
     @CacheEvict(value = {
@@ -86,14 +85,16 @@ public class PurchaseService extends BaseService {
         purchase.setTotalPayment(purchaseAdd.getTotalPayment());
         purchase.setTotalProduct(purchaseAdd.getTotalProduct());
         purchase.setTotalPurchase(purchaseAdd.getTotalPurchase());
-        Long purchaseId = purchaseRepository.create(purchase);
+        Purchase created = purchaseRepository.save(purchase);
+        Long purchaseId = created.getId();
         purchaseAdd.getPurchaseProducts().stream().forEach(purchaseProduct -> {
             Long productId = purchaseProduct.getProductId();
             Integer purchaseQuantity = purchaseProduct.getQuantity();
-            Product product = productRepository.readOne(productId).orElseThrow();
+            Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
             createPurchaseDetail(purchaseId, purchaseProduct, productId, purchaseQuantity);
             if (purchaseProduct.getExpiredDate() != null) {
-                Integer lastExpiryQuantity = productExpiryRepository.findTopByProductId(productId).stream()
+                Integer lastExpiryQuantity = productExpiryRepository
+                        .findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId).stream()
                         .map(ProductExpiry::getFinalQuantity).findAny().orElse(0);
                 createProductExpiry(
                         activityName,
@@ -104,7 +105,8 @@ public class PurchaseService extends BaseService {
                         purchaseQuantity,
                         lastExpiryQuantity);
             }
-            Integer lastStockQuantity = productStockRepository.findTopByProductId(productId).stream()
+            Integer lastStockQuantity = productStockRepository
+                    .findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId).stream()
                     .map(ProductStock::getFinalQuantity).findAny().orElse(0);
             Integer nextStockQuantity = lastStockQuantity + purchaseQuantity;
             createProductStock(activityName, invoiceNumber, purchaseId, productId, purchaseQuantity, nextStockQuantity);
@@ -117,10 +119,11 @@ public class PurchaseService extends BaseService {
     @Transactional
     public void updatePurchase(PurchaseEditVM purchaseEdit, Long purchaseId) {
         String invoiceNumber = purchaseEdit.getInvoiceNumber();
-        Purchase purchase = purchaseRepository.readOne(purchaseId)
+        Long supplierId = purchaseEdit.getSupplierId();
+        Purchase purchase = purchaseRepository.findByIdAndDeletedAtIsNull(purchaseId)
                 .orElseThrow(() -> new DomainException(DomainError.PURCHASE_NOT_FOUND_BY_ID));
-        if (purchaseRepository
-                .existsByInvoiceNumberAndSupplierId(invoiceNumber, purchaseEdit.getSupplierId(), purchase.getId())) {
+        if (isDifferentInvoiceNumberOrSupplierId(purchase, purchaseEdit)
+                && purchaseRepository.existsByInvoiceNumberAndSupplierId(invoiceNumber, supplierId)) {
             throw new DomainException(DomainError.PURCHASE_OTHER_EXISTS_BY_INVOICE_NUMBER_AND_SUPPLIER_ID);
         }
         purchase.setDiscount(purchaseEdit.getDiscount());
@@ -128,18 +131,23 @@ public class PurchaseService extends BaseService {
         purchase.setInvoiceNumber(invoiceNumber);
         purchase.setPaymentDueDate(purchaseEdit.getPaymentDueDate());
         purchase.setPaymentStatus(purchaseEdit.getPaymentStatus().name());
-        purchase.setSupplierId(purchaseEdit.getSupplierId());
+        purchase.setSupplierId(supplierId);
         purchase.setTax(purchaseEdit.getTax());
         purchase.setTotalPayment(purchaseEdit.getTotalPayment());
         purchase.setTotalProduct(purchaseEdit.getTotalProduct());
         purchase.setTotalPurchase(purchaseEdit.getTotalPurchase());
-        purchaseRepository.update(purchase);
+        purchaseRepository.save(purchase);
         purchaseDetailRepository.deleteByPurchaseId(purchaseId);
         purchaseEdit.getPurchaseProducts().stream().forEach(purchaseProduct -> {
             Long productId = purchaseProduct.getProductId();
             Integer purchaseQuantity = purchaseProduct.getQuantity();
             createPurchaseDetail(purchaseId, purchaseProduct, productId, purchaseQuantity);
         });
+    }
+
+    private boolean isDifferentInvoiceNumberOrSupplierId(Purchase purchase, PurchaseEditVM purchaseEdit) {
+        return ObjectUtils.notEqual(purchase.getSupplierId(), purchaseEdit.getSupplierId())
+                || ObjectUtils.notEqual(purchase.getInvoiceNumber(), purchaseEdit.getInvoiceNumber());
     }
 
     private void createPurchaseDetail(
@@ -153,7 +161,7 @@ public class PurchaseService extends BaseService {
         pd.setPurchaseId(purchaseId);
         pd.setQuantity(purchaseQuantity);
         pd.setSubtotal(purchaseProduct.getSubtotal());
-        purchaseDetailRepository.create(pd);
+        purchaseDetailRepository.save(pd);
     }
 
     private void updateProduct(
@@ -161,18 +169,18 @@ public class PurchaseService extends BaseService {
             Long productId,
             Product product,
             Integer nextStockQuantity) {
-        productExpiryRepository.findTopByProductIdOrderByExpiredDate(productId)
+        productExpiryRepository.findFirstByProductIdAndDeletedAtIsNullOrderByExpiredDate(productId)
                 .ifPresent(px -> product.setClosestExpiredDate(px.getExpiredDate()));
         BigDecimal averageBuyingPrice = calculateProductAverageBuyingPrice(productId);
         product.setAverageBuyingPrice(averageBuyingPrice);
         product.setGeneralSellingPrice(purchaseProduct.getGeneralSellingPrice());
         product.setPrescriptionSellingPrice(purchaseProduct.getPrescriptionSellingPrice());
         product.setQuantity(nextStockQuantity);
-        productRepository.update(product);
+        productRepository.save(product);
     }
 
     private BigDecimal calculateProductAverageBuyingPrice(Long productId) {
-        List<PurchaseDetail> purchaseDetails = purchaseDetailRepository.findByProductId(productId);
+        List<PurchaseDetail> purchaseDetails = purchaseDetailRepository.findByProductIdAndDeletedAtIsNull(productId);
         return purchaseDetails.stream().map(PurchaseDetail::getBuyingPrice).reduce(BigDecimal.ZERO, BigDecimal::add)
                 .divide(BigDecimal.valueOf(purchaseDetails.size()));
     }
@@ -195,7 +203,7 @@ public class PurchaseService extends BaseService {
         px.setPurchaseInvoiceNumber(invoiceNumber);
         px.setQuantityIn(purchaseQuantity);
         px.setUserId(1l);
-        productExpiryRepository.create(px);
+        productExpiryRepository.save(px);
     }
 
     private void createProductStock(
@@ -213,7 +221,7 @@ public class PurchaseService extends BaseService {
         ps.setQuantityIn(purchaseQuantity);
         ps.setFinalQuantity(nextStockQuantity);
         ps.setUserId(1l);
-        productStockRepository.create(ps);
+        productStockRepository.save(ps);
     }
 
     private void createProductPrice(
@@ -230,14 +238,14 @@ public class PurchaseService extends BaseService {
         pp.setPurchaseId(purchaseId);
         pp.setPurchaseInvoiceNumber(invoiceNumber);
         pp.setUserId(1l);
-        productPriceRepository.create(pp);
+        productPriceRepository.save(pp);
     }
 
     @CacheEvict(value = { CacheNameConstants.PURCHASES_BY_FILTER }, allEntries = true)
     @Transactional
     public void removePurchases(List<Long> ids) {
-        purchaseDetailRepository.delete(new Where().in(PurchaseDetail.C_PURCHASE_ID, ids));
-        purchaseRepository.delete(ids);
+        purchaseDetailRepository.deleteUpdateByPurchaseIdIn(ids);
+        purchaseRepository.deleteUpdateByIdIn(ids);
     }
 
     public List<PurchaseProductVM> getPurchaseProducts(Long purchaseId) {

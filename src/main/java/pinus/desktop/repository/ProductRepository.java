@@ -1,23 +1,39 @@
 package pinus.desktop.repository;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import pinus.desktop.domain.Product;
-import pinus.desktop.viewmodel.ProductFilterVM;
-import pinus.desktop.viewmodel.ProductVM;
 
-public interface ProductRepository extends CommonRepository<Product> {
+@Repository
+public interface ProductRepository extends PagingAndSortingRepository<Product, Long>, ProductRepositoryCustom {
 
-    List<ProductVM> findByFilter(ProductFilterVM filter, String languageCode);
+    boolean existsByCodeAndDeletedAtIsNull(String code);
 
-    List<ProductVM> findByKeyword(String keyword, String languageCode);
+    boolean existsByBarcodeAndDeletedAtIsNull(String barcode);
 
-    boolean existsByCode(String code, Long... excludedIds);
+    boolean existsByNameIgnoreCaseAndUnitIdAndDeletedAtIsNull(String name, Long unitId);
 
-    boolean existsByBarcode(String barcode, Long... excludedIds);
+    Optional<Product> findByIdAndDeletedAtIsNull(Long id);
 
-    boolean existsByNameAndUnit(String name, Long unitId, Long... excludedIds);
+    @Transactional
+    @Modifying
+    @Query("update product set updated_at=now(), deleted_at=now() where id in (:ids)")
+    Integer deleteUpdateByIdIn(@Param("ids") List<Long> ids);
+
+    @Transactional
+    @Modifying
+    @Query("update product set updated_at=now(), closest_expired_date=:closestExpiredDate where id=:id")
+    Integer updateClosestExpiredDateById(
+            @Param("id") Long id,
+            @Param("closestExpiredDate") LocalDate closestExpiredDate);
 
 }

@@ -2,14 +2,21 @@ package pinus.desktop.repository;
 
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import pinus.desktop.domain.Sale;
-import pinus.desktop.viewmodel.SaleFilterVM;
-import pinus.desktop.viewmodel.SaleVM;
 
-public interface SaleRepository extends CommonRepository<Sale> {
+@Repository
+public interface SaleRepository extends PagingAndSortingRepository<Sale, Long>, SaleRepositoryCustom {
 
-    List<SaleVM> filter(SaleFilterVM filter);
+    @Transactional
+    @Modifying
+    @Query("update sale set updated_at=now(), deleted_at=now() where id in (:ids)")
+    Long deleteUpdateByIdIn(@Param("ids") List<Long> ids);
 
 }

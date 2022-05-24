@@ -1,9 +1,11 @@
 package pinus.desktop.repository;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.DoctorCategory;
 
-public interface DoctorCategoryRepository extends CommonRepository<DoctorCategory> {
+@Repository
+public interface DoctorCategoryRepository extends PagingAndSortingRepository<DoctorCategory, Long> {
 
 }

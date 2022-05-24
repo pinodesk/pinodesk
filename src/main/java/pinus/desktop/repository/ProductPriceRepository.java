@@ -2,12 +2,14 @@ package pinus.desktop.repository;
 
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.ProductPrice;
 
-public interface ProductPriceRepository extends CommonRepository<ProductPrice> {
+@Repository
+public interface ProductPriceRepository extends PagingAndSortingRepository<ProductPrice, Long> {
 
-    List<ProductPrice> findByProductId(Long productId);
+    List<ProductPrice> findByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
 
 }

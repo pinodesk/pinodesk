@@ -22,6 +22,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
+import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+import org.springframework.data.relational.core.dialect.Dialect;
+import org.springframework.data.relational.core.dialect.MySqlDialect;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -29,9 +35,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Import(SequelConfig.class)
 @ComponentScan
 @EnableCaching
+@EnableJdbcRepositories
+@EnableJdbcAuditing
 @EnableTransactionManagement
 @PropertySource({ "classpath:application.properties" })
-public class PinusConfig {
+public class PinusConfig extends AbstractJdbcConfiguration {
 
     @Resource // https://stackoverflow.com/questions/19421092/autowired-environment-is-null
     private Environment env;
@@ -51,6 +59,11 @@ public class PinusConfig {
     @Bean
     public DataSourceTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
+    }
+
+    @Override
+    public Dialect jdbcDialect(NamedParameterJdbcOperations operations) {
+        return MySqlDialect.INSTANCE;
     }
 
     @Bean

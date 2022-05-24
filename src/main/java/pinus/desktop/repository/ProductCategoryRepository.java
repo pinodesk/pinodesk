@@ -1,13 +1,16 @@
 package pinus.desktop.repository;
 
-import java.util.List;
+import java.util.Optional;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.ProductCategory;
 
-public interface ProductCategoryRepository extends CommonRepository<ProductCategory> {
+@Repository
+public interface ProductCategoryRepository
+        extends PagingAndSortingRepository<ProductCategory, Long>, ProductCategoryRepositoryCustom {
 
-    List<ProductCategory> filter(String keyword, String languageCode);
+    Optional<ProductCategory> findByIdAndDeletedAtIsNull(Long id);
 
 }

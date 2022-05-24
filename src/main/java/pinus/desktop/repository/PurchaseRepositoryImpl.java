@@ -1,25 +1,20 @@
 package pinus.desktop.repository;
 
-import java.util.Arrays;
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.Purchase;
 import pinus.desktop.viewmodel.PurchaseFilterVM;
 import pinus.desktop.viewmodel.PurchaseVM;
 
-@Repository
-public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> implements PurchaseRepository {
+public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> implements PurchaseRepositoryCustom {
 
     @Override
-    public List<PurchaseVM> filter(PurchaseFilterVM filter) {
+    public List<PurchaseVM> findByFilter(PurchaseFilterVM filter) {
         StringBuilder sb = new StringBuilder();
         sb.append("""
                 select a.*, b.id as supplier_id, b.name as supplier_name
@@ -67,13 +62,4 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
         return performSelect(sb.toString(), params, PurchaseVM.class);
     }
 
-    @Override
-    public boolean existsByInvoiceNumberAndSupplierId(String orderNumber, Long supplierId, Long... excludePurchaseIds) {
-        Where where = new Where().equals(Purchase.C_INVOICE_NUMBER, orderNumber)
-                .andEquals(Purchase.C_SUPPLIER_ID, supplierId);
-        if (ArrayUtils.isNotEmpty(excludePurchaseIds)) {
-            where.andNotIn(DataModel.C_ID, Arrays.asList(excludePurchaseIds));
-        }
-        return exists(where);
-    }
 }

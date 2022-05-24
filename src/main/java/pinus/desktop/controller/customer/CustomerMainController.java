@@ -77,7 +77,7 @@ public class CustomerMainController extends BaseController {
     @FXML
     void onActionBtnAdd(ActionEvent event) {
         StageUtils.modal(Page.MASTER_CUSTOMER_ADD, false, we -> {
-            if (Boolean.TRUE.equals(getPageData())) {
+            if (getPageData() != null) {
                 searchCustomers();
             }
         });
@@ -172,7 +172,7 @@ public class CustomerMainController extends BaseController {
         if (TableViewUtils.hasItemSelected(tableCustomer)) {
             setPageData(TableViewUtils.getSelectedItem(tableCustomer));
             StageUtils.modal(Page.MASTER_CUSTOMER_EDIT, false, event -> {
-                if (Boolean.TRUE.equals(getPageData())) {
+                if (getPageData() != null) {
                     searchCustomers();
                 }
             });

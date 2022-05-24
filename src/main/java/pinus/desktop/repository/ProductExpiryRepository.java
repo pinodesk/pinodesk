@@ -3,15 +3,17 @@ package pinus.desktop.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.ProductExpiry;
 
-public interface ProductExpiryRepository extends CommonRepository<ProductExpiry> {
+@Repository
+public interface ProductExpiryRepository extends PagingAndSortingRepository<ProductExpiry, Long> {
 
-    List<ProductExpiry> findByProductId(Long productId);
+    List<ProductExpiry> findByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
 
-    Optional<ProductExpiry> findTopByProductId(Long productId);
+    Optional<ProductExpiry> findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
 
-    Optional<ProductExpiry> findTopByProductIdOrderByExpiredDate(Long productId);
+    Optional<ProductExpiry> findFirstByProductIdAndDeletedAtIsNullOrderByExpiredDate(Long productId);
 }

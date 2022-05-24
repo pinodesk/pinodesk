@@ -25,7 +25,7 @@ public class ProductCategoryService extends BaseService {
 
     public ProductCategoryVM getProductCategoryById(Long id) {
         return objectConverter.convertOptionalOrThrow(
-                productCategoryRepository.readOne(id),
+                productCategoryRepository.findByIdAndDeletedAtIsNull(id),
                 ProductCategoryVM.class,
                 new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_ID));
     }
@@ -33,7 +33,7 @@ public class ProductCategoryService extends BaseService {
     @Cacheable(CacheNameConstants.PRODUCT_CATEGORIES_BY_KEYWORD)
     public List<ProductCategoryVM> searchProductCategoryByKeyword(String keyword) {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        List<ProductCategory> categories = productCategoryRepository.filter(keyword, languageCode);
+        List<ProductCategory> categories = productCategoryRepository.findByKeyword(keyword, languageCode);
         return objectConverter.convertList(categories, ProductCategoryVM.class);
     }
 
