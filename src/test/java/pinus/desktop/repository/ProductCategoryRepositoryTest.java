@@ -24,7 +24,7 @@ class ProductCategoryRepositoryTest extends RepositoryTestBase {
     void testFilter_shouldReturnFilteredProductCategories() {
         String keyword = "supplies";
         String languageCode = "en";
-        List<ProductCategory> productCategories = productCategoryRepository.filter(keyword, languageCode);
+        List<ProductCategory> productCategories = productCategoryRepository.findByKeyword(keyword, languageCode);
         assertThat(productCategories, hasSize(3));
         for (ProductCategory pc : productCategories) {
             Long id = pc.getId();

@@ -56,31 +56,31 @@ class ProductCategoryServiceTest extends BaseServiceTest {
     @Test
     void testSearchProductCategoryByKeyword_shouldSucceed() {
         when(configurationService.getConfiguration(anyString())).thenReturn("1");
-        when(productCategoryRepository.filter(anyString(), anyString())).thenReturn(new ArrayList<>());
+        when(productCategoryRepository.findByKeyword(anyString(), anyString())).thenReturn(new ArrayList<>());
         List<ProductCategoryVM> results = productCategoryService.searchProductCategoryByKeyword("keyword");
         assertNotNull(results);
         assertEquals(0, results.size());
         verify(configurationService).getConfiguration(anyString());
-        verify(productCategoryRepository).filter(anyString(), anyString());
+        verify(productCategoryRepository).findByKeyword(anyString(), anyString());
     }
 
     @Test
     void testGetProductCategoryById_shouldSucceed() {
-        when(productCategoryRepository.readOne(anyLong())).thenReturn(Optional.of(productCategory));
+        when(productCategoryRepository.findByIdAndDeletedAtIsNull(anyLong())).thenReturn(Optional.of(productCategory));
         ProductCategoryVM result = productCategoryService.getProductCategoryById(1L);
         assertNotNull(result);
         assertEquals(1L, result.getId().longValue());
-        verify(productCategoryRepository).readOne(anyLong());
+        verify(productCategoryRepository).findByIdAndDeletedAtIsNull(anyLong());
     }
 
     @Test
     void testGetProductCategoryById_idNotFound_shouldThrowDomainException() {
-        when(productCategoryRepository.readOne(anyLong())).thenReturn(Optional.empty());
+        when(productCategoryRepository.findByIdAndDeletedAtIsNull(anyLong())).thenReturn(Optional.empty());
         DomainException ex = assertThrows(
                 DomainException.class,
                 () -> productCategoryService.getProductCategoryById(1L));
         assertEquals(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_ID, ex.getError());
-        verify(productCategoryRepository).readOne(anyLong());
+        verify(productCategoryRepository).findByIdAndDeletedAtIsNull(anyLong());
     }
 
 }

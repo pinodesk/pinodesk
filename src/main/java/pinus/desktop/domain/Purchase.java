@@ -3,7 +3,6 @@ package pinus.desktop.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.gitlab.muhammadkholidb.sequel.annotation.DataColumn;
 import com.gitlab.muhammadkholidb.sequel.model.DataModel;
 
 import lombok.Data;
@@ -12,8 +11,6 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 public class Purchase extends DataModel {
-
-    public static final String TABLE_NAME = "purchase";
 
     public static final String C_SUPPLIER_ID = "supplier_id";
     public static final String C_INVOICE_NUMBER = "invoice_number";
@@ -26,39 +23,14 @@ public class Purchase extends DataModel {
     public static final String C_DISCOUNT = "discount";
     public static final String C_TAX = "tax";
 
-    @DataColumn(C_SUPPLIER_ID)
     private Long supplierId;
-
-    @DataColumn(C_INVOICE_NUMBER)
     private String invoiceNumber;
-
-    @DataColumn(C_INVOICE_DATE)
     private LocalDate invoiceDate;
-
-    @DataColumn(C_TOTAL_PRODUCT)
     private Integer totalProduct;
-
-    @DataColumn(C_TOTAL_PAYMENT)
     private BigDecimal totalPayment;
-
-    @DataColumn(C_TOTAL_PURCHASE)
     private BigDecimal totalPurchase;
-
-    @DataColumn(C_PAYMENT_DUE_DATE)
     private LocalDate paymentDueDate;
-
-    @DataColumn(C_PAYMENT_STATUS)
     private String paymentStatus;
-
-    @DataColumn(C_DISCOUNT)
     private BigDecimal discount;
-
-    @DataColumn(C_TAX)
     private BigDecimal tax;
-
-    @Override
-    public String tableName() {
-        return TABLE_NAME;
-    }
-
 }

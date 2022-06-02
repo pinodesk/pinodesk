@@ -22,6 +22,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
+import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
+import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
+import org.springframework.data.relational.core.dialect.Dialect;
+import org.springframework.data.relational.core.dialect.MySqlDialect;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.init.DatabasePopulator;
 import org.springframework.jdbc.datasource.init.DatabasePopulatorUtils;
@@ -40,8 +46,10 @@ public abstract class RepositoryTestBase {
     @Import(SequelConfig.class)
     @ComponentScan
     @EnableTransactionManagement
+    @EnableJdbcRepositories
+    @EnableJdbcAuditing
     @PropertySource({ "classpath:application-test.properties" })
-    static class Config {
+    static class Config extends AbstractJdbcConfiguration {
 
         @Resource // https://stackoverflow.com/questions/19421092/autowired-environment-is-null
         private Environment env;
@@ -75,6 +83,11 @@ public abstract class RepositoryTestBase {
             databaseConfig.setProperty(DatabaseConfig.PROPERTY_ESCAPE_PATTERN, "\"?\"");
             databaseConfig.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
             return databaseConnection;
+        }
+
+        @Override
+        public Dialect jdbcDialect(NamedParameterJdbcOperations operations) {
+            return MySqlDialect.INSTANCE;
         }
 
     }

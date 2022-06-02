@@ -46,39 +46,39 @@ class UnitServiceTest extends BaseServiceTest {
 
     @Test
     void testGetAllUnits_shouldSucceed() {
-        when(unitRepository.read()).thenReturn(new ArrayList<>());
+        when(unitRepository.findByDeletedAtIsNull()).thenReturn(new ArrayList<>());
         List<UnitVM> units = unitService.getAllUnits();
         assertNotNull(units);
         assertEquals(0, units.size());
-        verify(unitRepository).read();
+        verify(unitRepository).findByDeletedAtIsNull();
     }
 
     @Test
     void testSearchUnitByKeyword_shouldSucceed() {
-        when(unitRepository.filter(anyString(), anyInt())).thenReturn(new ArrayList<>());
+        when(unitRepository.findByKeyword(anyString(), anyInt())).thenReturn(new ArrayList<>());
         List<UnitVM> units = unitService.searchUnitByKeyword("keyword");
         assertNotNull(units);
         assertEquals(0, units.size());
-        verify(unitRepository).filter(anyString(), anyInt());
+        verify(unitRepository).findByKeyword(anyString(), anyInt());
     }
 
     @Test
     void testGetUnitById_shouldSucceed() {
         Unit unit = new Unit();
         unit.setId(1L);
-        when(unitRepository.readOne(anyLong())).thenReturn(Optional.of(unit));
+        when(unitRepository.findByIdAndDeletedAtIsNull(anyLong())).thenReturn(Optional.of(unit));
         UnitVM result = unitService.getUnitById(1L);
         assertNotNull(result);
         assertEquals(1L, result.getId().longValue());
-        verify(unitRepository).readOne(anyLong());
+        verify(unitRepository).findByIdAndDeletedAtIsNull(anyLong());
     }
 
     @Test
     void testGetUnitById_idNotFound_shouldThrowDomainException() {
-        when(unitRepository.readOne(anyLong())).thenReturn(Optional.empty());
+        when(unitRepository.findByIdAndDeletedAtIsNull(anyLong())).thenReturn(Optional.empty());
         DomainException ex = assertThrows(DomainException.class, () -> unitService.getUnitById(1L));
         assertEquals(DomainError.UNIT_NOT_FOUND_BY_ID, ex.getError());
-        verify(unitRepository).readOne(anyLong());
+        verify(unitRepository).findByIdAndDeletedAtIsNull(anyLong());
     }
 
 }

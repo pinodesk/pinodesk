@@ -168,7 +168,7 @@ public class SupplierMainController extends BaseController {
         if (TableViewUtils.hasItemSelected(tableSupplier)) {
             setPageData(TableViewUtils.getSelectedItem(tableSupplier));
             StageUtils.modal(Page.MASTER_SUPPLIER_EDIT, false, event -> {
-                if (Boolean.TRUE.equals(getPageData())) {
+                if (getPageData() != null) {
                     searchSuppliers();
                 }
             });

@@ -6,17 +6,15 @@ import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.Sale;
 import pinus.desktop.viewmodel.SaleFilterVM;
 import pinus.desktop.viewmodel.SaleVM;
 
-@Repository
-public class SaleRepositoryImpl extends AbstractRepository<Sale> implements SaleRepository {
+public class SaleRepositoryImpl extends AbstractRepository<Sale> implements SaleRepositoryCustom {
 
     @Override
-    public List<SaleVM> filter(SaleFilterVM filter) {
+    public List<SaleVM> findByFilter(SaleFilterVM filter) {
         StringBuilder sb = new StringBuilder();
         sb.append("""
                 select

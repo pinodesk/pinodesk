@@ -1,13 +1,16 @@
 package pinus.desktop.repository;
 
-import java.util.List;
+import java.util.Optional;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.DrugCategory;
 
-public interface DrugCategoryRepository extends CommonRepository<DrugCategory> {
+@Repository
+public interface DrugCategoryRepository
+        extends PagingAndSortingRepository<DrugCategory, Long>, DrugCategoryRepositoryCustom {
 
-    List<DrugCategory> filter(String keyword, Long drugCategoryBaseId);
+    Optional<DrugCategory> findByIdAndDeletedAtIsNull(Long id);
 
 }

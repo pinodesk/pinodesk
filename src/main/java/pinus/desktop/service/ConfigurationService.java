@@ -3,8 +3,6 @@ package pinus.desktop.service;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,20 +24,19 @@ public class ConfigurationService extends BaseService {
 
     @Cacheable(CacheNameConstants.CONFIGURATION_BY_CODE)
     public String getConfiguration(String code) {
-        return configurationRepository.readOne(new Where().equals(Configuration.C_CODE, code))
-                .map(Configuration::getValue).orElse(null);
+        return configurationRepository.findByCodeAndDeletedAtIsNull(code).map(Configuration::getValue).orElse(null);
     }
 
     @Cacheable(CacheNameConstants.CONFIGURATION_MAP)
     public Map<String, String> getConfigurationMap() {
-        return configurationRepository.read().stream()
+        return configurationRepository.findByDeletedAtIsNull().stream()
                 .collect(Collectors.toMap(Configuration::getCode, Configuration::getValue));
     }
 
     @Transactional
     public void updateConfiguration(Map<String, String> configurationMap) {
         configurationMap.entrySet()
-                .forEach(entry -> configurationRepository.updateConfigurationByCode(entry.getKey(), entry.getValue()));
+                .forEach(entry -> configurationRepository.updateValueByCode(entry.getKey(), entry.getValue()));
         evictAllCaches();
     }
 

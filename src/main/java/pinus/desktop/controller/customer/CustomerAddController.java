@@ -82,7 +82,7 @@ public class CustomerAddController extends CommonDataSaveController {
         customer.setPhone(tfPhone.getText());
         customer.setEmail(tfEmail.getText());
         customer.setAddress(tfAddress.getText());
-        return customerService.createCustomer(customer) > 0;
+        return customerService.createCustomer(customer);
     }
 
     private void resetControls() {

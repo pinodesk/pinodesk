@@ -1,16 +1,33 @@
 package pinus.desktop.repository;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import java.util.List;
+
+import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import pinus.desktop.domain.SupplierContact;
-import pinus.desktop.viewmodel.SupplierContactAddVM;
 
-public interface SupplierContactRepository extends CommonRepository<SupplierContact> {
+@Repository
+public interface SupplierContactRepository extends PagingAndSortingRepository<SupplierContact, Long> {
 
-    Long createSupplierContact(SupplierContactAddVM supplierContact);
+    boolean existsByEmailIgnoreCaseAndSupplierIdAndDeletedAtIsNull(String email, Long supplierId);
 
-    boolean existsByEmailAndSupplierId(String email, Long supplierId, Long... excludeIds);
+    boolean existsByPhoneAndSupplierIdAndDeletedAtIsNull(String phone, Long supplierId);
 
-    boolean existsByPhoneAndSupplierId(String phone, Long supplierId, Long... excludeIds);
+    @Transactional
+    @Modifying
+    @Query("delete from supplier_contact where supplier_id = :supplierId")
+    Long deleteBySupplierId(@Param("supplierId") Long supplierId);
+
+    List<SupplierContact> findBySupplierIdAndDeletedAtIsNull(Long supplierId);
+
+    @Transactional
+    @Modifying
+    @Query("update supplier_contact set updated_at=now(), deleted_at=now() where supplier_id in (:supplierIds)")
+    Long deleteUpdateBySupplierIdIn(@Param("supplierIds") List<Long> supplierIds);
 
 }

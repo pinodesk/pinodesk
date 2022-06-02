@@ -1,9 +1,15 @@
 package pinus.desktop.repository;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import java.util.List;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.DrugCategoryBase;
 
-public interface DrugCategoryBaseRepository extends CommonRepository<DrugCategoryBase> {
+@Repository
+public interface DrugCategoryBaseRepository extends PagingAndSortingRepository<DrugCategoryBase, Long> {
+
+    List<DrugCategoryBase> findByDeletedAtIsNull();
 
 }

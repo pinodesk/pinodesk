@@ -55,29 +55,30 @@ class DrugCategoryServiceTest extends BaseServiceTest {
     @Test
     void testSearchDrugCategoriesByKeyword_shouldSucceed() {
         when(configurationService.getConfiguration(anyString())).thenReturn("1");
-        when(drugCategoryRepository.filter(anyString(), anyLong())).thenReturn(Collections.singletonList(drugCategory));
+        when(drugCategoryRepository.findByKeyword(anyString(), anyLong()))
+                .thenReturn(Collections.singletonList(drugCategory));
         List<DrugCategoryVM> results = drugCategoryService.searchDrugCategoriesByKeyword("keyword");
         assertNotNull(results);
         assertEquals(1, results.size());
         assertDrugCategory(drugCategory, results.get(0));
         verify(configurationService).getConfiguration(anyString());
-        verify(drugCategoryRepository).filter(anyString(), anyLong());
+        verify(drugCategoryRepository).findByKeyword(anyString(), anyLong());
     }
 
     @Test
     void testGetDrugCategoryById_shouldSucceed() {
-        when(drugCategoryRepository.readOne(anyLong())).thenReturn(Optional.of(drugCategory));
+        when(drugCategoryRepository.findByIdAndDeletedAtIsNull(anyLong())).thenReturn(Optional.of(drugCategory));
         DrugCategoryVM result = drugCategoryService.getDrugCategoryById(1L);
         assertDrugCategory(drugCategory, result);
-        verify(drugCategoryRepository).readOne(anyLong());
+        verify(drugCategoryRepository).findByIdAndDeletedAtIsNull(anyLong());
     }
 
     @Test
     void testGetDrugCategoryById_idNotFound_shouldThrowDomainException() {
-        when(drugCategoryRepository.readOne(anyLong())).thenReturn(Optional.empty());
+        when(drugCategoryRepository.findByIdAndDeletedAtIsNull(anyLong())).thenReturn(Optional.empty());
         DomainException ex = assertThrows(DomainException.class, () -> drugCategoryService.getDrugCategoryById(11L));
         assertEquals(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_ID, ex.getError());
-        verify(drugCategoryRepository).readOne(anyLong());
+        verify(drugCategoryRepository).findByIdAndDeletedAtIsNull(anyLong());
     }
 
     private void assertDrugCategory(DrugCategory expected, DrugCategoryVM actual) {

@@ -5,12 +5,11 @@ import java.util.List;
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
 import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
-import org.springframework.stereotype.Repository;
-
+import lombok.RequiredArgsConstructor;
 import pinus.desktop.domain.Doctor;
 
-@Repository
-public class DoctorRepositoryImpl extends AbstractRepository<Doctor> implements DoctorRepository {
+@RequiredArgsConstructor
+public class DoctorRepositoryImpl extends AbstractRepository<Doctor> implements DoctorRepositoryCustom {
 
     @Override
     public List<Doctor> findByKeyword(String keyword) {

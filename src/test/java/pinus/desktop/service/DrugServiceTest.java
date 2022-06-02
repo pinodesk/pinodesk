@@ -2,14 +2,12 @@ package pinus.desktop.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Optional;
-
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,11 +43,11 @@ class DrugServiceTest extends BaseServiceTest {
 
     @Test
     void testGetDrugByProductId_shouldSucceed() {
-        when(drugRepository.readOne(any(Where.class))).thenReturn(Optional.of(drug));
+        when(drugRepository.findByProductIdAndDeletedAtIsNull(anyLong())).thenReturn(Optional.of(drug));
         DrugVM result = drugService.getDrugByProductId(1L);
         assertNotNull(result);
         assertEquals(drug.getId(), result.getId());
-        verify(drugRepository).readOne(any(Where.class));
+        verify(drugRepository).findByProductIdAndDeletedAtIsNull(anyLong());
     }
 
 }

@@ -3,13 +3,15 @@ package pinus.desktop.repository;
 import java.util.List;
 import java.util.Optional;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
 
 import pinus.desktop.domain.ProductStock;
 
-public interface ProductStockRepository extends CommonRepository<ProductStock> {
+@Repository
+public interface ProductStockRepository extends PagingAndSortingRepository<ProductStock, Long> {
 
-    List<ProductStock> findByProductId(Long productId);
+    List<ProductStock> findByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
 
-    Optional<ProductStock> findTopByProductId(Long productId);
+    Optional<ProductStock> findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
 }

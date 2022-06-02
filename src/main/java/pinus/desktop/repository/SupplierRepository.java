@@ -1,29 +1,35 @@
 package pinus.desktop.repository;
 
 import java.util.List;
+import java.util.Optional;
 
-import com.gitlab.muhammadkholidb.sequel.repository.CommonRepository;
+import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jdbc.repository.query.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import pinus.desktop.domain.Supplier;
-import pinus.desktop.viewmodel.SupplierAddVM;
-import pinus.desktop.viewmodel.SupplierEditVM;
-import pinus.desktop.viewmodel.SupplierFilterVM;
 
-public interface SupplierRepository extends CommonRepository<Supplier> {
+@Repository
+public interface SupplierRepository extends PagingAndSortingRepository<Supplier, Long>, SupplierRepositoryCustom {
 
-    List<Supplier> filter(SupplierFilterVM filter);
+    boolean existsByCodeIgnoreCaseAndDeletedAtIsNull(String code);
 
-    List<Supplier> findByKeyword(String keyword);
+    boolean existsByEmailIgnoreCaseAndDeletedAtIsNull(String email);
 
-    Long createSupplier(SupplierAddVM supplierAdd);
+    boolean existsByPhoneIgnoreCaseAndDeletedAtIsNull(String phone);
 
-    Integer updateSupplier(SupplierEditVM supplierEdit);
+    Optional<Supplier> findFirstByCodeStartingWithOrderByCodeDesc(String prefix);
 
-    boolean existsByCode(String code, Long... excludedIds);
+    List<Supplier> findByDeletedAtIsNull();
 
-    boolean existsByEmail(String email, Long... excludeIds);
+    @Transactional
+    @Modifying
+    @Query("update supplier set updated_at=now(), deleted_at=now() where id in (:ids)")
+    Long deleteUpdateByIdIn(@Param("ids") List<Long> ids);
 
-    boolean existsByPhone(String phone, Long... excludeIds);
+    Optional<Supplier> findByIdAndDeletedAtIsNull(Long id);
 
-    String findMaxCodeByPrefix(String prefix);
 }

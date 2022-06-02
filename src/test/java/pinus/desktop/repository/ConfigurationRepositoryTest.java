@@ -10,7 +10,6 @@ import static pinus.desktop.constant.ConfigurationConstants.LANGUAGE_CODE;
 import java.util.Optional;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +24,9 @@ class ConfigurationRepositoryTest extends RepositoryTestBase {
 
     @Test
     void testUpdateConfigurationByCode_shouldSucceed() {
-        Integer rowsAffected = configurationRepository.updateConfigurationByCode(LANGUAGE_CODE, "id");
+        Integer rowsAffected = configurationRepository.updateValueByCode(LANGUAGE_CODE, "id");
         assertEquals(1, rowsAffected.intValue());
-        Optional<Configuration> configuration = configurationRepository
-                .readOne(new Where().equals(Configuration.C_CODE, LANGUAGE_CODE));
+        Optional<Configuration> configuration = configurationRepository.findByCodeAndDeletedAtIsNull(LANGUAGE_CODE);
         assertThat(configuration.isPresent(), is(true));
         assertThat(
                 configuration.get(),

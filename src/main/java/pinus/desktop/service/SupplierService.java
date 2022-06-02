@@ -2,8 +2,7 @@ package pinus.desktop.service;
 
 import java.util.Date;
 import java.util.List;
-
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
+import java.util.Optional;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,13 +38,13 @@ public class SupplierService extends BaseService {
 
     @Cacheable(CacheNameConstants.SUPPLIERS_BY_FILTER)
     public List<SupplierVM> searchSuppliers(SupplierFilterVM filter) {
-        return objectConverter.convertList(supplierRepository.filter(filter), SupplierVM.class);
+        return objectConverter.convertList(supplierRepository.findByFilter(filter), SupplierVM.class);
     }
 
     @Cacheable(CacheNameConstants.SUPPLIERS_BY_KEYWORD)
     public List<SupplierVM> searchSuppliersByKeyword(String keyword) {
         List<Supplier> suppliers = StringUtils.isBlank(keyword) ?
-                supplierRepository.read() : supplierRepository.findByKeyword(keyword.trim());
+                supplierRepository.findByDeletedAtIsNull() : supplierRepository.findByKeyword(keyword.trim());
         return objectConverter.convertList(suppliers, SupplierVM.class);
     }
 
@@ -53,84 +52,94 @@ public class SupplierService extends BaseService {
         allEntries = true)
     @Transactional
     public void removeSuppliers(List<Long> ids) {
-        supplierRepository.delete(ids);
-        supplierContactRepository.delete(new Where().in(SupplierContact.C_SUPPLIER_ID, ids));
+        supplierContactRepository.deleteUpdateBySupplierIdIn(ids);
+        supplierRepository.deleteUpdateByIdIn(ids);
     }
 
     @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER, CacheNameConstants.SUPPLIERS_BY_KEYWORD },
         allEntries = true)
     @Transactional
-    public Long createSupplier(SupplierAddVM supplier, List<SupplierContactAddVM> contacts) {
-        if (supplierRepository.existsByCode(supplier.getCode())) {
+    public Supplier createSupplier(SupplierAddVM supplierAdd, List<SupplierContactAddVM> contacts) {
+        if (supplierRepository.existsByCodeIgnoreCaseAndDeletedAtIsNull(supplierAdd.getCode())) {
             throw new DomainException(DomainError.SUPPLIER_EXISTS_BY_CODE);
         }
-        String email = supplier.getEmail();
-        if (StringUtils.isNotBlank(email) && supplierRepository.existsByEmail(email)) {
+        String email = supplierAdd.getEmail();
+        if (StringUtils.isNotBlank(email) && supplierRepository.existsByEmailIgnoreCaseAndDeletedAtIsNull(email)) {
             throw new DomainException(DomainError.SUPPLIER_EXISTS_BY_EMAIL);
         }
-        String phone = supplier.getPhone();
-        if (StringUtils.isNotBlank(phone) && supplierRepository.existsByPhone(phone)) {
+        String phone = supplierAdd.getPhone();
+        if (StringUtils.isNotBlank(phone) && supplierRepository.existsByPhoneIgnoreCaseAndDeletedAtIsNull(phone)) {
             throw new DomainException(DomainError.SUPPLIER_EXISTS_BY_PHONE);
         }
-        Long supplierId = supplierRepository.createSupplier(supplier);
+        Supplier supplier = supplierRepository.save(objectConverter.convertObject(supplierAdd, Supplier.class));
         if (CollectionUtils.isNotEmpty(contacts)) {
-            contacts.forEach(contact -> createSupplierContact(contact, supplierId));
+            contacts.forEach(contact -> createSupplierContact(contact, supplier.getId()));
         }
-        return supplierId;
+        return supplier;
     }
 
-    private Long createSupplierContact(SupplierContactAddVM contact, Long supplierId) {
+    private SupplierContact createSupplierContact(SupplierContactAddVM contact, Long supplierId) {
         String email = contact.getEmail();
-        if (StringUtils.isNotBlank(email) && supplierContactRepository.existsByEmailAndSupplierId(email, supplierId)) {
+        if (StringUtils.isNotBlank(email) && supplierContactRepository
+                .existsByEmailIgnoreCaseAndSupplierIdAndDeletedAtIsNull(email, supplierId)) {
             throw new DomainException(DomainError.SUPPLIER_CONTACT_EXISTS_BY_EMAIL);
         }
         String phone = contact.getPhone();
-        if (StringUtils.isNotBlank(phone) && supplierContactRepository.existsByPhoneAndSupplierId(phone, supplierId)) {
+        if (StringUtils.isNotBlank(phone)
+                && supplierContactRepository.existsByPhoneAndSupplierIdAndDeletedAtIsNull(phone, supplierId)) {
             throw new DomainException(DomainError.SUPPLIER_CONTACT_EXISTS_BY_PHONE);
         }
         contact.setSupplierId(supplierId);
-        return supplierContactRepository.createSupplierContact(contact);
+        return supplierContactRepository.save(objectConverter.convertObject(contact, SupplierContact.class));
     }
 
     @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER, CacheNameConstants.SUPPLIERS_BY_KEYWORD },
         allEntries = true)
     @Transactional
-    public boolean updateSupplier(SupplierEditVM supplier, List<SupplierContactAddVM> contacts) {
-        Long supplierId = supplier.getId();
-        if (!supplierRepository.exists(supplierId)) {
-            throw new DomainException(DomainError.SUPPLIER_NOT_FOUND_BY_ID);
-        }
-        if (supplierRepository.existsByCode(supplier.getCode(), supplierId)) {
+    public Supplier updateSupplier(SupplierEditVM supplierEdit, List<SupplierContactAddVM> contacts) {
+        Long supplierId = supplierEdit.getId();
+        Supplier supplier = supplierRepository.findByIdAndDeletedAtIsNull(supplierEdit.getId())
+                .orElseThrow(() -> new DomainException(DomainError.SUPPLIER_NOT_FOUND_BY_ID));
+        if (!supplier.getCode().equals(supplierEdit.getCode())
+                && supplierRepository.existsByCodeIgnoreCaseAndDeletedAtIsNull(supplierEdit.getCode())) {
             throw new DomainException(DomainError.SUPPLIER_OTHER_EXISTS_BY_CODE);
         }
-        String email = supplier.getEmail();
-        if (StringUtils.isNotBlank(email) && supplierRepository.existsByEmail(email, supplierId)) {
+        String email = supplierEdit.getEmail();
+        if (StringUtils.isNotBlank(email) && !supplier.getEmail().equalsIgnoreCase(email)
+                && supplierRepository.existsByEmailIgnoreCaseAndDeletedAtIsNull(email)) {
             throw new DomainException(DomainError.SUPPLIER_OTHER_EXISTS_BY_EMAIL);
         }
-        String phone = supplier.getPhone();
-        if (StringUtils.isNotBlank(phone) && supplierRepository.existsByPhone(phone, supplierId)) {
+        String phone = supplierEdit.getPhone();
+        if (StringUtils.isNotBlank(phone) && !supplier.getPhone().equals(phone)
+                && supplierRepository.existsByPhoneIgnoreCaseAndDeletedAtIsNull(phone)) {
             throw new DomainException(DomainError.SUPPLIER_OTHER_EXISTS_BY_PHONE);
         }
-        supplierContactRepository.delete(new Where().equals(SupplierContact.C_SUPPLIER_ID, supplier.getId()), true);
+        supplierContactRepository.deleteBySupplierId(supplierId);
         if (CollectionUtils.isNotEmpty(contacts)) {
             contacts.forEach(contact -> createSupplierContact(contact, supplierId));
         }
-        return supplierRepository.updateSupplier(supplier) == 1;
+        supplier.setAddress(supplierEdit.getAddress());
+        supplier.setCode(supplierEdit.getCode());
+        supplier.setEmail(email);
+        supplier.setName(supplierEdit.getName());
+        supplier.setPhone(phone);
+        supplier.setWebsite(supplierEdit.getWebsite());
+        return supplierRepository.save(supplier);
     }
 
     public String getNextSupplierCode() {
         String prefix = DateFormatUtils.format(new Date(), CommonConstants.CODE_PREFIX_DATE_PATTERN);
-        String maxCode = supplierRepository.findMaxCodeByPrefix(prefix);
+        Optional<Supplier> supplier = supplierRepository.findFirstByCodeStartingWithOrderByCodeDesc(prefix);
         int sequence = 0;
-        if (maxCode != null) {
-            sequence = Integer.parseInt(maxCode.substring(prefix.length())) + 1;
+        if (supplier.isPresent()) {
+            sequence = Integer.parseInt(supplier.get().getCode().substring(prefix.length())) + 1;
         }
         return prefix + String.format("%04d", sequence); // Left pad with "0"
     }
 
     public List<SupplierContactAddVM> getSupplierContacts(Long supplierId) {
         return objectConverter.convertList(
-                supplierContactRepository.read(new Where().equals(SupplierContact.C_SUPPLIER_ID, supplierId)),
+                supplierContactRepository.findBySupplierIdAndDeletedAtIsNull(supplierId),
                 SupplierContactAddVM.class);
     }
 
