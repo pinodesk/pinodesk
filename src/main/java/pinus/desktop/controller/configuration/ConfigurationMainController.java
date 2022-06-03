@@ -81,12 +81,6 @@ public class ConfigurationMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        ComboBoxUtils.init(cbDrugCategoryBase, new DrugCategoryBaseComboBoxConverter(cbDrugCategoryBase));
-        ComboBoxUtils.init(
-                cbLanguage,
-                new LanguageComboBoxConverter(
-                        cbLanguage,
-                        configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE)));
         TextFieldUtils.setDigitTextFields(tfVatPercentage);
     }
 
@@ -100,8 +94,12 @@ public class ConfigurationMainController extends BaseController {
         tfStoreName.setText(configurationMap.get(ConfigurationConstants.STORE_NAME));
         tfStoreAddress.setText(configurationMap.get(ConfigurationConstants.STORE_ADDRESS));
         tfVatPercentage.setText(configurationMap.get(ConfigurationConstants.VAT_PERCENTAGE));
-        cbDrugCategoryBase.setItems(FXCollections.observableList(drugCategoryBases));
-        cbLanguage.setItems(locales);
+        ComboBoxUtils
+                .init(cbDrugCategoryBase, new DrugCategoryBaseComboBoxConverter(cbDrugCategoryBase), drugCategoryBases);
+        ComboBoxUtils.init(
+                cbLanguage,
+                new LanguageComboBoxConverter(cbLanguage, configurationMap.get(ConfigurationConstants.LANGUAGE_CODE)),
+                locales);
         ComboBoxUtils.select(cbDrugCategoryBase, () -> getSelectedDrugCategoryBase(configurationMap));
         ComboBoxUtils.select(cbLanguage, () -> locales.stream().filter(locale -> {
             String configLanguageCode = configurationMap.get(ConfigurationConstants.LANGUAGE_CODE);

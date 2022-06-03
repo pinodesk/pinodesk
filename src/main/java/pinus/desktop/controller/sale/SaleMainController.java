@@ -32,6 +32,7 @@ import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.PaymentStatus;
+import pinus.desktop.constant.SellingMode;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.service.ConfigurationService;
@@ -94,7 +95,11 @@ public class SaleMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        // Show add sale dialog
+        StageUtils.modal(Page.TRANSACTION_SALE_ADD, true, we -> {
+            if (getPageData() != null) {
+                searchSales();
+            }
+        });
     }
 
     @FXML
@@ -140,6 +145,11 @@ public class SaleMainController extends BaseController {
         TableViewUtils.setColumnValue(colPaymentStatus, vm -> {
             PaymentStatus ps = PaymentStatus.valueOf(vm.getPaymentStatus());
             return PaymentStatus.PAID.equals(ps) ? translate(CommonLabel.LBL_PAID) : translate(CommonLabel.LBL_UNPAID);
+        });
+        TableViewUtils.setColumnValue(colSellingMode, vm -> {
+            SellingMode mode = SellingMode.valueOf(vm.getSellingMode());
+            return SellingMode.GENERAL.equals(mode) ?
+                    translate(CommonLabel.LBL_GENERAL) : translate(CommonLabel.LBL_PRESCRIPTION);
         });
         TableViewUtils.initTableColumn(
                 colTotalProduct,

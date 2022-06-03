@@ -41,13 +41,15 @@ public class CustomerService extends BaseService {
         return objectConverter.convertList(suppliers, CustomerVM.class);
     }
 
-    @CacheEvict(value = CacheNameConstants.CUSTOMERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.CUSTOMERS_BY_FILTER, CacheNameConstants.CUSTOMERS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public void removeCustomers(List<Long> ids) {
         customerRepository.deleteUpdateByIdIn(ids);
     }
 
-    @CacheEvict(value = CacheNameConstants.CUSTOMERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.CUSTOMERS_BY_FILTER, CacheNameConstants.CUSTOMERS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public Customer createCustomer(CustomerAddVM customerAdd) {
         if (customerRepository.existsByCodeIgnoreCaseAndDeletedAtIsNull(customerAdd.getCode())) {
@@ -64,7 +66,8 @@ public class CustomerService extends BaseService {
         return customerRepository.save(objectConverter.convertObject(customerAdd, Customer.class));
     }
 
-    @CacheEvict(value = CacheNameConstants.CUSTOMERS_BY_FILTER, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.CUSTOMERS_BY_FILTER, CacheNameConstants.CUSTOMERS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public Customer updateCustomer(CustomerEditVM customerEdit) {
         Long customerId = customerEdit.getId();

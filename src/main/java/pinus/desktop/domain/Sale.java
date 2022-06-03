@@ -20,6 +20,7 @@ public class Sale extends DataModel {
     public static final String C_PAYMENT_DUE_DATE = "payment_due_date";
     public static final String C_TOTAL_PRODUCT = "total_product";
     public static final String C_TOTAL_PAYMENT = "total_payment";
+    public static final String C_TOTAL_SALE = "total_sale";
 
     private Long customerId;
     private Long doctorId;
@@ -29,4 +30,5 @@ public class Sale extends DataModel {
     private LocalDate paymentDueDate;
     private Integer totalProduct;
     private BigDecimal totalPayment;
+    private BigDecimal totalSale;
 }

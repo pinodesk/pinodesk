@@ -10,6 +10,7 @@ create table if not exists sale (
 	payment_status varchar(6) not null, -- PAID, UNPAID
 	payment_due_date date,
 	total_product int not null,
+	total_sale decimal(12,2) not null,
 	total_payment decimal(12,2) not null,
 	primary key (id),
 	index idx_sale__deleted_at (deleted_at),

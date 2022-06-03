@@ -27,6 +27,7 @@ import pinus.desktop.repository.ProductPriceRepository;
 import pinus.desktop.repository.ProductRepository;
 import pinus.desktop.repository.ProductStockRepository;
 import pinus.desktop.viewmodel.DrugCategoryVM;
+import pinus.desktop.viewmodel.GroupedProductExpiryVM;
 import pinus.desktop.viewmodel.ProductAddVM;
 import pinus.desktop.viewmodel.ProductEditVM;
 import pinus.desktop.viewmodel.ProductExpiryAddVM;
@@ -327,6 +328,10 @@ public class ProductService extends BaseService {
         }, () -> {
             throw new DomainException(DomainError.PRODUCT_EXPIRY_QUANTITY_EXCEEDS_PRODUCT_STOCK);
         });
+    }
+
+    public List<GroupedProductExpiryVM> getRemainingProductExpiry(Long productId) {
+        return productExpiryRepository.findGroupedByProductId(productId);
     }
 
 }

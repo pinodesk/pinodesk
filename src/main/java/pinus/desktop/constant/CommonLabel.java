@@ -17,7 +17,9 @@ public enum CommonLabel implements IMessage {
     LBL_PAID,
     LBL_UNPAID,
     LBL_SYSTEM_ERROR,
-    LBL_DETAILS;
+    LBL_DETAILS,
+    LBL_GENERAL,
+    LBL_PRESCRIPTION;
 
     @Override
     public String toString() {

@@ -71,7 +71,9 @@ public class PurchaseService extends BaseService {
     public void createPurchase(PurchaseAddVM purchaseAdd) {
         String activityName = Activity.ADD_PURCHASE.name();
         String invoiceNumber = purchaseAdd.getInvoiceNumber();
-        if (purchaseRepository.existsByInvoiceNumberAndSupplierId(invoiceNumber, purchaseAdd.getSupplierId())) {
+        if (purchaseRepository.existsByInvoiceNumberIgnoreCaseAndSupplierIdAndDeletedAtIsNull(
+                invoiceNumber,
+                purchaseAdd.getSupplierId())) {
             throw new DomainException(DomainError.PURCHASE_EXISTS_BY_INVOICE_NUMBER_AND_SUPPLIER_ID);
         }
         Purchase purchase = new Purchase();
@@ -122,8 +124,8 @@ public class PurchaseService extends BaseService {
         Long supplierId = purchaseEdit.getSupplierId();
         Purchase purchase = purchaseRepository.findByIdAndDeletedAtIsNull(purchaseId)
                 .orElseThrow(() -> new DomainException(DomainError.PURCHASE_NOT_FOUND_BY_ID));
-        if (isDifferentInvoiceNumberOrSupplierId(purchase, purchaseEdit)
-                && purchaseRepository.existsByInvoiceNumberAndSupplierId(invoiceNumber, supplierId)) {
+        if (isDifferentInvoiceNumberOrSupplierId(purchase, purchaseEdit) && purchaseRepository
+                .existsByInvoiceNumberIgnoreCaseAndSupplierIdAndDeletedAtIsNull(invoiceNumber, supplierId)) {
             throw new DomainException(DomainError.PURCHASE_OTHER_EXISTS_BY_INVOICE_NUMBER_AND_SUPPLIER_ID);
         }
         purchase.setDiscount(purchaseEdit.getDiscount());
