@@ -19,4 +19,6 @@ public interface SaleRepository extends PagingAndSortingRepository<Sale, Long>, 
     @Query("update sale set updated_at=now(), deleted_at=now() where id in (:ids)")
     Long deleteUpdateByIdIn(@Param("ids") List<Long> ids);
 
+    boolean existsByInvoiceNumberIgnoreCaseAndDeletedAtIsNull(String invoiceNumber);
+
 }

@@ -15,7 +15,7 @@ import pinus.desktop.domain.Purchase;
 @Repository
 public interface PurchaseRepository extends PagingAndSortingRepository<Purchase, Long>, PurchaseRepositoryCustom {
 
-    boolean existsByInvoiceNumberAndSupplierId(String orderNumber, Long supplierId);
+    boolean existsByInvoiceNumberIgnoreCaseAndSupplierIdAndDeletedAtIsNull(String invoiceNumber, Long supplierId);
 
     @Transactional
     @Modifying

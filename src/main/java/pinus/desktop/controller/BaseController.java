@@ -120,7 +120,8 @@ public abstract class BaseController {
 
     private void handleDomainException(DomainException e) {
         DomainError err = e.getError();
-        displayError(String.format("%s. (%s)", translate(err.messageCode()), err.code()));
+        String message = String.format(translate(err.messageCode()), e.getArguments());
+        displayError(String.format("%s. (%s)", message, err.code()));
     }
 
     protected String translate(String messageCode) {
@@ -306,6 +307,10 @@ public abstract class BaseController {
 
     protected <T> void setDoctorChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
         setChooserOnFocus(tf, Page.MASTER_DOCTOR_CHOOSE, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setDoctorCategoryChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
+        setChooserOnFocus(tf, Page.MASTER_DOCTOR_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
     }
 
 }

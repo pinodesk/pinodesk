@@ -2,20 +2,43 @@ package pinus.desktop.repository;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
+import com.gitlab.muhammadkholidb.sequel.utility.SQLUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.ListBuilder;
 
 import lombok.RequiredArgsConstructor;
 import pinus.desktop.domain.Doctor;
+import pinus.desktop.viewmodel.DoctorVM;
 
 @RequiredArgsConstructor
 public class DoctorRepositoryImpl extends AbstractRepository<Doctor> implements DoctorRepositoryCustom {
 
     @Override
-    public List<Doctor> findByKeyword(String keyword) {
-        return read(
-                new Where().containsIgnoreCase(Doctor.C_NAME, keyword).contains(Doctor.C_REGISTRATION_NUMBER, keyword)
-                        .contains(Doctor.C_MEDICAL_LICENSE_NUMBER, keyword));
+    public List<DoctorVM> findByKeyword(String keyword, String languageCode) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("""
+                select
+                    a.*,
+                    b.id as category_id,
+                    b.name as category_name
+                from doctor a
+                inner join doctor_category b on b.code = a.category_code and b.language_code = ?
+                where a.deleted_at is null
+                """);
+        ListBuilder<Object> lb = new ListBuilder<>().add(languageCode);
+        if (StringUtils.isNotBlank(keyword)) {
+            String likeValue = SQLUtils.likeValueContains(keyword.trim().toLowerCase());
+            sb.append("""
+                    and (lower(a.name) like ?
+                    or a.registration_number like ?
+                    or a.medical_license_number like ?
+                    or b.code like ?)
+                    """);
+            lb.add(likeValue).add(likeValue).add(likeValue).add(likeValue);
+        }
+        return performSelect(sb.toString(), lb.build(), DoctorVM.class);
     }
 
 }

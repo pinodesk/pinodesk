@@ -2,10 +2,10 @@ package pinus.desktop.repository;
 
 import java.util.List;
 
-import pinus.desktop.domain.Doctor;
+import pinus.desktop.viewmodel.DoctorVM;
 
 public interface DoctorRepositoryCustom {
 
-    List<Doctor> findByKeyword(String keyword);
+    List<DoctorVM> findByKeyword(String keyword, String languageCode);
 
 }

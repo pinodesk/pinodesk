@@ -20,6 +20,6 @@ public class SaleDetail extends DataModel {
     private Long saleId;
     private Long productId;
     private Integer quantity;
-    private BigDecimal buyingPrice;
+    private BigDecimal sellingPrice;
     private BigDecimal subtotal;
 }

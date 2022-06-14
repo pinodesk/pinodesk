@@ -8,6 +8,8 @@ create table if not exists product_price (
 	prescription_selling_price decimal(12,2),
 	purchase_id bigint,
 	purchase_invoice_number varchar(64),
+	sale_id bigint,
+	sale_invoice_number varchar(64),
 	user_id bigint not null,
 	activity varchar(128) not null,
 	remarks varchar(128),

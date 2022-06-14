@@ -82,7 +82,7 @@ public class DoctorChooseController extends CommonDataChooseController<DoctorVM>
         });
         tfSearch.setOnKeyPressed(event -> {
             if (EventUtils.isEnter(event)) {
-                searchSuppliers();
+                searchDoctors();
             }
         });
         setFocused(contentPane);
@@ -103,7 +103,7 @@ public class DoctorChooseController extends CommonDataChooseController<DoctorVM>
         doctorService = SpringUtils.getBean(DoctorService.class);
     }
 
-    private void searchSuppliers() {
+    private void searchDoctors() {
         tblDoctor.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
         tblDoctor.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> doctorService.searchDoctorsByKeyword(tfSearch.getText()))

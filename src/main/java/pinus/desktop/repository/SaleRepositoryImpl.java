@@ -20,9 +20,12 @@ public class SaleRepositoryImpl extends AbstractRepository<Sale> implements Sale
                 select
                     a.*,
                     b.id as customer_id,
-                    b.name as customer_name
+                    b.name as customer_name,
+                    c.id as doctor_id,
+                    c.name as doctor_name
                 from sale a
                 left join customer b on b.id = a.customer_id
+                left join doctor c on c.id = a.doctor_id
                 """);
         Where where = new Where();
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
