@@ -112,6 +112,7 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 ProductVM::getUpdatedAt);
+        tblProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tblProduct.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
                 btnChoose.fire();

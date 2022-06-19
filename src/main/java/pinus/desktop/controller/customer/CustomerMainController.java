@@ -129,6 +129,7 @@ public class CustomerMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 CustomerVM::getUpdatedAt);
+        tableCustomer.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tableCustomer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableCustomer.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

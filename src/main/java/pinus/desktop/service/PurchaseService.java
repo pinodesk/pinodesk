@@ -15,6 +15,8 @@ import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.DomainError;
+import pinus.desktop.constant.PaymentStatus;
+import pinus.desktop.domain.Payable;
 import pinus.desktop.domain.Product;
 import pinus.desktop.domain.ProductExpiry;
 import pinus.desktop.domain.ProductPrice;
@@ -22,6 +24,7 @@ import pinus.desktop.domain.ProductStock;
 import pinus.desktop.domain.Purchase;
 import pinus.desktop.domain.PurchaseDetail;
 import pinus.desktop.exception.DomainException;
+import pinus.desktop.repository.PayableRepository;
 import pinus.desktop.repository.ProductExpiryRepository;
 import pinus.desktop.repository.ProductPriceRepository;
 import pinus.desktop.repository.ProductRepository;
@@ -56,6 +59,9 @@ public class PurchaseService extends BaseService {
     private ProductRepository productRepository;
 
     @Autowired
+    private PayableRepository payableRepository;
+
+    @Autowired
     private ConfigurationService configurationService;
 
     @Cacheable(CacheNameConstants.PURCHASES_BY_FILTER)
@@ -66,7 +72,8 @@ public class PurchaseService extends BaseService {
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
-            CacheNameConstants.PRODUCTS_BY_KEYWORD },
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.PAYABLES_BY_FILTER },
         allEntries = true)
     @Transactional
     public void createPurchase(PurchaseAddVM purchaseAdd) {
@@ -112,12 +119,23 @@ public class PurchaseService extends BaseService {
             createProductPrice(activityName, invoiceNumber, purchaseId, purchaseProduct, productId);
             updateProduct(purchaseProduct, productId, product, nextStockQuantity);
         });
+        if (PaymentStatus.UNPAID.equals(purchaseAdd.getPaymentStatus())) {
+            Payable payable = new Payable();
+            payable.setInvoiceDate(purchaseAdd.getInvoiceDate());
+            payable.setInvoiceNumber(purchaseAdd.getInvoiceNumber());
+            payable.setPaymentAmount(purchaseAdd.getTotalPayment());
+            payable.setPaymentDueDate(purchaseAdd.getPaymentDueDate());
+            payable.setPurchaseId(purchaseId);
+            payable.setSupplierId(purchaseAdd.getSupplierId());
+            payableRepository.save(payable);
+        }
     }
 
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
-            CacheNameConstants.PRODUCTS_BY_KEYWORD },
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.PAYABLES_BY_FILTER },
         allEntries = true)
     @Transactional
     public void updatePurchase(PurchaseEditVM purchaseEdit, Long purchaseId) {

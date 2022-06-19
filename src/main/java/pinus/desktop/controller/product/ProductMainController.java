@@ -177,6 +177,7 @@ public class ProductMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 ProductVM::getUpdatedAt);
+        tblProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tblProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 

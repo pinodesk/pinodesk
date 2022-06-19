@@ -1,10 +1,10 @@
 package pinus.desktop.controller.product;
 
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
-
-import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -42,6 +42,7 @@ public class ProductCategoryChooseController extends CommonDataChooseController<
         TableViewUtils.setColumnValue(colCode, ProductCategoryVM::getCode);
         TableViewUtils.setColumnValue(colName, ProductCategoryVM::getName);
         TableViewUtils.setColumnValue(colDescription, ProductCategoryVM::getDescription);
+        tblProductCategory.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         registerKeyListener();
         setFocused(contentPane);
     }
