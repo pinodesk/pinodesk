@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
@@ -146,6 +147,18 @@ public class PurchaseEditController extends CommonDataSaveController {
 
     @FXML
     private TableColumn<PurchaseProductVM, BigDecimal> colSubtotal;
+
+    @FXML
+    private TableColumn<PurchaseProductVM, BigDecimal> colGeneralSellingPrice;
+
+    @FXML
+    private TableColumn<PurchaseProductVM, BigDecimal> colPrescriptionSellingPrice;
+
+    @FXML
+    private TableColumn<PurchaseProductVM, String> colBactchNumber;
+
+    @FXML
+    private TableColumn<PurchaseProductVM, LocalDate> colExpiredDate;
 
     @FXML
     private Label lblTotalProduct;
@@ -291,6 +304,7 @@ public class PurchaseEditController extends CommonDataSaveController {
                 tfProductQuantity);
         TableViewUtils.setColumnValue(colProductName, PurchaseProductVM::getProductName);
         TableViewUtils.setColumnValue(colUnit, PurchaseProductVM::getProductUnitLabel);
+        TableViewUtils.setColumnValue(colBactchNumber, PurchaseProductVM::getBatchNumber);
         TableViewUtils.setColumnValue(colProductCategory, PurchaseProductVM::getProductCategoryName);
         TableViewUtils.initTableColumn(
                 colBuyingPrice,
@@ -307,6 +321,20 @@ public class PurchaseEditController extends CommonDataSaveController {
                 new NumberCellFactory<>(locale),
                 PurchaseProductVM::getSubtotal,
                 StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colGeneralSellingPrice,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getGeneralSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colPrescriptionSellingPrice,
+                new NumberCellFactory<>(locale),
+                PurchaseProductVM::getPrescriptionSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colExpiredDate,
+                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
+                PurchaseProductVM::getExpiredDate);
         tblPurchaseProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tblPurchaseProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblPurchaseProduct.setOnMouseClicked(event -> {
@@ -332,9 +360,6 @@ public class PurchaseEditController extends CommonDataSaveController {
         Locale locale = resources.getLocale();
         currentPurchase = getPageData();
         List<PurchaseProductVM> products = purchaseService.getPurchaseProducts(currentPurchase.getId());
-        products.forEach(p -> {
-            System.out.println("p.getGeneralSellingPrice(): " + p.getGeneralSellingPrice());
-        });
         tblPurchaseProduct.getItems().addAll(products);
         selectedSupplier = new SupplierVM();
         selectedSupplier.setId(currentPurchase.getSupplierId());

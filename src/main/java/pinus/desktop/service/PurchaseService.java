@@ -330,6 +330,7 @@ public class PurchaseService extends BaseService {
     @CacheEvict(value = { CacheNameConstants.PURCHASES_BY_FILTER }, allEntries = true)
     @Transactional
     public void removePurchases(List<Long> ids) {
+        ids.forEach(id -> revertLastPurchasedProducts(id, Activity.DELETE_PURCHASE.name()));
         purchaseDetailRepository.deleteUpdateByPurchaseIdIn(ids);
         purchaseRepository.deleteUpdateByIdIn(ids);
     }
