@@ -290,7 +290,7 @@
                                     </HBox>
                                     <HBox spacing="10.0">
                                        <children>
-                                          <VBox disable="true" spacing="5.0" HBox.hgrow="ALWAYS">
+                                          <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                              <children>
                                                 <Label text="%lbl_batch_number">
                                                    <font>
@@ -304,7 +304,7 @@
                                                 </TextField>
                                              </children>
                                           </VBox>
-                                          <VBox disable="true" spacing="5.0" HBox.hgrow="ALWAYS">
+                                          <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                              <children>
                                                 <Label text="%lbl_expired_date">
                                                    <font>
@@ -322,7 +322,7 @@
                                     </HBox>
                                     <HBox spacing="10.0">
                                        <children>
-                                          <VBox disable="true" spacing="5.0" HBox.hgrow="ALWAYS">
+                                          <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                              <children>
                                                 <Label text="%lbl_general_selling_price">
                                                    <font>
@@ -336,7 +336,7 @@
                                                 </TextField>
                                              </children>
                                           </VBox>
-                                          <VBox fx:id="vboxPrescriptionSellingPrice" disable="true" spacing="5.0" HBox.hgrow="ALWAYS">
+                                          <VBox fx:id="vboxPrescriptionSellingPrice" spacing="5.0" HBox.hgrow="ALWAYS">
                                              <children>
                                                 <Label text="%lbl_prescription_selling_price">
                                                    <font>

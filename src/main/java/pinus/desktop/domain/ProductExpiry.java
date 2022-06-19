@@ -17,6 +17,7 @@ public class ProductExpiry extends DataModel {
     public static final String C_QUANTITY_IN = "quantity_in";
     public static final String C_QUANTITY_OUT = "quantity_out";
     public static final String C_FINAL_QUANTITY = "final_quantity";
+    public static final String C_FINAL_QUANTITY_EXPIRED_DATE = "final_quantity_expired_date";
     public static final String C_PURCHASE_ID = "purchase_id";
     public static final String C_PURCHASE_INVOICE_NUMBER = "purchase_invoice_number";
     public static final String C_SALE_ID = "sale_id";
@@ -31,6 +32,7 @@ public class ProductExpiry extends DataModel {
     private Integer quantityIn;
     private Integer quantityOut;
     private Integer finalQuantity;
+    private Integer finalQuantityExpiredDate;
     private Long purchaseId;
     private String purchaseInvoiceNumber;
     private Long saleId;

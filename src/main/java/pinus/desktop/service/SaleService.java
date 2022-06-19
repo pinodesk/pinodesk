@@ -137,18 +137,25 @@ public class SaleService extends BaseService {
     }
 
     private void createProductExpiry(String activityName, Long saleId, SaleProductVM saleProduct, SaleAddVM saleAdd) {
-        ProductExpiry pxByProductId = productExpiryRepository
-                .findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(saleProduct.getProductId()).orElseThrow();
         Integer saleQuantity = saleProduct.getSaleQuantity();
         ProductExpiry px = new ProductExpiry();
         px.setActivity(activityName);
         px.setExpiredDate(saleProduct.getExpiredDate());
-        px.setFinalQuantity(pxByProductId.getFinalQuantity() - saleQuantity);
         px.setProductId(saleProduct.getProductId());
         px.setQuantityOut(saleQuantity);
         px.setSaleId(saleId);
         px.setSaleInvoiceNumber(saleAdd.getInvoiceNumber());
         px.setUserId(1l);
+        ProductExpiry pxByProductId = productExpiryRepository
+                .findFirstByProductIdOrderByIdDesc(saleProduct.getProductId()).orElseThrow();
+        px.setFinalQuantity(pxByProductId.getFinalQuantity() - saleQuantity);
+        px.setFinalQuantityExpiredDate(pxByProductId.getFinalQuantityExpiredDate() - saleQuantity);
+        if (!pxByProductId.getExpiredDate().isEqual(saleProduct.getExpiredDate())) {
+            Integer finalQuantityExpiredDate = productExpiryRepository.findFirstByProductIdAndExpiredDateOrderByIdDesc(
+                    saleProduct.getProductId(),
+                    saleProduct.getExpiredDate()).map(ProductExpiry::getFinalQuantityExpiredDate).orElse(0);
+            px.setFinalQuantityExpiredDate(finalQuantityExpiredDate - saleQuantity);
+        }
         productExpiryRepository.save(px);
     }
 

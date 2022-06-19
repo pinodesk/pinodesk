@@ -14,6 +14,9 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
@@ -26,8 +29,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 import com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils;
-
-import org.springframework.context.ApplicationContext;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -48,6 +49,7 @@ import pinus.desktop.constant.PaymentStatus;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.CommonDataSaveController;
 import pinus.desktop.service.PurchaseService;
+import pinus.desktop.util.ProductUtils;
 import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.ChooseResultVM;
 import pinus.desktop.viewmodel.ProductVM;
@@ -216,17 +218,18 @@ public class PurchaseEditController extends CommonDataSaveController {
     @FXML
     void onActionBtnAddProduct(ActionEvent event) {
         boolean isProductSelected = selectedProduct != null;
-        ControlValidator cv = new ControlValidator(resources);
-        cv.validateCustom(() -> !isProductSelected, MessageCode.ERROR_EMPTY_PRODUCT);
-        cv.validatePositive(tfProductQuantity, MessageCode.ERROR_INVALID_QUANTITY);
-        cv.validatePositive(tfBuyingPrice, MessageCode.ERROR_INVALID_BUYING_PRICE);
-        ValidationResult validationResult = cv.getResult();
+        boolean isProductCategoryDrugs = isProductSelected
+                && ProductUtils.isProductCategoryDrugs(selectedProduct.getCategoryCode());
+        LocalDate expiredDate = DateTimeUtils
+                .parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        ValidationResult validationResult = validateEditProduct(isProductSelected, isProductCategoryDrugs, expiredDate);
         if (!validationResult.isValid()) {
             displayError(validationResult.getMessages());
             return;
         }
         Integer quantity = toIntegerOrNull(tfProductQuantity.getText());
         BigDecimal buyingPrice = toBigDecimalOrNull(tfBuyingPrice.getText());
+        BigDecimal generalSellingPrice = toBigDecimalOrNull(tfGeneralSellingPrice.getText());
         PurchaseProductVM purchaseProduct = new PurchaseProductVM();
         purchaseProduct.setProductId(selectedProduct.getId());
         purchaseProduct.setProductName(selectedProduct.getName());
@@ -236,6 +239,13 @@ public class PurchaseEditController extends CommonDataSaveController {
         purchaseProduct.setQuantity(quantity);
         purchaseProduct.setBuyingPrice(buyingPrice);
         purchaseProduct.setSubtotal(buyingPrice.multiply(BigDecimal.valueOf(quantity)));
+        purchaseProduct.setGeneralSellingPrice(generalSellingPrice);
+        if (isProductCategoryDrugs) {
+            BigDecimal prescriptionSellingPrice = toBigDecimalOrNull(tfPrescriptionSellingPrice.getText());
+            purchaseProduct.setPrescriptionSellingPrice(prescriptionSellingPrice);
+        }
+        purchaseProduct.setBatchNumber(tfBatchNumber.getText());
+        purchaseProduct.setExpiredDate(expiredDate);
         int idx = getProductIndexInTable(selectedProduct, tblPurchaseProduct);
         if (idx != -1) {
             tblPurchaseProduct.getItems().remove(idx);
@@ -322,6 +332,9 @@ public class PurchaseEditController extends CommonDataSaveController {
         Locale locale = resources.getLocale();
         currentPurchase = getPageData();
         List<PurchaseProductVM> products = purchaseService.getPurchaseProducts(currentPurchase.getId());
+        products.forEach(p -> {
+            System.out.println("p.getGeneralSellingPrice(): " + p.getGeneralSellingPrice());
+        });
         tblPurchaseProduct.getItems().addAll(products);
         selectedSupplier = new SupplierVM();
         selectedSupplier.setId(currentPurchase.getSupplierId());
@@ -413,11 +426,18 @@ public class PurchaseEditController extends CommonDataSaveController {
             tfProduct.setText(product.getName());
             tfProductCategory.setText(product.getCategoryName());
             tfProductUnit.setText(product.getUnitLabel());
+            tfGeneralSellingPrice.setText(toStringOrEmpty(product.getGeneralSellingPrice()));
+            tfPrescriptionSellingPrice.setText(toStringOrEmpty(product.getPrescriptionSellingPrice()));
+            if (ProductUtils.isProductCategoryDrugs(product.getCategoryCode())) {
+                vboxPrescriptionSellingPrice.setDisable(false);
+            }
         }, () -> {
             selectedProduct = null;
             tfProduct.setText("");
             tfProductCategory.setText("");
             tfProductUnit.setText("");
+            tfGeneralSellingPrice.setText("");
+            tfPrescriptionSellingPrice.setText("");
         });
     }
 
@@ -463,6 +483,8 @@ public class PurchaseEditController extends CommonDataSaveController {
             product.setCategoryCode(selected.getProductCategoryCode());
             product.setCategoryName(selected.getProductCategoryName());
             product.setUnitLabel(selected.getProductUnitLabel());
+            product.setGeneralSellingPrice(selected.getGeneralSellingPrice());
+            product.setPrescriptionSellingPrice(selected.getPrescriptionSellingPrice());
             handleSelectedProduct(new ChooseResultVM<>(false, Optional.of(product)));
             tfProductQuantity.setText(toStringOrEmpty(selected.getQuantity()));
             tfBuyingPrice.setText(toStringOrEmpty(selected.getBuyingPrice()));
@@ -475,4 +497,23 @@ public class PurchaseEditController extends CommonDataSaveController {
         }
     }
 
+    private ValidationResult validateEditProduct(
+            boolean isProductSelected,
+            boolean isProductCategoryDrugs,
+            LocalDate expiredDate) {
+        ControlValidator cv = new ControlValidator(resources);
+        cv.validateCustom(() -> !isProductSelected, MessageCode.ERROR_EMPTY_PRODUCT);
+        cv.validatePositive(tfProductQuantity, MessageCode.ERROR_INVALID_QUANTITY);
+        cv.validatePositive(tfBuyingPrice, MessageCode.ERROR_INVALID_BUYING_PRICE);
+        if (StringUtils.isNotBlank(tfGeneralSellingPrice.getText())) {
+            cv.validatePositive(tfGeneralSellingPrice, MessageCode.ERROR_INVALID_GENERAL_SELLING_PRICE);
+        }
+        if (StringUtils.isNotBlank(tfPrescriptionSellingPrice.getText()) && isProductCategoryDrugs) {
+            cv.validatePositive(tfPrescriptionSellingPrice, MessageCode.ERROR_INVALID_PRESCRIPTION_SELLING_PRICE);
+        }
+        cv.validateCustom(
+                () -> StringUtils.isNotBlank(tfExpiredDate.getPlainText()) && expiredDate == null,
+                MessageCode.ERROR_INVALID_EXPIRED_DATE);
+        return cv.getResult();
+    }
 }

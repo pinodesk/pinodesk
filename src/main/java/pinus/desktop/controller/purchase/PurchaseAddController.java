@@ -488,6 +488,8 @@ public class PurchaseAddController extends CommonDataSaveController {
             product.setCategoryCode(selected.getProductCategoryCode());
             product.setCategoryName(selected.getProductCategoryName());
             product.setUnitLabel(selected.getProductUnitLabel());
+            product.setGeneralSellingPrice(selected.getGeneralSellingPrice());
+            product.setPrescriptionSellingPrice(selected.getPrescriptionSellingPrice());
             handleSelectedProduct(new ChooseResultVM<>(false, Optional.of(product)));
             tfProductQuantity.setText(toStringOrEmpty(selected.getQuantity()));
             tfBuyingPrice.setText(toStringOrEmpty(selected.getBuyingPrice()));

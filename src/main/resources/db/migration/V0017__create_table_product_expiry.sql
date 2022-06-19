@@ -9,6 +9,7 @@ create table if not exists product_expiry (
 	quantity_in int,
 	quantity_out int,
 	final_quantity int not null,
+	final_quantity_expired_date int not null,
 	purchase_id bigint,
 	purchase_invoice_number varchar(64),
 	sale_id bigint,

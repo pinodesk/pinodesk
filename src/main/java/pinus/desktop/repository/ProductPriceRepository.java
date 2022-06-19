@@ -12,4 +12,5 @@ public interface ProductPriceRepository extends PagingAndSortingRepository<Produ
 
     List<ProductPrice> findByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
 
+    List<ProductPrice> findFirst2ByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
 }
