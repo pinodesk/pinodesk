@@ -8,6 +8,8 @@ public enum Activity {
     EDIT_PURCHASE,
     DELETE_PURCHASE,
     ADD_SALE,
+    EDIT_SALE,
+    DELETE_SALE,
     ADD_CUSTOMER,
     EDIT_CUSTOMER,
     DELETE_CUSTOMER,

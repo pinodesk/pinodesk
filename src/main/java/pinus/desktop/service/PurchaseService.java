@@ -345,7 +345,11 @@ public class PurchaseService extends BaseService {
         productPriceRepository.save(pp);
     }
 
-    @CacheEvict(value = { CacheNameConstants.PURCHASES_BY_FILTER }, allEntries = true)
+    @CacheEvict(value = {
+            CacheNameConstants.PURCHASES_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
     @Transactional
     public void removePurchases(List<Long> ids) {
         ids.forEach(id -> revertLastPurchasedProducts(id, Activity.DELETE_PURCHASE.name()));

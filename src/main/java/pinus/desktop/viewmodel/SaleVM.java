@@ -19,6 +19,7 @@ public class SaleVM {
     private String invoiceNumber;
     private Integer totalProduct;
     private BigDecimal totalPayment;
+    private BigDecimal totalSale;
     private LocalDate paymentDueDate;
     private String paymentStatus;
     private String sellingMode;

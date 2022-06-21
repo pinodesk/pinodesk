@@ -143,6 +143,9 @@ public class ProductEditController extends CommonDataSaveController {
     private TableColumn<ProductPriceVM, String> colProductPricePurchaseInvoiceNumber;
 
     @FXML
+    private TableColumn<ProductPriceVM, String> colProductPriceSaleInvoiceNumber;
+
+    @FXML
     private TableColumn<ProductPriceVM, String> colProductPriceActivity;
 
     @FXML
@@ -356,6 +359,7 @@ public class ProductEditController extends CommonDataSaveController {
                 ProductPriceVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.setColumnValue(colProductPricePurchaseInvoiceNumber, ProductPriceVM::getPurchaseInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductPriceSaleInvoiceNumber, ProductPriceVM::getSaleInvoiceNumber);
         TableViewUtils.setColumnValue(colProductPriceActivity, ProductPriceVM::getActivity);
         TableViewUtils.setColumnValue(colProductPriceRemarks, ProductPriceVM::getRemarks);
         TableViewUtils.setColumnValue(colProductPriceUser, ProductPriceVM::getUserId);

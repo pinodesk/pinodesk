@@ -16,6 +16,8 @@ public class ProductPriceVM {
     private BigDecimal prescriptionSellingPrice;
     private Long purchaseId;
     private String purchaseInvoiceNumber;
+    private Long saleId;
+    private String saleInvoiceNumber;
     private Long userId;
     private String activity;
     private String remarks;
