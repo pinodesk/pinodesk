@@ -8,7 +8,6 @@ import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toString
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
@@ -21,6 +20,7 @@ import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
@@ -59,10 +59,11 @@ import pinus.desktop.viewmodel.CustomerVM;
 import pinus.desktop.viewmodel.DoctorVM;
 import pinus.desktop.viewmodel.GroupedProductExpiryVM;
 import pinus.desktop.viewmodel.ProductVM;
-import pinus.desktop.viewmodel.SaleAddVM;
+import pinus.desktop.viewmodel.SaleEditVM;
 import pinus.desktop.viewmodel.SaleProductVM;
+import pinus.desktop.viewmodel.SaleVM;
 
-public class SaleAddController extends CommonDataSaveController {
+public class SaleEditController extends CommonDataSaveController {
 
     @FXML
     private TextField tfCustomer;
@@ -175,6 +176,8 @@ public class SaleAddController extends CommonDataSaveController {
 
     private int idxSelectedSaleProduct = -1;
 
+    private SaleVM currentSale;
+
     @FXML
     void onActionBtnNewProduct(ActionEvent event) {
         StageUtils.modal(Page.MASTER_PRODUCT_ADD, false, we -> {
@@ -210,6 +213,17 @@ public class SaleAddController extends CommonDataSaveController {
         }
         if (tblSaleProduct.getItems().isEmpty()) {
             tblSaleProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        }
+    }
+
+    @FXML
+    void onActionBtnRemove(ActionEvent event) {
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SALE);
+        if (result.isConfirmed()) {
+            saleService.removeSales(List.of(currentSale.getId()));
+            displayInfo(MessageCode.SUCCESS_REMOVE_SALE);
+            setPageData(Boolean.TRUE);
+            close();
         }
     }
 
@@ -251,13 +265,13 @@ public class SaleAddController extends CommonDataSaveController {
         handleSelectedProduct(new ChooseResultVM<>(false, Optional.empty()));
     }
 
-    @FXML
-    void onActionBtnSaveAndAdd(ActionEvent event) {
-        processDataSave();
-        if (isLastDataSaved()) {
-            displayInfo(MessageCode.SUCCESS_ADD_SALE);
-            resetControls();
+    @Override
+    protected void onActionBtnSave(ActionEvent event) {
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_EDIT_SALE);
+        if (!result.isConfirmed()) {
+            return;
         }
+        super.onActionBtnSave(event);
     }
 
     @Override
@@ -321,30 +335,63 @@ public class SaleAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
-        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
-        ComboBoxUtils.selectIndex(cbSellingMode, 0);
-        String invoiceNumber = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSS"));
-        tfInvoiceNumber.setText(invoiceNumber);
+        Locale locale = resources.getLocale();
+        currentSale = getPageData();
+        if (currentSale.getDoctorId() != null) {
+            selectedDoctor = new DoctorVM();
+            selectedDoctor.setId(currentSale.getId());
+            selectedDoctor.setName(currentSale.getDoctorName());
+            tfDoctor.setText(selectedDoctor.getName());
+        }
+        if (currentSale.getCustomerId() != null) {
+            selectedCustomer = new CustomerVM();
+            selectedCustomer.setId(currentSale.getCustomerId());
+            selectedCustomer.setName(currentSale.getCustomerName());
+            tfCustomer.setText(selectedCustomer.getName());
+        }
+        List<SaleProductVM> products = saleService.getSaleProducts(currentSale.getId());
+        tblSaleProduct.getItems().addAll(products);
+        LocalDate paymentDueDate = currentSale.getPaymentDueDate();
+        SellingMode sellingMode = SellingMode.valueOf(currentSale.getSellingMode());
+        PaymentStatus paymentStatus = PaymentStatus.valueOf(currentSale.getPaymentStatus());
+        totalProduct = currentSale.getTotalProduct();
+        totalSale = currentSale.getTotalSale();
+        totalPayment = currentSale.getTotalPayment();
+        tfInvoiceNumber.setText(currentSale.getInvoiceNumber());
+        ComboBoxUtils.select(
+                cbSellingMode,
+                () -> cbSellingMode.getItems().stream().filter(vm -> vm.getValue().equals(sellingMode.name())).findAny()
+                        .orElseThrow());
+        ComboBoxUtils.select(
+                cbPaymentStatus,
+                () -> cbPaymentStatus.getItems().stream().filter(vm -> vm.getValue().equals(paymentStatus.name()))
+                        .findAny().orElseThrow());
+        if (paymentDueDate != null) {
+            tfDueDate.setText(paymentDueDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        }
+        lblTotalPayment.setText(formatOrDefault(totalPayment, locale, "0"));
+        lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
+        lblTotalSale.setText(formatOrDefault(totalSale, locale, "0"));
     }
 
     @Override
     protected Object save() {
-        SaleAddVM saleAdd = new SaleAddVM();
-        saleAdd.setCustomerId(selectedCustomer == null ? null : selectedCustomer.getId());
-        saleAdd.setDoctorId(selectedDoctor == null ? null : selectedDoctor.getId());
-        saleAdd.setInvoiceNumber(tfInvoiceNumber.getText().trim());
+        SaleEditVM saleEdit = new SaleEditVM();
+        saleEdit.setCustomerId(selectedCustomer == null ? null : selectedCustomer.getId());
+        saleEdit.setDoctorId(selectedDoctor == null ? null : selectedDoctor.getId());
+        saleEdit.setInvoiceNumber(tfInvoiceNumber.getText().trim());
         PaymentStatus paymentStatus = PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue());
-        saleAdd.setPaymentStatus(paymentStatus);
+        saleEdit.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
-            saleAdd.setPaymentDueDate(
+            saleEdit.setPaymentDueDate(
                     DateTimeUtils.parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         }
-        saleAdd.setSellingMode(SellingMode.valueOf(ComboBoxUtils.getSelectedItem(cbSellingMode).getValue()));
-        saleAdd.setTotalPayment(totalPayment);
-        saleAdd.setTotalProduct(totalProduct);
-        saleAdd.setTotalSale(totalSale);
-        saleAdd.setSaleProducts(tblSaleProduct.getItems());
-        saleService.createSale(saleAdd);
+        saleEdit.setSellingMode(SellingMode.valueOf(ComboBoxUtils.getSelectedItem(cbSellingMode).getValue()));
+        saleEdit.setTotalPayment(totalPayment);
+        saleEdit.setTotalProduct(totalProduct);
+        saleEdit.setTotalSale(totalSale);
+        saleEdit.setSaleProducts(tblSaleProduct.getItems());
+        saleService.updateSale(saleEdit, currentSale.getId());
         return true;
     }
 
@@ -473,28 +520,6 @@ public class SaleAddController extends CommonDataSaveController {
         lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
         lblTotalSale.setText(formatOrDefault(totalSale, locale, "0"));
         lblTotalPayment.setText(formatOrDefault(totalPayment, locale, "0"));
-    }
-
-    private void resetControls() {
-        this.selectedCustomer = null;
-        this.selectedProduct = null;
-        TextFieldUtils.setTextEmpty(
-                tfCustomer,
-                tfInvoiceNumber,
-                tfProduct,
-                tfProductCategory,
-                tfProductUnit,
-                tfSaleQuantity,
-                tfSellingPrice,
-                tfCurrentQuantity);
-        tfDueDate.setPlainText("");
-        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
-        tblSaleProduct.getItems().clear();
-        lblDiscount.setText("0");
-        lblTax.setText("0");
-        lblTotalProduct.setText("0");
-        lblTotalSale.setText("0");
-        lblTotalPayment.setText("0");
     }
 
     private void handleActionTableSaleProduct() {

@@ -2,7 +2,7 @@
 # https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Maven.gitlab-ci.yml
 # https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 
-image: ghcr.io/graalvm/jdk:java17-22.1
+image: ghcr.io/graalvm/jdk:ol8-java17
 
 variables:
   MAVEN_OPTS: "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \

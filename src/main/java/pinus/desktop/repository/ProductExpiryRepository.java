@@ -1,5 +1,6 @@
 package pinus.desktop.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,9 +17,9 @@ public interface ProductExpiryRepository extends PagingAndSortingRepository<Prod
 
     List<ProductExpiry> findByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
 
-    Optional<ProductExpiry> findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
+    Optional<ProductExpiry> findFirstByProductIdOrderByIdDesc(Long productId);
 
-    Optional<ProductExpiry> findFirstByProductIdAndDeletedAtIsNullOrderByExpiredDate(Long productId);
+    Optional<ProductExpiry> findFirstByProductIdAndExpiredDateOrderByIdDesc(Long productId, LocalDate expiredDate);
 
     Optional<ProductExpiry> findByIdAndDeletedAtIsNull(Long productExpiryId);
 
@@ -26,12 +27,27 @@ public interface ProductExpiryRepository extends PagingAndSortingRepository<Prod
             select
                 product_id,
                 expired_date,
-                (sum(coalesce(quantity_in,0))-sum(coalesce(quantity_out,0))) as quantity
+                array_agg(final_quantity_expired_date order by id desc)[1] as quantity
             from product_expiry
-            where product_id = :productId and deleted_at is null
+            where product_id = :productId
             group by product_id, expired_date
-            having quantity > 0;
+            having quantity > 0
+            order by expired_date
             """)
     List<GroupedProductExpiryVM> findGroupedByProductId(@Param("productId") Long productId);
+
+    @Query("""
+            select a.expired_date
+            from product_expiry a
+            where id in (
+                select max(id)
+                from product_expiry b
+                where b.product_id = :productId
+                group by b.product_id, b.expired_date
+                order by b.expired_date)
+            and a.final_quantity_expired_date > 0
+            limit 1
+            """)
+    Optional<LocalDate> findClosestExpiredDateAvailableByProductId(@Param("productId") Long productId);
 
 }

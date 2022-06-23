@@ -280,6 +280,7 @@
                                         <TableColumn fx:id="colGeneralSellingPrice" minWidth="-Infinity" prefWidth="150.0" text="%lbl_general_selling_price" />
                                         <TableColumn fx:id="colPrescripionSellingPrice" minWidth="-Infinity" prefWidth="150.0" text="%lbl_prescription_selling_price" />
                                           <TableColumn fx:id="colProductPricePurchaseInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_purchase_invoice_number" />
+                                          <TableColumn fx:id="colProductPriceSaleInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_sale_invoice_number" />
                                           <TableColumn fx:id="colProductPriceActivity" minWidth="-Infinity" prefWidth="150.0" text="%lbl_activity" />
                                           <TableColumn fx:id="colProductPriceRemarks" minWidth="-Infinity" prefWidth="200.0" text="%lbl_remarks" />
                                           <TableColumn fx:id="colProductPriceUser" minWidth="-Infinity" prefWidth="150.0" text="%lbl_user" />

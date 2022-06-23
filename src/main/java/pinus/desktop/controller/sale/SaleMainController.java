@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
@@ -12,8 +14,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
-
-import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -28,14 +28,12 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
-import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.PaymentStatus;
 import pinus.desktop.constant.SellingMode;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.BaseController;
-import pinus.desktop.service.ConfigurationService;
 import pinus.desktop.service.SaleService;
 import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.SaleFilterVM;
@@ -89,7 +87,6 @@ public class SaleMainController extends BaseController {
     private TableColumn<SaleVM, LocalDateTime> colUpdatedAt;
 
     private SaleService saleService;
-    private ConfigurationService configurationService;
 
     private SaleFilterVM saleFilter;
 
@@ -131,13 +128,11 @@ public class SaleMainController extends BaseController {
     @Override
     protected void initServices(ApplicationContext ctx) {
         saleService = SpringUtils.getBean(SaleService.class);
-        configurationService = SpringUtils.getBean(ConfigurationService.class);
     }
 
     @Override
     protected void initControlActions() {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        Locale locale = new Locale(languageCode);
+        Locale locale = resources.getLocale();
         TableViewUtils.setColumnValue(colInvoiceNumber, SaleVM::getInvoiceNumber);
         TableViewUtils.setColumnValue(colCustomerName, SaleVM::getCustomerName);
         TableViewUtils.setColumnValue(colDueDate, SaleVM::getPaymentDueDate);
@@ -169,6 +164,7 @@ public class SaleMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 SaleVM::getUpdatedAt);
+        tblSales.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tblSales.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblSales.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

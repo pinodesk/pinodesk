@@ -4,7 +4,7 @@ create table if not exists product_price (
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
 	product_id bigint not null,
-	general_selling_price decimal(12,2) not null,
+	general_selling_price decimal(12,2),
 	prescription_selling_price decimal(12,2),
 	purchase_id bigint,
 	purchase_invoice_number varchar(64),

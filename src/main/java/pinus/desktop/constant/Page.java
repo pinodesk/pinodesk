@@ -43,7 +43,9 @@ public enum Page implements IPage {
 
     MASTER_DOCTOR_ADD("master/doctor/add"),
     MASTER_DOCTOR_CHOOSE("master/doctor/choose"),
-    MASTER_DOCTOR_CHOOSE_CATEGORY("master/doctor/choose-category");
+    MASTER_DOCTOR_CHOOSE_CATEGORY("master/doctor/choose-category"),
+
+    TRANSACTION_PAYABLE_MAIN("transaction/payable/main");
 
     private final String templateName;
 

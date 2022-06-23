@@ -125,6 +125,7 @@ public class SupplierMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 SupplierVM::getUpdatedAt);
+        tableSupplier.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
         tableSupplier.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableSupplier.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
