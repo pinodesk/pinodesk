@@ -1,6 +1,11 @@
 package pinus.desktop.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -10,6 +15,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.Getter;
+import lombok.Setter;
 import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.CommonConstants;
@@ -20,12 +27,17 @@ import pinus.desktop.domain.Product;
 import pinus.desktop.domain.ProductExpiry;
 import pinus.desktop.domain.ProductPrice;
 import pinus.desktop.domain.ProductStock;
+import pinus.desktop.domain.Unit;
 import pinus.desktop.exception.DomainException;
+import pinus.desktop.repository.DrugCategoryRepository;
 import pinus.desktop.repository.DrugRepository;
+import pinus.desktop.repository.ProductCategoryRepository;
 import pinus.desktop.repository.ProductExpiryRepository;
 import pinus.desktop.repository.ProductPriceRepository;
 import pinus.desktop.repository.ProductRepository;
 import pinus.desktop.repository.ProductStockRepository;
+import pinus.desktop.repository.UnitRepository;
+import pinus.desktop.util.ProductUtils;
 import pinus.desktop.viewmodel.DrugCategoryVM;
 import pinus.desktop.viewmodel.GroupedProductExpiryVM;
 import pinus.desktop.viewmodel.ProductAddVM;
@@ -33,6 +45,7 @@ import pinus.desktop.viewmodel.ProductEditVM;
 import pinus.desktop.viewmodel.ProductExpiryAddVM;
 import pinus.desktop.viewmodel.ProductExpiryVM;
 import pinus.desktop.viewmodel.ProductFilterVM;
+import pinus.desktop.viewmodel.ProductImportVM;
 import pinus.desktop.viewmodel.ProductPriceVM;
 import pinus.desktop.viewmodel.ProductStockVM;
 import pinus.desktop.viewmodel.ProductVM;
@@ -57,6 +70,15 @@ public class ProductService extends BaseService {
 
     @Autowired
     private ProductExpiryRepository productExpiryRepository;
+
+    @Autowired
+    private ProductCategoryRepository productCategoryRepository;
+
+    @Autowired
+    private UnitRepository unitRepository;
+
+    @Autowired
+    private DrugCategoryRepository drugCategoryRepository;
 
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
     public List<ProductVM> searchProductsByFilter(ProductFilterVM filter) {
@@ -342,6 +364,142 @@ public class ProductService extends BaseService {
 
     public List<GroupedProductExpiryVM> getRemainingProductExpiry(Long productId) {
         return productExpiryRepository.findGroupedByProductId(productId);
+    }
+
+    private boolean containsProductNameAndUnitId(List<ProductImportMapping> mappings, String name, Long unitId) {
+        return mappings.stream().filter(mapping -> {
+            Product p = mapping.getProduct();
+            return p.getName().equalsIgnoreCase(name) && p.getUnitId().equals(unitId);
+        }).findAny().isPresent();
+    }
+
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
+    @Transactional
+    public void importProducts(List<ProductImportVM> productImports) {
+        String activityName = Activity.IMPORT_PRODUCT.name();
+        List<ProductImportMapping> mappings = new ArrayList<>();
+        Set<String> checkedCategoryCodes = new HashSet<>();
+        Set<Unit> checkedUnits = new HashSet<>();
+        Set<Long> checkedDrugCategoryIds = new HashSet<>();
+        productImports.forEach(pi -> {
+
+            String productName = pi.getName();
+            String productCategoryCode = pi.getProductCategoryCode();
+            Long unitId = pi.getUnitId();
+            BigDecimal generalSellingPrice = pi.getGeneralSellingPrice();
+            BigDecimal prescriptionSellingPrice = pi.getPrescriptionSellingPrice();
+            Integer quantity = pi.getQuantity();
+            LocalDate expiredDate = pi.getExpiredDate();
+
+            if (containsProductNameAndUnitId(mappings, productName, unitId)) {
+                return;
+            }
+
+            validateConstraints(pi);
+
+            ProductImportMapping mapping = new ProductImportMapping();
+
+            if (!checkedCategoryCodes.contains(productCategoryCode)
+                    && !productCategoryRepository.existsByCodeAndDeletedAtIsNull(productCategoryCode)) {
+                throw new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_CODE, productCategoryCode);
+            }
+            checkedCategoryCodes.add(productCategoryCode);
+
+            Unit unit = checkedUnits.stream().filter(u -> u.getId().equals(unitId)).findAny()
+                    .or(() -> unitRepository.findByIdAndDeletedAtIsNull(unitId))
+                    .orElseThrow(() -> new DomainException(DomainError.UNIT_NOT_FOUND_BY_ID));
+            checkedUnits.add(unit);
+
+            if (ProductUtils.isProductCategoryDrugs(productCategoryCode)) {
+                Long drugCategoryId = pi.getDrugCategoryId();
+                if (!checkedDrugCategoryIds.contains(drugCategoryId)
+                        && !drugCategoryRepository.existsById(drugCategoryId)) {
+                    throw new DomainException(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_ID);
+                }
+                checkedDrugCategoryIds.add(drugCategoryId);
+                Drug drug = new Drug();
+                drug.setContraindication(pi.getContraindication());
+                drug.setIndication(pi.getIndication());
+                drug.setDrugCategoryId(drugCategoryId);
+                mapping.setDrug(drug);
+            }
+            Product product = new Product();
+            product.setBarcode(pi.getBarcode());
+            product.setCategoryCode(productCategoryCode);
+            product.setCode(pi.getCode());
+            product.setDescription(pi.getDescription());
+            product.setGeneralSellingPrice(
+                    generalSellingPrice == null ? prescriptionSellingPrice : generalSellingPrice);
+            product.setName(productName);
+            product.setPrescriptionSellingPrice(prescriptionSellingPrice);
+            product.setQuantity(quantity);
+            product.setStatus(pi.getStatus().name());
+            product.setUnitId(unit.getId());
+            product.setUnitLabel(unit.getLabel());
+            mapping.setProduct(product);
+            if (prescriptionSellingPrice != null || generalSellingPrice != null) {
+                ProductPrice pp = new ProductPrice();
+                pp.setActivity(activityName);
+                pp.setGeneralSellingPrice(generalSellingPrice == null ? prescriptionSellingPrice : generalSellingPrice);
+                pp.setPrescriptionSellingPrice(prescriptionSellingPrice);
+                pp.setUserId(1l);
+                mapping.setProductPrice(pp);
+            }
+            if (quantity != null) {
+                ProductStock ps = new ProductStock();
+                ps.setActivity(activityName);
+                ps.setFinalQuantity(quantity);
+                ps.setUserId(1l);
+                mapping.setProductStock(ps);
+
+                if (expiredDate != null) {
+                    product.setClosestExpiredDate(expiredDate);
+                    ProductExpiry px = new ProductExpiry();
+                    px.setActivity(activityName);
+                    px.setExpiredDate(expiredDate);
+                    px.setFinalQuantity(quantity);
+                    px.setFinalQuantityExpiredDate(quantity);
+                    px.setUserId(1l);
+                    mapping.setProductExpiry(px);
+                }
+            }
+            mappings.add(mapping);
+        });
+        mappings.forEach(mapping -> {
+            Product product = productRepository.save(mapping.getProduct());
+            Long productId = product.getId();
+            Drug drug = mapping.getDrug();
+            if (drug != null) {
+                drug.setProductId(productId);
+                drugRepository.save(drug);
+            }
+            ProductPrice pp = mapping.getProductPrice();
+            if (pp != null) {
+                pp.setProductId(productId);
+                productPriceRepository.save(pp);
+            }
+            ProductStock ps = mapping.getProductStock();
+            if (ps != null) {
+                ps.setProductId(productId);
+                productStockRepository.save(ps);
+            }
+            ProductExpiry px = mapping.getProductExpiry();
+            if (px != null) {
+                px.setProductId(productId);
+                productExpiryRepository.save(px);
+            }
+        });
+    }
+
+    @Getter
+    @Setter
+    private class ProductImportMapping {
+        private Product product;
+        private Drug drug;
+        private ProductPrice productPrice;
+        private ProductStock productStock;
+        private ProductExpiry productExpiry;
     }
 
 }

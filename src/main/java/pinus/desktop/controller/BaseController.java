@@ -102,15 +102,7 @@ public abstract class BaseController {
         try {
             if (Thread.getDefaultUncaughtExceptionHandler() == null) {
                 Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-                    Throwable rootCause = ExceptionUtils.getRootCause(e);
-                    if (rootCause instanceof DomainException domainException) {
-                        handleDomainException(domainException);
-                        return;
-                    }
-                    if (log.isErrorEnabled()) {
-                        log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
-                    }
-                    displayException(rootCause);
+                    handleException(e, t);
                 });
             }
         } catch (SecurityException e) {
@@ -118,7 +110,23 @@ public abstract class BaseController {
         }
     }
 
-    private void handleDomainException(DomainException e) {
+    protected void handleException(Throwable e) {
+        handleException(e, Thread.currentThread());
+    }
+
+    protected void handleException(Throwable e, Thread t) {
+        Throwable rootCause = ExceptionUtils.getRootCause(e);
+        if (rootCause instanceof DomainException domainException) {
+            handleDomainException(domainException);
+            return;
+        }
+        if (log.isErrorEnabled()) {
+            log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
+        }
+        displayException(rootCause);
+    }
+
+    protected void handleDomainException(DomainException e) {
         DomainError err = e.getError();
         String message = String.format(translate(err.messageCode()), e.getArguments());
         displayError(String.format("%s. (%s)", message, err.code()));

@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.product.ProductMainController">
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.product.ProductMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -40,6 +40,11 @@
             </HBox>
             <HBox alignment="TOP_RIGHT" spacing="1.0" HBox.hgrow="ALWAYS">
                <children>
+                  <Button fx:id="btnImport" mnemonicParsing="false" onAction="#onActionBtnImport" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_import" textFill="WHITE" visible="false">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
                   <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" prefHeight="30.0" prefWidth="73.0" styleClass="btn-secondary" text="%btn_filter" textFill="WHITE">
                      <font>
                         <Font size="13.0" />

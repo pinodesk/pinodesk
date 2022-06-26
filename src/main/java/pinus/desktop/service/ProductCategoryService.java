@@ -1,7 +1,9 @@
 package pinus.desktop.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -33,7 +35,12 @@ public class ProductCategoryService extends BaseService {
     @Cacheable(CacheNameConstants.PRODUCT_CATEGORIES_BY_KEYWORD)
     public List<ProductCategoryVM> searchProductCategoryByKeyword(String keyword) {
         String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        List<ProductCategory> categories = productCategoryRepository.findByKeyword(keyword, languageCode);
+        List<ProductCategory> categories = new ArrayList<>();
+        if (StringUtils.isBlank(keyword)) {
+            categories = productCategoryRepository.findByLanguageCodeAndDeletedAtIsNullOrderByName(languageCode);
+        } else {
+            categories = productCategoryRepository.findByKeyword(keyword, languageCode);
+        }
         return objectConverter.convertList(categories, ProductCategoryVM.class);
     }
 
