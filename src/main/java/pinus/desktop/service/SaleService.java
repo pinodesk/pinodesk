@@ -84,7 +84,8 @@ public class SaleService extends BaseService {
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
-            CacheNameConstants.PRODUCTS_BY_KEYWORD },
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.PAYABLES_BY_FILTER },
         allEntries = true)
     @Transactional
     public void createSale(SaleAddVM saleAdd) {
