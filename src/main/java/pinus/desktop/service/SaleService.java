@@ -14,11 +14,13 @@ import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.DomainError;
+import pinus.desktop.constant.PaymentStatus;
 import pinus.desktop.constant.SellingMode;
 import pinus.desktop.domain.Product;
 import pinus.desktop.domain.ProductExpiry;
 import pinus.desktop.domain.ProductPrice;
 import pinus.desktop.domain.ProductStock;
+import pinus.desktop.domain.Receivable;
 import pinus.desktop.domain.Sale;
 import pinus.desktop.domain.SaleDetail;
 import pinus.desktop.exception.DomainException;
@@ -26,6 +28,7 @@ import pinus.desktop.repository.ProductExpiryRepository;
 import pinus.desktop.repository.ProductPriceRepository;
 import pinus.desktop.repository.ProductRepository;
 import pinus.desktop.repository.ProductStockRepository;
+import pinus.desktop.repository.ReceivableRepository;
 import pinus.desktop.repository.SaleDetailRepository;
 import pinus.desktop.repository.SaleRepository;
 import pinus.desktop.viewmodel.SaleAddVM;
@@ -54,6 +57,9 @@ public class SaleService extends BaseService {
 
     @Autowired
     private ProductPriceRepository productPriceRepository;
+
+    @Autowired
+    private ReceivableRepository receivableRepository;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -145,6 +151,20 @@ public class SaleService extends BaseService {
             product.setQuantity(finalQuantity);
             productRepository.save(product);
         });
+        createReceivable(sale);
+    }
+
+    private void createReceivable(Sale sale) {
+        if (PaymentStatus.UNPAID.name().equals(sale.getPaymentStatus()) && sale.getCustomerId() != null) {
+            Receivable receivable = new Receivable();
+            receivable.setInvoiceDate(sale.getCreatedAt().toLocalDate());
+            receivable.setInvoiceNumber(sale.getInvoiceNumber());
+            receivable.setPaymentAmount(sale.getTotalPayment());
+            receivable.setPaymentDueDate(sale.getPaymentDueDate());
+            receivable.setSaleId(sale.getId());
+            receivable.setCustomerId(sale.getCustomerId());
+            receivableRepository.save(receivable);
+        }
     }
 
     private void createProductExpiry(

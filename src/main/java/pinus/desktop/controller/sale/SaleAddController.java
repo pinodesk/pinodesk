@@ -355,6 +355,9 @@ public class SaleAddController extends CommonDataSaveController {
         SimpleComboBoxModel selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
         boolean isUnpaid = PaymentStatus.UNPAID.name().equals(selected.getValue());
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
+        validator.validateCustom(
+                () -> isUnpaid && selectedCustomer == null,
+                MessageCode.ERROR_UNPAID_PAYMENT_WITH_EMPTY_CUSTOMER);
         LocalDate today = LocalDate.now();
         validator.validateCustom(() -> isUnpaid && dueDate == null, MessageCode.ERROR_INVALID_DUE_DATE);
         validator.validateCustom(
