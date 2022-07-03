@@ -4,6 +4,7 @@ public enum Activity {
     ADD_PRODUCT,
     EDIT_PRODUCT,
     DELETE_PRODUCT,
+    IMPORT_PRODUCT,
     ADD_PURCHASE,
     EDIT_PURCHASE,
     DELETE_PURCHASE,

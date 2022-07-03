@@ -21,6 +21,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -80,6 +81,9 @@ public class ProductMainController extends BaseController {
     @FXML
     private Label lblRows;
 
+    @FXML
+    private Button btnImport;
+
     private ProductFilterVM productFilter;
 
     private ProductService productService;
@@ -117,6 +121,13 @@ public class ProductMainController extends BaseController {
                 displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PRODUCTS);
             }
         }
+    }
+
+    @FXML
+    void onActionBtnImport(ActionEvent event) {
+        StageUtils.modal(Page.MASTER_PRODUCT_IMPORT, false, we -> {
+            searchProducts();
+        });
     }
 
     @Override
@@ -211,11 +222,13 @@ public class ProductMainController extends BaseController {
                     if (products.isEmpty()) {
                         tblProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
+                        btnImport.setVisible(true);
+                        return;
                     }
                     tblProduct.setItems(FXCollections.observableList(products));
-                    TableViewUtils.sortDescending(tblProduct, colUpdatedAt); // Always sort by updated at after
-                                                                             // searching
+                    TableViewUtils.sortDescending(tblProduct, colUpdatedAt);
                     lblRows.setText(products.size() + "");
+                    btnImport.setVisible(false);
                 }));
     }
 

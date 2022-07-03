@@ -1,5 +1,6 @@
 package pinus.desktop.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -12,5 +13,9 @@ public interface ProductCategoryRepository
         extends PagingAndSortingRepository<ProductCategory, Long>, ProductCategoryRepositoryCustom {
 
     Optional<ProductCategory> findByIdAndDeletedAtIsNull(Long id);
+
+    boolean existsByCodeAndDeletedAtIsNull(String code);
+
+    List<ProductCategory> findByLanguageCodeAndDeletedAtIsNullOrderByName(String languageCode);
 
 }

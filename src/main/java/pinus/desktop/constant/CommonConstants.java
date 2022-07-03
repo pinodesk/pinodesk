@@ -13,4 +13,5 @@ public interface CommonConstants {
     String PAGE_TEMPLATE_DIR = "/assets/templates/";
     String RESOURCE_BUNDLE_PACKAGE = "pinus.desktop.lang";
     String EMPTY_DATE_MASK = "____-__-__";
+    String IMPORT_TEMPLATE_FILE_NAME = "import-products-template.xlsx";
 }
