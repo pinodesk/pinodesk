@@ -114,8 +114,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
             if (status != null) {
                 ComboBoxUtils.select(
                         cbStatus,
-                        () -> cbStatus.getItems().stream().filter(vm -> status.name().equals(vm.getValue())).findAny()
-                                .orElseThrow());
+                        () -> cbStatus.getItems().stream().filter(vm -> status.toString().equals(vm.getValue()))
+                                .findAny().orElseThrow());
             }
             if (category != null) {
                 selectedProductCategory = category;
@@ -218,8 +218,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         ComboBoxUtils.initSimple(
                 cbStatus,
                 new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
-                new SimpleComboBoxModel(ProductStatus.ACTIVE.name(), translate(CommonLabel.LBL_ACTIVE)),
-                new SimpleComboBoxModel(ProductStatus.INACTIVE.name(), translate(CommonLabel.LBL_INACTIVE)));
+                new SimpleComboBoxModel(ProductStatus.ACTIVE.toString(), translate(CommonLabel.LBL_ACTIVE)),
+                new SimpleComboBoxModel(ProductStatus.INACTIVE.toString(), translate(CommonLabel.LBL_INACTIVE)));
         setProductCategoryChooser(tfCategory, this::handleSelectedProductCategory, tfUnit.getParent());
         setUnitChooser(tfUnit, this::handleSelectedUnit, cbStatus);
     }

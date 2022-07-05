@@ -77,7 +77,7 @@ public class PurchaseService extends BaseService {
         allEntries = true)
     @Transactional
     public void createPurchase(PurchaseAddVM purchaseAdd) {
-        String activityName = Activity.ADD_PURCHASE.name();
+        String activityName = Activity.ADD_PURCHASE.toString();
         String invoiceNumber = purchaseAdd.getInvoiceNumber();
         if (purchaseRepository.existsByInvoiceNumberIgnoreCaseAndSupplierIdAndDeletedAtIsNull(
                 invoiceNumber,
@@ -89,7 +89,7 @@ public class PurchaseService extends BaseService {
         purchase.setInvoiceDate(purchaseAdd.getInvoiceDate());
         purchase.setInvoiceNumber(invoiceNumber);
         purchase.setPaymentDueDate(purchaseAdd.getPaymentDueDate());
-        purchase.setPaymentStatus(purchaseAdd.getPaymentStatus().name());
+        purchase.setPaymentStatus(purchaseAdd.getPaymentStatus().toString());
         purchase.setSupplierId(purchaseAdd.getSupplierId());
         purchase.setTax(purchaseAdd.getTax());
         purchase.setTotalPayment(purchaseAdd.getTotalPayment());
@@ -139,7 +139,7 @@ public class PurchaseService extends BaseService {
         allEntries = true)
     @Transactional
     public void updatePurchase(PurchaseEditVM purchaseEdit, Long purchaseId) {
-        String activityName = Activity.EDIT_PURCHASE.name();
+        String activityName = Activity.EDIT_PURCHASE.toString();
         String invoiceNumber = purchaseEdit.getInvoiceNumber();
         Long supplierId = purchaseEdit.getSupplierId();
         Purchase purchase = purchaseRepository.findByIdAndDeletedAtIsNull(purchaseId)
@@ -152,7 +152,7 @@ public class PurchaseService extends BaseService {
         purchase.setInvoiceDate(purchaseEdit.getInvoiceDate());
         purchase.setInvoiceNumber(invoiceNumber);
         purchase.setPaymentDueDate(purchaseEdit.getPaymentDueDate());
-        purchase.setPaymentStatus(purchaseEdit.getPaymentStatus().name());
+        purchase.setPaymentStatus(purchaseEdit.getPaymentStatus().toString());
         purchase.setSupplierId(supplierId);
         purchase.setTax(purchaseEdit.getTax());
         purchase.setTotalPayment(purchaseEdit.getTotalPayment());
@@ -352,7 +352,7 @@ public class PurchaseService extends BaseService {
         allEntries = true)
     @Transactional
     public void removePurchases(List<Long> ids) {
-        ids.forEach(id -> revertLastPurchasedProducts(id, Activity.DELETE_PURCHASE.name()));
+        ids.forEach(id -> revertLastPurchasedProducts(id, Activity.DELETE_PURCHASE.toString()));
         purchaseDetailRepository.deleteUpdateByPurchaseIdIn(ids);
         purchaseRepository.deleteUpdateByIdIn(ids);
     }

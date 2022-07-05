@@ -89,8 +89,8 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
                 ComboBoxUtils.select(
                         cbPaymentStatus,
                         () -> cbPaymentStatus.getItems().stream()
-                                .filter(vm -> currentFilter.getPaymentStatus().name().equals(vm.getValue())).findAny()
-                                .orElseThrow());
+                                .filter(vm -> currentFilter.getPaymentStatus().toString().equals(vm.getValue()))
+                                .findAny().orElseThrow());
             }
         }
     }
@@ -148,8 +148,8 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
-                new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translate(CommonLabel.LBL_UNPAID)));
         setSupplierChooser(tfSupplier, this::handleSelectedSupplier, tfTotalProductMin);
     }
 

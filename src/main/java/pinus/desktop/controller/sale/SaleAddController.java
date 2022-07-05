@@ -265,12 +265,12 @@ public class SaleAddController extends CommonDataSaveController {
         setFocusedToContentPane();
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
-                new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translate(CommonLabel.LBL_UNPAID)));
         ComboBoxUtils.initSimple(
                 cbSellingMode,
-                new SimpleComboBoxModel(SellingMode.GENERAL.name(), translate(CommonLabel.LBL_GENERAL)),
-                new SimpleComboBoxModel(SellingMode.PRESCRIPTION.name(), translate(CommonLabel.LBL_PRESCRIPTION)));
+                new SimpleComboBoxModel(SellingMode.GENERAL.toString(), translate(CommonLabel.LBL_GENERAL)),
+                new SimpleComboBoxModel(SellingMode.PRESCRIPTION.toString(), translate(CommonLabel.LBL_PRESCRIPTION)));
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(tfSellingPrice, tfCurrentQuantity, tfSaleQuantity);
         TableViewUtils.setColumnValue(colProductName, SaleProductVM::getProductName);
@@ -353,7 +353,7 @@ public class SaleAddController extends CommonDataSaveController {
         LocalDate dueDate = DateTimeUtils
                 .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
         SimpleComboBoxModel selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
-        boolean isUnpaid = PaymentStatus.UNPAID.name().equals(selected.getValue());
+        boolean isUnpaid = PaymentStatus.UNPAID.toString().equals(selected.getValue());
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
         validator.validateCustom(
                 () -> isUnpaid && selectedCustomer == null,

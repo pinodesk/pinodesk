@@ -2,5 +2,11 @@ package pinus.desktop.constant;
 
 public enum SimpleStatus {
     YES,
-    NO
+    NO;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
+
 }

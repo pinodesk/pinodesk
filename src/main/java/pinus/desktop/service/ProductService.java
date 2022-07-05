@@ -99,7 +99,7 @@ public class ProductService extends BaseService {
 
         validateConstraints(productEdit);
 
-        String activityName = Activity.EDIT_PRODUCT.name();
+        String activityName = Activity.EDIT_PRODUCT.toString();
         String name = productEdit.getName();
         String code = productEdit.getCode();
         String barcode = productEdit.getBarcode();
@@ -211,7 +211,7 @@ public class ProductService extends BaseService {
         product.setUnitId(unitId);
         product.setUnitLabel(productEdit.getUnit().getLabel());
         product.setCategoryCode(categoryCode);
-        product.setStatus(productEdit.getStatus().name());
+        product.setStatus(productEdit.getStatus().toString());
         productRepository.save(product);
     }
 
@@ -229,7 +229,7 @@ public class ProductService extends BaseService {
 
         validateConstraints(productAdd);
 
-        String activityName = Activity.ADD_PRODUCT.name();
+        String activityName = Activity.ADD_PRODUCT.toString();
         String code = productAdd.getCode();
         String barcode = productAdd.getBarcode();
         String categoryCode = productAdd.getProductCategory().getCode();
@@ -260,7 +260,7 @@ public class ProductService extends BaseService {
         product.setGeneralSellingPrice(productAdd.getGeneralSellingPrice());
         product.setPrescriptionSellingPrice(productAdd.getPrescriptionSellingPrice());
         product.setClosestExpiredDate(productAdd.getExpiredDate());
-        product.setStatus(productAdd.getStatus().name());
+        product.setStatus(productAdd.getStatus().toString());
 
         Product created = productRepository.save(product);
         Long productId = created.getId();
@@ -350,7 +350,7 @@ public class ProductService extends BaseService {
             px.setExpiredDate(productExpiryAddVM.getExpiredDate());
             px.setBatchNumber(productExpiryAddVM.getBatchNumber());
             px.setQuantityIn(productExpiryAddVM.getQuantity());
-            px.setActivity(activity.name());
+            px.setActivity(activity.toString());
             px.setUserId(1l);
             px.setFinalQuantity(totalExpiryQuantity);
             px.setFinalQuantityExpiredDate(totalExpiryQuantityExpiredDate);
@@ -377,7 +377,7 @@ public class ProductService extends BaseService {
         allEntries = true)
     @Transactional
     public void importProducts(List<ProductImportVM> productImports) {
-        String activityName = Activity.IMPORT_PRODUCT.name();
+        String activityName = Activity.IMPORT_PRODUCT.toString();
         List<ProductImportMapping> mappings = new ArrayList<>();
         Set<String> checkedCategoryCodes = new HashSet<>();
         Set<Unit> checkedUnits = new HashSet<>();
@@ -434,7 +434,7 @@ public class ProductService extends BaseService {
             product.setName(productName);
             product.setPrescriptionSellingPrice(prescriptionSellingPrice);
             product.setQuantity(quantity);
-            product.setStatus(pi.getStatus().name());
+            product.setStatus(pi.getStatus().toString());
             product.setUnitId(unit.getId());
             product.setUnitLabel(unit.getLabel());
             mapping.setProduct(product);

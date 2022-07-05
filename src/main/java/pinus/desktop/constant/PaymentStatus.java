@@ -2,5 +2,11 @@ package pinus.desktop.constant;
 
 public enum PaymentStatus {
     PAID,
-    UNPAID
+    UNPAID;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
+
 }

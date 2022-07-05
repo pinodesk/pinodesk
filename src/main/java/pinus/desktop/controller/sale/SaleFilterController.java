@@ -94,8 +94,8 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
                 ComboBoxUtils.select(
                         cbPaymentStatus,
                         () -> cbPaymentStatus.getItems().stream()
-                                .filter(vm -> currentFilter.getPaymentStatus().name().equals(vm.getValue())).findAny()
-                                .orElseThrow());
+                                .filter(vm -> currentFilter.getPaymentStatus().toString().equals(vm.getValue()))
+                                .findAny().orElseThrow());
             }
         }
     }
@@ -106,8 +106,8 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
-                new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translate(CommonLabel.LBL_UNPAID)));
         setCustomerChooser(tfCustomer, this::handleSelectedCustomer, tfDoctor.getParent());
         setDoctorChooser(tfDoctor, this::handleSelectedDoctor, cbPaymentStatus.getParent());
     }

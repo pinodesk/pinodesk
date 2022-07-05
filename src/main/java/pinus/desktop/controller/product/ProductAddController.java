@@ -146,8 +146,10 @@ public class ProductAddController extends CommonDataSaveController {
         setDrugCategoryChooser(tfDrugCategory, this::handleSelectedDrugCategory, tfIndication);
         ComboBoxUtils.initSimple(
                 cbStatus,
-                new SimpleComboBoxModel(ProductStatus.ACTIVE.name(), translate(CommonLabel.LBL_ACTIVE.toString())),
-                new SimpleComboBoxModel(ProductStatus.INACTIVE.name(), translate(CommonLabel.LBL_INACTIVE.toString())));
+                new SimpleComboBoxModel(ProductStatus.ACTIVE.toString(), translate(CommonLabel.LBL_ACTIVE.toString())),
+                new SimpleComboBoxModel(
+                        ProductStatus.INACTIVE.toString(),
+                        translate(CommonLabel.LBL_INACTIVE.toString())));
         ComboBoxUtils.selectIndex(cbStatus, 0);
         initBtnSaveAndAdd();
         addContentPaneOnKeyPressedHandler(event -> {

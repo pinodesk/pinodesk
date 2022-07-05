@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.receivable.ReceivableMainController">
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.receivable.ReceivableMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -52,7 +52,7 @@
       <TableView fx:id="tblReceivables" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn fx:id="colCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />
-          <TableColumn fx:id="colInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
+          <TableColumn fx:id="colInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_sale_invoice_number" />
             <TableColumn fx:id="colInvoiceDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
             <TableColumn fx:id="colPaymentAmount" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_amount" />
             <TableColumn fx:id="colDueDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_due_date" />

@@ -276,8 +276,8 @@ public class PurchaseAddController extends CommonDataSaveController {
         setFocusedToContentPane();
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
-                new SimpleComboBoxModel(PaymentStatus.PAID.name(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.name(), translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translate(CommonLabel.LBL_UNPAID)));
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(
                 tfDiscount,
@@ -375,7 +375,7 @@ public class PurchaseAddController extends CommonDataSaveController {
         LocalDate dueDate = DateTimeUtils
                 .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
         SimpleComboBoxModel selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
-        boolean isUnpaid = PaymentStatus.UNPAID.name().equals(selected.getValue());
+        boolean isUnpaid = PaymentStatus.UNPAID.toString().equals(selected.getValue());
         validator.validateBlank(tfSupplier, MessageCode.ERROR_EMPTY_SUPPLIER);
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
         LocalDate today = LocalDate.now();

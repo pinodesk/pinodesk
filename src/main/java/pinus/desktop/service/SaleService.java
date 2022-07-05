@@ -76,7 +76,7 @@ public class SaleService extends BaseService {
         allEntries = true)
     @Transactional
     public void removeSales(List<Long> ids) {
-        ids.forEach(id -> revertLastSaleProducts(id, Activity.DELETE_SALE.name()));
+        ids.forEach(id -> revertLastSaleProducts(id, Activity.DELETE_SALE.toString()));
         saleDetailRepository.deleteUpdateBySaleIdIn(ids);
         saleRepository.deleteUpdateByIdIn(ids);
     }
@@ -89,7 +89,7 @@ public class SaleService extends BaseService {
         allEntries = true)
     @Transactional
     public void createSale(SaleAddVM saleAdd) {
-        String activityName = Activity.ADD_SALE.name();
+        String activityName = Activity.ADD_SALE.toString();
         String invoiceNumber = saleAdd.getInvoiceNumber();
         if (saleRepository.existsByInvoiceNumberIgnoreCaseAndDeletedAtIsNull(invoiceNumber)) {
             throw new DomainException(DomainError.SALE_EXISTS_BY_INVOICE_NUMBER);
@@ -101,8 +101,8 @@ public class SaleService extends BaseService {
         }
         sale.setInvoiceNumber(invoiceNumber);
         sale.setPaymentDueDate(saleAdd.getPaymentDueDate());
-        sale.setPaymentStatus(saleAdd.getPaymentStatus().name());
-        sale.setSellingMode(saleAdd.getSellingMode().name());
+        sale.setPaymentStatus(saleAdd.getPaymentStatus().toString());
+        sale.setSellingMode(saleAdd.getSellingMode().toString());
         sale.setTotalPayment(saleAdd.getTotalPayment());
         sale.setTotalProduct(saleAdd.getTotalProduct());
         sale.setTotalSale(saleAdd.getTotalSale());
@@ -156,7 +156,7 @@ public class SaleService extends BaseService {
     }
 
     private void createReceivable(Sale sale) {
-        if (PaymentStatus.UNPAID.name().equals(sale.getPaymentStatus()) && sale.getCustomerId() != null) {
+        if (PaymentStatus.UNPAID.toString().equals(sale.getPaymentStatus()) && sale.getCustomerId() != null) {
             Receivable receivable = new Receivable();
             receivable.setInvoiceDate(sale.getCreatedAt().toLocalDate());
             receivable.setInvoiceNumber(sale.getInvoiceNumber());
@@ -238,7 +238,7 @@ public class SaleService extends BaseService {
         allEntries = true)
     @Transactional
     public void updateSale(SaleEditVM saleEdit, Long saleId) {
-        String activityName = Activity.EDIT_SALE.name();
+        String activityName = Activity.EDIT_SALE.toString();
         String invoiceNumber = saleEdit.getInvoiceNumber();
         Sale sale = saleRepository.findByIdAndDeletedAtIsNull(saleId)
                 .orElseThrow(() -> new DomainException(DomainError.SALE_NOT_FOUND_BY_ID));
@@ -253,8 +253,8 @@ public class SaleService extends BaseService {
         }
         sale.setInvoiceNumber(invoiceNumber);
         sale.setPaymentDueDate(saleEdit.getPaymentDueDate());
-        sale.setPaymentStatus(saleEdit.getPaymentStatus().name());
-        sale.setSellingMode(saleEdit.getSellingMode().name());
+        sale.setPaymentStatus(saleEdit.getPaymentStatus().toString());
+        sale.setSellingMode(saleEdit.getSellingMode().toString());
         sale.setTotalPayment(saleEdit.getTotalPayment());
         sale.setTotalProduct(saleEdit.getTotalProduct());
         sale.setTotalSale(saleEdit.getTotalSale());

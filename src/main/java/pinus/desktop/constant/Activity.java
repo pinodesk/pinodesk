@@ -16,5 +16,11 @@ public enum Activity {
     DELETE_CUSTOMER,
     ADD_SUPPLIER,
     EDIT_SUPPLIER,
-    DELETE_SUPPLIER
+    DELETE_SUPPLIER;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
+
 }

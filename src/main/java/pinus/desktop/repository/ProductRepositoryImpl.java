@@ -105,7 +105,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
         }
         if (status != null) {
             helper.getQueryAppend().append(" AND a.status = ? ");
-            helper.getParams().add(status.name());
+            helper.getParams().add(status.toString());
         }
         appendQueryForProductExpiry(filter, helper);
         return helper;

@@ -44,7 +44,7 @@ public class SaleRepositoryImpl extends AbstractRepository<Sale> implements Sale
             where.andLowerThanOrEqual("a.payment_due_date", filter.getDueDateMax());
         }
         if (filter.getPaymentStatus() != null) {
-            where.andEquals("a.payment_status", filter.getPaymentStatus().name());
+            where.andEquals("a.payment_status", filter.getPaymentStatus().toString());
         }
         if (filter.getCustomerId() != null) {
             where.andEquals("a.customer_id", filter.getCustomerId());

@@ -2,5 +2,11 @@ package pinus.desktop.constant;
 
 public enum SellingMode {
     PRESCRIPTION,
-    GENERAL
+    GENERAL;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
+
 }

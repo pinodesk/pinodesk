@@ -38,7 +38,7 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
             where.andLowerThanOrEqual("a.payment_due_date", filter.getDueDateMax());
         }
         if (filter.getPaymentStatus() != null) {
-            where.andEquals("a.payment_status", filter.getPaymentStatus().name());
+            where.andEquals("a.payment_status", filter.getPaymentStatus().toString());
         }
         if (filter.getSupplierId() != null) {
             where.andEquals("a.supplier_id", filter.getSupplierId());
