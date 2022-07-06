@@ -11,35 +11,29 @@ import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import pinus.desktop.constant.CommonConstants;
-import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.Page;
-import pinus.desktop.service.ConfigurationService;
-import pinus.desktop.util.SpringUtils;
 
 public class Pinus extends Application {
 
     public static Stage primaryStage;
 
     @Override
-    public void init() throws Exception {
-        super.init();
-        SpringUtils.init(PinusConfig.class);
-        PageLoader.init(CommonConstants.PAGE_TEMPLATE_DIR, this::getDefaultResourceBundle);
-        StageUtils.init(CommonConstants.APP_TITLE, new String[] {});
-    }
-
-    @Override
     public void start(Stage primaryStage) throws Exception {
+        PageLoader.init(
+                CommonConstants.PAGE_TEMPLATE_DIR,
+                () -> ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, Locale.ENGLISH));
+        StageUtils.init(CommonConstants.APP_TITLE, new String[] {});
         setPrimaryStage(primaryStage);
-        loadMainPage();
+        loadSplashSceen();
     }
 
     public static void main(String[] args) {
         launch(args);
     }
 
-    private static void loadMainPage() throws IOException {
+    public static void loadMainPage() throws IOException {
         loadMainPage(null, null, false);
     }
 
@@ -61,10 +55,14 @@ public class Pinus extends Application {
         primaryStage.show();
     }
 
-    private ResourceBundle getDefaultResourceBundle() {
-        ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, new Locale(languageCode));
+    public static void loadSplashSceen() throws IOException {
+        PageContext pageContext = PageLoader.load(Page.SPLASH);
+        Scene scene = new Scene(pageContext.getRoot());
+        Stage stage = new Stage();
+        stage.setScene(scene);
+        stage.sizeToScene();
+        stage.initStyle(StageStyle.UNDECORATED);
+        stage.show();
     }
 
     private static void setPrimaryStage(Stage primaryStage) {

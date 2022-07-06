@@ -2,9 +2,9 @@ package pinus.desktop.controller;
 
 import java.io.IOException;
 
-import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
-
 import org.springframework.context.ApplicationContext;
+
+import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -18,6 +18,7 @@ import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.service.ConfigurationService;
+import pinus.desktop.util.SpringUtils;
 
 public class MainController extends BaseController {
 
@@ -37,7 +38,7 @@ public class MainController extends BaseController {
 
     @Override
     protected void initServices(ApplicationContext ctx) {
-        configurationService = ctx.getBean(ConfigurationService.class);
+        configurationService = SpringUtils.getBean(ConfigurationService.class);
     }
 
     @Override

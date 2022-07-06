@@ -5,6 +5,8 @@ import com.gitlab.muhammadkholidb.pandora.utility.IPage;
 public enum Page implements IPage {
 
     MAIN("main"),
+    SPLASH("splash"),
+    LOADING("loading"),
 
     MASTER_PRODUCT_MAIN("master/product/main"),
     MASTER_PRODUCT_ADD("master/product/add"),

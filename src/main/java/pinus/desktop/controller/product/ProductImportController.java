@@ -33,9 +33,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.MessageCode;
@@ -64,15 +63,6 @@ public class ProductImportController extends CommonContentPaneController {
 
     @FXML
     private Button btnImport;
-
-    @FXML
-    private HBox hboxLoading;
-
-    @FXML
-    private HBox hboxButtons;
-
-    @FXML
-    private VBox vboxContent;
 
     private FileChooser fileChooser = new FileChooser();
     private File selectedTemplate;
@@ -120,9 +110,7 @@ public class ProductImportController extends CommonContentPaneController {
     @FXML
     void onActionBtnDownload(ActionEvent event) {
         String location = userHomeDir + "/Downloads/" + CommonConstants.IMPORT_TEMPLATE_FILE_NAME;
-        vboxContent.setDisable(true);
-        hboxButtons.setDisable(true);
-        hboxLoading.setVisible(true);
+        Stage stage = displayLoading();
         CompletableFuture.runAsync(() -> {
             XSSFWorkbook workbook = new XSSFWorkbook();
             createSheetProduct(workbook);
@@ -137,9 +125,7 @@ public class ProductImportController extends CommonContentPaneController {
                 throw new CompletionException(e);
             }
         }).whenComplete((result, ex) -> Platform.runLater(() -> {
-            vboxContent.setDisable(false);
-            hboxButtons.setDisable(false);
-            hboxLoading.setVisible(false);
+            stage.hide();
             if (ex != null) {
                 handleException(ex);
                 return;
@@ -198,9 +184,7 @@ public class ProductImportController extends CommonContentPaneController {
 
     private void importProducts() {
         setFocusedToContentPane();
-        vboxContent.setDisable(true);
-        hboxButtons.setDisable(true);
-        hboxLoading.setVisible(true);
+        Stage stage = displayLoading();
         CompletableFuture.runAsync(() -> {
             try {
                 productService.importProducts(readProductsToImport());
@@ -208,9 +192,7 @@ public class ProductImportController extends CommonContentPaneController {
                 throw new CompletionException(e);
             }
         }).whenComplete((result, ex) -> Platform.runLater(() -> {
-            vboxContent.setDisable(false);
-            hboxButtons.setDisable(false);
-            hboxLoading.setVisible(false);
+            stage.hide();
             if (ex != null) {
                 handleException(ex);
                 return;

@@ -3,14 +3,13 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="600.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.product.ProductImportController">
+<VBox fx:id="contentPane" prefWidth="600.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.product.ProductImportController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -79,16 +78,6 @@
          <children>
             <HBox alignment="CENTER_LEFT" layoutX="398.0" layoutY="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
-                  <HBox fx:id="hboxLoading" alignment="CENTER_LEFT" spacing="5.0" visible="false" HBox.hgrow="ALWAYS">
-                     <children>
-                        <ProgressIndicator maxHeight="24.0" maxWidth="24.0" />
-                        <Label fx:id="lblStatus" text="%lbl_loading">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </HBox>
                   <HBox fx:id="hboxButtons" alignment="CENTER_RIGHT" spacing="1.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />

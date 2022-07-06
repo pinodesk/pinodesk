@@ -12,14 +12,14 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -38,6 +38,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
@@ -268,6 +269,10 @@ public abstract class BaseController {
         dialogPane.setExpandableContent(expContent);
 
         alert.showAndWait();
+    }
+
+    protected Stage displayLoading() {
+        return StageUtils.modal(Page.LOADING, StageStyle.UNDECORATED);
     }
 
     protected String formatNumber(Number number) {
