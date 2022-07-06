@@ -14,12 +14,12 @@
          <children>
             <ImageView fitHeight="57.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../images/Blocks-1s-200px.gif" />
+                  <Image url="@../images/Blocks-1s-200px(1).gif" />
                </image>
             </ImageView>
-            <Label fx:id="lblLoading" text="%lbl_loading" textFill="#727272">
+            <Label fx:id="lblLoading" text="%lbl_loading" textFill="WHITE">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
          </children>
