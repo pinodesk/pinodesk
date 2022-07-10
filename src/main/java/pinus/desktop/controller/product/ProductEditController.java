@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
@@ -23,9 +26,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 import com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -45,13 +45,13 @@ import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.ProductStatus;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.CommonDataSaveController;
-import pinus.desktop.service.DrugCategoryService;
+import pinus.desktop.service.DrugClassificationService;
 import pinus.desktop.service.DrugService;
 import pinus.desktop.service.ProductCategoryService;
 import pinus.desktop.service.ProductService;
 import pinus.desktop.service.UnitService;
 import pinus.desktop.viewmodel.ChooseResultVM;
-import pinus.desktop.viewmodel.DrugCategoryVM;
+import pinus.desktop.viewmodel.DrugClassificationVM;
 import pinus.desktop.viewmodel.DrugVM;
 import pinus.desktop.viewmodel.ProductCategoryVM;
 import pinus.desktop.viewmodel.ProductEditVM;
@@ -92,7 +92,7 @@ public class ProductEditController extends CommonDataSaveController {
     private VBox vboxMedicine;
 
     @FXML
-    private TextField tfDrugCategory;
+    private TextField tfDrugClassification;
 
     @FXML
     private TextField tfIndication;
@@ -231,7 +231,7 @@ public class ProductEditController extends CommonDataSaveController {
 
     private UnitService unitService;
 
-    private DrugCategoryService drugCategoryService;
+    private DrugClassificationService drugClassificationService;
 
     private DrugService drugService;
 
@@ -239,7 +239,7 @@ public class ProductEditController extends CommonDataSaveController {
 
     private UnitVM selectedUnit;
 
-    private DrugCategoryVM selectedDrugCategory;
+    private DrugClassificationVM selectedDrugClassification;
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
@@ -289,13 +289,11 @@ public class ProductEditController extends CommonDataSaveController {
                 tfExpiryQuantity);
         setProductCategoryChooser(tfCategory, this::handleSelectedProductCategory, tfUnit.getParent());
         setUnitChooser(tfUnit, this::handleSelectedUnit, cbStatus);
-        setDrugCategoryChooser(tfDrugCategory, this::handleSelectedDrugCategory, tfIndication);
+        setDrugClassificationChooser(tfDrugClassification, this::handleSelectedDrugClassification, tfIndication);
         ComboBoxUtils.initSimple(
                 cbStatus,
-                new SimpleComboBoxModel(ProductStatus.ACTIVE.toString(), translate(CommonLabel.LBL_ACTIVE.toString())),
-                new SimpleComboBoxModel(
-                        ProductStatus.INACTIVE.toString(),
-                        translate(CommonLabel.LBL_INACTIVE.toString())));
+                new SimpleComboBoxModel(ProductStatus.ACTIVE, translate(CommonLabel.LBL_ACTIVE.toString())),
+                new SimpleComboBoxModel(ProductStatus.INACTIVE, translate(CommonLabel.LBL_INACTIVE.toString())));
         ComboBoxUtils.selectIndex(cbStatus, 0);
         initTableProductPrice(locale);
         initTableProductStock();
@@ -383,14 +381,17 @@ public class ProductEditController extends CommonDataSaveController {
         tfDescription.setText(currentProduct.getDescription());
         tfCategory.setText(selectedProductCategory.getName());
         tfUnit.setText(selectedUnit.getLabel());
-        ComboBoxUtils.select(
-                cbStatus,
-                () -> cbStatus.getItems().stream().filter(vm -> vm.getValue().equals(currentProduct.getStatus()))
-                        .findAny().orElseThrow());
+        ComboBoxUtils.select(cbStatus, () -> cbStatus.getItems().stream().filter(vm -> {
+            ProductStatus status = vm.getValue();
+            return status.toString().equals(currentProduct.getStatus());
+        }).findAny().orElseThrow());
         if (isProductCategoryDrugSelected()) {
             DrugVM drug = drugService.getDrugByProductId(currentProduct.getId());
-            selectedDrugCategory = drugCategoryService.getDrugCategoryById(drug.getDrugCategoryId());
-            tfDrugCategory.setText(selectedDrugCategory.getName());
+            if (drug.getClassificationCode() != null) {
+                selectedDrugClassification = drugClassificationService
+                        .getDrugClassificationByCode(drug.getClassificationCode(), resources.getLocale().getLanguage());
+                tfDrugClassification.setText(selectedDrugClassification.getName());
+            }
             tfIndication.setText(drug.getIndication());
             tfContraindication.setText(drug.getContraindication());
             vboxMedicine.setDisable(false);
@@ -411,8 +412,8 @@ public class ProductEditController extends CommonDataSaveController {
         productEdit.setProductCategory(selectedProductCategory);
         productEdit.setUnit(selectedUnit);
         SimpleComboBoxModel status = ComboBoxUtils.getSelectedItem(cbStatus);
-        productEdit.setStatus(ProductStatus.valueOf(status.getValue()));
-        productEdit.setDrugCategory(selectedDrugCategory);
+        productEdit.setStatus(status.getValue());
+        productEdit.setDrugClassification(selectedDrugClassification);
         productEdit.setIndication(tfIndication.getText());
         productEdit.setContraindication(tfContraindication.getText());
         productEdit.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellingPrice.getText()));
@@ -436,16 +437,11 @@ public class ProductEditController extends CommonDataSaveController {
         validator.validateBlank(tfCode, MessageCode.ERROR_EMPTY_CODE);
         validator.validateBlank(tfCategory, MessageCode.ERROR_EMPTY_CATEGORY);
         validator.validateBlank(tfUnit, MessageCode.ERROR_EMPTY_UNIT);
-        validator.validateCustom(this::isDrugCategoryRequired, MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
         validator.validateCustom(this::isInvalidExpiredDate, MessageCode.ERROR_INVALID_DATE_FORMAT);
         validator.validateCustom(this::isExpiryQuantityRequired, MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
         validator.validateCustom(
                 this::isExpiryQuantityExceedStockQuantity,
                 MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
-    }
-
-    private boolean isDrugCategoryRequired() {
-        return isProductCategoryDrugSelected() && selectedDrugCategory == null;
     }
 
     private boolean isInvalidExpiredDate() {
@@ -478,7 +474,7 @@ public class ProductEditController extends CommonDataSaveController {
         productService = ctx.getBean(ProductService.class);
         productCategoryService = ctx.getBean(ProductCategoryService.class);
         unitService = ctx.getBean(UnitService.class);
-        drugCategoryService = ctx.getBean(DrugCategoryService.class);
+        drugClassificationService = ctx.getBean(DrugClassificationService.class);
         drugService = ctx.getBean(DrugService.class);
     }
 
@@ -492,15 +488,16 @@ public class ProductEditController extends CommonDataSaveController {
             boolean isDrug = isProductCategoryDrugSelected();
             vboxMedicine.setDisable(!isDrug);
             vboxPresciptionSellPrice.setDisable(!isDrug);
-            TextFieldUtils.setTextEmpty(tfDrugCategory, tfIndication, tfContraindication, tfPrescriptionSellingPrice);
+            TextFieldUtils
+                    .setTextEmpty(tfDrugClassification, tfIndication, tfContraindication, tfPrescriptionSellingPrice);
         }, () -> {
             selectedProductCategory = null;
-            selectedDrugCategory = null;
+            selectedDrugClassification = null;
             vboxMedicine.setDisable(true);
             vboxPresciptionSellPrice.setDisable(true);
             TextFieldUtils.setTextEmpty(
                     tfCategory,
-                    tfDrugCategory,
+                    tfDrugClassification,
                     tfIndication,
                     tfContraindication,
                     tfPrescriptionSellingPrice);
@@ -520,16 +517,16 @@ public class ProductEditController extends CommonDataSaveController {
         });
     }
 
-    public void handleSelectedDrugCategory(ChooseResultVM<DrugCategoryVM> result) {
+    public void handleSelectedDrugClassification(ChooseResultVM<DrugClassificationVM> result) {
         if (result == null || result.isCancelled()) {
             return;
         }
-        result.getData().ifPresentOrElse(drugCategory -> {
-            selectedDrugCategory = drugCategory;
-            tfDrugCategory.setText(drugCategory.getName());
+        result.getData().ifPresentOrElse(classification -> {
+            selectedDrugClassification = classification;
+            tfDrugClassification.setText(classification.getName());
         }, () -> {
-            selectedDrugCategory = null;
-            tfDrugCategory.setText("");
+            selectedDrugClassification = null;
+            tfDrugClassification.setText("");
         });
     }
 

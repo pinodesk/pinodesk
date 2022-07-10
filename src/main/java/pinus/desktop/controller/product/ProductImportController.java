@@ -40,12 +40,12 @@ import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.ProductStatus;
 import pinus.desktop.controller.CommonContentPaneController;
-import pinus.desktop.service.DrugCategoryService;
+import pinus.desktop.service.DrugClassificationService;
 import pinus.desktop.service.ProductCategoryService;
 import pinus.desktop.service.ProductService;
 import pinus.desktop.service.UnitService;
 import pinus.desktop.util.SpringUtils;
-import pinus.desktop.viewmodel.DrugCategoryVM;
+import pinus.desktop.viewmodel.DrugClassificationVM;
 import pinus.desktop.viewmodel.ProductCategoryVM;
 import pinus.desktop.viewmodel.ProductImportVM;
 import pinus.desktop.viewmodel.UnitVM;
@@ -70,7 +70,7 @@ public class ProductImportController extends CommonContentPaneController {
     private ProductService productService;
     private UnitService unitService;
     private ProductCategoryService productCategoryService;
-    private DrugCategoryService drugCategoryService;
+    private DrugClassificationService drugClassificationService;
 
     private static final IMessage[] PRODUCT_SHEET_COLUMN_LABELS = new IMessage[] {
             CommonLabel.LBL_NAME,
@@ -83,7 +83,7 @@ public class ProductImportController extends CommonContentPaneController {
             CommonLabel.LBL_PRESCRIPTION_SELLING_PRICE,
             CommonLabel.LBL_QUANTITY,
             CommonLabel.LBL_EXPIRED_DATE,
-            CommonLabel.LBL_DRUG_CATEGORY_ID,
+            CommonLabel.LBL_DRUG_CLASSIFICATION_CODE,
             CommonLabel.LBL_INDICATION,
             CommonLabel.LBL_CONTRAINDICATION, };
 
@@ -96,8 +96,8 @@ public class ProductImportController extends CommonContentPaneController {
             CommonLabel.LBL_NAME,
             CommonLabel.LBL_LABEL, };
 
-    private static final IMessage[] DRUG_CATEGORY_SHEET_COLUMN_LABELS = new IMessage[] {
-            CommonLabel.LBL_ID,
+    private static final IMessage[] DRUG_CLASSIFICATION_SHEET_COLUMN_LABELS = new IMessage[] {
+            CommonLabel.LBL_CODE,
             CommonLabel.LBL_NAME };
 
     private String userHomeDir = System.getProperty("user.home");
@@ -174,7 +174,7 @@ public class ProductImportController extends CommonContentPaneController {
         productService = SpringUtils.getBean(ProductService.class);
         unitService = SpringUtils.getBean(UnitService.class);
         productCategoryService = SpringUtils.getBean(ProductCategoryService.class);
-        drugCategoryService = SpringUtils.getBean(DrugCategoryService.class);
+        drugClassificationService = SpringUtils.getBean(DrugClassificationService.class);
     }
 
     @Override
@@ -223,7 +223,7 @@ public class ProductImportController extends CommonContentPaneController {
                 productImport.setExpiredDate(
                         DateTimeUtils
                                 .parseLocalDateQuietly(getCellValue(row, 9), CommonConstants.DATE_DISPLAY_PATTERN));
-                productImport.setDrugCategoryId(StringNumberUtils.toLongOrNull(getCellValue(row, 10)));
+                productImport.setDrugClassificationCode(getCellValue(row, 10));
                 productImport.setIndication(getCellValue(row, 11));
                 productImport.setContraindication(getCellValue(row, 12));
                 productImport.setStatus(ProductStatus.ACTIVE);
@@ -257,8 +257,8 @@ public class ProductImportController extends CommonContentPaneController {
         }
         row = sheet.createRow(1);
         row.createCell(0).setCellValue(translate(CommonLabel.LBL_SAMPLE_PRODUCT));
-        row.createCell(1).setCellValue("001");
-        row.createCell(2).setCellValue("001");
+        row.createCell(1).setCellValue("XXX-0001");
+        row.createCell(2).setCellValue("111122223333");
         row.createCell(3).setCellValue("");
         row.createCell(4).setCellValue(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
         row.createCell(5).setCellValue(1);
@@ -266,10 +266,12 @@ public class ProductImportController extends CommonContentPaneController {
         row.createCell(7).setCellValue(11000);
         row.createCell(8).setCellValue(10);
         row.createCell(9).setCellValue("2030-01-01");
-        row.createCell(10).setCellValue(1);
+        row.createCell(10).setCellValue("0001");
         row.createCell(11).setCellValue("");
         row.createCell(12).setCellValue("");
         sheet.autoSizeColumn(0);
+        sheet.autoSizeColumn(1);
+        sheet.autoSizeColumn(2);
     }
 
     private void createSheetProductCategory(XSSFWorkbook workbook) {
@@ -309,16 +311,17 @@ public class ProductImportController extends CommonContentPaneController {
     }
 
     private void createSheetDrugCategory(XSSFWorkbook workbook) {
-        XSSFSheet sheet = workbook.createSheet(translate(CommonLabel.LBL_DRUG_CATEGORY));
+        XSSFSheet sheet = workbook.createSheet(translate(CommonLabel.LBL_DRUG_CLASSIFICATION));
         XSSFRow row = sheet.createRow(0);
-        for (int i = 0; i < DRUG_CATEGORY_SHEET_COLUMN_LABELS.length; i++) {
-            row.createCell(i).setCellValue(translate(DRUG_CATEGORY_SHEET_COLUMN_LABELS[i]));
+        for (int i = 0; i < DRUG_CLASSIFICATION_SHEET_COLUMN_LABELS.length; i++) {
+            row.createCell(i).setCellValue(translate(DRUG_CLASSIFICATION_SHEET_COLUMN_LABELS[i]));
         }
         int rowNum = 1;
-        List<DrugCategoryVM> categories = drugCategoryService.searchDrugCategoriesByKeyword("");
-        for (DrugCategoryVM category : categories) {
+        List<DrugClassificationVM> categories = drugClassificationService
+                .searchDrugClassificationsByKeyword("", resources.getLocale().getLanguage());
+        for (DrugClassificationVM category : categories) {
             row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(category.getId());
+            row.createCell(0).setCellValue(category.getCode());
             row.createCell(1).setCellValue(category.getName());
         }
         sheet.autoSizeColumn(0);

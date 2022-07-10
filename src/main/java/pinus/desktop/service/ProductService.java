@@ -29,7 +29,7 @@ import pinus.desktop.domain.ProductPrice;
 import pinus.desktop.domain.ProductStock;
 import pinus.desktop.domain.Unit;
 import pinus.desktop.exception.DomainException;
-import pinus.desktop.repository.DrugCategoryRepository;
+import pinus.desktop.repository.DrugClassificationRepository;
 import pinus.desktop.repository.DrugRepository;
 import pinus.desktop.repository.ProductCategoryRepository;
 import pinus.desktop.repository.ProductExpiryRepository;
@@ -38,7 +38,7 @@ import pinus.desktop.repository.ProductRepository;
 import pinus.desktop.repository.ProductStockRepository;
 import pinus.desktop.repository.UnitRepository;
 import pinus.desktop.util.ProductUtils;
-import pinus.desktop.viewmodel.DrugCategoryVM;
+import pinus.desktop.viewmodel.DrugClassificationVM;
 import pinus.desktop.viewmodel.GroupedProductExpiryVM;
 import pinus.desktop.viewmodel.ProductAddVM;
 import pinus.desktop.viewmodel.ProductEditVM;
@@ -78,7 +78,7 @@ public class ProductService extends BaseService {
     private UnitRepository unitRepository;
 
     @Autowired
-    private DrugCategoryRepository drugCategoryRepository;
+    private DrugClassificationRepository drugClassificationRepository;
 
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
     public List<ProductVM> searchProductsByFilter(ProductFilterVM filter) {
@@ -124,16 +124,17 @@ public class ProductService extends BaseService {
         }
 
         if (CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS.equals(categoryCode)) {
-            DrugCategoryVM drugCategory = productEdit.getDrugCategory();
+            DrugClassificationVM drugClassification = productEdit.getDrugClassification();
+            String classificationCode = drugClassification == null ? null : drugClassification.getCode();
             drugRepository.findByProductIdAndDeletedAtIsNull(productId).ifPresentOrElse(drug -> {
-                drug.setDrugCategoryId(drugCategory.getId());
+                drug.setClassificationCode(classificationCode);
                 drug.setIndication(productEdit.getIndication());
                 drug.setContraindication(productEdit.getContraindication());
                 drugRepository.save(drug);
             }, () -> {
                 Drug drug = new Drug();
                 drug.setProductId(productId);
-                drug.setDrugCategoryId(drugCategory.getId());
+                drug.setClassificationCode(classificationCode);
                 drug.setIndication(productEdit.getIndication());
                 drug.setContraindication(productEdit.getContraindication());
                 drugRepository.save(drug);
@@ -266,10 +267,10 @@ public class ProductService extends BaseService {
         Long productId = created.getId();
 
         if (CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS.equals(categoryCode)) {
-            DrugCategoryVM drugCategory = productAdd.getDrugCategory();
+            DrugClassificationVM drugClassification = productAdd.getDrugClassification();
             Drug drug = new Drug();
             drug.setProductId(productId);
-            drug.setDrugCategoryId(drugCategory.getId());
+            drug.setClassificationCode(drugClassification == null ? null : drugClassification.getCode());
             drug.setIndication(productAdd.getIndication());
             drug.setContraindication(productAdd.getContraindication());
             drugRepository.save(drug);
@@ -381,7 +382,7 @@ public class ProductService extends BaseService {
         List<ProductImportMapping> mappings = new ArrayList<>();
         Set<String> checkedCategoryCodes = new HashSet<>();
         Set<Unit> checkedUnits = new HashSet<>();
-        Set<Long> checkedDrugCategoryIds = new HashSet<>();
+        Set<String> checkedDrugCategoryCodes = new HashSet<>();
         productImports.forEach(pi -> {
 
             String productName = pi.getName();
@@ -412,16 +413,17 @@ public class ProductService extends BaseService {
             checkedUnits.add(unit);
 
             if (ProductUtils.isProductCategoryDrugs(productCategoryCode)) {
-                Long drugCategoryId = pi.getDrugCategoryId();
-                if (!checkedDrugCategoryIds.contains(drugCategoryId)
-                        && !drugCategoryRepository.existsById(drugCategoryId)) {
+                String drugClassificationCode = pi.getDrugClassificationCode();
+                if (StringUtils.isNotBlank(drugClassificationCode)
+                        && !checkedDrugCategoryCodes.contains(drugClassificationCode)
+                        && !drugClassificationRepository.existsByCodeAndDeletedAtIsNull(drugClassificationCode)) {
                     throw new DomainException(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_ID);
                 }
-                checkedDrugCategoryIds.add(drugCategoryId);
+                checkedDrugCategoryCodes.add(drugClassificationCode);
                 Drug drug = new Drug();
                 drug.setContraindication(pi.getContraindication());
                 drug.setIndication(pi.getIndication());
-                drug.setDrugCategoryId(drugCategoryId);
+                drug.setClassificationCode(drugClassificationCode);
                 mapping.setDrug(drug);
             }
             Product product = new Product();

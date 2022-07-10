@@ -265,12 +265,12 @@ public class SaleAddController extends CommonDataSaveController {
         setFocusedToContentPane();
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
-                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID, translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID, translate(CommonLabel.LBL_UNPAID)));
         ComboBoxUtils.initSimple(
                 cbSellingMode,
-                new SimpleComboBoxModel(SellingMode.GENERAL.toString(), translate(CommonLabel.LBL_GENERAL)),
-                new SimpleComboBoxModel(SellingMode.PRESCRIPTION.toString(), translate(CommonLabel.LBL_PRESCRIPTION)));
+                new SimpleComboBoxModel(SellingMode.GENERAL, translate(CommonLabel.LBL_GENERAL)),
+                new SimpleComboBoxModel(SellingMode.PRESCRIPTION, translate(CommonLabel.LBL_PRESCRIPTION)));
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(tfSellingPrice, tfCurrentQuantity, tfSaleQuantity);
         TableViewUtils.setColumnValue(colProductName, SaleProductVM::getProductName);
@@ -306,16 +306,14 @@ public class SaleAddController extends CommonDataSaveController {
         setDoctorChooser(tfDoctor, this::handleSelectedDoctor, tfInvoiceNumber);
         setProductChooser(tfProduct, this::handleSelectedProduct, tfSaleQuantity);
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
-            PaymentStatus status = PaymentStatus.valueOf(nv.getValue());
-            boolean isPaid = PaymentStatus.PAID.equals(status);
+            boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
             if (isPaid) {
                 tfDueDate.setPlainText("");
             }
             vboxDueDate.setDisable(isPaid);
         });
         ComboBoxUtils.onSelectedItemChanged(cbSellingMode, (ov, nv) -> {
-            SellingMode mode = SellingMode.valueOf(nv.getValue());
-            updateDisplaySellingPrice(mode);
+            updateDisplaySellingPrice(nv.getValue());
         });
     }
 
@@ -333,13 +331,13 @@ public class SaleAddController extends CommonDataSaveController {
         saleAdd.setCustomerId(selectedCustomer == null ? null : selectedCustomer.getId());
         saleAdd.setDoctorId(selectedDoctor == null ? null : selectedDoctor.getId());
         saleAdd.setInvoiceNumber(tfInvoiceNumber.getText().trim());
-        PaymentStatus paymentStatus = PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue());
+        PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         saleAdd.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
             saleAdd.setPaymentDueDate(
                     DateTimeUtils.parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         }
-        saleAdd.setSellingMode(SellingMode.valueOf(ComboBoxUtils.getSelectedItem(cbSellingMode).getValue()));
+        saleAdd.setSellingMode(ComboBoxUtils.getSelectedItem(cbSellingMode).getValue());
         saleAdd.setTotalPayment(totalPayment);
         saleAdd.setTotalProduct(totalProduct);
         saleAdd.setTotalSale(totalSale);
@@ -352,8 +350,8 @@ public class SaleAddController extends CommonDataSaveController {
     protected void validate(ControlValidator validator) {
         LocalDate dueDate = DateTimeUtils
                 .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-        SimpleComboBoxModel selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
-        boolean isUnpaid = PaymentStatus.UNPAID.toString().equals(selected.getValue());
+        PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
+        boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
         validator.validateCustom(
                 () -> isUnpaid && selectedCustomer == null,
@@ -383,7 +381,7 @@ public class SaleAddController extends CommonDataSaveController {
             tfProductUnit.setText(product.getUnitLabel());
             tfCurrentQuantity.setText(toStringOrEmpty(product.getQuantity()));
             tfSellingPrice.setText(toStringOrEmpty(product.getGeneralSellingPrice()));
-            SellingMode mode = SellingMode.valueOf(ComboBoxUtils.getSelectedItem(cbSellingMode).getValue());
+            SellingMode mode = ComboBoxUtils.getSelectedItem(cbSellingMode).getValue();
             BigDecimal prescriptionSellingPrice = product.getPrescriptionSellingPrice();
             if (SellingMode.PRESCRIPTION.equals(mode) && prescriptionSellingPrice != null) {
                 tfSellingPrice.setText(toStringOrEmpty(prescriptionSellingPrice));

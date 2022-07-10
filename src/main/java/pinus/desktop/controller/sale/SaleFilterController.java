@@ -69,6 +69,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
 
     @Override
     protected void initDataFilterControlValues() {
+        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         if (currentFilter != null) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
@@ -94,8 +95,8 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
                 ComboBoxUtils.select(
                         cbPaymentStatus,
                         () -> cbPaymentStatus.getItems().stream()
-                                .filter(vm -> currentFilter.getPaymentStatus().toString().equals(vm.getValue()))
-                                .findAny().orElseThrow());
+                                .filter(vm -> currentFilter.getPaymentStatus().equals(vm.getValue())).findAny()
+                                .orElseThrow());
             }
         }
     }
@@ -105,9 +106,9 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
         TextFieldUtils.setDigitTextFields(tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax, tfTotalProductMin);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
-                new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
-                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(null, StringConstants.EMPTY),
+                new SimpleComboBoxModel(PaymentStatus.PAID, translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID, translate(CommonLabel.LBL_UNPAID)));
         setCustomerChooser(tfCustomer, this::handleSelectedCustomer, tfDoctor.getParent());
         setDoctorChooser(tfDoctor, this::handleSelectedDoctor, cbPaymentStatus.getParent());
     }
@@ -122,10 +123,8 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
                 parseLocalDateQuietly(tfCreatedDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         filter.setDueDateMax(parseLocalDateQuietly(tfDueDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         filter.setDueDateMin(parseLocalDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        SimpleComboBoxModel selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
-        filter.setPaymentStatus(
-                selectedPaymentStatus == null || selectedPaymentStatus.getValue().isEmpty() ?
-                        null : PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue()));
+        PaymentStatus selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
+        filter.setPaymentStatus(selectedPaymentStatus);
         if (selectedCustomer != null) {
             filter.setCustomerId(selectedCustomer.getId());
             filter.setCustomerName(selectedCustomer.getName());

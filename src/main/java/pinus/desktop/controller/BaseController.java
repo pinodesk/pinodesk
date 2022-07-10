@@ -326,4 +326,8 @@ public abstract class BaseController {
         setChooserOnFocus(tf, Page.MASTER_DOCTOR_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
     }
 
+    protected <T> void setDrugClassificationChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
+        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE_DRUG_CLASSIFICATION, outputConsumer, nextFocusNode);
+    }
+
 }

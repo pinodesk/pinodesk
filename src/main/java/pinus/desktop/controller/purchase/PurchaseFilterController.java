@@ -65,6 +65,7 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
 
     @Override
     protected void initDataFilterControlValues() {
+        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         if (currentFilter != null) {
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
@@ -89,8 +90,8 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
                 ComboBoxUtils.select(
                         cbPaymentStatus,
                         () -> cbPaymentStatus.getItems().stream()
-                                .filter(vm -> currentFilter.getPaymentStatus().toString().equals(vm.getValue()))
-                                .findAny().orElseThrow());
+                                .filter(vm -> currentFilter.getPaymentStatus().equals(vm.getValue())).findAny()
+                                .orElseThrow());
             }
         }
     }
@@ -105,10 +106,8 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
                 parseLocalDateQuietly(tfInvoiceDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         filter.setDueDateMax(parseLocalDateQuietly(tfDueDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         filter.setDueDateMin(parseLocalDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        SimpleComboBoxModel selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
-        filter.setPaymentStatus(
-                selectedPaymentStatus == null || selectedPaymentStatus.getValue().isEmpty() ?
-                        null : PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue()));
+        PaymentStatus selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
+        filter.setPaymentStatus(selectedPaymentStatus);
         if (selectedSupplier != null) {
             filter.setSupplierId(selectedSupplier.getId());
             filter.setSupplierName(selectedSupplier.getName());

@@ -10,12 +10,12 @@ import lombok.EqualsAndHashCode;
 public class Drug extends DataModel {
 
     public static final String C_PRODUCT_ID = "product_id";
-    public static final String C_DRUG_CATEGORY_ID = "drug_category_id";
+    public static final String C_CLASSIFICATION_CODE = "classification_code";
     public static final String C_INDICATION = "indication";
     public static final String C_CONTRAINDICATION = "contraindication";
 
     private Long productId;
-    private Long drugCategoryId;
+    private String classificationCode;
     private String indication;
     private String contraindication;
 }

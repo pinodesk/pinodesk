@@ -85,6 +85,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
 
     @Override
     protected void initDataFilterControlValues() {
+        ComboBoxUtils.selectIndex(cbStatus, 0);
         if (currentFilter != null) {
             Integer stockQuantityMin = currentFilter.getStockQuantityMin();
             Integer stockQuantityMax = currentFilter.getStockQuantityMax();
@@ -114,8 +115,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
             if (status != null) {
                 ComboBoxUtils.select(
                         cbStatus,
-                        () -> cbStatus.getItems().stream().filter(vm -> status.toString().equals(vm.getValue()))
-                                .findAny().orElseThrow());
+                        () -> cbStatus.getItems().stream().filter(vm -> status.equals(vm.getValue())).findAny()
+                                .orElseThrow());
             }
             if (category != null) {
                 selectedProductCategory = category;
@@ -138,7 +139,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         String stockQuantityMin = tfStockQuantityMin.getText();
         String expiredDateMin = tfExpiredDateMin.getTextMasked();
         String expiredDateMax = tfExpiredDateMax.getTextMasked();
-        String status = ComboBoxUtils.getSelectedItem(cbStatus).getValue();
+        ProductStatus status = ComboBoxUtils.getSelectedItem(cbStatus).getValue();
         ProductFilterVM filter = new ProductFilterVM();
         filter.setName(tfName.getText());
         filter.setDescription(tfDescription.getText());
@@ -169,9 +170,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         if (StringUtils.isNotBlank(expiredDateMax)) {
             filter.setExpiredDateMax(parseLocalDateQuietly(expiredDateMax, CommonConstants.DATE_DISPLAY_PATTERN));
         }
-        if (StringUtils.isNotBlank(status)) {
-            filter.setStatus(ProductStatus.valueOf(status));
-        }
+        filter.setStatus(status);
         filter.setUnit(selectedUnit);
         filter.setCategory(selectedProductCategory);
         return filter;
@@ -217,9 +216,9 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
                 tfStockQuantityMax);
         ComboBoxUtils.initSimple(
                 cbStatus,
-                new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
-                new SimpleComboBoxModel(ProductStatus.ACTIVE.toString(), translate(CommonLabel.LBL_ACTIVE)),
-                new SimpleComboBoxModel(ProductStatus.INACTIVE.toString(), translate(CommonLabel.LBL_INACTIVE)));
+                new SimpleComboBoxModel(null, StringConstants.EMPTY),
+                new SimpleComboBoxModel(ProductStatus.ACTIVE, translate(CommonLabel.LBL_ACTIVE)),
+                new SimpleComboBoxModel(ProductStatus.INACTIVE, translate(CommonLabel.LBL_INACTIVE)));
         setProductCategoryChooser(tfCategory, this::handleSelectedProductCategory, tfUnit.getParent());
         setUnitChooser(tfUnit, this::handleSelectedUnit, cbStatus);
     }

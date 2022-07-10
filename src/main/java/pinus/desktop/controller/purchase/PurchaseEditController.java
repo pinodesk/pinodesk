@@ -292,8 +292,8 @@ public class PurchaseEditController extends CommonDataSaveController {
         setFocusedToContentPane();
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
-                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID, translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID, translate(CommonLabel.LBL_UNPAID)));
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(
                 tfDiscount,
@@ -346,8 +346,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         setSupplierChooser(tfSupplier, this::handleSelectedSupplier, tfInvoiceNumber);
         TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchaseSummary(), tfDiscount, tfTax);
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
-            PaymentStatus status = PaymentStatus.valueOf(nv.getValue());
-            boolean isPaid = PaymentStatus.PAID.equals(status);
+            boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
             if (isPaid) {
                 tfDueDate.setPlainText("");
             }
@@ -366,7 +365,6 @@ public class PurchaseEditController extends CommonDataSaveController {
         selectedSupplier.setName(currentPurchase.getSupplierName());
         LocalDate invoiceDate = currentPurchase.getInvoiceDate();
         LocalDate paymentDueDate = currentPurchase.getPaymentDueDate();
-        PaymentStatus paymentStatus = PaymentStatus.valueOf(currentPurchase.getPaymentStatus());
         BigDecimal discount = currentPurchase.getDiscount();
         BigDecimal tax = currentPurchase.getTax();
         totalProduct = currentPurchase.getTotalProduct();
@@ -375,10 +373,10 @@ public class PurchaseEditController extends CommonDataSaveController {
         tfSupplier.setText(currentPurchase.getSupplierName());
         tfInvoiceNumber.setText(currentPurchase.getInvoiceNumber());
         tfInvoiceDate.setText(invoiceDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
-        ComboBoxUtils.select(
-                cbPaymentStatus,
-                () -> cbPaymentStatus.getItems().stream().filter(vm -> vm.getValue().equals(paymentStatus.toString()))
-                        .findAny().orElseThrow());
+        ComboBoxUtils.select(cbPaymentStatus, () -> cbPaymentStatus.getItems().stream().filter(vm -> {
+            PaymentStatus paymentStatus = vm.getValue();
+            return paymentStatus.toString().equals(currentPurchase.getPaymentStatus());
+        }).findAny().orElseThrow());
         if (paymentDueDate != null) {
             tfDueDate.setText(paymentDueDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
         }
@@ -398,7 +396,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         purchase.setInvoiceNumber(tfInvoiceNumber.getText().trim());
         purchase.setInvoiceDate(
                 DateTimeUtils.parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        PaymentStatus paymentStatus = PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue());
+        PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         purchase.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
             purchase.setPaymentDueDate(
@@ -420,8 +418,8 @@ public class PurchaseEditController extends CommonDataSaveController {
                 .parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
         LocalDate dueDate = DateTimeUtils
                 .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-        SimpleComboBoxModel selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
-        boolean isUnpaid = PaymentStatus.UNPAID.toString().equals(selected.getValue());
+        PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
+        boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
         validator.validateBlank(tfSupplier, MessageCode.ERROR_EMPTY_SUPPLIER);
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
         LocalDate today = LocalDate.now();

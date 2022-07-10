@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.product.ProductAddController">
+<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.product.ProductAddController">
    <children>
       <VBox AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -170,12 +170,12 @@
                                           <Label text="%lbl_medicine_and_drugs" textFill="#009c7c" />
                                           <VBox spacing="5.0">
                                              <children>
-                                                <Label text="%lbl_drug_category">
+                                                <Label text="%lbl_drug_classification">
                                                    <font>
                                                       <Font size="13.0" />
                                                    </font>
                                                 </Label>
-                                                <TextField fx:id="tfDrugCategory" editable="false" styleClass="input-primary">
+                                                <TextField fx:id="tfDrugClassification" editable="false" styleClass="input-primary">
                                                    <font>
                                                       <Font size="13.0" />
                                                    </font>

@@ -37,7 +37,7 @@ public class ProductImportVM {
     @NotNull
     private ProductStatus status;
 
-    private Long drugCategoryId;
+    private String drugClassificationCode;
 
     @Size(max = 512)
     private String indication;

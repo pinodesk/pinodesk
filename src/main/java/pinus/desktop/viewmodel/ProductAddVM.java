@@ -37,7 +37,7 @@ public class ProductAddVM {
     @NotNull
     private ProductStatus status;
 
-    private DrugCategoryVM drugCategory;
+    private DrugClassificationVM drugClassification;
 
     @Size(max = 512)
     private String indication;

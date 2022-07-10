@@ -5,13 +5,13 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class DrugVM {
+public class DrugClassificationVM {
     private Long id;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
-    private Long productId;
-    private String classificationCode;
-    private String indication;
-    private String contraindication;
+    private String languageCode;
+    private String code;
+    private String name;
+    private String description;
 }

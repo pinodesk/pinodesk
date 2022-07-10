@@ -6,6 +6,9 @@ import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toIntege
 
 import java.time.LocalDate;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
@@ -13,9 +16,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,7 +33,7 @@ import pinus.desktop.constant.ProductStatus;
 import pinus.desktop.controller.CommonDataSaveController;
 import pinus.desktop.service.ProductService;
 import pinus.desktop.viewmodel.ChooseResultVM;
-import pinus.desktop.viewmodel.DrugCategoryVM;
+import pinus.desktop.viewmodel.DrugClassificationVM;
 import pinus.desktop.viewmodel.ProductAddVM;
 import pinus.desktop.viewmodel.ProductCategoryVM;
 import pinus.desktop.viewmodel.UnitVM;
@@ -71,7 +71,7 @@ public class ProductAddController extends CommonDataSaveController {
     private VBox vboxMedicine;
 
     @FXML
-    private TextField tfDrugCategory;
+    private TextField tfDrugClassification;
 
     @FXML
     private TextField tfIndication;
@@ -120,7 +120,7 @@ public class ProductAddController extends CommonDataSaveController {
 
     private UnitVM selectedUnit;
 
-    private DrugCategoryVM selectedDrugCategory;
+    private DrugClassificationVM selectedDrugClassification;
 
     @FXML
     void onActionBtnSaveAndAdd(ActionEvent event) {
@@ -143,13 +143,11 @@ public class ProductAddController extends CommonDataSaveController {
                 tfExpiryQuantity);
         setProductCategoryChooser(tfCategory, this::handleSelectedProductCategory, tfUnit.getParent());
         setUnitChooser(tfUnit, this::handleSelectedUnit, cbStatus);
-        setDrugCategoryChooser(tfDrugCategory, this::handleSelectedDrugCategory, tfIndication);
+        setDrugClassificationChooser(tfDrugClassification, this::handleSelectedDrugClassification, tfIndication);
         ComboBoxUtils.initSimple(
                 cbStatus,
-                new SimpleComboBoxModel(ProductStatus.ACTIVE.toString(), translate(CommonLabel.LBL_ACTIVE.toString())),
-                new SimpleComboBoxModel(
-                        ProductStatus.INACTIVE.toString(),
-                        translate(CommonLabel.LBL_INACTIVE.toString())));
+                new SimpleComboBoxModel(ProductStatus.ACTIVE, translate(CommonLabel.LBL_ACTIVE.toString())),
+                new SimpleComboBoxModel(ProductStatus.INACTIVE, translate(CommonLabel.LBL_INACTIVE.toString())));
         ComboBoxUtils.selectIndex(cbStatus, 0);
         initBtnSaveAndAdd();
         addContentPaneOnKeyPressedHandler(event -> {
@@ -179,8 +177,8 @@ public class ProductAddController extends CommonDataSaveController {
         productAdd.setProductCategory(selectedProductCategory);
         productAdd.setUnit(selectedUnit);
         SimpleComboBoxModel status = ComboBoxUtils.getSelectedItem(cbStatus);
-        productAdd.setStatus(ProductStatus.valueOf(status.getValue()));
-        productAdd.setDrugCategory(selectedDrugCategory);
+        productAdd.setStatus(status.getValue());
+        productAdd.setDrugClassification(selectedDrugClassification);
         productAdd.setIndication(tfIndication.getText());
         productAdd.setContraindication(tfContraindication.getText());
         productAdd.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellPrice.getText()));
@@ -204,16 +202,11 @@ public class ProductAddController extends CommonDataSaveController {
         validator.validateBlank(tfCode, MessageCode.ERROR_EMPTY_CODE);
         validator.validateBlank(tfCategory, MessageCode.ERROR_EMPTY_CATEGORY);
         validator.validateBlank(tfUnit, MessageCode.ERROR_EMPTY_UNIT);
-        validator.validateCustom(this::isDrugCategoryRequired, MessageCode.ERROR_EMPTY_DRUG_CATEGORY);
         validator.validateCustom(this::isInvalidExpiredDate, MessageCode.ERROR_INVALID_DATE_FORMAT);
         validator.validateCustom(this::isExpiryQuantityRequired, MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
         validator.validateCustom(
                 this::isExpiryQuantityExceedStockQuantity,
                 MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
-    }
-
-    private boolean isDrugCategoryRequired() {
-        return isProductCategoryDrugSelected() && selectedDrugCategory == null;
     }
 
     private boolean isInvalidExpiredDate() {
@@ -254,7 +247,7 @@ public class ProductAddController extends CommonDataSaveController {
                 tfDescription,
                 tfCategory,
                 tfUnit,
-                tfDrugCategory,
+                tfDrugClassification,
                 tfIndication,
                 tfContraindication,
                 tfGeneralSellPrice,
@@ -279,15 +272,16 @@ public class ProductAddController extends CommonDataSaveController {
             boolean isDrug = isProductCategoryDrugSelected();
             vboxMedicine.setDisable(!isDrug);
             vboxPresciptionSellPrice.setDisable(!isDrug);
-            TextFieldUtils.setTextEmpty(tfDrugCategory, tfIndication, tfContraindication, tfPrescriptionSellPrice);
+            TextFieldUtils
+                    .setTextEmpty(tfDrugClassification, tfIndication, tfContraindication, tfPrescriptionSellPrice);
         }, () -> {
             selectedProductCategory = null;
-            selectedDrugCategory = null;
+            selectedDrugClassification = null;
             vboxMedicine.setDisable(true);
             vboxPresciptionSellPrice.setDisable(true);
             TextFieldUtils.setTextEmpty(
                     tfCategory,
-                    tfDrugCategory,
+                    tfDrugClassification,
                     tfIndication,
                     tfContraindication,
                     tfPrescriptionSellPrice);
@@ -307,16 +301,16 @@ public class ProductAddController extends CommonDataSaveController {
         });
     }
 
-    public void handleSelectedDrugCategory(ChooseResultVM<DrugCategoryVM> result) {
+    public void handleSelectedDrugClassification(ChooseResultVM<DrugClassificationVM> result) {
         if (result == null || result.isCancelled()) {
             return;
         }
-        result.getData().ifPresentOrElse(drugCategory -> {
-            selectedDrugCategory = drugCategory;
-            tfDrugCategory.setText(drugCategory.getName());
+        result.getData().ifPresentOrElse(classification -> {
+            selectedDrugClassification = classification;
+            tfDrugClassification.setText(classification.getName());
         }, () -> {
-            selectedDrugCategory = null;
-            tfDrugCategory.setText("");
+            selectedDrugClassification = null;
+            tfDrugClassification.setText("");
         });
     }
 

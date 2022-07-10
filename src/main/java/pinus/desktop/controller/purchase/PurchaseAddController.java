@@ -13,6 +13,9 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
@@ -25,9 +28,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
 import com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -276,8 +276,8 @@ public class PurchaseAddController extends CommonDataSaveController {
         setFocusedToContentPane();
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
-                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID, translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID, translate(CommonLabel.LBL_UNPAID)));
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(
                 tfDiscount,
@@ -330,8 +330,7 @@ public class PurchaseAddController extends CommonDataSaveController {
         setSupplierChooser(tfSupplier, this::handleSelectedSupplier, tfInvoiceNumber);
         TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchaseSummary(), tfDiscount, tfTax);
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
-            PaymentStatus status = PaymentStatus.valueOf(nv.getValue());
-            boolean isPaid = PaymentStatus.PAID.equals(status);
+            boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
             if (isPaid) {
                 tfDueDate.setPlainText("");
             }
@@ -342,7 +341,6 @@ public class PurchaseAddController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlValues() {
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
-
     }
 
     @Override
@@ -352,7 +350,7 @@ public class PurchaseAddController extends CommonDataSaveController {
         purchase.setInvoiceNumber(tfInvoiceNumber.getText().trim());
         purchase.setInvoiceDate(
                 DateTimeUtils.parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        PaymentStatus paymentStatus = PaymentStatus.valueOf(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue());
+        PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         purchase.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
             purchase.setPaymentDueDate(
@@ -374,8 +372,8 @@ public class PurchaseAddController extends CommonDataSaveController {
                 .parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
         LocalDate dueDate = DateTimeUtils
                 .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-        SimpleComboBoxModel selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus);
-        boolean isUnpaid = PaymentStatus.UNPAID.toString().equals(selected.getValue());
+        PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
+        boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
         validator.validateBlank(tfSupplier, MessageCode.ERROR_EMPTY_SUPPLIER);
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
         LocalDate today = LocalDate.now();
