@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.configuration.ConfigurationMainController">
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.configuration.ConfigurationMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -66,30 +66,6 @@
                               <Font size="13.0" />
                            </font>
                         </TextField>
-                     </children>
-                  </VBox>
-                  <VBox maxWidth="250.0" spacing="5.0">
-                     <children>
-                        <Label text="%lbl_vat_percentage">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <TextField fx:id="tfVatPercentage" styleClass="input-primary">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </TextField>
-                     </children>
-                  </VBox>
-                  <VBox maxWidth="250.0" spacing="5.0">
-                     <children>
-                        <Label text="%lbl_drug_category_base">
-                           <font>
-                              <Font size="13.0" />
-                           </font>
-                        </Label>
-                        <ComboBox fx:id="cbDrugCategoryBase" prefWidth="250.0" styleClass="combo-box-primary" />
                      </children>
                   </VBox>
                   <VBox maxWidth="250.0" spacing="5.0">
