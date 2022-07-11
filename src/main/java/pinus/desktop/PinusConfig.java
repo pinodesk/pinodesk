@@ -1,18 +1,17 @@
 package pinus.desktop;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
-import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
-
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.jasypt.spring4.properties.EncryptablePreferencesPlaceholderConfigurer;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -20,8 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
 import org.springframework.data.jdbc.repository.config.EnableJdbcRepositories;
@@ -31,6 +29,11 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
+import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
+
 @Configuration
 @Import(SequelConfig.class)
 @ComponentScan
@@ -38,19 +41,27 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJdbcRepositories
 @EnableJdbcAuditing
 @EnableTransactionManagement
-@PropertySource({ "classpath:application.properties" })
 public class PinusConfig extends AbstractJdbcConfiguration {
 
-    @Resource // https://stackoverflow.com/questions/19421092/autowired-environment-is-null
-    private Environment env;
+    @Value("${jdbc.driver}")
+    private String jdbcDriver;
+
+    @Value("${jdbc.url}")
+    private String jdbcUrl;
+
+    @Value("${jdbc.user}")
+    private String jdbcUser;
+
+    @Value("${jdbc.password}")
+    private String jdbcPassword;
 
     @Bean
     public DataSource dataSource() {
         BasicDataSource ds = new BasicDataSource();
-        ds.setDriverClassName(env.getRequiredProperty("jdbc.driver"));
-        ds.setUrl(env.getRequiredProperty("jdbc.url"));
-        ds.setUsername(env.getRequiredProperty("jdbc.user"));
-        ds.setPassword(env.getRequiredProperty("jdbc.password"));
+        ds.setDriverClassName(jdbcDriver);
+        ds.setUrl(jdbcUrl);
+        ds.setUsername(jdbcUser);
+        ds.setPassword(jdbcPassword);
         ds.setInitialSize(10);
         ds.setMaxTotal(10);
         return ds;
@@ -94,6 +105,30 @@ public class PinusConfig extends AbstractJdbcConfiguration {
     @Bean
     public Validator validator() {
         return Validation.buildDefaultValidatorFactory().getValidator();
+    }
+
+    @Bean
+    public static StringEncryptor stringEncryptor() {
+        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+        encryptor.setAlgorithm("PBEWITHMD5ANDTRIPLEDES");
+        encryptor.setPassword("46GXyurqh44yMYaOIU7ybYMaEQqUNc4O");
+        return encryptor;
+    }
+
+    /**
+     * Current version of Jasypt (1.9.3) does not support Spring's
+     * PropertySourcesPlaceholderConfigurer, the properties value were not
+     * decrypted. Just stick with PropertyPlaceholderConfigurer to get the benefit
+     * from the encryption of properties values.
+     * 
+     * @return PropertyPlaceholderConfigurer
+     */
+    @Bean
+    public static PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
+        EncryptablePreferencesPlaceholderConfigurer configurer = new EncryptablePreferencesPlaceholderConfigurer(
+                stringEncryptor());
+        configurer.setLocation(new ClassPathResource("application.properties"));
+        return configurer;
     }
 
 }
