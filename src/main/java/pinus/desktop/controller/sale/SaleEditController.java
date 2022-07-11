@@ -547,11 +547,15 @@ public class SaleEditController extends CommonDataSaveController {
     }
 
     private ValidationResult validateAddProduct(ProductVM selectedProduct) {
+        boolean isProductSelected = selectedProduct != null;
         ControlValidator cv = new ControlValidator(resources);
-        cv.validateCustom(() -> selectedProduct == null, MessageCode.ERROR_EMPTY_PRODUCT);
+        cv.validateCustom(() -> !isProductSelected, MessageCode.ERROR_EMPTY_PRODUCT);
         cv.validatePositive(tfCurrentQuantity, MessageCode.ERROR_EMPTY_CURRENT_QUANTITY);
         cv.validatePositive(tfSaleQuantity, MessageCode.ERROR_EMPTY_QUANTITY);
         cv.validateCustom(() -> {
+            if (!isProductSelected) {
+                return false;
+            }
             Integer selectedProductQuantity = selectedProduct.getQuantity() == null ?
                     toIntegerOrZero(tfCurrentQuantity.getText()) : selectedProduct.getQuantity();
             Integer saleQuantity = toIntegerOrZero(tfSaleQuantity.getText());
