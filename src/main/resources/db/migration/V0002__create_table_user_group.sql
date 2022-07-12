@@ -11,4 +11,4 @@ create table if not exists user_group (
 );
 
 insert into user_group (id, name, status) values 
-(1, 'administrator', 'active');
+(1, 'Administrator', 'active');

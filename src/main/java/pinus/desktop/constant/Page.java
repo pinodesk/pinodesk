@@ -34,6 +34,7 @@ public enum Page implements IPage {
     MASTER_SUPPLIER_CONTACT_ADD("master/supplier/add-contact"),
 
     SETTINGS_CONFIGURATION_MAIN("settings/configuration/main"),
+    SETTINGS_USER_GROUP_MAIN("settings/user-group/main"),
 
     TRANSACTION_PURCHASE_MAIN("transaction/purchase/main"),
     TRANSACTION_PURCHASE_FILTER("transaction/purchase/filter"),
