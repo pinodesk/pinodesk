@@ -30,11 +30,7 @@ public class SplashController {
         CompletableFuture.runAsync(() -> {
             SpringUtils.init(PinusConfig.class);
             PageLoader.reset();
-            PageLoader.init(CommonConstants.PAGE_TEMPLATE_DIR, () -> {
-                ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
-                String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-                return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, new Locale(languageCode));
-            });
+            PageLoader.init(CommonConstants.PAGE_TEMPLATE_DIR, this::getConfiguredResourceBundle);
         }).thenRun(() -> Platform.runLater(() -> {
             try {
                 contentPane.getScene().getWindow().hide();
@@ -47,6 +43,12 @@ public class SplashController {
             System.exit(0);
             return null;
         });
+    }
+
+    private ResourceBundle getConfiguredResourceBundle() {
+        ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, new Locale(language));
     }
 
 }
