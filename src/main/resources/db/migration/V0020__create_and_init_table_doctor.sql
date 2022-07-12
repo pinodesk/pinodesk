@@ -3,15 +3,15 @@ create table if not exists doctor_category (
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
-	language_code char(2) not null,
+	language char(2) not null,
 	code char(4) not null,
 	name varchar(256) not null,
 	primary key (id),
 	index idx_doctor_category__deleted_at (deleted_at),
 	index idx_doctor_category__code (code),
 	index idx_doctor_category__code__deleted_at (code, deleted_at),
-	index idx_doctor_category__language_code__code (language_code, code),
-	index idx_doctor_category__language_code__code__deleted_at (language_code, code, deleted_at)
+	index idx_doctor_category__language__code (language, code),
+	index idx_doctor_category__language__code__deleted_at (language, code, deleted_at)
 );
 
 create table if not exists doctor (
@@ -32,7 +32,7 @@ create table if not exists doctor (
 	index idx_doctor__category_code__deleted_at (category_code, deleted_at)
 );
 
-insert into doctor_category (id, created_at, updated_at, deleted_at, language_code, code, name) values
+insert into doctor_category (id, created_at, updated_at, deleted_at, language, code, name) values
 (null, current_timestamp, current_timestamp, null, 'en', '0001', 'General Practitioner'),
 (null, current_timestamp, current_timestamp, null, 'id', '0001', 'Dokter Umum'),
 (null, current_timestamp, current_timestamp, null, 'en', '0002', 'Dentist'),

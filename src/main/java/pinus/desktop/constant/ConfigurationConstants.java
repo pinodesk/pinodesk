@@ -1,7 +1,7 @@
 package pinus.desktop.constant;
 
 public interface ConfigurationConstants {
-    String LANGUAGE_CODE = "language_code";
+    String LANGUAGE = "language";
     String STORE_NAME = "store_name";
     String STORE_ADDRESS = "store_address";
     String VAT_PERCENTAGE = "vat_percentage";

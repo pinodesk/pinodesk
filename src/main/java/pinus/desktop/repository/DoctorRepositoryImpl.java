@@ -16,7 +16,7 @@ import pinus.desktop.viewmodel.DoctorVM;
 public class DoctorRepositoryImpl extends AbstractRepository<Doctor> implements DoctorRepositoryCustom {
 
     @Override
-    public List<DoctorVM> findByKeyword(String keyword, String languageCode) {
+    public List<DoctorVM> findByKeyword(String keyword, String language) {
         StringBuilder sb = new StringBuilder();
         sb.append("""
                 select
@@ -24,10 +24,10 @@ public class DoctorRepositoryImpl extends AbstractRepository<Doctor> implements 
                     b.id as category_id,
                     b.name as category_name
                 from doctor a
-                inner join doctor_category b on b.code = a.category_code and b.language_code = ?
+                inner join doctor_category b on b.code = a.category_code and b.language = ?
                 where a.deleted_at is null
                 """);
-        ListBuilder<Object> lb = new ListBuilder<>().add(languageCode);
+        ListBuilder<Object> lb = new ListBuilder<>().add(language);
         if (StringUtils.isNotBlank(keyword)) {
             String likeValue = SQLUtils.likeValueContains(keyword.trim().toLowerCase());
             sb.append("""

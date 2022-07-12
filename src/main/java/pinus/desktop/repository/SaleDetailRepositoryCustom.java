@@ -6,5 +6,5 @@ import pinus.desktop.viewmodel.SaleProductVM;
 
 public interface SaleDetailRepositoryCustom {
 
-    List<SaleProductVM> findBySaleIdJoinProducts(Long saleId, String languageCode);
+    List<SaleProductVM> findBySaleIdJoinProducts(Long saleId, String language);
 }

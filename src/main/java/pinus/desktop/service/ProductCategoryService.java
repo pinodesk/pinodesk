@@ -34,12 +34,12 @@ public class ProductCategoryService extends BaseService {
 
     @Cacheable(CacheNameConstants.PRODUCT_CATEGORIES_BY_KEYWORD)
     public List<ProductCategoryVM> searchProductCategoryByKeyword(String keyword) {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         List<ProductCategory> categories = new ArrayList<>();
         if (StringUtils.isBlank(keyword)) {
-            categories = productCategoryRepository.findByLanguageCodeAndDeletedAtIsNullOrderByName(languageCode);
+            categories = productCategoryRepository.findByLanguageAndDeletedAtIsNullOrderByName(language);
         } else {
-            categories = productCategoryRepository.findByKeyword(keyword, languageCode);
+            categories = productCategoryRepository.findByKeyword(keyword, language);
         }
         return objectConverter.convertList(categories, ProductCategoryVM.class);
     }

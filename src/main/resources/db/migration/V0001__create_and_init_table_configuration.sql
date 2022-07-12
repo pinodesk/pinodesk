@@ -13,6 +13,6 @@ create table if not exists configuration (
 );
 
 insert into configuration (id, created_at, updated_at, deleted_at, code, "value", description) values 
-(null, current_timestamp, current_timestamp, null, 'language_code', 'en', ''),
+(null, current_timestamp, current_timestamp, null, 'language', 'en', ''),
 (null, current_timestamp, current_timestamp, null, 'store_name', 'Hello Store', ''),
 (null, current_timestamp, current_timestamp, null, 'store_address', 'Jakarta, Indonesia', '');

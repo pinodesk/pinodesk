@@ -3,7 +3,7 @@ create table if not exists drug_classification (
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
-	language_code char(2) not null,
+	language char(2) not null,
 	code varchar(64) not null,
 	name varchar(256) not null,
 	description varchar(512),
@@ -11,13 +11,13 @@ create table if not exists drug_classification (
 	index idx_drug_classification__deleted_at (deleted_at),
 	index idx_drug_classification__code (code),
 	index idx_drug_classification__code__deleted_at (code, deleted_at),
-	index idx_drug_classification__language_code__code (language_code, code),
-	index idx_drug_classification__language_code__code__deleted_at (language_code, code, deleted_at)
+	index idx_drug_classification__language__code (language, code),
+	index idx_drug_classification__language__code__deleted_at (language, code, deleted_at)
 );
 
 -- https://www.genome.jp/kegg-bin/get_htext?br08302.keg
 -- https://www.verywellhealth.com/drug-classes-1123991
-insert into drug_classification (id, created_at, updated_at, deleted_at, language_code, name, code) values
+insert into drug_classification (id, created_at, updated_at, deleted_at, language, name, code) values
 (null, current_timestamp, current_timestamp, null, 'en', 'Analgesics','0001'),
 (null, current_timestamp, current_timestamp, null, 'en', 'Anesthetics','0002'),
 (null, current_timestamp, current_timestamp, null, 'en', 'Anti-addiction agents','0003'),

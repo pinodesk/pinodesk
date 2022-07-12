@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface DoctorCategoryRepositoryCustom {
 
-    List<DoctorCategory> findByKeyword(String keyword, String languageCode);
+    List<DoctorCategory> findByKeyword(String keyword, String language);
 
 }

@@ -6,6 +6,6 @@ import pinus.desktop.viewmodel.PurchaseProductVM;
 
 public interface PurchaseDetailRepositoryCustom {
 
-    List<PurchaseProductVM> findByPurchaseIdJoinProducts(Long purchaseId, String languageCode);
+    List<PurchaseProductVM> findByPurchaseIdJoinProducts(Long purchaseId, String language);
 
 }

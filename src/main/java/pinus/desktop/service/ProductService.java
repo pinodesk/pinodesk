@@ -82,14 +82,14 @@ public class ProductService extends BaseService {
 
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
     public List<ProductVM> searchProductsByFilter(ProductFilterVM filter) {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        return productRepository.findByFilter(filter, languageCode);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return productRepository.findByFilter(filter, language);
     }
 
     @Cacheable(CacheNameConstants.PRODUCTS_BY_KEYWORD)
     public List<ProductVM> searchProductsByKeyword(String keyword) {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        return productRepository.findByKeyword(keyword, languageCode);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return productRepository.findByKeyword(keyword, language);
     }
 
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },

@@ -361,8 +361,8 @@ public class SaleService extends BaseService {
     }
 
     public List<SaleProductVM> getSaleProducts(Long saleId) {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        return saleDetailRepository.findBySaleIdJoinProducts(saleId, languageCode);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return saleDetailRepository.findBySaleIdJoinProducts(saleId, language);
     }
 
 }

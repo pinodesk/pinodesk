@@ -16,6 +16,6 @@ public interface ProductCategoryRepository
 
     boolean existsByCodeAndDeletedAtIsNull(String code);
 
-    List<ProductCategory> findByLanguageCodeAndDeletedAtIsNullOrderByName(String languageCode);
+    List<ProductCategory> findByLanguageAndDeletedAtIsNullOrderByName(String language);
 
 }

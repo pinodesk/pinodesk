@@ -10,7 +10,7 @@ public class DrugClassificationVM {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
-    private String languageCode;
+    private String language;
     private String code;
     private String name;
     private String description;

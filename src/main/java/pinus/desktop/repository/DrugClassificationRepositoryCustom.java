@@ -6,6 +6,6 @@ import pinus.desktop.domain.DrugClassification;
 
 public interface DrugClassificationRepositoryCustom {
 
-    List<DrugClassification> findByKeyword(String keyword, String languageCode);
+    List<DrugClassification> findByKeyword(String keyword, String language);
 
 }

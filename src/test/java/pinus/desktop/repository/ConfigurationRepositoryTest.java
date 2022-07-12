@@ -5,7 +5,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static pinus.desktop.constant.ConfigurationConstants.LANGUAGE_CODE;
+import static pinus.desktop.constant.ConfigurationConstants.LANGUAGE;
 
 import java.util.Optional;
 
@@ -24,15 +24,15 @@ class ConfigurationRepositoryTest extends RepositoryTestBase {
 
     @Test
     void testUpdateConfigurationByCode_shouldSucceed() {
-        Integer rowsAffected = configurationRepository.updateValueByCode(LANGUAGE_CODE, "id");
+        Integer rowsAffected = configurationRepository.updateValueByCode(LANGUAGE, "id");
         assertEquals(1, rowsAffected.intValue());
-        Optional<Configuration> configuration = configurationRepository.findByCodeAndDeletedAtIsNull(LANGUAGE_CODE);
+        Optional<Configuration> configuration = configurationRepository.findByCodeAndDeletedAtIsNull(LANGUAGE);
         assertThat(configuration.isPresent(), is(true));
         assertThat(
                 configuration.get(),
                 allOf(
                         hasProperty(Configuration.C_ID, is(2l)),
-                        hasProperty(Configuration.C_CODE, is(LANGUAGE_CODE)),
+                        hasProperty(Configuration.C_CODE, is(LANGUAGE)),
                         hasProperty(Configuration.C_VALUE, is("id"))));
     }
 

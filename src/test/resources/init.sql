@@ -87,7 +87,7 @@ create table if not exists product_category (
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
 	parent_category_id bigint,
-	language_code char(2) not null,
+	language char(2) not null,
 	code varchar(64) not null,
 	name varchar(256) not null,
 	description varchar(512),
@@ -95,8 +95,8 @@ create table if not exists product_category (
 	index idx_product_category__code (code),
 	index idx_product_category__deleted_at (deleted_at),
 	index idx_product_category__code__deleted_at (code, deleted_at),
-	index idx_product_category__language_code__code (language_code, code),
-	index idx_product_category__language_code__code__deleted_at (language_code, code, deleted_at)
+	index idx_product_category__language__code (language, code),
+	index idx_product_category__language__code__deleted_at (language, code, deleted_at)
 );
 
 -- Table: product

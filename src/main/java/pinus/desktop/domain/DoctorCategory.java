@@ -9,11 +9,11 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class DoctorCategory extends DataModel {
 
-    public static final String C_LANGUAGE_CODE = "language_code";
+    public static final String C_LANGUAGE = "language";
     public static final String C_CODE = "code";
     public static final String C_NAME = "name";
 
-    private String languageCode;
+    private String language;
     private String code;
     private String name;
 }

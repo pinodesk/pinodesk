@@ -19,10 +19,9 @@ public class DrugClassificationService extends BaseService {
     private DrugClassificationRepository drugClassificationRepository;
 
     @Cacheable(CacheNameConstants.DRUG_CLASSIFICATION_BY_KEYWORD)
-    public List<DrugClassificationVM> searchDrugClassificationsByKeyword(String keyword, String languageCode) {
-        return objectConverter.convertList(
-                drugClassificationRepository.findByKeyword(keyword, languageCode),
-                DrugClassificationVM.class);
+    public List<DrugClassificationVM> searchDrugClassificationsByKeyword(String keyword, String language) {
+        return objectConverter
+                .convertList(drugClassificationRepository.findByKeyword(keyword, language), DrugClassificationVM.class);
     }
 
     public DrugClassificationVM getDrugClassificationById(Long id) {
@@ -32,10 +31,9 @@ public class DrugClassificationService extends BaseService {
                 new DomainException(DomainError.DRUG_CLASSIFICATION_NOT_FOUND_BY_ID));
     }
 
-    public DrugClassificationVM getDrugClassificationByCode(String classificationCode, String languageCode) {
+    public DrugClassificationVM getDrugClassificationByCode(String classificationCode, String language) {
         return objectConverter.convertOptionalOrThrow(
-                drugClassificationRepository
-                        .findByLanguageCodeAndCodeAndDeletedAtIsNull(languageCode, classificationCode),
+                drugClassificationRepository.findByLanguageAndCodeAndDeletedAtIsNull(language, classificationCode),
                 DrugClassificationVM.class,
                 new DomainException(DomainError.DRUG_CLASSIFICATION_NOT_FOUND_BY_CODE));
     }

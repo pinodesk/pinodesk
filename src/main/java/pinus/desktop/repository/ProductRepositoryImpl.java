@@ -24,19 +24,19 @@ import pinus.desktop.viewmodel.UnitVM;
 public class ProductRepositoryImpl extends AbstractRepository<Product> implements ProductRepositoryCustom {
 
     @Override
-    public List<ProductVM> findByFilter(ProductFilterVM filter, String languageCode) {
+    public List<ProductVM> findByFilter(ProductFilterVM filter, String language) {
         String sql = """
                 select
                     a.*,
                     b.id as category_id,
                     b.name as category_name
                 from product a
-                inner join product_category b on b.code = a.category_code and b.language_code = ?
+                inner join product_category b on b.code = a.category_code and b.language = ?
                 where a.deleted_at is null
                 """;
         WhereParamsHelper whereParamsHelper = where(filter);
         sql = sql + whereParamsHelper.getQueryAppend().toString();
-        whereParamsHelper.getParams().add(0, languageCode);
+        whereParamsHelper.getParams().add(0, language);
         return performSelect(sql, whereParamsHelper.getParams(), ProductVM.class);
     }
 
@@ -134,7 +134,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
     }
 
     @Override
-    public List<ProductVM> findByKeyword(String keyword, String languageCode) {
+    public List<ProductVM> findByKeyword(String keyword, String language) {
         StringBuilder sb = new StringBuilder();
         sb.append("""
                 select
@@ -142,10 +142,10 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
                     b.id as category_id,
                     b.name as category_name
                 from product a
-                inner join product_category b on b.code = a.category_code and b.language_code = ?
+                inner join product_category b on b.code = a.category_code and b.language = ?
                 where a.deleted_at is null
                 """);
-        ListBuilder<Object> lb = new ListBuilder<>().add(languageCode);
+        ListBuilder<Object> lb = new ListBuilder<>().add(language);
         if (StringUtils.isNotBlank(keyword)) {
             String likeValue = SQLUtils.likeValueContains(keyword.trim().toLowerCase());
             sb.append("""

@@ -7,8 +7,8 @@ import pinus.desktop.viewmodel.ProductVM;
 
 public interface ProductRepositoryCustom {
 
-    List<ProductVM> findByFilter(ProductFilterVM filter, String languageCode);
+    List<ProductVM> findByFilter(ProductFilterVM filter, String language);
 
-    List<ProductVM> findByKeyword(String keyword, String languageCode);
+    List<ProductVM> findByKeyword(String keyword, String language);
 
 }

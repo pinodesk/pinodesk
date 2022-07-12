@@ -358,8 +358,8 @@ public class PurchaseService extends BaseService {
     }
 
     public List<PurchaseProductVM> getPurchaseProducts(Long purchaseId) {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        return purchaseDetailRepository.findByPurchaseIdJoinProducts(purchaseId, languageCode);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return purchaseDetailRepository.findByPurchaseIdJoinProducts(purchaseId, language);
     }
 
 }

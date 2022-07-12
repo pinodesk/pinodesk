@@ -6,6 +6,6 @@ import pinus.desktop.domain.ProductCategory;
 
 public interface ProductCategoryRepositoryCustom {
 
-    List<ProductCategory> findByKeyword(String keyword, String languageCode);
+    List<ProductCategory> findByKeyword(String keyword, String language);
 
 }

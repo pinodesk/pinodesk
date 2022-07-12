@@ -4,7 +4,7 @@ create table if not exists product_category (
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
 	parent_category_id bigint,
-	language_code char(2) not null,
+	language char(2) not null,
 	code varchar(64) not null,
 	name varchar(256) not null,
 	description varchar(512),
@@ -12,11 +12,11 @@ create table if not exists product_category (
 	index idx_product_category__code (code),
 	index idx_product_category__deleted_at (deleted_at),
 	index idx_product_category__code__deleted_at (code, deleted_at),
-	index idx_product_category__language_code__code (language_code, code),
-	index idx_product_category__language_code__code__deleted_at (language_code, code, deleted_at)
+	index idx_product_category__language__code (language, code),
+	index idx_product_category__language__code__deleted_at (language, code, deleted_at)
 );
 
-insert into product_category (id, created_at, updated_at, deleted_at, parent_category_id, language_code, code, name, description) values
+insert into product_category (id, created_at, updated_at, deleted_at, parent_category_id, language, code, name, description) values
 (100000001, current_timestamp, current_timestamp, NULL, NULL, 'en', '000000001', 'Animals & Pet Supplies', NULL),
 (100000002, current_timestamp, current_timestamp, NULL, 100000001, 'en', '000000002', 'Pet Supplies', NULL),
 (100000003, current_timestamp, current_timestamp, NULL, 100000002, 'en', '000000003', 'Bird Supplies', NULL),

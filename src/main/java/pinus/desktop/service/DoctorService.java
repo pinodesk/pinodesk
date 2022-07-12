@@ -39,8 +39,8 @@ public class DoctorService extends BaseService {
 
     @Cacheable(CacheNameConstants.DOCTORS_BY_KEYWORD)
     public List<DoctorVM> searchDoctorsByKeyword(String keyword) {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        return doctorRepository.findByKeyword(keyword.trim(), languageCode);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return doctorRepository.findByKeyword(keyword.trim(), language);
     }
 
     @CacheEvict(value = { CacheNameConstants.DOCTORS_BY_FILTER, CacheNameConstants.DOCTORS_BY_KEYWORD },
@@ -75,8 +75,8 @@ public class DoctorService extends BaseService {
 
     @Cacheable(CacheNameConstants.DOCTOR_CATEGORIES_BY_KEYWORD)
     public List<DoctorCategoryVM> searchDoctorCategoryByKeyword(String keyword) {
-        String languageCode = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE_CODE);
-        List<DoctorCategory> categories = doctorCategoryRepository.findByKeyword(keyword, languageCode);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        List<DoctorCategory> categories = doctorCategoryRepository.findByKeyword(keyword, language);
         return objectConverter.convertList(categories, DoctorCategoryVM.class);
     }
 

@@ -10,7 +10,7 @@ import pinus.desktop.viewmodel.SaleProductVM;
 public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> implements SaleDetailRepositoryCustom {
 
     @Override
-    public List<SaleProductVM> findBySaleIdJoinProducts(Long saleId, String languageCode) {
+    public List<SaleProductVM> findBySaleIdJoinProducts(Long saleId, String language) {
         String sql = """
                     select
                     a.*,
@@ -26,7 +26,7 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
                     e.batch_number
                 from sale_detail a
                 inner join product b on b.id = a.product_id
-                inner join product_category c on c.code = b.category_code and c.language_code = ?
+                inner join product_category c on c.code = b.category_code and c.language = ?
                 left join product_expiry e on e.id = (
                     select g.id
                     from product_expiry g
@@ -34,7 +34,7 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
                     order by g.id desc limit 1)
                 where a.sale_id = ?
                 """;
-        return performSelect(sql, List.of(languageCode, saleId), SaleProductVM.class);
+        return performSelect(sql, List.of(language, saleId), SaleProductVM.class);
     }
 
 }

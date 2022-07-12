@@ -12,9 +12,9 @@ public class DoctorCategoryRepositoryImpl extends AbstractRepository<DoctorCateg
         implements DoctorCategoryRepositoryCustom {
 
     @Override
-    public List<DoctorCategory> findByKeyword(String keyword, String languageCode) {
+    public List<DoctorCategory> findByKeyword(String keyword, String language) {
         return read(
-                new Where().equals(DoctorCategory.C_LANGUAGE_CODE, languageCode).and(
+                new Where().equals(DoctorCategory.C_LANGUAGE, language).and(
                         new Where().containsIgnoreCase(DoctorCategory.C_NAME, keyword)
                                 .orContains(DoctorCategory.C_CODE, keyword)));
     }

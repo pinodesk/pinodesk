@@ -6,6 +6,6 @@ import pinus.desktop.viewmodel.DoctorVM;
 
 public interface DoctorRepositoryCustom {
 
-    List<DoctorVM> findByKeyword(String keyword, String languageCode);
+    List<DoctorVM> findByKeyword(String keyword, String language);
 
 }

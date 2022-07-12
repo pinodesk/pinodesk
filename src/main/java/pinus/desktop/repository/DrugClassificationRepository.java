@@ -13,7 +13,7 @@ public interface DrugClassificationRepository
 
     Optional<DrugClassification> findByIdAndDeletedAtIsNull(Long id);
 
-    Optional<DrugClassification> findByLanguageCodeAndCodeAndDeletedAtIsNull(String languageCode, String code);
+    Optional<DrugClassification> findByLanguageAndCodeAndDeletedAtIsNull(String language, String code);
 
     boolean existsByCodeAndDeletedAtIsNull(String code);
 }

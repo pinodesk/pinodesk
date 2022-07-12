@@ -8,16 +8,16 @@ import javafx.scene.control.ComboBox;
 
 public class LanguageComboBoxConverter extends DefaultStringConverterAdapter<Locale> {
 
-    private String currentLanguageCode;
+    private String currentLanguage;
 
-    public LanguageComboBoxConverter(ComboBox<Locale> cb, String currentLanguageCode) {
+    public LanguageComboBoxConverter(ComboBox<Locale> cb, String currentLanguage) {
         super(cb);
-        this.currentLanguageCode = currentLanguageCode;
+        this.currentLanguage = currentLanguage;
     }
 
     @Override
     protected String getDisplayText(Locale locale) {
-        Locale currentLocale = new Locale(currentLanguageCode);
+        Locale currentLocale = new Locale(currentLanguage);
         return locale.getDisplayLanguage(currentLocale);
     }
 

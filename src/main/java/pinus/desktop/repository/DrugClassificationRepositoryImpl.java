@@ -12,9 +12,9 @@ public class DrugClassificationRepositoryImpl extends AbstractRepository<DrugCla
         implements DrugClassificationRepositoryCustom {
 
     @Override
-    public List<DrugClassification> findByKeyword(String keyword, String languageCode) {
+    public List<DrugClassification> findByKeyword(String keyword, String language) {
         return read(
-                new Where().equals(DrugClassification.C_LANGUAGE_CODE, languageCode).and(
+                new Where().equals(DrugClassification.C_LANGUAGE, language).and(
                         new Where().containsIgnoreCase(DrugClassification.C_NAME, keyword)
                                 .orContains(DrugClassification.C_CODE, keyword)),
                 new Order().by(DrugClassification.C_NAME));

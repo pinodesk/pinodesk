@@ -44,7 +44,7 @@ class ProductCategoryServiceTest extends BaseServiceTest {
         productCategory = new ProductCategory();
         productCategory.setId(1L);
         productCategory.setCode("0001");
-        productCategory.setLanguageCode("en");
+        productCategory.setLanguage("en");
         productCategory.setName("Category 0001");
     }
 

@@ -45,7 +45,7 @@ public class ConfigurationMainController extends BaseController {
     void onActionBtnSave(ActionEvent event) throws IOException {
         Locale selectedLocale = ComboBoxUtils.getSelectedItem(cbLanguage);
         Map<String, String> map = new HashMap<>();
-        map.put(ConfigurationConstants.LANGUAGE_CODE, selectedLocale.getLanguage());
+        map.put(ConfigurationConstants.LANGUAGE, selectedLocale.getLanguage());
         map.put(ConfigurationConstants.STORE_NAME, tfStoreName.getText());
         map.put(ConfigurationConstants.STORE_ADDRESS, tfStoreAddress.getText());
         configurationService.updateConfiguration(map);
@@ -73,11 +73,11 @@ public class ConfigurationMainController extends BaseController {
         tfStoreAddress.setText(configurationMap.get(ConfigurationConstants.STORE_ADDRESS));
         ComboBoxUtils.init(
                 cbLanguage,
-                new LanguageComboBoxConverter(cbLanguage, configurationMap.get(ConfigurationConstants.LANGUAGE_CODE)),
+                new LanguageComboBoxConverter(cbLanguage, configurationMap.get(ConfigurationConstants.LANGUAGE)),
                 locales);
         ComboBoxUtils.select(cbLanguage, () -> locales.stream().filter(locale -> {
-            String configLanguageCode = configurationMap.get(ConfigurationConstants.LANGUAGE_CODE);
-            return new Locale(configLanguageCode).getLanguage().equals(locale.getLanguage());
+            String configLanguage = configurationMap.get(ConfigurationConstants.LANGUAGE);
+            return new Locale(configLanguage).getLanguage().equals(locale.getLanguage());
         }).findAny().get());
     }
 

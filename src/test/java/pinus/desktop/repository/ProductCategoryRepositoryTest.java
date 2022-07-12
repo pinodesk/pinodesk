@@ -23,28 +23,28 @@ class ProductCategoryRepositoryTest extends RepositoryTestBase {
     @Test
     void testFilter_shouldReturnFilteredProductCategories() {
         String keyword = "supplies";
-        String languageCode = "en";
-        List<ProductCategory> productCategories = productCategoryRepository.findByKeyword(keyword, languageCode);
+        String language = "en";
+        List<ProductCategory> productCategories = productCategoryRepository.findByKeyword(keyword, language);
         assertThat(productCategories, hasSize(3));
         for (ProductCategory pc : productCategories) {
             Long id = pc.getId();
             if (id == 1000000001) {
                 assertThat(pc.getParentCategoryId(), is(nullValue()));
-                assertThat(pc.getLanguageCode(), is(languageCode));
+                assertThat(pc.getLanguage(), is(language));
                 assertThat(pc.getCode(), is("000000001"));
                 assertThat(pc.getName(), is("Animals & Pet Supplies"));
                 break;
             }
             if (id == 1000000002) {
                 assertThat(pc.getParentCategoryId(), is(1000000001));
-                assertThat(pc.getLanguageCode(), is(languageCode));
+                assertThat(pc.getLanguage(), is(language));
                 assertThat(pc.getCode(), is("000000002"));
                 assertThat(pc.getName(), is("Pet Supplies"));
                 break;
             }
             if (id == 1000000003) {
                 assertThat(pc.getParentCategoryId(), is(1000000002));
-                assertThat(pc.getLanguageCode(), is(languageCode));
+                assertThat(pc.getLanguage(), is(language));
                 assertThat(pc.getCode(), is("000000003"));
                 assertThat(pc.getName(), is("Bird Supplies"));
                 break;
