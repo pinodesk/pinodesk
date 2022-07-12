@@ -22,6 +22,8 @@ import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -284,8 +286,15 @@ public abstract class BaseController {
     }
 
     protected <T> void setChooserOnFocus(TextField tf, Page page, Consumer<T> outputConsumer, Node nextFocusNode) {
+        final BooleanProperty firstTime = new SimpleBooleanProperty(true); // Variable to store the focus on stage load
         tf.focusedProperty().addListener((o, ov, nv) -> {
-            if (Boolean.TRUE.equals(nv)) {
+            boolean isFocused = Boolean.TRUE.equals(nv);
+            if (isFocused && firstTime.get()) {
+                setFocused(tf.getParent());
+                firstTime.setValue(false);
+                return;
+            }
+            if (isFocused) {
                 StageUtils.modal(page, false, we -> outputConsumer.accept(getPageData()));
                 if (nextFocusNode != null) {
                     setFocused(nextFocusNode);
