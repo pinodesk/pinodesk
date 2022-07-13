@@ -102,6 +102,11 @@ public class MainController extends BaseController {
         changeContent(Page.SETTINGS_USER_GROUP_MAIN, (Button) event.getSource());
     }
 
+    @FXML
+    void onActionBtnMenuUsers(ActionEvent event) {
+        changeContent(Page.SETTINGS_USER_MAIN, (Button) event.getSource());
+    }
+
     private void changeContent(Page page, Button btn) {
         Platform.runLater(() -> {
             try {

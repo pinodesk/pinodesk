@@ -36,6 +36,9 @@ public enum Page implements IPage {
     SETTINGS_CONFIGURATION_MAIN("settings/configuration/main"),
     SETTINGS_USER_GROUP_MAIN("settings/user-group/main"),
 
+    SETTINGS_USER_MAIN("settings/user/main"),
+    SETTINGS_USER_EDIT("settings/user/edit"),
+
     TRANSACTION_PURCHASE_MAIN("transaction/purchase/main"),
     TRANSACTION_PURCHASE_FILTER("transaction/purchase/filter"),
     TRANSACTION_PURCHASE_ADD("transaction/purchase/add"),
