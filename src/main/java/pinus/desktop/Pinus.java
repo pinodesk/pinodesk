@@ -17,7 +17,7 @@ import pinus.desktop.constant.Page;
 
 public class Pinus extends Application {
 
-    public static Stage primaryStage;
+    private static Stage primaryStage;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -25,8 +25,8 @@ public class Pinus extends Application {
                 CommonConstants.PAGE_TEMPLATE_DIR,
                 () -> ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, Locale.ENGLISH));
         StageUtils.init(CommonConstants.APP_TITLE, new String[] {});
+        StageUtils.modal(Page.SPLASH, StageStyle.UNDECORATED);
         setPrimaryStage(primaryStage);
-        loadSplashSceen();
     }
 
     public static void main(String[] args) {
@@ -53,16 +53,6 @@ public class Pinus extends Application {
         primaryStage.setMaximized(maximized);
         primaryStage.setTitle(CommonConstants.APP_TITLE);
         primaryStage.show();
-    }
-
-    public static void loadSplashSceen() throws IOException {
-        PageContext pageContext = PageLoader.load(Page.SPLASH);
-        Scene scene = new Scene(pageContext.getRoot());
-        Stage stage = new Stage();
-        stage.setScene(scene);
-        stage.sizeToScene();
-        stage.initStyle(StageStyle.UNDECORATED);
-        stage.show();
     }
 
     private static void setPrimaryStage(Stage primaryStage) {
