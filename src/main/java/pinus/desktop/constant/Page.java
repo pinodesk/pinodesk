@@ -34,10 +34,16 @@ public enum Page implements IPage {
     MASTER_SUPPLIER_CONTACT_ADD("master/supplier/add-contact"),
 
     SETTINGS_CONFIGURATION_MAIN("settings/configuration/main"),
+
     SETTINGS_USER_GROUP_MAIN("settings/user-group/main"),
+    SETTINGS_USER_GROUP_FILTER("settings/user-group/filter"),
+    SETTINGS_USER_GROUP_ADD("settings/user-group/add"),
+    SETTINGS_USER_GROUP_EDIT("settings/user-group/edit"),
 
     SETTINGS_USER_MAIN("settings/user/main"),
+    SETTINGS_USER_ADD("settings/user/add"),
     SETTINGS_USER_EDIT("settings/user/edit"),
+    SETTINGS_USER_FILTER("settings/user/filter"),
 
     TRANSACTION_PURCHASE_MAIN("transaction/purchase/main"),
     TRANSACTION_PURCHASE_FILTER("transaction/purchase/filter"),

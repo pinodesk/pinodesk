@@ -106,22 +106,10 @@ public class ProductService extends BaseService {
         String categoryCode = productEdit.getProductCategory().getCode();
         Long unitId = productEdit.getUnit().getId();
 
-        Product product = productRepository.findByIdAndDeletedAtIsNull(productId)
-                .orElseThrow(() -> new DomainException(DomainError.PRODUCT_NOT_FOUND_BY_ID));
-
-        if (!code.equals(product.getCode()) && productRepository.existsByCodeAndDeletedAtIsNull(code)) {
-            throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_CODE);
-        }
-
-        if (StringUtils.isNotBlank(barcode) && !barcode.equals(product.getBarcode())
-                && productRepository.existsByBarcodeAndDeletedAtIsNull(barcode)) {
-            throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_BARCODE);
-        }
-
-        if (ObjectUtils.notEqual(product.getUnitId(), unitId)
-                && productRepository.existsByNameIgnoreCaseAndUnitIdAndDeletedAtIsNull(name, unitId)) {
-            throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_NAME_AND_UNIT);
-        }
+        Product product = validateProductId(productId);
+        validateProductCode(code, product);
+        validateProductBarcode(barcode, product);
+        validateProductNameAndUnit(name, unitId, product);
 
         if (CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS.equals(categoryCode)) {
             DrugClassificationVM drugClassification = productEdit.getDrugClassification();
@@ -214,6 +202,31 @@ public class ProductService extends BaseService {
         product.setCategoryCode(categoryCode);
         product.setStatus(productEdit.getStatus().toString());
         productRepository.save(product);
+    }
+
+    private Product validateProductId(Long productId) {
+        return productRepository.findByIdAndDeletedAtIsNull(productId)
+                .orElseThrow(() -> new DomainException(DomainError.PRODUCT_NOT_FOUND_BY_ID));
+    }
+
+    private void validateProductNameAndUnit(String name, Long unitId, Product product) {
+        if (ObjectUtils.notEqual(product.getUnitId(), unitId)
+                && productRepository.existsByNameIgnoreCaseAndUnitIdAndDeletedAtIsNull(name, unitId)) {
+            throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_NAME_AND_UNIT);
+        }
+    }
+
+    private void validateProductBarcode(String barcode, Product product) {
+        if (StringUtils.isNotBlank(barcode) && !barcode.equals(product.getBarcode())
+                && productRepository.existsByBarcodeAndDeletedAtIsNull(barcode)) {
+            throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_BARCODE);
+        }
+    }
+
+    private void validateProductCode(String code, Product product) {
+        if (!code.equals(product.getCode()) && productRepository.existsByCodeAndDeletedAtIsNull(code)) {
+            throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_CODE);
+        }
     }
 
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
@@ -368,10 +381,10 @@ public class ProductService extends BaseService {
     }
 
     private boolean containsProductNameAndUnitId(List<ProductImportMapping> mappings, String name, Long unitId) {
-        return mappings.stream().filter(mapping -> {
+        return mappings.stream().anyMatch(mapping -> {
             Product p = mapping.getProduct();
             return p.getName().equalsIgnoreCase(name) && p.getUnitId().equals(unitId);
-        }).findAny().isPresent();
+        });
     }
 
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
@@ -398,28 +411,14 @@ public class ProductService extends BaseService {
             }
 
             validateConstraints(pi);
+            validateProductCategoryCode(checkedCategoryCodes, productCategoryCode);
+            Unit unit = validateUnitId(checkedUnits, unitId);
 
             ProductImportMapping mapping = new ProductImportMapping();
 
-            if (!checkedCategoryCodes.contains(productCategoryCode)
-                    && !productCategoryRepository.existsByCodeAndDeletedAtIsNull(productCategoryCode)) {
-                throw new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_CODE, productCategoryCode);
-            }
-            checkedCategoryCodes.add(productCategoryCode);
-
-            Unit unit = checkedUnits.stream().filter(u -> u.getId().equals(unitId)).findAny()
-                    .or(() -> unitRepository.findByIdAndDeletedAtIsNull(unitId))
-                    .orElseThrow(() -> new DomainException(DomainError.UNIT_NOT_FOUND_BY_ID));
-            checkedUnits.add(unit);
-
             if (ProductUtils.isProductCategoryDrugs(productCategoryCode)) {
                 String drugClassificationCode = pi.getDrugClassificationCode();
-                if (StringUtils.isNotBlank(drugClassificationCode)
-                        && !checkedDrugCategoryCodes.contains(drugClassificationCode)
-                        && !drugClassificationRepository.existsByCodeAndDeletedAtIsNull(drugClassificationCode)) {
-                    throw new DomainException(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_ID);
-                }
-                checkedDrugCategoryCodes.add(drugClassificationCode);
+                validateDrugClassificationCode(checkedDrugCategoryCodes, drugClassificationCode);
                 Drug drug = new Drug();
                 drug.setContraindication(pi.getContraindication());
                 drug.setIndication(pi.getIndication());
@@ -432,7 +431,7 @@ public class ProductService extends BaseService {
             product.setCode(pi.getCode());
             product.setDescription(pi.getDescription());
             product.setGeneralSellingPrice(
-                    generalSellingPrice == null ? prescriptionSellingPrice : generalSellingPrice);
+                    getGeneralSellingPriceOrDefault(generalSellingPrice, prescriptionSellingPrice));
             product.setName(productName);
             product.setPrescriptionSellingPrice(prescriptionSellingPrice);
             product.setQuantity(quantity);
@@ -443,7 +442,8 @@ public class ProductService extends BaseService {
             if (prescriptionSellingPrice != null || generalSellingPrice != null) {
                 ProductPrice pp = new ProductPrice();
                 pp.setActivity(activityName);
-                pp.setGeneralSellingPrice(generalSellingPrice == null ? prescriptionSellingPrice : generalSellingPrice);
+                pp.setGeneralSellingPrice(
+                        getGeneralSellingPriceOrDefault(generalSellingPrice, prescriptionSellingPrice));
                 pp.setPrescriptionSellingPrice(prescriptionSellingPrice);
                 pp.setUserId(1l);
                 mapping.setProductPrice(pp);
@@ -468,6 +468,38 @@ public class ProductService extends BaseService {
             }
             mappings.add(mapping);
         });
+        processProductImportMappings(mappings);
+    }
+
+    private BigDecimal getGeneralSellingPriceOrDefault(BigDecimal generalSellingPrice, BigDecimal defaultPrice) {
+        return generalSellingPrice == null ? defaultPrice : generalSellingPrice;
+    }
+
+    private void validateDrugClassificationCode(Set<String> checkedDrugCategoryCodes, String drugClassificationCode) {
+        if (StringUtils.isNotBlank(drugClassificationCode) && !checkedDrugCategoryCodes.contains(drugClassificationCode)
+                && !drugClassificationRepository.existsByCodeAndDeletedAtIsNull(drugClassificationCode)) {
+            throw new DomainException(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_ID);
+        }
+        checkedDrugCategoryCodes.add(drugClassificationCode);
+    }
+
+    private Unit validateUnitId(Set<Unit> checkedUnits, Long unitId) {
+        Unit unit = checkedUnits.stream().filter(u -> u.getId().equals(unitId)).findAny()
+                .or(() -> unitRepository.findByIdAndDeletedAtIsNull(unitId))
+                .orElseThrow(() -> new DomainException(DomainError.UNIT_NOT_FOUND_BY_ID));
+        checkedUnits.add(unit);
+        return unit;
+    }
+
+    private void validateProductCategoryCode(Set<String> checkedCategoryCodes, String productCategoryCode) {
+        if (!checkedCategoryCodes.contains(productCategoryCode)
+                && !productCategoryRepository.existsByCodeAndDeletedAtIsNull(productCategoryCode)) {
+            throw new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_CODE, productCategoryCode);
+        }
+        checkedCategoryCodes.add(productCategoryCode);
+    }
+
+    private void processProductImportMappings(List<ProductImportMapping> mappings) {
         mappings.forEach(mapping -> {
             Product product = productRepository.save(mapping.getProduct());
             Long productId = product.getId();

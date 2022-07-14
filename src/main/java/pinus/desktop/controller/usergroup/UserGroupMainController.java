@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
@@ -12,6 +13,7 @@ import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,6 +24,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.service.UserGroupService;
@@ -66,17 +69,37 @@ public class UserGroupMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-
+        StageUtils.modal(Page.SETTINGS_USER_GROUP_ADD, false, we -> {
+            if (getPageData() != null) {
+                searchUserGroups();
+            }
+        });
     }
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-
+        setPageData(userGroupFilter);
+        StageUtils.modal(Page.SETTINGS_USER_GROUP_FILTER, false, we -> {
+            UserGroupFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            userGroupFilter = result;
+            searchUserGroups();
+        });
     }
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-
+        ObservableList<UserGroupVM> items = tblUserGroups.getSelectionModel().getSelectedItems();
+        if (!items.isEmpty()) {
+            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_USER_GROUPS);
+            if (result.isConfirmed()) {
+                userGroupService.removeUserGroups(items.stream().map(UserGroupVM::getId).toList());
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_USER_GROUPS);
+                searchUserGroups();
+            }
+        }
     }
 
     @Override
@@ -141,7 +164,7 @@ public class UserGroupMainController extends BaseController {
     private void handleActionTableUserGroup() {
         if (TableViewUtils.hasItemSelected(tblUserGroups)) {
             setPageData(TableViewUtils.getSelectedItem(tblUserGroups));
-            StageUtils.modal(Page.MASTER_SUPPLIER_EDIT, false, event -> {
+            StageUtils.modal(Page.SETTINGS_USER_GROUP_EDIT, false, event -> {
                 if (getPageData() != null) {
                     searchUserGroups();
                 }

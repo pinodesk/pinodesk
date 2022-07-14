@@ -19,5 +19,5 @@ public interface DrugRepository extends PagingAndSortingRepository<Drug, Long> {
     @Transactional
     @Modifying
     @Query("delete from drug where product_id = :productId")
-    Long deleteByProductId(@Param("productId") Long purchaseId);
+    Long deleteByProductId(@Param("productId") Long productId);
 }
