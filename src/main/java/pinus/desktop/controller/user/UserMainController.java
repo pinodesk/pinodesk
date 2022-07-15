@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
@@ -12,6 +13,7 @@ import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -22,6 +24,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.service.UserService;
@@ -87,7 +90,15 @@ public class UserMainController extends BaseController {
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
-
+        ObservableList<UserVM> items = tblUsers.getSelectionModel().getSelectedItems();
+        if (!items.isEmpty()) {
+            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_USERS);
+            if (result.isConfirmed()) {
+                userService.removeUsers(items.stream().map(UserVM::getId).toList());
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_USERS);
+                searchUsers();
+            }
+        }
     }
 
     @Override
