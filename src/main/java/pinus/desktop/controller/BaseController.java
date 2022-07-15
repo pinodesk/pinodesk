@@ -339,4 +339,8 @@ public abstract class BaseController {
         setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE_DRUG_CLASSIFICATION, outputConsumer, nextFocusNode);
     }
 
+    protected <T> void setUserGroupChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
+        setChooserOnFocus(tf, Page.SETTINGS_USER_GROUP_CHOOSE, outputConsumer, nextFocusNode);
+    }
+
 }

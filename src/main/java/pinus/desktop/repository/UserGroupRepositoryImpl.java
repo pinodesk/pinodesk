@@ -27,4 +27,12 @@ public class UserGroupRepositoryImpl extends AbstractRepository<UserGroup> imple
         return read(where);
     }
 
+    @Override
+    public List<UserGroup> findByKeyword(String keyword) {
+        Where where = new Where().containsIgnoreCase(UserGroup.C_NAME, keyword)
+                .orContainsIgnoreCase(UserGroup.C_DESCRIPTION, keyword)
+                .orContainsIgnoreCase(UserGroup.C_STATUS, keyword);
+        return read(where);
+    }
+
 }

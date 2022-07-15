@@ -18,4 +18,6 @@ public interface UserGroupRepository extends PagingAndSortingRepository<UserGrou
     @Query("update user_group set updated_at=now(), deleted_at=now() where id in (:ids)")
     void deleteUpdateByIdIn(List<Long> ids);
 
+    List<UserGroup> findByDeletedAtIsNull();
+
 }

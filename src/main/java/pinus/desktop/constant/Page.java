@@ -39,6 +39,7 @@ public enum Page implements IPage {
     SETTINGS_USER_GROUP_FILTER("settings/user-group/filter"),
     SETTINGS_USER_GROUP_ADD("settings/user-group/add"),
     SETTINGS_USER_GROUP_EDIT("settings/user-group/edit"),
+    SETTINGS_USER_GROUP_CHOOSE("settings/user-group/choose"),
 
     SETTINGS_USER_MAIN("settings/user/main"),
     SETTINGS_USER_ADD("settings/user/add"),
