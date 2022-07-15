@@ -74,7 +74,15 @@ public class UserMainController extends BaseController {
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-
+        setPageData(userFilter);
+        StageUtils.modal(Page.SETTINGS_USER_FILTER, false, we -> {
+            UserFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            userFilter = result;
+            searchUsers();
+        });
     }
 
     @FXML

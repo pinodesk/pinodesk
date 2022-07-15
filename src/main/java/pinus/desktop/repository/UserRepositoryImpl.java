@@ -21,8 +21,8 @@ public class UserRepositoryImpl extends AbstractRepository<User> implements User
         if (StringUtils.isNotBlank(filter.getUsername())) {
             where.containsIgnoreCase(User.C_USERNAME, filter.getUsername());
         }
-        if (filter.getUserGroupId() != null) {
-            where.equals(User.C_USER_GROUP_ID, filter.getUserGroupId());
+        if (filter.getUserGroup() != null) {
+            where.equals(User.C_USER_GROUP_ID, filter.getUserGroup().getId());
         }
         if (filter.getStatus() != null) {
             where.equals(User.C_STATUS, filter.getStatus().toString());

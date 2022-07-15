@@ -7,6 +7,6 @@ import pinus.desktop.constant.UserStatus;
 public class UserFilterVM {
     private String fullName;
     private String username;
-    private Long userGroupId;
+    private UserGroupVM userGroup;
     private UserStatus status;
 }

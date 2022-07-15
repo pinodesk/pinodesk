@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="contentPane" prefWidth="600.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.user.UserFilterController">
+   <children>
+      <AnchorPane prefWidth="774.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_filter_users" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Label>
+         </children>
+      </AnchorPane>
+      <VBox spacing="10.0" style="-fx-border-color: #bebebe #bebebe;">
+         <children>
+            <HBox spacing="10.0">
+               <children>
+                  <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label text="%lbl_full_name">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfFullName" styleClass="input-primary">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label text="%lbl_username">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfUsername" styleClass="input-primary">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox spacing="10.0">
+               <children>
+                  <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label text="%lbl_user_group">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="tfUserGroup" styleClass="input-primary">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </TextField>
+                     </children>
+                  </VBox>
+                  <VBox spacing="5.0">
+                     <children>
+                        <Label text="%lbl_status">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="cbStatus" maxWidth="200.0" prefWidth="200.0">
+                           <styleClass>
+                              <String fx:value="combo-box-autocomplete" />
+                              <String fx:value="input-primary" />
+                           </styleClass>
+                        </ComboBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </VBox.margin>
+      </VBox>
+      <AnchorPane prefWidth="774.0" style="-fx-background-color: #ececec;" VBox.vgrow="NEVER">
+         <children>
+            <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
+                  <Button fx:id="btnReset" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnReset" styleClass="btn-secondary" text="%btn_reset" textFill="WHITE" />
+                  <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" styleClass="btn-primary" text="%btn_filter" textFill="WHITE" />
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>
