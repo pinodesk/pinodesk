@@ -48,6 +48,7 @@ import pinus.desktop.constant.DomainError;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.StringConstants;
 import pinus.desktop.exception.DomainException;
+import pinus.desktop.util.ResourceBundleUtils;
 import pinus.desktop.util.SpringUtils;
 
 @Slf4j
@@ -130,20 +131,29 @@ public abstract class BaseController {
     }
 
     protected void handleDomainException(DomainException e) {
+        ResourceBundle rb = ResourceBundleUtils.getDefaultResourceBundle();
         DomainError err = e.getError();
-        String message = String.format(translate(err.messageCode()), e.getArguments());
+        String message = String.format(translate(rb, err.messageCode()), e.getArguments());
         displayError(String.format("%s. (%s)", message, err.code()));
     }
 
-    protected String translate(String messageCode) {
+    protected String translate(ResourceBundle rb, String messageCode) {
         try {
-            return resources.getString(messageCode);
+            return rb.getString(messageCode);
         } catch (Exception e) {
             if (log.isWarnEnabled()) {
                 log.warn("Failed to translate message code '{}': {}", messageCode, e.toString());
             }
             return messageCode;
         }
+    }
+
+    protected String translate(ResourceBundle rb, IMessage messageCode) {
+        return translate(rb, messageCode.toString());
+    }
+
+    protected String translate(String messageCode) {
+        return translate(resources, messageCode);
     }
 
     protected String translate(IMessage messageCode) {

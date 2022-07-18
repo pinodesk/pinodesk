@@ -24,4 +24,8 @@ public final class SpringUtils {
         return applicationContext.getBean(type);
     }
 
+    public static boolean isInitialized() {
+        return applicationContext != null;
+    }
+
 }

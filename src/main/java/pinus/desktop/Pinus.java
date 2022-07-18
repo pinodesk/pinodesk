@@ -1,8 +1,6 @@
 package pinus.desktop;
 
 import java.io.IOException;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 import com.gitlab.muhammadkholidb.pandora.utility.PageContext;
 import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
@@ -14,19 +12,23 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.Page;
+import pinus.desktop.util.ResourceBundleUtils;
 
 public class Pinus extends Application {
 
     private static Stage primaryStage;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        PageLoader.init(
-                CommonConstants.PAGE_TEMPLATE_DIR,
-                () -> ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, Locale.ENGLISH));
+    public void init() throws Exception {
+        super.init();
+        PageLoader.init(CommonConstants.PAGE_TEMPLATE_DIR, ResourceBundleUtils::getDefaultResourceBundle);
         StageUtils.init(CommonConstants.APP_TITLE, new String[] {});
-        StageUtils.modal(Page.SPLASH, StageStyle.UNDECORATED);
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
         setPrimaryStage(primaryStage);
+        StageUtils.modal(Page.SPLASH, StageStyle.UNDECORATED);
     }
 
     public static void main(String[] args) {
