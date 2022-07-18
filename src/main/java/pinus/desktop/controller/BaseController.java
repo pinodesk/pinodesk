@@ -295,13 +295,18 @@ public abstract class BaseController {
         return df.format(number);
     }
 
-    protected <T> void setChooserOnFocus(TextField tf, Page page, Consumer<T> outputConsumer, Node nextFocusNode) {
-        final BooleanProperty firstTime = new SimpleBooleanProperty(true); // Variable to store the focus on stage load
+    protected <T> void setChooserOnFocus(
+            TextField tf,
+            boolean isFirstInput,
+            Page page,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        final BooleanProperty forget = new SimpleBooleanProperty(true); // Variable to store the focus on stage load
         tf.focusedProperty().addListener((o, ov, nv) -> {
             boolean isFocused = Boolean.TRUE.equals(nv);
-            if (isFocused && firstTime.get()) {
+            if (isFirstInput && isFocused && forget.get()) {
                 setFocused(tf.getParent());
-                firstTime.setValue(false);
+                forget.setValue(false);
                 return;
             }
             if (isFocused) {
@@ -313,44 +318,117 @@ public abstract class BaseController {
         });
     }
 
+    protected <T> void setProductCategoryChooser(
+            TextField tf,
+            boolean isFirstInput,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        setChooserOnFocus(tf, isFirstInput, Page.MASTER_PRODUCT_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
+    }
+
     protected <T> void setProductCategoryChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
+        setProductCategoryChooser(tf, false, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setUnitChooser(
+            TextField tf,
+            boolean isFirstInput,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        setChooserOnFocus(tf, isFirstInput, Page.MASTER_PRODUCT_CHOOSE_UNIT, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setUnitChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE_UNIT, outputConsumer, nextFocusNode);
+        setUnitChooser(tf, false, outputConsumer, nextFocusNode);
     }
 
-    protected <T> void setDrugCategoryChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE_DRUG_CATEGORY, outputConsumer, nextFocusNode);
+    protected <T> void setProductChooser(
+            TextField tf,
+            boolean isFirstInput,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        setChooserOnFocus(tf, isFirstInput, Page.MASTER_PRODUCT_CHOOSE, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setProductChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE, outputConsumer, nextFocusNode);
+        setProductChooser(tf, false, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setSupplierChooser(
+            TextField tf,
+            boolean isFirstInput,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        setChooserOnFocus(tf, isFirstInput, Page.MASTER_SUPPLIER_CHOOSE, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setSupplierChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.MASTER_SUPPLIER_CHOOSE, outputConsumer, nextFocusNode);
+        setSupplierChooser(tf, false, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setCustomerChooser(
+            TextField tf,
+            boolean isFirstInput,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        setChooserOnFocus(tf, isFirstInput, Page.MASTER_CUSTOMER_CHOOSE, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setCustomerChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.MASTER_CUSTOMER_CHOOSE, outputConsumer, nextFocusNode);
+        setCustomerChooser(tf, false, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setDoctorChooser(
+            TextField tf,
+            boolean isFirstInput,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        setChooserOnFocus(tf, isFirstInput, Page.MASTER_DOCTOR_CHOOSE, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setDoctorChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.MASTER_DOCTOR_CHOOSE, outputConsumer, nextFocusNode);
+        setDoctorChooser(tf, false, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setDoctorCategoryChooser(
+            TextField tf,
+            boolean isFirstInput,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        setChooserOnFocus(tf, isFirstInput, Page.MASTER_DOCTOR_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setDoctorCategoryChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.MASTER_DOCTOR_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
+        setDoctorCategoryChooser(tf, false, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setDrugClassificationChooser(
+            TextField tf,
+            boolean isFirstInput,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        setChooserOnFocus(
+                tf,
+                isFirstInput,
+                Page.MASTER_PRODUCT_CHOOSE_DRUG_CLASSIFICATION,
+                outputConsumer,
+                nextFocusNode);
     }
 
     protected <T> void setDrugClassificationChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.MASTER_PRODUCT_CHOOSE_DRUG_CLASSIFICATION, outputConsumer, nextFocusNode);
+        setDrugClassificationChooser(tf, false, outputConsumer, nextFocusNode);
+    }
+
+    protected <T> void setUserGroupChooser(
+            TextField tf,
+            boolean isFirstInput,
+            Consumer<T> outputConsumer,
+            Node nextFocusNode) {
+        setChooserOnFocus(tf, isFirstInput, Page.SETTINGS_USER_GROUP_CHOOSE, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setUserGroupChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
-        setChooserOnFocus(tf, Page.SETTINGS_USER_GROUP_CHOOSE, outputConsumer, nextFocusNode);
+        setUserGroupChooser(tf, false, outputConsumer, nextFocusNode);
     }
 
 }
