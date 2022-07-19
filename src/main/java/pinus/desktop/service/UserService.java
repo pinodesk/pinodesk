@@ -2,6 +2,7 @@ package pinus.desktop.service;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -11,8 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.DomainError;
+import pinus.desktop.constant.UserStatus;
+import pinus.desktop.domain.User;
 import pinus.desktop.exception.DomainException;
 import pinus.desktop.repository.UserRepository;
+import pinus.desktop.util.PasswordUtils;
+import pinus.desktop.viewmodel.UserAddVM;
+import pinus.desktop.viewmodel.UserEditVM;
 import pinus.desktop.viewmodel.UserFilterVM;
 import pinus.desktop.viewmodel.UserVM;
 
@@ -32,6 +38,51 @@ public class UserService extends BaseService {
     public void removeUsers(List<Long> ids) {
         userRepository.deleteUpdateByIdIn(ids);
         if (!userRepository.existsByUserGroupIdAndDeletedAtIsNull(CommonConstants.USER_GROUP_ID_ADMINISTRATOR)) {
+            throw new DomainException(DomainError.USER_GROUP_ADMINISTRATOR_MUST_HAVE_USER);
+        }
+    }
+
+    @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
+    @Transactional
+    public User createUser(UserAddVM userAdd) {
+        validateConstraints(userAdd);
+        if (userRepository.existsByUsernameAndDeletedAtIsNull(userAdd.getUsername())) {
+            throw new DomainException(DomainError.USER_EXISTS_BY_USERNAME);
+        }
+        User user = new User();
+        user.setFullName(userAdd.getFullName());
+        user.setUsername(userAdd.getUsername());
+        user.setStatus(UserStatus.ACTIVE.toString());
+        user.setUserGroupId(userAdd.getUserGroupId());
+        user.setPasswordHash(PasswordUtils.encrypt(userAdd.getPassword()));
+        return userRepository.save(user);
+    }
+
+    @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
+    @Transactional
+    public User updateUser(UserEditVM userEdit, Long userId) {
+        validateConstraints(userEdit);
+        String username = userEdit.getUsername();
+        User user = userRepository.findByIdAndDeletedAtIsNull(userId)
+                .orElseThrow(() -> new DomainException(DomainError.USER_NOT_FOUND_BY_ID));
+        if (!user.getUsername().equals(username) && userRepository.existsByUsernameAndDeletedAtIsNull(username)) {
+            throw new DomainException(DomainError.USER_EXISTS_BY_USERNAME);
+        }
+        checkAdministratorUserGroup(user, userEdit);
+        user.setFullName(userEdit.getFullName());
+        user.setUsername(userEdit.getUsername());
+        user.setStatus(userEdit.getStatus().toString());
+        user.setUserGroupId(userEdit.getUserGroupId());
+        if (StringUtils.isNotBlank(userEdit.getPassword())) {
+            user.setPasswordHash(PasswordUtils.encrypt(userEdit.getPassword()));
+        }
+        return userRepository.save(user);
+    }
+
+    private void checkAdministratorUserGroup(User user, UserEditVM userEdit) {
+        if (CommonConstants.USER_GROUP_ID_ADMINISTRATOR.equals(user.getUserGroupId())
+                && !userEdit.getUserGroupId().equals(user.getUserGroupId())
+                && !userRepository.existsByUserGroupIdAndDeletedAtIsNull(CommonConstants.USER_GROUP_ID_ADMINISTRATOR)) {
             throw new DomainException(DomainError.USER_GROUP_ADMINISTRATOR_MUST_HAVE_USER);
         }
     }
