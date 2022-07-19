@@ -120,7 +120,7 @@ public class UserGroupMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 UserGroupVM::getUpdatedAt);
-        tblUserGroups.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        tblUserGroups.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         tblUserGroups.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblUserGroups.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
@@ -146,12 +146,12 @@ public class UserGroupMainController extends BaseController {
     }
 
     private void searchUserGroups() {
-        tblUserGroups.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblUserGroups.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
         tblUserGroups.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> userGroupService.searchUserGroupsByFilter(userGroupFilter))
                 .thenAccept(userGroups -> Platform.runLater(() -> {
                     if (userGroups.isEmpty()) {
-                        tblUserGroups.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                        tblUserGroups.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                         return;
                     }

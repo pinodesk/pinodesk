@@ -69,7 +69,7 @@ public class DoctorChooseController extends CommonDataChooseController<DoctorVM>
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 DoctorVM::getUpdatedAt);
-        tblDoctor.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        tblDoctor.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         tblDoctor.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
                 btnChoose.fire();
@@ -104,12 +104,12 @@ public class DoctorChooseController extends CommonDataChooseController<DoctorVM>
     }
 
     private void searchDoctors() {
-        tblDoctor.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblDoctor.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
         tblDoctor.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> doctorService.searchDoctorsByKeyword(tfSearch.getText()))
                 .thenAccept(doctors -> Platform.runLater(() -> {
                     if (doctors.isEmpty()) {
-                        tblDoctor.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                        tblDoctor.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblDoctor.setItems(FXCollections.observableList(doctors));
                     TableViewUtils.sortAscending(tblDoctor, colName);

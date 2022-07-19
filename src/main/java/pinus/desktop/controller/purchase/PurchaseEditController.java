@@ -213,7 +213,7 @@ public class PurchaseEditController extends CommonDataSaveController {
             calculatePurchaseSummary();
         }
         if (tblPurchaseProduct.getItems().isEmpty()) {
-            tblPurchaseProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+            tblPurchaseProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         }
     }
 
@@ -292,8 +292,8 @@ public class PurchaseEditController extends CommonDataSaveController {
         setFocusedToContentPane();
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
-                new SimpleComboBoxModel(PaymentStatus.PAID, translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID, translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID, translator.translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID, translator.translate(CommonLabel.LBL_UNPAID)));
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(
                 tfDiscount,
@@ -335,7 +335,7 @@ public class PurchaseEditController extends CommonDataSaveController {
                 colExpiredDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PurchaseProductVM::getExpiredDate);
-        tblPurchaseProduct.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        tblPurchaseProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         tblPurchaseProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblPurchaseProduct.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

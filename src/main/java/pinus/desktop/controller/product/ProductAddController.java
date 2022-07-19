@@ -146,8 +146,10 @@ public class ProductAddController extends CommonDataSaveController {
         setDrugClassificationChooser(tfDrugClassification, this::handleSelectedDrugClassification, tfIndication);
         ComboBoxUtils.initSimple(
                 cbStatus,
-                new SimpleComboBoxModel(ProductStatus.ACTIVE, translate(CommonLabel.LBL_ACTIVE.toString())),
-                new SimpleComboBoxModel(ProductStatus.INACTIVE, translate(CommonLabel.LBL_INACTIVE.toString())));
+                new SimpleComboBoxModel(ProductStatus.ACTIVE, translator.translate(CommonLabel.LBL_ACTIVE.toString())),
+                new SimpleComboBoxModel(
+                        ProductStatus.INACTIVE,
+                        translator.translate(CommonLabel.LBL_INACTIVE.toString())));
         ComboBoxUtils.selectIndex(cbStatus, 0);
         initBtnSaveAndAdd();
         addContentPaneOnKeyPressedHandler(event -> {
@@ -315,7 +317,7 @@ public class ProductAddController extends CommonDataSaveController {
     }
 
     private void initBtnSaveAndAdd() {
-        btnSaveAndCopy = new MenuItem(translate(CommonLabel.BTN_SAVE_AND_COPY));
+        btnSaveAndCopy = new MenuItem(translator.translate(CommonLabel.BTN_SAVE_AND_COPY));
         btnSaveAndCopy.setOnAction(event -> {
             processDataSave();
             if (isLastDataSaved()) {

@@ -113,7 +113,7 @@ public class ReceivableMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 ReceivableVM::getUpdatedAt);
-        tblReceivables.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        tblReceivables.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         tblReceivables.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblReceivables.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
@@ -138,11 +138,11 @@ public class ReceivableMainController extends BaseController {
     }
 
     private void searchPayables() {
-        tblReceivables.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblReceivables.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
         tblReceivables.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> receivableService.searchReceivables()).thenAccept(payables -> Platform.runLater(() -> {
             if (payables.isEmpty()) {
-                tblReceivables.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                tblReceivables.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
                 lblRows.setText("0");
             }
             tblReceivables.setItems(FXCollections.observableList(payables));

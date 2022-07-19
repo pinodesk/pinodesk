@@ -19,6 +19,7 @@ import org.springframework.context.ApplicationContext;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.Translator;
 import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
 
 import javafx.application.Platform;
@@ -54,6 +55,8 @@ import pinus.desktop.util.SpringUtils;
 @Slf4j
 public abstract class BaseController {
 
+    protected Translator translator;
+
     @FXML
     protected ResourceBundle resources;
 
@@ -62,6 +65,7 @@ public abstract class BaseController {
 
     @FXML
     void initialize() {
+        translator = new Translator(resources);
         setDefaultUncaughtExceptionHandler();
         initServices(SpringUtils.getApplicationContext());
         initControlActions();
@@ -132,32 +136,10 @@ public abstract class BaseController {
 
     protected void handleDomainException(DomainException e) {
         ResourceBundle rb = ResourceBundleUtils.getDefaultResourceBundle();
+        Translator translator = new Translator(rb);
         DomainError err = e.getError();
-        String message = String.format(translate(rb, err.messageCode()), e.getArguments());
+        String message = String.format(translator.translate(err.messageCode()), e.getArguments());
         displayError(String.format("%s. (%s)", message, err.code()));
-    }
-
-    protected String translate(ResourceBundle rb, String messageCode) {
-        try {
-            return rb.getString(messageCode);
-        } catch (Exception e) {
-            if (log.isWarnEnabled()) {
-                log.warn("Failed to translate message code '{}': {}", messageCode, e.toString());
-            }
-            return messageCode;
-        }
-    }
-
-    protected String translate(ResourceBundle rb, IMessage messageCode) {
-        return translate(rb, messageCode.toString());
-    }
-
-    protected String translate(String messageCode) {
-        return translate(resources, messageCode);
-    }
-
-    protected String translate(IMessage messageCode) {
-        return translate(messageCode.toString());
     }
 
     private IMessage getAlertHeaderMessageCode(AlertType type) {
@@ -174,12 +156,12 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayAlert(AlertType type, String message) {
-        ButtonType btnTypeOk = new ButtonType(translate(CommonLabel.BTN_OK), ButtonData.OK_DONE);
-        ButtonType btnTypeYes = new ButtonType(translate(CommonLabel.BTN_YES), ButtonData.YES);
-        ButtonType btnTypeNo = new ButtonType(translate(CommonLabel.BTN_NO), ButtonData.NO);
+        ButtonType btnTypeOk = new ButtonType(translator.translate(CommonLabel.BTN_OK), ButtonData.OK_DONE);
+        ButtonType btnTypeYes = new ButtonType(translator.translate(CommonLabel.BTN_YES), ButtonData.YES);
+        ButtonType btnTypeNo = new ButtonType(translator.translate(CommonLabel.BTN_NO), ButtonData.NO);
         Alert alert = new Alert(type);
         alert.setTitle(CommonConstants.APP_TITLE);
-        alert.setHeaderText(translate(getAlertHeaderMessageCode(type)));
+        alert.setHeaderText(translator.translate(getAlertHeaderMessageCode(type)));
         DialogPane dialogPane = alert.getDialogPane();
         Text text = new Text(message);
         text.setWrappingWidth(dialogPane.getWidth());
@@ -216,7 +198,7 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayError(IMessage messageCode) {
-        return displayError(translate(messageCode.toString()));
+        return displayError(translator.translate(messageCode.toString()));
     }
 
     protected AlertResult displayError(Collection<?> messageCodes) {
@@ -225,7 +207,7 @@ public abstract class BaseController {
                 return str;
             }
             if (val instanceof IMessage im) {
-                return translate(im);
+                return translator.translate(im);
             }
             return null;
         }).filter(Objects::nonNull).toList();
@@ -238,7 +220,7 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayInfo(IMessage messageCode) {
-        return displayInfo(translate(messageCode.toString()));
+        return displayInfo(translator.translate(messageCode.toString()));
     }
 
     protected AlertResult displayConfirmation(String message) {
@@ -246,14 +228,14 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayConfirmation(IMessage messageCode) {
-        return displayConfirmation(translate(messageCode.toString()));
+        return displayConfirmation(translator.translate(messageCode.toString()));
     }
 
     // From https://code.makery.ch/blog/javafx-dialogs-official/
     protected void displayException(Throwable ex) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(CommonConstants.APP_TITLE);
-        alert.setHeaderText(translate(CommonLabel.LBL_SYSTEM_ERROR));
+        alert.setHeaderText(translator.translate(CommonLabel.LBL_SYSTEM_ERROR));
 
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setMinWidth(600);
@@ -263,7 +245,7 @@ public abstract class BaseController {
         ex.printStackTrace(pw);
         String exceptionText = sw.toString();
 
-        Label label = new Label(translate(CommonLabel.LBL_DETAILS) + StringConstants.COLON);
+        Label label = new Label(translator.translate(CommonLabel.LBL_DETAILS) + StringConstants.COLON);
 
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);

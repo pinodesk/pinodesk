@@ -113,7 +113,7 @@ public class PayableMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 PayableVM::getUpdatedAt);
-        tblPayables.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        tblPayables.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         tblPayables.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblPayables.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
@@ -138,11 +138,11 @@ public class PayableMainController extends BaseController {
     }
 
     private void searchPayables() {
-        tblPayables.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblPayables.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
         tblPayables.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> payableService.searchPayables()).thenAccept(payables -> Platform.runLater(() -> {
             if (payables.isEmpty()) {
-                tblPayables.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                tblPayables.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
                 lblRows.setText("0");
             }
             tblPayables.setItems(FXCollections.observableList(payables));

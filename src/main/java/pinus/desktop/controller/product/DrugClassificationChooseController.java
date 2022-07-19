@@ -62,14 +62,14 @@ public class DrugClassificationChooseController extends CommonDataChooseControll
     }
 
     private void searchProductCategories() {
-        tblDrugClassification.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblDrugClassification.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
         tblDrugClassification.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(
                 () -> drugClassificationService
                         .searchDrugClassificationsByKeyword(tfSearch.getText(), resources.getLocale().getLanguage()))
                 .thenAccept(classifications -> Platform.runLater(() -> {
                     if (classifications.isEmpty()) {
-                        tblDrugClassification.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                        tblDrugClassification.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblDrugClassification.setItems(FXCollections.observableList(classifications));
                     TableViewUtils.sortAscending(tblDrugClassification, colName);

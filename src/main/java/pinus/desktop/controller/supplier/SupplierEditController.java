@@ -100,13 +100,13 @@ public class SupplierEditController extends CommonDataSaveController {
             tblSupplierContact.getItems().removeAll(items);
         }
         if (tblSupplierContact.getItems().isEmpty()) {
-            tblSupplierContact.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+            tblSupplierContact.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         }
     }
 
     @Override
     protected void initDataSaveControlActions() {
-        tblSupplierContact.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        tblSupplierContact.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         tblSupplierContact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.setColumnValue(colName, SupplierContactAddVM::getName);
         TableViewUtils.setColumnValue(colPhone, SupplierContactAddVM::getPhone);

@@ -81,8 +81,8 @@ public class UserFilterController extends CommonDataFilterController<UserFilterV
         ComboBoxUtils.initSimple(
                 cbStatus,
                 new SimpleComboBoxModel(null, StringConstants.EMPTY),
-                new SimpleComboBoxModel(UserStatus.ACTIVE, translate(CommonLabel.LBL_ACTIVE)),
-                new SimpleComboBoxModel(UserStatus.INACTIVE, translate(CommonLabel.LBL_INACTIVE)));
+                new SimpleComboBoxModel(UserStatus.ACTIVE, translator.translate(CommonLabel.LBL_ACTIVE)),
+                new SimpleComboBoxModel(UserStatus.INACTIVE, translator.translate(CommonLabel.LBL_INACTIVE)));
         setUserGroupChooser(tfUserGroup, this::handleSelectedUserGroup, cbStatus.getParent());
     }
 

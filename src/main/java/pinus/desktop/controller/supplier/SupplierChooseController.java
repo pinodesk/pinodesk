@@ -66,7 +66,7 @@ public class SupplierChooseController extends CommonDataChooseController<Supplie
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 SupplierVM::getUpdatedAt);
-        tblSupplier.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        tblSupplier.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         tblSupplier.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
                 btnChoose.fire();
@@ -101,12 +101,12 @@ public class SupplierChooseController extends CommonDataChooseController<Supplie
     }
 
     private void searchSuppliers() {
-        tblSupplier.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblSupplier.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
         tblSupplier.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> supplierService.searchSuppliersByKeyword(tfSearch.getText()))
                 .thenAccept(suppliers -> Platform.runLater(() -> {
                     if (suppliers.isEmpty()) {
-                        tblSupplier.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                        tblSupplier.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblSupplier.setItems(FXCollections.observableList(suppliers));
                     TableViewUtils.sortAscending(tblSupplier, colName);

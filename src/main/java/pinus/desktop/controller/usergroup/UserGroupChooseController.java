@@ -61,7 +61,7 @@ public class UserGroupChooseController extends CommonDataChooseController<UserGr
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 UserGroupVM::getUpdatedAt);
-        tblUserGroups.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+        tblUserGroups.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
         tblUserGroups.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
                 btnChoose.fire();
@@ -96,12 +96,12 @@ public class UserGroupChooseController extends CommonDataChooseController<UserGr
     }
 
     private void searchSuppliers() {
-        tblUserGroups.setPlaceholder(new Label(translate(CommonLabel.LBL_LOADING_DATA)));
+        tblUserGroups.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
         tblUserGroups.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> userGroupService.searchUserGroupsByKeyword(tfSearch.getText()))
                 .thenAccept(suppliers -> Platform.runLater(() -> {
                     if (suppliers.isEmpty()) {
-                        tblUserGroups.setPlaceholder(new Label(translate(CommonLabel.LBL_NO_DATA)));
+                        tblUserGroups.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblUserGroups.setItems(FXCollections.observableList(suppliers));
                     TableViewUtils.sortAscending(tblUserGroups, colName);

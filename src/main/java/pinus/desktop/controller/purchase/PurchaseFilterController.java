@@ -147,8 +147,8 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
-                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), translator.translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), translator.translate(CommonLabel.LBL_UNPAID)));
         setSupplierChooser(tfSupplier, this::handleSelectedSupplier, tfTotalProductMin);
     }
 
