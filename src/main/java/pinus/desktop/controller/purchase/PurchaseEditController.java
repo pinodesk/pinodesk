@@ -289,7 +289,6 @@ public class PurchaseEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        setFocusedToContentPane();
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, translator.translate(CommonLabel.LBL_PAID)),
@@ -343,7 +342,7 @@ public class PurchaseEditController extends CommonDataSaveController {
             }
         });
         setProductChooser(tfProduct, this::handleSelectedProduct, tfProductQuantity);
-        setSupplierChooser(tfSupplier, this::handleSelectedSupplier, tfInvoiceNumber);
+        setSupplierChooser(tfSupplier, true, this::handleSelectedSupplier, tfInvoiceNumber);
         TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchaseSummary(), tfDiscount, tfTax);
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
             boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());

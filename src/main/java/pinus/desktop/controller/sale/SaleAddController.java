@@ -262,7 +262,6 @@ public class SaleAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        setFocusedToContentPane();
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, translator.translate(CommonLabel.LBL_PAID)),
@@ -302,7 +301,7 @@ public class SaleAddController extends CommonDataSaveController {
                 handleActionTableSaleProduct();
             }
         });
-        setCustomerChooser(tfCustomer, this::handleSelectedCustomer, tfDoctor.getParent());
+        setCustomerChooser(tfCustomer, true, this::handleSelectedCustomer, tfDoctor.getParent());
         setDoctorChooser(tfDoctor, this::handleSelectedDoctor, tfInvoiceNumber);
         setProductChooser(tfProduct, this::handleSelectedProduct, tfSaleQuantity);
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
