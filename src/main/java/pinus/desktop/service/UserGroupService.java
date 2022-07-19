@@ -46,4 +46,11 @@ public class UserGroupService extends BaseService {
         return objectConverter.convertList(userGroups, UserGroupVM.class);
     }
 
+    public UserGroupVM getUserGroupById(Long id) {
+        return objectConverter.convertOptionalOrThrow(
+                userGroupRepository.findByIdAndDeletedAtIsNull(id),
+                UserGroupVM.class,
+                new DomainException(DomainError.USER_GROUP_NOT_FOUND_BY_ID));
+    }
+
 }

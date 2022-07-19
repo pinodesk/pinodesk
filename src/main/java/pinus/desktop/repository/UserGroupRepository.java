@@ -1,6 +1,7 @@
 package pinus.desktop.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
@@ -21,4 +22,5 @@ public interface UserGroupRepository extends PagingAndSortingRepository<UserGrou
 
     List<UserGroup> findByDeletedAtIsNull();
 
+    Optional<UserGroup> findByIdAndDeletedAtIsNull(Long id);
 }

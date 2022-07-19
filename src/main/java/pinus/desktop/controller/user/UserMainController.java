@@ -72,7 +72,11 @@ public class UserMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-
+        StageUtils.modal(Page.SETTINGS_USER_ADD, false, we -> {
+            if (getPageData() != null) {
+                searchUsers();
+            }
+        });
     }
 
     @FXML
