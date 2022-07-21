@@ -22,7 +22,11 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
 
     boolean existsByUserGroupIdAndDeletedAtIsNull(Long userGroupId);
 
+    boolean existsByUserGroupIdAndStatusAndDeletedAtIsNull(Long userGroupId, String status);
+
     boolean existsByUsernameAndDeletedAtIsNull(String username);
+
+    boolean existsByUserGroupIdAndStatusAndIdNotAndDeletedAtIsNull(Long userGroupId, String status, Long userId);
 
     Optional<User> findByIdAndDeletedAtIsNull(Long id);
 }

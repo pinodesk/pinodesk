@@ -48,7 +48,7 @@
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tfUsername" editable="false" styleClass="input-primary">
+                        <TextField fx:id="tfUsername" styleClass="input-primary">
                            <font>
                               <Font size="13.0" />
                            </font>

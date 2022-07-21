@@ -37,7 +37,9 @@ public class UserService extends BaseService {
     @Transactional
     public void removeUsers(List<Long> ids) {
         userRepository.deleteUpdateByIdIn(ids);
-        if (!userRepository.existsByUserGroupIdAndDeletedAtIsNull(CommonConstants.USER_GROUP_ID_ADMINISTRATOR)) {
+        if (!userRepository.existsByUserGroupIdAndStatusAndDeletedAtIsNull(
+                CommonConstants.USER_GROUP_ID_ADMINISTRATOR,
+                UserStatus.ACTIVE.toString())) {
             throw new DomainException(DomainError.USER_GROUP_ADMINISTRATOR_MUST_HAVE_USER);
         }
     }
@@ -83,6 +85,14 @@ public class UserService extends BaseService {
         if (CommonConstants.USER_GROUP_ID_ADMINISTRATOR.equals(user.getUserGroupId())
                 && !userEdit.getUserGroupId().equals(user.getUserGroupId())
                 && !userRepository.existsByUserGroupIdAndDeletedAtIsNull(CommonConstants.USER_GROUP_ID_ADMINISTRATOR)) {
+            throw new DomainException(DomainError.USER_GROUP_ADMINISTRATOR_MUST_HAVE_USER);
+        }
+        if (CommonConstants.USER_GROUP_ID_ADMINISTRATOR.equals(userEdit.getUserGroupId())
+                && UserStatus.INACTIVE.equals(userEdit.getStatus())
+                && !userRepository.existsByUserGroupIdAndStatusAndIdNotAndDeletedAtIsNull(
+                        userEdit.getUserGroupId(),
+                        UserStatus.ACTIVE.toString(),
+                        user.getId())) {
             throw new DomainException(DomainError.USER_GROUP_ADMINISTRATOR_MUST_HAVE_USER);
         }
     }

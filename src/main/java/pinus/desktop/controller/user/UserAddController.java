@@ -1,5 +1,6 @@
 package pinus.desktop.controller.user;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
@@ -75,6 +76,13 @@ public class UserAddController extends CommonDataSaveController {
     @Override
     protected void validate(ControlValidator validator) {
         validator.validateBlank(tfFullName, MessageCode.ERROR_EMPTY_NAME);
+        validator.validateBlank(tfUsername, MessageCode.ERROR_EMPTY_USERNAME);
+        validator.validateBlank(tfPassword, MessageCode.ERROR_EMPTY_PASSWORD);
+        validator.validateBlank(tfPasswordConfirmation, MessageCode.ERROR_EMPTY_PASSWORD_CONFIRMATION);
+        validator.validateCustom(
+                () -> !StringUtils.equals(tfPassword.getText(), tfPasswordConfirmation.getText()),
+                MessageCode.ERROR_MISMATCH_PASSWORD_CONFIRMATION);
+        validator.validateCustom(() -> selectedUserGroup == null, MessageCode.ERROR_EMPTY_USER_GROUP);
     }
 
     @Override

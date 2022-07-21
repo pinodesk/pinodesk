@@ -2,6 +2,7 @@ package pinus.desktop.controller.user;
 
 import java.util.Arrays;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
@@ -93,6 +94,14 @@ public class UserEditController extends CommonDataSaveController {
     @Override
     protected void validate(ControlValidator validator) {
         validator.validateBlank(tfFullName, MessageCode.ERROR_EMPTY_NAME);
+        validator.validateBlank(tfUsername, MessageCode.ERROR_EMPTY_USERNAME);
+        validator.validateCustom(() -> {
+            String password = tfPassword.getText();
+            String passwordConfirmation = tfPasswordConfirmation.getText();
+            return !StringUtils.isAllBlank(password, passwordConfirmation)
+                    && !StringUtils.equals(password, passwordConfirmation);
+        }, MessageCode.ERROR_MISMATCH_PASSWORD_CONFIRMATION);
+        validator.validateCustom(() -> selectedUserGroup == null, MessageCode.ERROR_EMPTY_USER_GROUP);
     }
 
     @Override
@@ -100,7 +109,9 @@ public class UserEditController extends CommonDataSaveController {
         UserEditVM userEdit = new UserEditVM();
         userEdit.setFullName(tfFullName.getText());
         userEdit.setUsername(tfUsername.getText());
-        userEdit.setPassword(tfPassword.getText());
+        userEdit.setPassword(StringUtils.defaultIfBlank(tfPassword.getText(), null));
+        userEdit.setUserGroupId(selectedUserGroup.getId());
+        userEdit.setStatus(ComboBoxUtils.getSelectedItem(cbStatus).getValue());
         return userService.updateUser(userEdit, currentUser.getId());
     }
 
