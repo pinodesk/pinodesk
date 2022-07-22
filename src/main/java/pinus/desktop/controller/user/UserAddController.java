@@ -4,14 +4,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
+import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
+import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.MessageCode;
+import pinus.desktop.constant.UserStatus;
 import pinus.desktop.controller.CommonDataSaveController;
 import pinus.desktop.service.UserService;
 import pinus.desktop.viewmodel.ChooseResultVM;
@@ -34,6 +39,9 @@ public class UserAddController extends CommonDataSaveController {
 
     @FXML
     private TextField tfUserGroup;
+
+    @FXML
+    private ComboBox<SimpleComboBoxModel> cbStatus;
 
     @FXML
     private Button btnSaveAndAdd;
@@ -59,6 +67,10 @@ public class UserAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        ComboBoxUtils.initSimple(
+                cbStatus,
+                new SimpleComboBoxModel(UserStatus.ACTIVE, translator.translate(CommonLabel.LBL_ACTIVE)),
+                new SimpleComboBoxModel(UserStatus.INACTIVE, translator.translate(CommonLabel.LBL_INACTIVE)));
         setUserGroupChooser(tfUserGroup, this::handleSelectedUserGroup, tfPassword);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyConstants.CTRL_SHIFT_S.match(event)) {
@@ -70,7 +82,7 @@ public class UserAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
-        // Nothing
+        ComboBoxUtils.selectIndex(cbStatus, 0);
     }
 
     @Override
@@ -92,11 +104,13 @@ public class UserAddController extends CommonDataSaveController {
         userAdd.setUsername(tfUsername.getText());
         userAdd.setPassword(tfPassword.getText());
         userAdd.setUserGroupId(selectedUserGroup.getId());
+        userAdd.setStatus(ComboBoxUtils.getSelectedItem(cbStatus).getValue());
         return userService.createUser(userAdd);
     }
 
     private void resetControls() {
         TextFieldUtils.setTextEmpty(tfFullName, tfUserGroup, tfUsername, tfPassword, tfPasswordConfirmation);
+        ComboBoxUtils.selectIndex(cbStatus, 0);
     }
 
     public void handleSelectedUserGroup(ChooseResultVM<UserGroupVM> result) {

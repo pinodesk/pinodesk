@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
+import pinus.desktop.constant.UserStatus;
 
 @Data
 public class UserAddVM {
@@ -23,5 +24,8 @@ public class UserAddVM {
     @NotBlank
     @Size(min = 6)
     private String password;
+
+    @NotNull
+    private UserStatus status;
 
 }

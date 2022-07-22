@@ -54,7 +54,7 @@ public class UserService extends BaseService {
         User user = new User();
         user.setFullName(userAdd.getFullName());
         user.setUsername(userAdd.getUsername());
-        user.setStatus(UserStatus.ACTIVE.toString());
+        user.setStatus(userAdd.getStatus().toString());
         user.setUserGroupId(userAdd.getUserGroupId());
         user.setPasswordHash(PasswordUtils.encrypt(userAdd.getPassword()));
         return userRepository.save(user);
