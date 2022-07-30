@@ -72,8 +72,8 @@ public class UserEditController extends CommonDataSaveController {
     protected void initDataSaveControlActions() {
         ComboBoxUtils.initSimple(
                 cbStatus,
-                new SimpleComboBoxModel(UserStatus.ACTIVE, translator.translate(CommonLabel.LBL_ACTIVE)),
-                new SimpleComboBoxModel(UserStatus.INACTIVE, translator.translate(CommonLabel.LBL_INACTIVE)));
+                new SimpleComboBoxModel(UserStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE)),
+                new SimpleComboBoxModel(UserStatus.INACTIVE, t.translate(CommonLabel.LBL_INACTIVE)));
         setUserGroupChooser(tfUserGroup, this::handleSelectedUserGroup, tfPassword);
     }
 

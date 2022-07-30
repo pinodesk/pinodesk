@@ -130,7 +130,7 @@ public class ProductImportController extends CommonContentPaneController {
                 handleException(ex);
                 return;
             }
-            displayInfo(String.format(translator.translate(MessageCode.SUCCESS_DOWNLOAD_TEMPLATE), location));
+            displayInfo(String.format(t.translate(MessageCode.SUCCESS_DOWNLOAD_TEMPLATE), location));
         }));
         setFocusedToContentPane();
     }
@@ -149,7 +149,7 @@ public class ProductImportController extends CommonContentPaneController {
         final BooleanProperty firstTime = new SimpleBooleanProperty(true); // Variable to store the focus on stage load
         fileChooser.setInitialDirectory(new File(userHomeDir));
         fileChooser.getExtensionFilters()
-                .addAll(new FileChooser.ExtensionFilter(translator.translate(CommonLabel.LBL_XLSX_FILES), "*.xlsx"));
+                .addAll(new FileChooser.ExtensionFilter(t.translate(CommonLabel.LBL_XLSX_FILES), "*.xlsx"));
         tfFile.focusedProperty().addListener((o, ov, nv) -> {
             boolean isFocused = Boolean.TRUE.equals(nv);
             if (isFocused && firstTime.get()) {
@@ -249,14 +249,14 @@ public class ProductImportController extends CommonContentPaneController {
     }
 
     private void createSheetProduct(XSSFWorkbook workbook) {
-        XSSFSheet sheet = workbook.createSheet(translator.translate(CommonLabel.LBL_PRODUCT));
+        XSSFSheet sheet = workbook.createSheet(t.translate(CommonLabel.LBL_PRODUCT));
         XSSFRow row = sheet.createRow(0);
         for (int i = 0; i < PRODUCT_SHEET_COLUMN_LABELS.length; i++) {
-            row.createCell(i).setCellValue(translator.translate(PRODUCT_SHEET_COLUMN_LABELS[i]));
+            row.createCell(i).setCellValue(t.translate(PRODUCT_SHEET_COLUMN_LABELS[i]));
             sheet.autoSizeColumn(i);
         }
         row = sheet.createRow(1);
-        row.createCell(0).setCellValue(translator.translate(CommonLabel.LBL_SAMPLE_PRODUCT));
+        row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_SAMPLE_PRODUCT));
         row.createCell(1).setCellValue("XXX-0001");
         row.createCell(2).setCellValue("111122223333");
         row.createCell(3).setCellValue("");
@@ -275,10 +275,10 @@ public class ProductImportController extends CommonContentPaneController {
     }
 
     private void createSheetProductCategory(XSSFWorkbook workbook) {
-        XSSFSheet sheet = workbook.createSheet(translator.translate(CommonLabel.LBL_PRODUCT_CATEGORY));
+        XSSFSheet sheet = workbook.createSheet(t.translate(CommonLabel.LBL_PRODUCT_CATEGORY));
         XSSFRow row = sheet.createRow(0);
         for (int i = 0; i < PRODUCT_CATEGORY_SHEET_COLUMN_LABELS.length; i++) {
-            row.createCell(i).setCellValue(translator.translate(PRODUCT_CATEGORY_SHEET_COLUMN_LABELS[i]));
+            row.createCell(i).setCellValue(t.translate(PRODUCT_CATEGORY_SHEET_COLUMN_LABELS[i]));
         }
         int rowNum = 1;
         List<ProductCategoryVM> productCategories = productCategoryService.searchProductCategoryByKeyword("");
@@ -292,10 +292,10 @@ public class ProductImportController extends CommonContentPaneController {
     }
 
     private void createSheetUnit(XSSFWorkbook workbook) {
-        XSSFSheet sheet = workbook.createSheet(translator.translate(CommonLabel.LBL_UNIT));
+        XSSFSheet sheet = workbook.createSheet(t.translate(CommonLabel.LBL_UNIT));
         XSSFRow row = sheet.createRow(0);
         for (int i = 0; i < UNIT_SHEET_COLUMN_LABELS.length; i++) {
-            row.createCell(i).setCellValue(translator.translate(UNIT_SHEET_COLUMN_LABELS[i]));
+            row.createCell(i).setCellValue(t.translate(UNIT_SHEET_COLUMN_LABELS[i]));
         }
         int rowNum = 1;
         List<UnitVM> units = unitService.getAllUnits();
@@ -311,10 +311,10 @@ public class ProductImportController extends CommonContentPaneController {
     }
 
     private void createSheetDrugCategory(XSSFWorkbook workbook) {
-        XSSFSheet sheet = workbook.createSheet(translator.translate(CommonLabel.LBL_DRUG_CLASSIFICATION));
+        XSSFSheet sheet = workbook.createSheet(t.translate(CommonLabel.LBL_DRUG_CLASSIFICATION));
         XSSFRow row = sheet.createRow(0);
         for (int i = 0; i < DRUG_CLASSIFICATION_SHEET_COLUMN_LABELS.length; i++) {
-            row.createCell(i).setCellValue(translator.translate(DRUG_CLASSIFICATION_SHEET_COLUMN_LABELS[i]));
+            row.createCell(i).setCellValue(t.translate(DRUG_CLASSIFICATION_SHEET_COLUMN_LABELS[i]));
         }
         int rowNum = 1;
         List<DrugClassificationVM> categories = drugClassificationService

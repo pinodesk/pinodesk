@@ -124,7 +124,7 @@ public class UserMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 UserVM::getUpdatedAt);
-        tblUsers.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tblUsers.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblUsers.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblUsers.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
@@ -150,12 +150,12 @@ public class UserMainController extends BaseController {
     }
 
     private void searchUsers() {
-        tblUsers.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblUsers.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblUsers.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> userService.searchUsersByFilter(userFilter))
                 .thenAccept(users -> Platform.runLater(() -> {
                     if (users.isEmpty()) {
-                        tblUsers.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblUsers.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                         return;
                     }

@@ -42,7 +42,7 @@ public class ProductCategoryChooseController extends CommonDataChooseController<
         TableViewUtils.setColumnValue(colCode, ProductCategoryVM::getCode);
         TableViewUtils.setColumnValue(colName, ProductCategoryVM::getName);
         TableViewUtils.setColumnValue(colDescription, ProductCategoryVM::getDescription);
-        tblProductCategory.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tblProductCategory.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         registerKeyListener();
         setFocused(contentPane);
     }
@@ -63,12 +63,12 @@ public class ProductCategoryChooseController extends CommonDataChooseController<
     }
 
     private void searchProductCategories() {
-        tblProductCategory.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblProductCategory.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblProductCategory.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> productCategoryService.searchProductCategoryByKeyword(tfSearch.getText()))
                 .thenAccept(categories -> Platform.runLater(() -> {
                     if (categories.isEmpty()) {
-                        tblProductCategory.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblProductCategory.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblProductCategory.setItems(FXCollections.observableList(categories));
                     TableViewUtils.sortAscending(tblProductCategory, colName);

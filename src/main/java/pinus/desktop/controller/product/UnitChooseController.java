@@ -58,12 +58,12 @@ public class UnitChooseController extends CommonDataChooseController<UnitVM> {
     }
 
     private void searchProductCategories() {
-        tblUnit.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblUnit.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblUnit.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> unitService.searchUnitByKeyword(tfSearch.getText()))
                 .thenAccept(units -> Platform.runLater(() -> {
                     if (units.isEmpty()) {
-                        tblUnit.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblUnit.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblUnit.setItems(FXCollections.observableList(units));
                     TableViewUtils.sortAscending(tblUnit, colName);

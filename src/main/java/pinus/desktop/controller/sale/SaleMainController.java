@@ -139,11 +139,11 @@ public class SaleMainController extends BaseController {
         TableViewUtils.setColumnValue(colDoctorName, SaleVM::getDoctorName);
         TableViewUtils.setColumnValue(colPaymentStatus, vm -> {
             return PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?
-                    translator.translate(CommonLabel.LBL_PAID) : translator.translate(CommonLabel.LBL_UNPAID);
+                    t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID);
         });
         TableViewUtils.setColumnValue(colSellingMode, vm -> {
             return SellingMode.GENERAL.toString().equals(vm.getSellingMode()) ?
-                    translator.translate(CommonLabel.LBL_GENERAL) : translator.translate(CommonLabel.LBL_PRESCRIPTION);
+                    t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION);
         });
         TableViewUtils.initTableColumn(
                 colTotalProduct,
@@ -163,7 +163,7 @@ public class SaleMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 SaleVM::getUpdatedAt);
-        tblSales.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tblSales.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblSales.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblSales.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
@@ -189,11 +189,11 @@ public class SaleMainController extends BaseController {
     }
 
     private void searchSales() {
-        tblSales.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblSales.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblSales.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> saleService.searchSales(saleFilter)).thenAccept(sales -> Platform.runLater(() -> {
             if (sales.isEmpty()) {
-                tblSales.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                tblSales.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                 lblRows.setText("0");
             }
             tblSales.setItems(FXCollections.observableList(sales));

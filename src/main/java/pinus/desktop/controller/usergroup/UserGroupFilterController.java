@@ -67,8 +67,8 @@ public class UserGroupFilterController extends CommonDataFilterController<UserGr
         ComboBoxUtils.initSimple(
                 cbStatus,
                 new SimpleComboBoxModel(null, StringConstants.EMPTY),
-                new SimpleComboBoxModel(UserGroupStatus.ACTIVE, translator.translate(CommonLabel.LBL_ACTIVE)),
-                new SimpleComboBoxModel(UserGroupStatus.INACTIVE, translator.translate(CommonLabel.LBL_INACTIVE)));
+                new SimpleComboBoxModel(UserGroupStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE)),
+                new SimpleComboBoxModel(UserGroupStatus.INACTIVE, t.translate(CommonLabel.LBL_INACTIVE)));
     }
 
 }

@@ -292,10 +292,10 @@ public class ProductEditController extends CommonDataSaveController {
         setDrugClassificationChooser(tfDrugClassification, this::handleSelectedDrugClassification, tfIndication);
         ComboBoxUtils.initSimple(
                 cbStatus,
-                new SimpleComboBoxModel(ProductStatus.ACTIVE, translator.translate(CommonLabel.LBL_ACTIVE.toString())),
+                new SimpleComboBoxModel(ProductStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE.toString())),
                 new SimpleComboBoxModel(
                         ProductStatus.INACTIVE,
-                        translator.translate(CommonLabel.LBL_INACTIVE.toString())));
+                        t.translate(CommonLabel.LBL_INACTIVE.toString())));
         ComboBoxUtils.selectIndex(cbStatus, 0);
         initTableProductPrice(locale);
         initTableProductStock();
@@ -533,36 +533,36 @@ public class ProductEditController extends CommonDataSaveController {
     }
 
     private void loadProductExpiry(Long productId) {
-        tblExpiry.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblExpiry.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> productService.getProductExpiryByProductId(productId))
                 .thenAccept(list -> Platform.runLater(() -> {
                     if (list.isEmpty()) {
-                        tblExpiry.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblExpiry.setItems(FXCollections.observableList(list));
                 }));
     }
 
     private void loadProductStock(Long productId) {
-        tblStock.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblStock.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> productService.getProductStockByProductId(productId))
                 .thenAccept(list -> Platform.runLater(() -> {
                     if (list.isEmpty()) {
-                        tblStock.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblStock.setItems(FXCollections.observableList(list));
                 }));
     }
 
     private void loadProductPrice(Long productId) {
-        tblPrice.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblPrice.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> productService.getProductPriceByProductId(productId))
                 .thenAccept(list -> Platform.runLater(() -> {
                     if (list.isEmpty()) {
-                        tblPrice.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblPrice.setItems(FXCollections.observableList(list));
                 }));

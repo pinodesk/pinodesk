@@ -80,8 +80,8 @@ public class UserGroupAddController extends CommonDataSaveController {
     protected void initDataSaveControlActions() {
         ComboBoxUtils.initSimple(
                 cbStatus,
-                new SimpleComboBoxModel(UserGroupStatus.ACTIVE, translator.translate(CommonLabel.LBL_ACTIVE)),
-                new SimpleComboBoxModel(UserGroupStatus.INACTIVE, translator.translate(CommonLabel.LBL_INACTIVE)));
+                new SimpleComboBoxModel(UserGroupStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE)),
+                new SimpleComboBoxModel(UserGroupStatus.INACTIVE, t.translate(CommonLabel.LBL_INACTIVE)));
         colName.setSortable(false);
         colRead.setSortable(false);
         colWrite.setSortable(false);
@@ -93,7 +93,7 @@ public class UserGroupAddController extends CommonDataSaveController {
         colWrite.setCellFactory(CheckBoxTableCell.forTableColumn(colWrite));
         colWrite.setCellValueFactory(data -> data.getValue().booleanWriteProperty());
         tblMenus.setEditable(true);
-        tblMenus.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tblMenus.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
     }
 
     @Override
@@ -125,12 +125,12 @@ public class UserGroupAddController extends CommonDataSaveController {
 
     private void loadUserGroupMenus() {
         Locale locale = resources.getLocale();
-        tblMenus.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblMenus.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblMenus.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> userGroupService.getUserGroupMenus(locale.getLanguage()))
                 .thenAccept(menus -> Platform.runLater(() -> {
                     if (menus.isEmpty()) {
-                        tblMenus.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblMenus.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                         return;
                     }
                     setChangeListeners(menus);

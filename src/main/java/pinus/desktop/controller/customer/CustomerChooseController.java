@@ -69,7 +69,7 @@ public class CustomerChooseController extends CommonDataChooseController<Custome
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 CustomerVM::getUpdatedAt);
-        tblCustomer.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tblCustomer.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblCustomer.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
                 btnChoose.fire();
@@ -104,12 +104,12 @@ public class CustomerChooseController extends CommonDataChooseController<Custome
     }
 
     private void searchSuppliers() {
-        tblCustomer.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblCustomer.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblCustomer.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> customerService.searchCustomersByKeyword(tfSearch.getText()))
                 .thenAccept(suppliers -> Platform.runLater(() -> {
                     if (suppliers.isEmpty()) {
-                        tblCustomer.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblCustomer.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblCustomer.setItems(FXCollections.observableList(suppliers));
                     TableViewUtils.sortAscending(tblCustomer, colName);

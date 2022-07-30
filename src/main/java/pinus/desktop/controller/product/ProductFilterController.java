@@ -217,8 +217,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         ComboBoxUtils.initSimple(
                 cbStatus,
                 new SimpleComboBoxModel(null, StringConstants.EMPTY),
-                new SimpleComboBoxModel(ProductStatus.ACTIVE, translator.translate(CommonLabel.LBL_ACTIVE)),
-                new SimpleComboBoxModel(ProductStatus.INACTIVE, translator.translate(CommonLabel.LBL_INACTIVE)));
+                new SimpleComboBoxModel(ProductStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE)),
+                new SimpleComboBoxModel(ProductStatus.INACTIVE, t.translate(CommonLabel.LBL_INACTIVE)));
         setProductCategoryChooser(tfCategory, this::handleSelectedProductCategory, tfUnit.getParent());
         setUnitChooser(tfUnit, this::handleSelectedUnit, cbStatus);
     }

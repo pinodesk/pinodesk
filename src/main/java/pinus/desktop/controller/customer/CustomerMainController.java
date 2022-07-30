@@ -129,7 +129,7 @@ public class CustomerMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 CustomerVM::getUpdatedAt);
-        tableCustomer.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tableCustomer.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tableCustomer.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableCustomer.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
@@ -155,12 +155,12 @@ public class CustomerMainController extends BaseController {
     }
 
     private void searchCustomers() {
-        tableCustomer.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tableCustomer.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tableCustomer.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> customerService.searchCustomers(customerFilter))
                 .thenAccept(customers -> Platform.runLater(() -> {
                     if (customers.isEmpty()) {
-                        tableCustomer.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tableCustomer.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                     }
                     tableCustomer.setItems(FXCollections.observableList(customers));

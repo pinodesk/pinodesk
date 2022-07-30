@@ -188,7 +188,7 @@ public class ProductMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 ProductVM::getUpdatedAt);
-        tblProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tblProduct.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
@@ -215,12 +215,12 @@ public class ProductMainController extends BaseController {
     }
 
     private void searchProducts() {
-        tblProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblProduct.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblProduct.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> productService.searchProductsByFilter(productFilter))
                 .thenAccept(products -> Platform.runLater(() -> {
                     if (products.isEmpty()) {
-                        tblProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblProduct.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                         btnImport.setVisible(true);
                         return;

@@ -125,7 +125,7 @@ public class SupplierMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 SupplierVM::getUpdatedAt);
-        tableSupplier.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tableSupplier.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tableSupplier.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tableSupplier.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
@@ -151,12 +151,12 @@ public class SupplierMainController extends BaseController {
     }
 
     private void searchSuppliers() {
-        tableSupplier.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tableSupplier.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tableSupplier.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> supplierService.searchSuppliers(supplierFilter))
                 .thenAccept(suppliers -> Platform.runLater(() -> {
                     if (suppliers.isEmpty()) {
-                        tableSupplier.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tableSupplier.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                     }
                     tableSupplier.setItems(FXCollections.observableList(suppliers));

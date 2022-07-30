@@ -55,7 +55,7 @@ import pinus.desktop.util.SpringUtils;
 @Slf4j
 public abstract class BaseController {
 
-    protected Translator translator;
+    protected Translator t;
 
     @FXML
     protected ResourceBundle resources;
@@ -65,7 +65,7 @@ public abstract class BaseController {
 
     @FXML
     void initialize() {
-        translator = new Translator(resources);
+        t = new Translator(resources);
         setDefaultUncaughtExceptionHandler();
         initServices(SpringUtils.getApplicationContext());
         initControlActions();
@@ -109,9 +109,7 @@ public abstract class BaseController {
     private void setDefaultUncaughtExceptionHandler() {
         try {
             if (Thread.getDefaultUncaughtExceptionHandler() == null) {
-                Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-                    handleException(e, t);
-                });
+                Thread.setDefaultUncaughtExceptionHandler((t, e) -> handleException(e, t));
             }
         } catch (SecurityException e) {
             log.error("Unable to execute Thread.setDefaultUncaughtExceptionHandler()", e);
@@ -156,12 +154,12 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayAlert(AlertType type, String message) {
-        ButtonType btnTypeOk = new ButtonType(translator.translate(CommonLabel.BTN_OK), ButtonData.OK_DONE);
-        ButtonType btnTypeYes = new ButtonType(translator.translate(CommonLabel.BTN_YES), ButtonData.YES);
-        ButtonType btnTypeNo = new ButtonType(translator.translate(CommonLabel.BTN_NO), ButtonData.NO);
+        ButtonType btnTypeOk = new ButtonType(t.translate(CommonLabel.BTN_OK), ButtonData.OK_DONE);
+        ButtonType btnTypeYes = new ButtonType(t.translate(CommonLabel.BTN_YES), ButtonData.YES);
+        ButtonType btnTypeNo = new ButtonType(t.translate(CommonLabel.BTN_NO), ButtonData.NO);
         Alert alert = new Alert(type);
         alert.setTitle(CommonConstants.APP_TITLE);
-        alert.setHeaderText(translator.translate(getAlertHeaderMessageCode(type)));
+        alert.setHeaderText(t.translate(getAlertHeaderMessageCode(type)));
         DialogPane dialogPane = alert.getDialogPane();
         Text text = new Text(message);
         text.setWrappingWidth(dialogPane.getWidth());
@@ -198,7 +196,7 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayError(IMessage messageCode) {
-        return displayError(translator.translate(messageCode.toString()));
+        return displayError(t.translate(messageCode.toString()));
     }
 
     protected AlertResult displayError(Collection<?> messageCodes) {
@@ -207,7 +205,7 @@ public abstract class BaseController {
                 return str;
             }
             if (val instanceof IMessage im) {
-                return translator.translate(im);
+                return t.translate(im);
             }
             return null;
         }).filter(Objects::nonNull).toList();
@@ -220,7 +218,7 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayInfo(IMessage messageCode) {
-        return displayInfo(translator.translate(messageCode.toString()));
+        return displayInfo(t.translate(messageCode.toString()));
     }
 
     protected AlertResult displayConfirmation(String message) {
@@ -228,14 +226,14 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayConfirmation(IMessage messageCode) {
-        return displayConfirmation(translator.translate(messageCode.toString()));
+        return displayConfirmation(t.translate(messageCode.toString()));
     }
 
     // From https://code.makery.ch/blog/javafx-dialogs-official/
     protected void displayException(Throwable ex) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(CommonConstants.APP_TITLE);
-        alert.setHeaderText(translator.translate(CommonLabel.LBL_SYSTEM_ERROR));
+        alert.setHeaderText(t.translate(CommonLabel.LBL_SYSTEM_ERROR));
 
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setMinWidth(600);
@@ -245,7 +243,7 @@ public abstract class BaseController {
         ex.printStackTrace(pw);
         String exceptionText = sw.toString();
 
-        Label label = new Label(translator.translate(CommonLabel.LBL_DETAILS) + StringConstants.COLON);
+        Label label = new Label(t.translate(CommonLabel.LBL_DETAILS) + StringConstants.COLON);
 
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);

@@ -212,7 +212,7 @@ public class SaleEditController extends CommonDataSaveController {
             calculateSaleSummary();
         }
         if (tblSaleProduct.getItems().isEmpty()) {
-            tblSaleProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+            tblSaleProduct.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         }
     }
 
@@ -278,12 +278,12 @@ public class SaleEditController extends CommonDataSaveController {
     protected void initDataSaveControlActions() {
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
-                new SimpleComboBoxModel(PaymentStatus.PAID, translator.translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID, translator.translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID, t.translate(CommonLabel.LBL_UNPAID)));
         ComboBoxUtils.initSimple(
                 cbSellingMode,
-                new SimpleComboBoxModel(SellingMode.GENERAL, translator.translate(CommonLabel.LBL_GENERAL)),
-                new SimpleComboBoxModel(SellingMode.PRESCRIPTION, translator.translate(CommonLabel.LBL_PRESCRIPTION)));
+                new SimpleComboBoxModel(SellingMode.GENERAL, t.translate(CommonLabel.LBL_GENERAL)),
+                new SimpleComboBoxModel(SellingMode.PRESCRIPTION, t.translate(CommonLabel.LBL_PRESCRIPTION)));
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(tfSellingPrice, tfCurrentQuantity, tfSaleQuantity);
         TableViewUtils.setColumnValue(colProductName, SaleProductVM::getProductName);
@@ -308,7 +308,7 @@ public class SaleEditController extends CommonDataSaveController {
                 colExpiredDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 SaleProductVM::getExpiredDate);
-        tblSaleProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tblSaleProduct.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblSaleProduct.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblSaleProduct.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {

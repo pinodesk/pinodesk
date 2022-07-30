@@ -142,7 +142,7 @@ public class PurchaseMainController extends BaseController {
         TableViewUtils.setColumnValue(colPaymentStatus, vm -> {
             PaymentStatus ps = PaymentStatus.valueOf(vm.getPaymentStatus());
             return PaymentStatus.PAID.equals(ps) ?
-                    translator.translate(CommonLabel.LBL_PAID) : translator.translate(CommonLabel.LBL_UNPAID);
+                    t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID);
         });
         TableViewUtils.initTableColumn(
                 colTotalProduct,
@@ -177,7 +177,7 @@ public class PurchaseMainController extends BaseController {
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 PurchaseVM::getUpdatedAt);
-        tblPurchase.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tblPurchase.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblPurchase.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblPurchase.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
@@ -203,12 +203,12 @@ public class PurchaseMainController extends BaseController {
     }
 
     private void searchPurchases() {
-        tblPurchase.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblPurchase.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblPurchase.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> purchaseService.searchPurchases(purchaseFilter))
                 .thenAccept(purchases -> Platform.runLater(() -> {
                     if (purchases.isEmpty()) {
-                        tblPurchase.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblPurchase.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                     }
                     tblPurchase.setItems(FXCollections.observableList(purchases));

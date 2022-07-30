@@ -112,7 +112,7 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 ProductVM::getUpdatedAt);
-        tblProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+        tblProduct.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblProduct.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
                 btnChoose.fire();
@@ -147,12 +147,12 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
     }
 
     private void searchProducts() {
-        tblProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblProduct.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblProduct.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> productService.searchProductsByKeyword(tfSearch.getText()))
                 .thenAccept(products -> Platform.runLater(() -> {
                     if (products.isEmpty()) {
-                        tblProduct.setPlaceholder(new Label(translator.translate(CommonLabel.LBL_NO_DATA)));
+                        tblProduct.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblProduct.setItems(FXCollections.observableList(products));
                     TableViewUtils.sortAscending(tblProduct, colName);
