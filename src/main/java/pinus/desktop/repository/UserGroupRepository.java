@@ -23,4 +23,7 @@ public interface UserGroupRepository extends PagingAndSortingRepository<UserGrou
     List<UserGroup> findByDeletedAtIsNull();
 
     Optional<UserGroup> findByIdAndDeletedAtIsNull(Long id);
+
+    boolean existsByNameIgnoreCaseAndDeletedAtIsNull(String name);
+
 }

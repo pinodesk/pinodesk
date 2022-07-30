@@ -87,7 +87,7 @@ public class UserAddController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
-        validator.validateBlank(tfFullName, MessageCode.ERROR_EMPTY_NAME);
+        validator.validateBlank(tfFullName, MessageCode.ERROR_EMPTY_FULL_NAME);
         validator.validateBlank(tfUsername, MessageCode.ERROR_EMPTY_USERNAME);
         validator.validateBlank(tfPassword, MessageCode.ERROR_EMPTY_PASSWORD);
         validator.validateBlank(tfPasswordConfirmation, MessageCode.ERROR_EMPTY_PASSWORD_CONFIRMATION);

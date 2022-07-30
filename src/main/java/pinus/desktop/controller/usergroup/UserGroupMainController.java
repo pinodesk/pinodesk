@@ -69,7 +69,7 @@ public class UserGroupMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        StageUtils.modal(Page.SETTINGS_USER_GROUP_ADD, false, we -> {
+        StageUtils.modal(Page.SETTINGS_USER_GROUP_ADD, we -> {
             if (getPageData() != null) {
                 searchUserGroups();
             }

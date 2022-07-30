@@ -93,7 +93,7 @@ public class UserEditController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
-        validator.validateBlank(tfFullName, MessageCode.ERROR_EMPTY_NAME);
+        validator.validateBlank(tfFullName, MessageCode.ERROR_EMPTY_FULL_NAME);
         validator.validateBlank(tfUsername, MessageCode.ERROR_EMPTY_USERNAME);
         validator.validateCustom(() -> {
             String password = tfPassword.getText();
