@@ -30,7 +30,7 @@ public class UserService extends BaseService {
 
     @Cacheable(CacheNameConstants.USERS_BY_FILTER)
     public List<UserVM> searchUsersByFilter(UserFilterVM filter) {
-        return objectConverter.convertList(userRepository.findByFilter(filter), UserVM.class);
+        return userRepository.findByFilter(filter);
     }
 
     @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)

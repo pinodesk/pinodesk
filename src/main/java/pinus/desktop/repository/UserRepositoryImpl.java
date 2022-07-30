@@ -9,25 +9,35 @@ import com.gitlab.muhammadkholidb.sequel.sql.Where;
 
 import pinus.desktop.domain.User;
 import pinus.desktop.viewmodel.UserFilterVM;
+import pinus.desktop.viewmodel.UserVM;
 
 public class UserRepositoryImpl extends AbstractRepository<User> implements UserRepositoryCustom {
 
     @Override
-    public List<User> findByFilter(UserFilterVM filter) {
-        Where where = new Where();
+    public List<UserVM> findByFilter(UserFilterVM filter) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("""
+                select
+                    u.*,
+                    ug.name as user_group_name
+                from `user` u
+                inner join user_group ug on ug.id = u.user_group_id
+                """);
+        Where where = new Where().isNull("u.deleted_at");
         if (StringUtils.isNotBlank(filter.getFullName())) {
-            where.containsIgnoreCase(User.C_FULL_NAME, filter.getFullName());
+            where.containsIgnoreCase("u.full_name", filter.getFullName());
         }
         if (StringUtils.isNotBlank(filter.getUsername())) {
-            where.containsIgnoreCase(User.C_USERNAME, filter.getUsername());
+            where.containsIgnoreCase("u.username", filter.getUsername());
         }
         if (filter.getUserGroup() != null) {
-            where.equals(User.C_USER_GROUP_ID, filter.getUserGroup().getId());
+            where.equals("u.user_group_id", filter.getUserGroup().getId());
         }
         if (filter.getStatus() != null) {
-            where.equals(User.C_STATUS, filter.getStatus().toString());
+            where.equals("u.status", filter.getStatus().toString());
         }
-        return read(where);
+        sb.append(where.getClause());
+        return performSelect(sb.toString(), where.getValues(), UserVM.class);
     }
 
 }
