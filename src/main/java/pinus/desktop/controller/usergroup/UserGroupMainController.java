@@ -96,8 +96,8 @@ public class UserGroupMainController extends BaseController {
             AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_USER_GROUPS);
             if (result.isConfirmed()) {
                 userGroupService.removeUserGroups(items.stream().map(UserGroupVM::getId).toList());
-                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_USER_GROUPS);
                 searchUserGroups();
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_USER_GROUPS);
             }
         }
     }
@@ -164,7 +164,7 @@ public class UserGroupMainController extends BaseController {
     private void handleActionTableUserGroup() {
         if (TableViewUtils.hasItemSelected(tblUserGroups)) {
             setPageData(TableViewUtils.getSelectedItem(tblUserGroups));
-            StageUtils.modal(Page.SETTINGS_USER_GROUP_EDIT, false, event -> {
+            StageUtils.modal(Page.SETTINGS_USER_GROUP_EDIT, event -> {
                 if (getPageData() != null) {
                     searchUserGroups();
                 }

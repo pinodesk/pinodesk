@@ -22,7 +22,9 @@ import pinus.desktop.exception.DomainException;
 import pinus.desktop.repository.MenuRepository;
 import pinus.desktop.repository.UserGroupMenuRepository;
 import pinus.desktop.repository.UserGroupRepository;
+import pinus.desktop.repository.UserRepository;
 import pinus.desktop.viewmodel.UserGroupAddVM;
+import pinus.desktop.viewmodel.UserGroupEditVM;
 import pinus.desktop.viewmodel.UserGroupFilterVM;
 import pinus.desktop.viewmodel.UserGroupMenuVM;
 import pinus.desktop.viewmodel.UserGroupVM;
@@ -37,6 +39,9 @@ public class UserGroupService extends BaseService {
     private UserGroupMenuRepository userGroupMenuRepository;
 
     @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private MenuRepository menuRepository;
 
     @Cacheable(CacheNameConstants.USER_GROUPS_BY_FILTER)
@@ -49,8 +54,16 @@ public class UserGroupService extends BaseService {
     @Transactional
     public void removeUserGroups(List<Long> ids) {
         if (ids.contains(CommonConstants.USER_GROUP_ID_ADMINISTRATOR)) {
-            throw new DomainException(DomainError.DELETE_USER_GROUP_ADMINISTRATOR_FORBIDDEN);
+            throw new DomainException(DomainError.USER_GROUP_ADMINISTRATOR_MODIFICATION_FORBIDDEN);
         }
+        ids.forEach(id -> {
+            UserGroup userGroup = userGroupRepository.findByIdAndDeletedAtIsNull(id)
+                    .orElseThrow(() -> new DomainException(DomainError.USER_GROUP_NOT_FOUND_BY_ID));
+            Long count = userRepository.countByUserGroupIdAndDeletedAtIsNull(id);
+            if (count > 0) {
+                throw new DomainException(DomainError.DELETE_USER_GROUP_USER_EXISTS, userGroup.getName(), count);
+            }
+        });
         userGroupRepository.deleteUpdateByIdIn(ids);
     }
 
@@ -69,29 +82,40 @@ public class UserGroupService extends BaseService {
     }
 
     public List<UserGroupMenuVM> getUserGroupMenusByUserGroupId(Long userGroupId, String language) {
-        return userGroupMenuRepository.findByUserGroupId(userGroupId, language);
+        List<Menu> menus = menuRepository.findByLanguageAndDeletedAtIsNull(language);
+        List<UserGroupMenuVM> userGroupMenus = userGroupMenuRepository.findByUserGroupId(userGroupId, language);
+        List<UserGroupMenuVM> ordered = new ArrayList<>();
+        menus.forEach(menu -> {
+            if (menu.getParentMenuId() == null) {
+                UserGroupMenuVM ugm = userGroupMenus.stream().filter(u -> u.getMenuId().equals(menu.getId())).findAny()
+                        .orElse(toUserGroupMenu(menu));
+                ordered.add(ugm);
+                menus.forEach(menu1 -> {
+                    if (Objects.equals(menu1.getParentMenuId(), ugm.getMenuId())) {
+                        UserGroupMenuVM child = userGroupMenus.stream().filter(u -> u.getMenuId().equals(menu1.getId()))
+                                .findAny().orElse(toUserGroupMenu(menu1));
+                        ordered.add(child);
+                    }
+                });
+            }
+        });
+        return ordered;
     }
 
     public List<UserGroupMenuVM> getUserGroupMenus(String language) {
         List<Menu> menus = menuRepository.findByLanguageAndDeletedAtIsNull(language);
-        List<UserGroupMenuVM> userGroupMenus = new ArrayList<>();
+        List<UserGroupMenuVM> ordered = new ArrayList<>();
         menus.forEach(menu -> {
             if (menu.getParentMenuId() == null) {
-                userGroupMenus.add(toUserGroupMenu(menu));
-                userGroupMenus.addAll(getUserGroupMenuChildren(menu.getId(), menus));
+                ordered.add(toUserGroupMenu(menu));
+                menus.forEach(menu1 -> {
+                    if (Objects.equals(menu.getId(), menu1.getParentMenuId())) {
+                        ordered.add(toUserGroupMenu(menu1));
+                    }
+                });
             }
         });
-        return userGroupMenus;
-    }
-
-    private List<UserGroupMenuVM> getUserGroupMenuChildren(Long parentMenuId, List<Menu> menus) {
-        List<UserGroupMenuVM> list = new ArrayList<>();
-        menus.forEach(menu -> {
-            if (Objects.equals(parentMenuId, menu.getParentMenuId())) {
-                list.add(toUserGroupMenu(menu));
-            }
-        });
-        return list;
+        return ordered;
     }
 
     private UserGroupMenuVM toUserGroupMenu(Menu menu) {
@@ -129,6 +153,37 @@ public class UserGroupService extends BaseService {
         });
         userGroupMenuRepository.saveAll(userGroupMenus);
         return created;
+    }
+
+    @CacheEvict(value = { CacheNameConstants.USER_GROUPS_BY_FILTER, CacheNameConstants.USER_GROUPS_BY_KEYWORD },
+        allEntries = true)
+    @Transactional
+    public UserGroup updateUserGroup(UserGroupEditVM userGroupEdit, Long userGroupId) {
+        if (CommonConstants.USER_GROUP_ID_ADMINISTRATOR.equals(userGroupId)) {
+            throw new DomainException(DomainError.USER_GROUP_ADMINISTRATOR_MODIFICATION_FORBIDDEN);
+        }
+        UserGroup userGroup = userGroupRepository.findByIdAndDeletedAtIsNull(userGroupId)
+                .orElseThrow(() -> new DomainException(DomainError.USER_GROUP_NOT_FOUND_BY_ID));
+        if (!userGroup.getName().equalsIgnoreCase(userGroupEdit.getName())
+                && userGroupRepository.existsByNameIgnoreCaseAndDeletedAtIsNull(userGroupEdit.getName())) {
+            throw new DomainException(DomainError.USER_GROUP_EXISTS_BY_NAME);
+        }
+        userGroup.setName(userGroupEdit.getName());
+        userGroup.setStatus(userGroupEdit.getStatus().toString());
+        userGroup.setDescription(userGroupEdit.getDescription());
+        UserGroup updated = userGroupRepository.save(userGroup);
+        userGroupMenuRepository.deleteByUserGroupId(userGroupId);
+        List<UserGroupMenu> userGroupMenus = new ArrayList<>();
+        userGroupEdit.getUserGroupMenus().forEach(vm -> {
+            UserGroupMenu ugm = new UserGroupMenu();
+            ugm.setMenuCode(vm.getMenuCode());
+            ugm.setRead(vm.getRead());
+            ugm.setUserGroupId(userGroupId);
+            ugm.setWrite(vm.getWrite());
+            userGroupMenus.add(ugm);
+        });
+        userGroupMenuRepository.saveAll(userGroupMenus);
+        return updated;
     }
 
 }
