@@ -13,6 +13,3 @@ create table if not exists "user" (
 	index idx_user__username (username),
 	index idx_user__username__deleted_at (username, deleted_at)
 );
-
-insert into "user" (user_group_id, full_name, username, password_hash, status) values 
-(1, 'Muhammad', 'muhammad', '', 'active');

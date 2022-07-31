@@ -1,10 +1,10 @@
 package pinus.desktop.controller;
 
+import org.apache.commons.lang3.ObjectUtils;
+
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
-
-import org.apache.commons.lang3.ObjectUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

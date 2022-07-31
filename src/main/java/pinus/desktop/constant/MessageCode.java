@@ -43,6 +43,7 @@ public enum MessageCode implements IMessage {
     ERROR_EMPTY_PASSWORD_CONFIRMATION,
     ERROR_MISMATCH_PASSWORD_CONFIRMATION,
     ERROR_EMPTY_USER_GROUP,
+    ERROR_EMPTY_STORE_NAME,
 
     // Configuration
     SUCCESS_EDIT_CONFIGURATION,
@@ -159,7 +160,8 @@ public enum MessageCode implements IMessage {
     CONFIRMATION_REMOVE_USER,
     CONFIRMATION_REMOVE_SELECTED_USERS,
     ERROR_USER_EXISTS_BY_USERNAME,
-    ERROR_USER_NOT_FOUND_BY_ID;
+    ERROR_USER_NOT_FOUND_BY_ID,
+    ERROR_USER_NOT_FOUND;
 
     @Override
     public String toString() {

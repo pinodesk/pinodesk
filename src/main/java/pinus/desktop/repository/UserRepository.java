@@ -31,4 +31,6 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
     Optional<User> findByIdAndDeletedAtIsNull(Long id);
 
     Long countByUserGroupIdAndDeletedAtIsNull(Long userGroupId);
+
+    Optional<User> findByUsernameAndDeletedAtIsNull(String username);
 }

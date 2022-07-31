@@ -10,5 +10,5 @@ create table if not exists user_group (
 	index idx_user_group__deleted_at (deleted_at)
 );
 
-insert into user_group (id, name, status) values 
-(1, 'Administrator', 'active');
+insert into user_group (id, name, description, status) values 
+(1, 'Administrator', 'Administrator user group', 'active');

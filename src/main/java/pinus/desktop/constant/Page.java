@@ -7,6 +7,8 @@ public enum Page implements IPage {
     MAIN("main"),
     SPLASH("splash"),
     LOADING("loading"),
+    LOGIN("login"),
+    INITIAL_SETUP("initial-setup"),
 
     MASTER_PRODUCT_MAIN("master/product/main"),
     MASTER_PRODUCT_ADD("master/product/add"),

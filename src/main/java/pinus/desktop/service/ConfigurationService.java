@@ -5,13 +5,18 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.domain.Configuration;
+import pinus.desktop.domain.User;
 import pinus.desktop.repository.ConfigurationRepository;
+import pinus.desktop.repository.UserRepository;
+import pinus.desktop.util.PasswordUtils;
+import pinus.desktop.viewmodel.UserAddVM;
 
 @Service
 public class ConfigurationService extends BaseService {
@@ -22,6 +27,9 @@ public class ConfigurationService extends BaseService {
     @Autowired
     private ConfigurationRepository configurationRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Cacheable(CacheNameConstants.CONFIGURATION_BY_CODE)
     public String getConfiguration(String code) {
         return configurationRepository.findByCodeAndDeletedAtIsNull(code).map(Configuration::getValue).orElse(null);
@@ -31,6 +39,19 @@ public class ConfigurationService extends BaseService {
     public Map<String, String> getConfigurationMap() {
         return configurationRepository.findByDeletedAtIsNull().stream()
                 .collect(Collectors.toMap(Configuration::getCode, Configuration::getValue));
+    }
+
+    @CacheEvict(value = { CacheNameConstants.CONFIGURATION_BY_CODE }, allEntries = true)
+    @Transactional
+    public void saveIntialSetup(Map<String, String> configurationMap, UserAddVM userAdd) {
+        updateConfiguration(configurationMap);
+        User user = new User();
+        user.setFullName(userAdd.getFullName());
+        user.setUsername(userAdd.getUsername());
+        user.setStatus(userAdd.getStatus().toString());
+        user.setUserGroupId(userAdd.getUserGroupId());
+        user.setPasswordHash(PasswordUtils.encrypt(userAdd.getPassword()));
+        userRepository.save(user);
     }
 
     @Transactional

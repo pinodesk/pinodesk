@@ -293,9 +293,7 @@ public class ProductEditController extends CommonDataSaveController {
         ComboBoxUtils.initSimple(
                 cbStatus,
                 new SimpleComboBoxModel(ProductStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE.toString())),
-                new SimpleComboBoxModel(
-                        ProductStatus.INACTIVE,
-                        t.translate(CommonLabel.LBL_INACTIVE.toString())));
+                new SimpleComboBoxModel(ProductStatus.INACTIVE, t.translate(CommonLabel.LBL_INACTIVE.toString())));
         ComboBoxUtils.selectIndex(cbStatus, 0);
         initTableProductPrice(locale);
         initTableProductStock();
