@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Configuration;
 import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
 
 import pinus.desktop.repository.ConfigurationRepository;
+import pinus.desktop.repository.UserRepository;
 import pinus.desktop.service.ConfigurationService;
 
 @MockitoSettings(strictness = Strictness.WARN)
@@ -62,6 +63,11 @@ public class ResourceBundleUtilsTest {
         @Bean
         public CacheManager cacheManager() {
             return mock(CacheManager.class);
+        }
+
+        @Bean
+        public UserRepository userRepository() {
+            return mock(UserRepository.class);
         }
 
         @Bean
