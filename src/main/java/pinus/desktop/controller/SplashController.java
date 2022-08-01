@@ -1,6 +1,8 @@
 package pinus.desktop.controller;
 
 import java.io.IOException;
+import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
@@ -12,6 +14,7 @@ import javafx.scene.layout.AnchorPane;
 import lombok.extern.slf4j.Slf4j;
 import pinus.desktop.Pinus;
 import pinus.desktop.PinusConfig;
+import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.SimpleStatus;
@@ -29,6 +32,10 @@ public class SplashController {
     void initialize() {
         CompletableFuture.runAsync(() -> SpringUtils.init(PinusConfig.class)).thenRun(() -> {
             ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
+            String languageCode = Locale.getDefault().getLanguage();
+            if (CommonConstants.LANGUAGE_CODE_INDONESIA.equals(languageCode)) {
+                configurationService.updateConfiguration(Map.of(ConfigurationConstants.LANGUAGE, languageCode));
+            }
             String initialSetupDone = configurationService.getConfiguration(ConfigurationConstants.INITIAL_SETUP_DONE);
             Platform.runLater(() -> {
                 try {
