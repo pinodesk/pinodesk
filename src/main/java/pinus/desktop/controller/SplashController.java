@@ -32,15 +32,18 @@ public class SplashController {
     void initialize() {
         CompletableFuture.runAsync(() -> SpringUtils.init(PinusConfig.class)).thenRun(() -> {
             ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
-            String languageCode = Locale.getDefault().getLanguage();
-            if (CommonConstants.LANGUAGE_CODE_INDONESIA.equals(languageCode)) {
-                configurationService.updateConfiguration(Map.of(ConfigurationConstants.LANGUAGE, languageCode));
-            }
             String initialSetupDone = configurationService.getConfiguration(ConfigurationConstants.INITIAL_SETUP_DONE);
+            boolean isInitialSetupDone = SimpleStatus.YES.toString().equals(initialSetupDone);
+            if (!isInitialSetupDone) {
+                String language = Locale.getDefault().getLanguage();
+                if (CommonConstants.LANGUAGE_CODE_INDONESIA.equals(language)) {
+                    configurationService.updateConfiguration(Map.of(ConfigurationConstants.LANGUAGE, language));
+                }
+            }
             Platform.runLater(() -> {
                 try {
                     contentPane.getScene().getWindow().hide();
-                    if (!SimpleStatus.YES.toString().equals(initialSetupDone)) {
+                    if (!isInitialSetupDone) {
                         StageUtils.open(Page.INITIAL_SETUP, false);
                         return;
                     }
