@@ -11,6 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pinus.desktop.annotation.ForActivity;
 import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.ConfigurationConstants;
@@ -64,11 +65,13 @@ public class PurchaseService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
+    @ForActivity(Activity.SEARCH_PURCHASES_BY_FILTER)
     @Cacheable(CacheNameConstants.PURCHASES_BY_FILTER)
     public List<PurchaseVM> searchPurchases(PurchaseFilterVM filter) {
         return purchaseRepository.findByFilter(filter);
     }
 
+    @ForActivity(Activity.ADD_PURCHASE)
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -131,6 +134,7 @@ public class PurchaseService extends BaseService {
         }
     }
 
+    @ForActivity(Activity.EDIT_PURCHASE)
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -345,6 +349,7 @@ public class PurchaseService extends BaseService {
         productPriceRepository.save(pp);
     }
 
+    @ForActivity(Activity.REMOVE_PURCHASES)
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -352,11 +357,12 @@ public class PurchaseService extends BaseService {
         allEntries = true)
     @Transactional
     public void removePurchases(List<Long> ids) {
-        ids.forEach(id -> revertLastPurchasedProducts(id, Activity.DELETE_PURCHASE.toString()));
+        ids.forEach(id -> revertLastPurchasedProducts(id, Activity.REMOVE_PURCHASES.toString()));
         purchaseDetailRepository.deleteUpdateByPurchaseIdIn(ids);
         purchaseRepository.deleteUpdateByIdIn(ids);
     }
 
+    @ForActivity(Activity.GET_PURCHASE_PRODUCTS)
     public List<PurchaseProductVM> getPurchaseProducts(Long purchaseId) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return purchaseDetailRepository.findByPurchaseIdJoinProducts(purchaseId, language);

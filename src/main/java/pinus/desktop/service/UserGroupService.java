@@ -11,6 +11,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pinus.desktop.annotation.ForActivity;
+import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.DomainError;
@@ -44,11 +46,13 @@ public class UserGroupService extends BaseService {
     @Autowired
     private MenuRepository menuRepository;
 
+    @ForActivity(Activity.SEARCH_USER_GROUPS_BY_FILTER)
     @Cacheable(CacheNameConstants.USER_GROUPS_BY_FILTER)
     public List<UserGroupVM> searchUserGroupsByFilter(UserGroupFilterVM filter) {
         return objectConverter.convertList(userGroupRepository.findByFilter(filter), UserGroupVM.class);
     }
 
+    @ForActivity(Activity.REMOVE_USER_GROUPS)
     @CacheEvict(value = { CacheNameConstants.USER_GROUPS_BY_FILTER, CacheNameConstants.USER_GROUPS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -67,6 +71,7 @@ public class UserGroupService extends BaseService {
         userGroupRepository.deleteUpdateByIdIn(ids);
     }
 
+    @ForActivity(Activity.SEARCH_USER_GROUPS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.USER_GROUPS_BY_KEYWORD)
     public List<UserGroupVM> searchUserGroupsByKeyword(String keyword) {
         List<UserGroup> userGroups = StringUtils.isBlank(keyword) ?
@@ -74,6 +79,7 @@ public class UserGroupService extends BaseService {
         return objectConverter.convertList(userGroups, UserGroupVM.class);
     }
 
+    @ForActivity(Activity.GET_USER_GROUP_BY_ID)
     public UserGroupVM getUserGroupById(Long id) {
         return objectConverter.convertOptionalOrThrow(
                 userGroupRepository.findByIdAndDeletedAtIsNull(id),
@@ -81,6 +87,7 @@ public class UserGroupService extends BaseService {
                 new DomainException(DomainError.USER_GROUP_NOT_FOUND_BY_ID));
     }
 
+    @ForActivity(Activity.GET_USER_GROUP_MENUS_BY_USER_GROUP_ID)
     public List<UserGroupMenuVM> getUserGroupMenusByUserGroupId(Long userGroupId, String language) {
         List<Menu> menus = menuRepository.findByLanguageAndDeletedAtIsNull(language);
         List<UserGroupMenuVM> userGroupMenus = userGroupMenuRepository.findByUserGroupId(userGroupId, language);
@@ -102,6 +109,7 @@ public class UserGroupService extends BaseService {
         return ordered;
     }
 
+    @ForActivity(Activity.GET_USER_GROUP_MENUS)
     public List<UserGroupMenuVM> getUserGroupMenus(String language) {
         List<Menu> menus = menuRepository.findByLanguageAndDeletedAtIsNull(language);
         List<UserGroupMenuVM> ordered = new ArrayList<>();
@@ -130,6 +138,7 @@ public class UserGroupService extends BaseService {
         return ugm;
     }
 
+    @ForActivity(Activity.ADD_USER_GROUP)
     @CacheEvict(value = { CacheNameConstants.USER_GROUPS_BY_FILTER, CacheNameConstants.USER_GROUPS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -155,6 +164,7 @@ public class UserGroupService extends BaseService {
         return created;
     }
 
+    @ForActivity(Activity.EDIT_USER_GROUP)
     @CacheEvict(value = { CacheNameConstants.USER_GROUPS_BY_FILTER, CacheNameConstants.USER_GROUPS_BY_KEYWORD },
         allEntries = true)
     @Transactional

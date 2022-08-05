@@ -10,6 +10,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pinus.desktop.annotation.ForActivity;
+import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.domain.Configuration;
 import pinus.desktop.domain.User;
@@ -30,11 +32,13 @@ public class ConfigurationService extends BaseService {
     @Autowired
     private UserRepository userRepository;
 
+    @ForActivity(Activity.GET_CONFIGURATION_BY_CODE)
     @Cacheable(CacheNameConstants.CONFIGURATION_BY_CODE)
     public String getConfiguration(String code) {
         return configurationRepository.findByCodeAndDeletedAtIsNull(code).map(Configuration::getValue).orElse(null);
     }
 
+    @ForActivity(Activity.GET_CONFIGURATION_MAP)
     @Cacheable(CacheNameConstants.CONFIGURATION_MAP)
     public Map<String, String> getConfigurationMap() {
         return configurationRepository.findByDeletedAtIsNull().stream()
@@ -54,6 +58,7 @@ public class ConfigurationService extends BaseService {
         userRepository.save(user);
     }
 
+    @ForActivity(Activity.UPDATE_CONFIGURATION)
     @Transactional
     public void updateConfiguration(Map<String, String> configurationMap) {
         configurationMap.entrySet()

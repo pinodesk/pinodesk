@@ -18,6 +18,7 @@ import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
@@ -41,6 +42,7 @@ import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
 @EnableJdbcRepositories
 @EnableJdbcAuditing
 @EnableTransactionManagement
+@EnableAspectJAutoProxy
 public class PinusConfig extends AbstractJdbcConfiguration {
 
     @Value("${jdbc.driver}")

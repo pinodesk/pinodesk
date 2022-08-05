@@ -7,6 +7,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 
+import pinus.desktop.annotation.ForActivity;
+import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.repository.PayableRepository;
 import pinus.desktop.viewmodel.PayableVM;
@@ -17,6 +19,7 @@ public class PayableService extends BaseService {
     @Autowired
     private PayableRepository payableRepository;
 
+    @ForActivity(Activity.SEARCH_PAYABLES_BY_FILTER)
     @Cacheable(CacheNameConstants.PAYABLES_BY_FILTER)
     public List<PayableVM> searchPayables() {
         return objectConverter.convertList(Streamable.of(payableRepository.findAll()).toList(), PayableVM.class);

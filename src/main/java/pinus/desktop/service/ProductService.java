@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Getter;
 import lombok.Setter;
+import pinus.desktop.annotation.ForActivity;
 import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.CommonConstants;
@@ -80,18 +81,21 @@ public class ProductService extends BaseService {
     @Autowired
     private DrugClassificationRepository drugClassificationRepository;
 
+    @ForActivity(Activity.SEARCH_PRODUCTS_BY_FILTER)
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
     public List<ProductVM> searchProductsByFilter(ProductFilterVM filter) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return productRepository.findByFilter(filter, language);
     }
 
+    @ForActivity(Activity.SEARCH_PRODUCTS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.PRODUCTS_BY_KEYWORD)
     public List<ProductVM> searchProductsByKeyword(String keyword) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return productRepository.findByKeyword(keyword, language);
     }
 
+    @ForActivity(Activity.EDIT_PRODUCT)
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -229,6 +233,7 @@ public class ProductService extends BaseService {
         }
     }
 
+    @ForActivity(Activity.REMOVE_PRODUCTS)
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -236,6 +241,7 @@ public class ProductService extends BaseService {
         productRepository.deleteUpdateByIdIn(ids);
     }
 
+    @ForActivity(Activity.ADD_PRODUCT)
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -325,24 +331,28 @@ public class ProductService extends BaseService {
         }
     }
 
+    @ForActivity(Activity.GET_PRODUCT_PRICES_BY_PRODUCT_ID)
     public List<ProductPriceVM> getProductPriceByProductId(Long productId) {
         return objectConverter.convertList(
                 productPriceRepository.findByProductIdAndDeletedAtIsNullOrderByIdDesc(productId),
                 ProductPriceVM.class);
     }
 
+    @ForActivity(Activity.GET_PRODUCT_EXPIRIES_BY_PRODUCT_ID)
     public List<ProductExpiryVM> getProductExpiryByProductId(Long productId) {
         return objectConverter.convertList(
                 productExpiryRepository.findByProductIdAndDeletedAtIsNullOrderByIdDesc(productId),
                 ProductExpiryVM.class);
     }
 
+    @ForActivity(Activity.GET_PRODUCT_STOCKS_BY_PRODUCT_ID)
     public List<ProductStockVM> getProductStockByProductId(Long productId) {
         return objectConverter.convertList(
                 productStockRepository.findByProductIdAndDeletedAtIsNullOrderByIdDesc(productId),
                 ProductStockVM.class);
     }
 
+    @ForActivity(Activity.ADD_PRODUCT_EXPIRY)
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -376,6 +386,7 @@ public class ProductService extends BaseService {
         });
     }
 
+    @ForActivity(Activity.GET_REMAINING_PRODUCT_EXPIRIES)
     public List<GroupedProductExpiryVM> getRemainingProductExpiry(Long productId) {
         return productExpiryRepository.findGroupedByProductId(productId);
     }
@@ -387,11 +398,12 @@ public class ProductService extends BaseService {
         });
     }
 
+    @ForActivity(Activity.IMPORT_PRODUCTS)
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
     public void importProducts(List<ProductImportVM> productImports) {
-        String activityName = Activity.IMPORT_PRODUCT.toString();
+        String activityName = Activity.IMPORT_PRODUCTS.toString();
         List<ProductImportMapping> mappings = new ArrayList<>();
         Set<String> checkedCategoryCodes = new HashSet<>();
         Set<Unit> checkedUnits = new HashSet<>();

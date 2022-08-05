@@ -20,7 +20,7 @@ public interface UserRepository extends PagingAndSortingRepository<User, Long>, 
     @Query("update `user` set updated_at=now(), deleted_at=now() where id in (:ids)")
     void deleteUpdateByIdIn(@Param("ids") List<Long> ids);
 
-    boolean existsByUserGroupIdAndDeletedAtIsNull(Long userGroupId);
+    boolean existsByUserGroupIdAndIdNotAndDeletedAtIsNull(Long userGroupId, Long id);
 
     boolean existsByUserGroupIdAndStatusAndDeletedAtIsNull(Long userGroupId, String status);
 

@@ -13,6 +13,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pinus.desktop.annotation.ForActivity;
+import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.DomainError;
@@ -36,11 +38,13 @@ public class SupplierService extends BaseService {
     @Autowired
     private SupplierContactRepository supplierContactRepository;
 
+    @ForActivity(Activity.SEARCH_SUPPLIERS_BY_FILTER)
     @Cacheable(CacheNameConstants.SUPPLIERS_BY_FILTER)
     public List<SupplierVM> searchSuppliers(SupplierFilterVM filter) {
         return objectConverter.convertList(supplierRepository.findByFilter(filter), SupplierVM.class);
     }
 
+    @ForActivity(Activity.SEARCH_RECEIVABLES_BY_KEYWORD)
     @Cacheable(CacheNameConstants.SUPPLIERS_BY_KEYWORD)
     public List<SupplierVM> searchSuppliersByKeyword(String keyword) {
         List<Supplier> suppliers = StringUtils.isBlank(keyword) ?
@@ -48,6 +52,7 @@ public class SupplierService extends BaseService {
         return objectConverter.convertList(suppliers, SupplierVM.class);
     }
 
+    @ForActivity(Activity.REMOVE_SUPPLIERS)
     @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER, CacheNameConstants.SUPPLIERS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -56,6 +61,7 @@ public class SupplierService extends BaseService {
         supplierRepository.deleteUpdateByIdIn(ids);
     }
 
+    @ForActivity(Activity.ADD_SUPPLIER)
     @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER, CacheNameConstants.SUPPLIERS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -93,6 +99,7 @@ public class SupplierService extends BaseService {
         return supplierContactRepository.save(objectConverter.convertObject(contact, SupplierContact.class));
     }
 
+    @ForActivity(Activity.EDIT_SUPPLIER)
     @CacheEvict(value = { CacheNameConstants.SUPPLIERS_BY_FILTER, CacheNameConstants.SUPPLIERS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -127,6 +134,7 @@ public class SupplierService extends BaseService {
         return supplierRepository.save(supplier);
     }
 
+    @ForActivity(Activity.GET_NEXT_SUPPLIER_CODE)
     public String getNextSupplierCode() {
         String prefix = DateFormatUtils.format(new Date(), CommonConstants.CODE_PREFIX_DATE_PATTERN);
         Optional<Supplier> supplier = supplierRepository.findFirstByCodeStartingWithOrderByCodeDesc(prefix);
@@ -137,6 +145,7 @@ public class SupplierService extends BaseService {
         return prefix + String.format("%04d", sequence); // Left pad with "0"
     }
 
+    @ForActivity(Activity.GET_SUPPLIER_CONTACTS)
     public List<SupplierContactAddVM> getSupplierContacts(Long supplierId) {
         return objectConverter.convertList(
                 supplierContactRepository.findBySupplierIdAndDeletedAtIsNull(supplierId),

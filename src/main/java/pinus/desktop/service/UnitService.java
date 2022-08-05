@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import pinus.desktop.annotation.ForActivity;
+import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.DomainError;
 import pinus.desktop.exception.DomainException;
@@ -18,16 +20,19 @@ public class UnitService extends BaseService {
     @Autowired
     private UnitRepository unitRepository;
 
+    @ForActivity(Activity.GET_ALL_UNITS)
     @Cacheable(CacheNameConstants.UNITS_ALL)
     public List<UnitVM> getAllUnits() {
         return objectConverter.convertList(unitRepository.findByDeletedAtIsNull(), UnitVM.class);
     }
 
+    @ForActivity(Activity.SEARCH_UNITS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.UNITS_BY_KEYWORD)
     public List<UnitVM> searchUnitByKeyword(String keyword) {
         return objectConverter.convertList(unitRepository.findByKeyword(keyword, 10), UnitVM.class);
     }
 
+    @ForActivity(Activity.GET_UNIT_BY_ID)
     public UnitVM getUnitById(Long id) {
         return objectConverter.convertOptionalOrThrow(
                 unitRepository.findByIdAndDeletedAtIsNull(id),

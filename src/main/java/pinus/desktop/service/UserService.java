@@ -9,6 +9,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pinus.desktop.annotation.ForActivity;
+import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.DomainError;
@@ -28,11 +30,13 @@ public class UserService extends BaseService {
     @Autowired
     private UserRepository userRepository;
 
+    @ForActivity(Activity.SEARCH_USERS_BY_FILTER)
     @Cacheable(CacheNameConstants.USERS_BY_FILTER)
     public List<UserVM> searchUsersByFilter(UserFilterVM filter) {
         return userRepository.findByFilter(filter);
     }
 
+    @ForActivity(Activity.REMOVE_USERS)
     @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
     @Transactional
     public void removeUsers(List<Long> ids) {
@@ -44,6 +48,7 @@ public class UserService extends BaseService {
         }
     }
 
+    @ForActivity(Activity.ADD_USER)
     @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
     @Transactional
     public User createUser(UserAddVM userAdd) {
@@ -60,6 +65,7 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
+    @ForActivity(Activity.EDIT_USER)
     @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
     @Transactional
     public User updateUser(UserEditVM userEdit, Long userId) {
@@ -84,7 +90,9 @@ public class UserService extends BaseService {
     private void checkAdministratorUserGroup(User user, UserEditVM userEdit) {
         if (CommonConstants.USER_GROUP_ID_ADMINISTRATOR.equals(user.getUserGroupId())
                 && !userEdit.getUserGroupId().equals(user.getUserGroupId())
-                && !userRepository.existsByUserGroupIdAndDeletedAtIsNull(CommonConstants.USER_GROUP_ID_ADMINISTRATOR)) {
+                && !userRepository.existsByUserGroupIdAndIdNotAndDeletedAtIsNull(
+                        CommonConstants.USER_GROUP_ID_ADMINISTRATOR,
+                        user.getId())) {
             throw new DomainException(DomainError.USER_GROUP_ADMINISTRATOR_MUST_HAVE_USER);
         }
         if (CommonConstants.USER_GROUP_ID_ADMINISTRATOR.equals(userEdit.getUserGroupId())

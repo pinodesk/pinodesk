@@ -10,8 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
+
+import pinus.desktop.annotation.ForActivity;
+import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.ConfigurationConstants;
@@ -37,12 +39,14 @@ public class DoctorService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
+    @ForActivity(Activity.SEARCH_DOCTORS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.DOCTORS_BY_KEYWORD)
     public List<DoctorVM> searchDoctorsByKeyword(String keyword) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return doctorRepository.findByKeyword(keyword.trim(), language);
     }
 
+    @ForActivity(Activity.ADD_DOCTOR)
     @CacheEvict(value = { CacheNameConstants.DOCTORS_BY_FILTER, CacheNameConstants.DOCTORS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -73,6 +77,7 @@ public class DoctorService extends BaseService {
         return prefix + String.format("%04d", sequence); // Left pad with "0"
     }
 
+    @ForActivity(Activity.SEARCH_DOCTOR_CATEGORIES_BY_KEYWORD)
     @Cacheable(CacheNameConstants.DOCTOR_CATEGORIES_BY_KEYWORD)
     public List<DoctorCategoryVM> searchDoctorCategoryByKeyword(String keyword) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);

@@ -117,6 +117,7 @@ public abstract class BaseController {
     }
 
     protected void handleException(Throwable e) {
+        e.printStackTrace();
         handleException(e, Thread.currentThread());
     }
 

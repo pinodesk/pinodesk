@@ -1,13 +1,10 @@
 package pinus.desktop.controller;
 
-import java.util.concurrent.CompletableFuture;
-
 import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -15,7 +12,6 @@ import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
-import pinus.desktop.exception.DefaultRuntimeException;
 import pinus.desktop.service.LoginService;
 import pinus.desktop.util.SpringUtils;
 
@@ -39,17 +35,11 @@ public class LoginController extends CommonDataSaveController {
 
     @Override
     protected void onActionBtnSave(ActionEvent event) {
-        CompletableFuture.runAsync(this::processDataSave).whenComplete((result, ex) -> {
-            if (ex != null) {
-                throw new DefaultRuntimeException(ex);
-            }
-            if (isLastDataSaved()) {
-                Platform.runLater(() -> {
-                    close();
-                    StageUtils.open(Page.MAIN, false);
-                });
-            }
-        });
+        processDataSave();
+        if (isLastDataSaved()) {
+            close();
+            StageUtils.open(Page.MAIN, false);
+        }
     }
 
     @Override

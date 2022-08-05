@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import pinus.desktop.annotation.ForActivity;
 import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.ConfigurationConstants;
@@ -64,11 +65,13 @@ public class SaleService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
+    @ForActivity(Activity.SEARCH_SALES_BY_FILTER)
     @Cacheable(CacheNameConstants.SALES_BY_FILTER)
     public List<SaleVM> searchSales(SaleFilterVM filter) {
         return saleRepository.findByFilter(filter);
     }
 
+    @ForActivity(Activity.REMOVE_SALES)
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -76,11 +79,12 @@ public class SaleService extends BaseService {
         allEntries = true)
     @Transactional
     public void removeSales(List<Long> ids) {
-        ids.forEach(id -> revertLastSaleProducts(id, Activity.DELETE_SALE.toString()));
+        ids.forEach(id -> revertLastSaleProducts(id, Activity.REMOVE_SALES.toString()));
         saleDetailRepository.deleteUpdateBySaleIdIn(ids);
         saleRepository.deleteUpdateByIdIn(ids);
     }
 
+    @ForActivity(Activity.ADD_SALE)
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -231,6 +235,7 @@ public class SaleService extends BaseService {
         saleDetailRepository.save(sd);
     }
 
+    @ForActivity(Activity.EDIT_SALE)
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -360,6 +365,7 @@ public class SaleService extends BaseService {
         });
     }
 
+    @ForActivity(Activity.GET_SALE_PRODUCTS)
     public List<SaleProductVM> getSaleProducts(Long saleId) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return saleDetailRepository.findBySaleIdJoinProducts(saleId, language);
