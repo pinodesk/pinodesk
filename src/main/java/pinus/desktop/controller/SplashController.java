@@ -48,6 +48,7 @@ public class SplashController {
                         return;
                     }
                     LoginService loginService = SpringUtils.getBean(LoginService.class);
+                    loginService.activateLastSession();
                     if (!loginService.loginCheck()) {
                         StageUtils.open(Page.LOGIN, false);
                         return;

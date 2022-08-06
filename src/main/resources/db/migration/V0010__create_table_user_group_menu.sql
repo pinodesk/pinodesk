@@ -16,6 +16,7 @@ create table if not exists user_group_menu (
 );
 
 insert into user_group_menu (user_group_id, menu_code, read, write) values 
+(1, '0003', 'yes', 'yes'),
 (1, '0011', 'yes', 'yes'),
 (1, '0012', 'yes', 'yes'),
 (1, '0013', 'yes', 'yes');

@@ -12,27 +12,23 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="640.0" minWidth="1024.0" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.MainController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="640.0" minWidth="1024.0" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.MainController">
    <children>
       <AnchorPane layoutY="61.0" prefHeight="70.0" prefWidth="250.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <ImageView fx:id="imgUser" fitHeight="44.0" fitWidth="44.0" layoutX="14.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="14.0">
+            <ImageView fx:id="imgUser" fitHeight="44.0" fitWidth="44.0" layoutX="10.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="10.0">
                <image>
                   <Image url="@../images/user.png" />
                </image>
             </ImageView>
-            <VBox layoutX="77.0" layoutY="11.0" spacing="2.0">
+            <VBox layoutX="63.0" layoutY="14.0" spacing="2.0">
                <children>
-                  <Label fx:id="lblUser" text="Diana" textFill="WHITE">
+                  <Label fx:id="lblUser" text="User" textFill="WHITE">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Label fx:id="lblUserGroup" style="-fx-background-color: white;" text="Store Owner" textFill="#717171">
-                     <padding>
-                        <Insets bottom="1.0" left="5.0" right="5.0" top="1.0" />
-                     </padding>
-                  </Label>
+                  <Label fx:id="lblUserGroup" text="User Group" textFill="#008167" />
                </children>
             </VBox>
          </children>
@@ -41,7 +37,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" spacing="10.0">
                <children>
-                  <Label fx:id="lblStoreName" prefHeight="70.0" text="Hello Store" textFill="WHITE">
+                  <Label fx:id="lblStoreName" prefHeight="70.0" text="Store" textFill="WHITE">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -49,7 +45,7 @@
                         <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
                      </padding>
                   </Label>
-                  <Button mnemonicParsing="false" styleClass="btn-primary" text="%btn_stats" />
+                  <Button fx:id="btnLogout" mnemonicParsing="false" onAction="#onActionBtnLogout" styleClass="btn-danger" text="%btn_logout" />
                </children>
             </HBox>
             <ImageView fitHeight="56.0" fitWidth="63.0" layoutX="717.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">

@@ -161,7 +161,10 @@ public enum MessageCode implements IMessage {
     CONFIRMATION_REMOVE_SELECTED_USERS,
     ERROR_USER_EXISTS_BY_USERNAME,
     ERROR_USER_NOT_FOUND_BY_ID,
-    ERROR_USER_NOT_FOUND;
+    ERROR_USER_NOT_FOUND,
+
+    // Login
+    CONFIRMATION_LOGOUT;
 
     @Override
     public String toString() {

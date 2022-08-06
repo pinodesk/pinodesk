@@ -55,6 +55,7 @@ public class Pinus extends Application {
         primaryStage.setMaximized(maximized);
         primaryStage.setTitle(CommonConstants.APP_TITLE);
         primaryStage.show();
+        primaryStage.centerOnScreen(); // Must be called after show()
     }
 
     private static void setPrimaryStage(Stage primaryStage) {
