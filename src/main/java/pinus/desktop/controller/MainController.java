@@ -10,6 +10,7 @@ import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -25,7 +26,6 @@ import pinus.desktop.constant.Page;
 import pinus.desktop.constant.SimpleStatus;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.service.ConfigurationService;
-import pinus.desktop.service.LoginService;
 import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.LoginDetailsVM;
 import pinus.desktop.viewmodel.UserGroupMenuVM;
@@ -93,12 +93,10 @@ public class MainController extends BaseController {
     private Button btnLogout;
 
     private ConfigurationService configurationService;
-    private LoginService loginService;
 
     @Override
     protected void initServices(ApplicationContext ctx) {
         configurationService = SpringUtils.getBean(ConfigurationService.class);
-        loginService = SpringUtils.getBean(LoginService.class);
     }
 
     @Override
@@ -108,9 +106,16 @@ public class MainController extends BaseController {
 
     @Override
     protected void initControlValues() {
+        if (loginService.isEmpty()) {
+            ObservableList<Node> children = vboxMenu.getChildren();
+            for (Node node : children) {
+                vboxMenu.getChildren().remove(node);
+            }
+            return;
+        }
+        LoginDetailsVM loginDetails = loginService.get().getLoginDetails();
         String storeName = configurationService.getConfiguration(ConfigurationConstants.STORE_NAME);
         lblStoreName.setText(storeName);
-        LoginDetailsVM loginDetails = loginService.getLoginDetails();
         lblUser.setText(loginDetails.getUser().getFullName());
         lblUserGroup.setText(loginDetails.getUserGroup().getName());
         List<UserGroupMenuVM> userGroupMenus = loginDetails.getUserGroupMenus();
@@ -139,9 +144,13 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnLogout(ActionEvent event) {
+        if (loginService.isEmpty()) {
+            close();
+            return;
+        }
         AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_LOGOUT);
         if (result.isConfirmed()) {
-            loginService.logout();
+            loginService.get().logout();
             close();
             StageUtils.open(Page.LOGIN, false);
         }

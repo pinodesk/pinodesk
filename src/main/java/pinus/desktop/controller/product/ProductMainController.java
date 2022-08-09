@@ -29,6 +29,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.StyleConstants;
@@ -84,6 +85,12 @@ public class ProductMainController extends BaseController {
     @FXML
     private Button btnImport;
 
+    @FXML
+    private Button btnAdd;
+
+    @FXML
+    private Button btnRemove;
+
     private ProductFilterVM productFilter;
 
     private ProductService productService;
@@ -137,6 +144,7 @@ public class ProductMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
+        disableWriteAction(MenuCodeConstants.MASTER_PRODUCTS, btnAdd, btnRemove, btnImport);
         initTableProduct();
         registerKeyListener();
     }

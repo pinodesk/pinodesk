@@ -30,6 +30,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.SimpleStatus;
 import pinus.desktop.constant.UserGroupStatus;
@@ -64,7 +65,7 @@ public class UserGroupEditController extends CommonDataSaveController {
     private TableColumn<UserGroupMenuVM, Boolean> colWrite;
 
     @FXML
-    private Button btnSaveAndAdd;
+    private Button btnRemove;
 
     private UserGroupService userGroupService;
 
@@ -83,6 +84,7 @@ public class UserGroupEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        disableWriteAction(MenuCodeConstants.SETTINGS_USER_GROUPS, btnSave, btnRemove);
         ComboBoxUtils.initSimple(
                 cbStatus,
                 new SimpleComboBoxModel(UserGroupStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE)),
@@ -97,6 +99,7 @@ public class UserGroupEditController extends CommonDataSaveController {
         colRead.setCellValueFactory(data -> data.getValue().booleanReadProperty());
         colWrite.setCellFactory(CheckBoxTableCell.forTableColumn(colWrite));
         colWrite.setCellValueFactory(data -> data.getValue().booleanWriteProperty());
+        tblMenus.setEditable(true);
         tblMenus.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
     }
 

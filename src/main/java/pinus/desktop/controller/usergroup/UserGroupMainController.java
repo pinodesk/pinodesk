@@ -24,6 +24,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.controller.BaseController;
@@ -109,6 +110,7 @@ public class UserGroupMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
+        disableWriteAction(MenuCodeConstants.SETTINGS_USER_GROUPS, btnAdd, btnRemove);
         TableViewUtils.setColumnValue(colDescription, UserGroupVM::getDescription);
         TableViewUtils.setColumnValue(colName, UserGroupVM::getName);
         TableViewUtils.setColumnValue(colStatus, UserGroupVM::getStatus);

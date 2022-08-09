@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 import pinus.desktop.Pinus;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.ConfigurationConstants;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.javafx.converter.LanguageComboBoxConverter;
@@ -60,7 +61,7 @@ public class ConfigurationMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        // Nothing to init
+        disableWriteAction(MenuCodeConstants.SETTINGS_CONFIGURATION, btnSave);
     }
 
     @Override

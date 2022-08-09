@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.controller.CommonDataSaveController;
 import pinus.desktop.service.CustomerService;
@@ -55,6 +56,7 @@ public class CustomerEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        disableWriteAction(MenuCodeConstants.MASTER_CUSTOMERS, btnSave, btnRemove);
         TextFieldUtils.setDigitTextFields(tfPhone);
     }
 

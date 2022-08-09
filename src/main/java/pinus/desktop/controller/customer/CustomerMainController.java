@@ -25,6 +25,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.controller.BaseController;
@@ -116,6 +117,7 @@ public class CustomerMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
+        disableWriteAction(MenuCodeConstants.MASTER_CUSTOMERS, btnAdd, btnRemove);
         TableViewUtils.setColumnValue(colCode, CustomerVM::getCode);
         TableViewUtils.setColumnValue(colName, CustomerVM::getName);
         TableViewUtils.setColumnValue(colPhone, CustomerVM::getPhone);

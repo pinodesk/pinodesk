@@ -106,12 +106,16 @@ public class LoginService extends BaseService {
         if (log.isDebugEnabled()) {
             log.debug("Login id: {}", login.getId());
         }
+        LocalDateTime lastActivityAt = login.getLastActivityAt();
+        if (lastActivityAt == null) {
+            return;
+        }
         String strMaxDuration = configurationService.getConfiguration(ConfigurationConstants.SESSION_MAX_DURATION_HOUR);
-        long actualDuration = login.getLastActivityAt().until(LocalDateTime.now(), ChronoUnit.HOURS);
+        long actualDuration = lastActivityAt.until(LocalDateTime.now(), ChronoUnit.HOURS);
         if (log.isDebugEnabled()) {
             log.debug("Actual duration: {}", actualDuration);
         }
-        if (actualDuration > Long.valueOf(strMaxDuration)) {
+        if (actualDuration >= Long.valueOf(strMaxDuration)) {
             return;
         }
         Optional<User> oUser = userRepository.findByIdAndDeletedAtIsNull(login.getUserId());

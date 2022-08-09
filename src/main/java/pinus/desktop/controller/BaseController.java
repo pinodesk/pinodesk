@@ -9,9 +9,11 @@ import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.context.ApplicationContext;
@@ -28,6 +30,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
@@ -47,8 +50,10 @@ import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
 import pinus.desktop.constant.DomainError;
 import pinus.desktop.constant.Page;
+import pinus.desktop.constant.SimpleStatus;
 import pinus.desktop.constant.StringConstants;
 import pinus.desktop.exception.DomainException;
+import pinus.desktop.service.LoginService;
 import pinus.desktop.util.ResourceBundleUtils;
 import pinus.desktop.util.SpringUtils;
 
@@ -56,6 +61,8 @@ import pinus.desktop.util.SpringUtils;
 public abstract class BaseController {
 
     protected Translator t;
+
+    protected Optional<LoginService> loginService;
 
     @FXML
     protected ResourceBundle resources;
@@ -66,6 +73,7 @@ public abstract class BaseController {
     @FXML
     void initialize() {
         t = new Translator(resources);
+        loginService = SpringUtils.getBeanOptionally(LoginService.class);
         setDefaultUncaughtExceptionHandler();
         initServices(SpringUtils.getApplicationContext());
         initControlActions();
@@ -410,6 +418,26 @@ public abstract class BaseController {
 
     protected <T> void setUserGroupChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
         setUserGroupChooser(tf, false, outputConsumer, nextFocusNode);
+    }
+
+    protected void disableWriteAction(String menuCode, Button... btns) {
+        if (ArrayUtils.isEmpty(btns)) {
+            return;
+        }
+        if (loginService.isEmpty()) {
+            for (Button btn : btns) {
+                btn.setDisable(true);
+            }
+            return;
+        }
+        loginService.get().getLoginDetails().getUserGroupMenus().forEach(ugm -> {
+            if (ugm.getMenuCode().equals(menuCode) && !SimpleStatus.YES.toString().equals(ugm.getWrite())) {
+                for (Button btn : btns) {
+                    btn.setDisable(true);
+                }
+                return;
+            }
+        });
     }
 
 }

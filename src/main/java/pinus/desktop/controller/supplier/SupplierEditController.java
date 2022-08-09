@@ -3,14 +3,14 @@ package pinus.desktop.controller.supplier;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.context.ApplicationContext;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,6 +22,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.controller.CommonDataSaveController;
@@ -51,10 +52,10 @@ public class SupplierEditController extends CommonDataSaveController {
     private TextField tfWebsite;
 
     @FXML
-    private Button btnSaveAndAdd;
+    private Button btnAddContact;
 
     @FXML
-    private Button btnAddContact;
+    private Button btnRemove;
 
     @FXML
     private TableView<SupplierContactAddVM> tblSupplierContact;
@@ -106,6 +107,7 @@ public class SupplierEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        disableWriteAction(MenuCodeConstants.MASTER_SUPPLIERS, btnSave, btnRemove);
         tblSupplierContact.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblSupplierContact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.setColumnValue(colName, SupplierContactAddVM::getName);

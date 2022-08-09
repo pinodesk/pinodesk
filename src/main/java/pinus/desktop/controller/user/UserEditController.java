@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.UserStatus;
 import pinus.desktop.controller.CommonDataSaveController;
@@ -70,6 +71,7 @@ public class UserEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        disableWriteAction(MenuCodeConstants.SETTINGS_USERS, btnSave, btnRemove);
         ComboBoxUtils.initSimple(
                 cbStatus,
                 new SimpleComboBoxModel(UserStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE)),

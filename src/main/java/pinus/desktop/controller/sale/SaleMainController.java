@@ -28,6 +28,7 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.PaymentStatus;
@@ -132,6 +133,7 @@ public class SaleMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
+        disableWriteAction(MenuCodeConstants.TRANSACTION_SALES, btnAdd, btnRemove);
         Locale locale = resources.getLocale();
         TableViewUtils.setColumnValue(colInvoiceNumber, SaleVM::getInvoiceNumber);
         TableViewUtils.setColumnValue(colCustomerName, SaleVM::getCustomerName);

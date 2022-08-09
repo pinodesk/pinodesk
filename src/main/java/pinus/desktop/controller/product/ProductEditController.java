@@ -31,6 +31,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
@@ -41,6 +42,7 @@ import javafx.scene.layout.VBox;
 import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.ProductStatus;
 import pinus.desktop.constant.StyleConstants;
@@ -223,6 +225,12 @@ public class ProductEditController extends CommonDataSaveController {
     @FXML
     private TableColumn<ProductExpiryVM, LocalDateTime> colProductExpiryCreatedAt;
 
+    @FXML
+    protected Button btnRemove;
+
+    @FXML
+    private Button btnAddExpiry;
+
     private ProductVM currentProduct;
 
     private ProductService productService;
@@ -280,6 +288,7 @@ public class ProductEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        disableWriteAction(MenuCodeConstants.MASTER_PRODUCTS, btnSave, btnRemove, btnAddExpiry);
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(
                 tfBarcode,

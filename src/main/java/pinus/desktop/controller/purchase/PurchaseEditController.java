@@ -44,6 +44,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.PaymentStatus;
@@ -60,6 +61,9 @@ import pinus.desktop.viewmodel.PurchaseVM;
 import pinus.desktop.viewmodel.SupplierVM;
 
 public class PurchaseEditController extends CommonDataSaveController {
+
+    @FXML
+    private Button btnRemove;
 
     @FXML
     private TextField tfSupplier;
@@ -175,9 +179,6 @@ public class PurchaseEditController extends CommonDataSaveController {
     @FXML
     private Label lblTotalPayment;
 
-    @FXML
-    private Button btnSaveAndAdd;
-
     private ProductVM selectedProduct;
     private SupplierVM selectedSupplier;
     private Integer totalProduct;
@@ -289,6 +290,7 @@ public class PurchaseEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        disableWriteAction(MenuCodeConstants.TRANSACTION_PURCHASES, btnSave, btnRemove, btnNewProduct, btnNewSupplier);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
