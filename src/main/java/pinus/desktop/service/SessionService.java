@@ -64,10 +64,10 @@ public class SessionService extends BaseService {
         List<UserGroupMenuVM> userGroupMenus = userGroupMenuRepository.findByUserGroupId(userGroup.getId(), language);
         // Delete all unlogged out sessions to make sure only one session is active
         sessionRepository.deleteUpdateByDeletedAtIsNull();
-        Session login = new Session();
-        login.setLoginAt(LocalDateTime.now());
-        login.setUserId(user.getId());
-        Session created = sessionRepository.save(login);
+        Session session = new Session();
+        session.setLoginAt(LocalDateTime.now());
+        session.setUserId(user.getId());
+        Session created = sessionRepository.save(session);
         currentSession = new CurrentSessionVM();
         currentSession.setSession(objectConverter.convertObject(created, SessionVM.class));
         currentSession.setUser(objectConverter.convertObject(user, UserVM.class));

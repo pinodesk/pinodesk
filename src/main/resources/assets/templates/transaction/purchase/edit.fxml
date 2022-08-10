@@ -373,7 +373,20 @@
                      <children>
                         <VBox alignment="TOP_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Button fx:id="btnRemoveProduct" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemoveProduct" styleClass="btn-danger" text="%btn_remove_product" textFill="WHITE" />
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="%lbl_purchase_products" textFill="#009c7c">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Button fx:id="btnRemoveProduct" alignment="CENTER_RIGHT" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemoveProduct" styleClass="btn-danger" text="%btn_remove_product" textFill="WHITE" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </HBox>
                               <TableView fx:id="tblPurchaseProduct" prefHeight="250.0" VBox.vgrow="ALWAYS">
                                  <columns>
                                     <TableColumn fx:id="colProductName" minWidth="-Infinity" prefWidth="300.0" text="%lbl_product_name" />
