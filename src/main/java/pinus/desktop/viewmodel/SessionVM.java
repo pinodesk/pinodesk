@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-public class LoginVM {
+public class SessionVM {
     private Long id;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

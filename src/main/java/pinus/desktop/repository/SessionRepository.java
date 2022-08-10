@@ -8,16 +8,16 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinus.desktop.domain.Login;
+import pinus.desktop.domain.Session;
 
 @Repository
-public interface LoginRepository extends PagingAndSortingRepository<Login, Long> {
+public interface SessionRepository extends PagingAndSortingRepository<Session, Long> {
 
-    Optional<Login> findFirstByDeletedAtIsNullOrderByIdDesc();
+    Optional<Session> findFirstByDeletedAtIsNullOrderByIdDesc();
 
     @Transactional
     @Modifying
-    @Query("update login set updated_at=now(), deleted_at=now() where deleted_at is null")
+    @Query("update `session` set updated_at=now(), deleted_at=now() where deleted_at is null")
     Integer deleteUpdateByDeletedAtIsNull();
 
 }

@@ -13,8 +13,6 @@ import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
 import pinus.desktop.Pinus;
 import pinus.desktop.constant.MessageCode;
-import pinus.desktop.service.LoginService;
-import pinus.desktop.util.SpringUtils;
 
 @Slf4j
 public class LoginController extends CommonDataSaveController {
@@ -24,8 +22,6 @@ public class LoginController extends CommonDataSaveController {
 
     @FXML
     private PasswordField pfPassword;
-
-    private LoginService loginService;
 
     @Override
     protected void onActionBtnCancel(ActionEvent event) {
@@ -59,7 +55,7 @@ public class LoginController extends CommonDataSaveController {
 
     @Override
     protected Object save() {
-        loginService.login(tfUsername.getText(), pfPassword.getText());
+        sessionService.get().login(tfUsername.getText(), pfPassword.getText());
         return true;
     }
 
@@ -71,7 +67,7 @@ public class LoginController extends CommonDataSaveController {
 
     @Override
     protected void initServices(ApplicationContext ctx) {
-        loginService = SpringUtils.getBean(LoginService.class);
+        // Nothing to init
     }
 
 }

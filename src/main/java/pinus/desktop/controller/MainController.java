@@ -27,7 +27,7 @@ import pinus.desktop.constant.SimpleStatus;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.service.ConfigurationService;
 import pinus.desktop.util.SpringUtils;
-import pinus.desktop.viewmodel.LoginDetailsVM;
+import pinus.desktop.viewmodel.CurrentSessionVM;
 import pinus.desktop.viewmodel.UserGroupMenuVM;
 
 public class MainController extends BaseController {
@@ -106,19 +106,19 @@ public class MainController extends BaseController {
 
     @Override
     protected void initControlValues() {
-        if (loginService.isEmpty()) {
+        if (sessionService.isEmpty()) {
             ObservableList<Node> children = vboxMenu.getChildren();
             for (Node node : children) {
                 vboxMenu.getChildren().remove(node);
             }
             return;
         }
-        LoginDetailsVM loginDetails = loginService.get().getLoginDetails();
+        CurrentSessionVM currentSession = sessionService.get().getCurrentSession();
         String storeName = configurationService.getConfiguration(ConfigurationConstants.STORE_NAME);
         lblStoreName.setText(storeName);
-        lblUser.setText(loginDetails.getUser().getFullName());
-        lblUserGroup.setText(loginDetails.getUserGroup().getName());
-        List<UserGroupMenuVM> userGroupMenus = loginDetails.getUserGroupMenus();
+        lblUser.setText(currentSession.getUser().getFullName());
+        lblUserGroup.setText(currentSession.getUserGroup().getName());
+        List<UserGroupMenuVM> userGroupMenus = currentSession.getUserGroupMenus();
         List<String> userGroupMenuCodes = userGroupMenus.stream()
                 .filter(ugm -> SimpleStatus.YES.toString().equals(ugm.getRead())).map(UserGroupMenuVM::getMenuCode)
                 .toList();
@@ -144,13 +144,13 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnLogout(ActionEvent event) {
-        if (loginService.isEmpty()) {
+        if (sessionService.isEmpty()) {
             close();
             return;
         }
         AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_LOGOUT);
         if (result.isConfirmed()) {
-            loginService.get().logout();
+            sessionService.get().logout();
             close();
             StageUtils.open(Page.LOGIN, false);
         }

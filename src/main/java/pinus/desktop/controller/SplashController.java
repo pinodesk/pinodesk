@@ -19,7 +19,7 @@ import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.SimpleStatus;
 import pinus.desktop.service.ConfigurationService;
-import pinus.desktop.service.LoginService;
+import pinus.desktop.service.SessionService;
 import pinus.desktop.util.SpringUtils;
 
 @Slf4j
@@ -47,9 +47,9 @@ public class SplashController {
                         StageUtils.open(Page.INITIAL_SETUP, false);
                         return;
                     }
-                    LoginService loginService = SpringUtils.getBean(LoginService.class);
-                    loginService.activateLastSession();
-                    if (!loginService.loginCheck()) {
+                    SessionService sessionService = SpringUtils.getBean(SessionService.class);
+                    sessionService.activateLastSession();
+                    if (!sessionService.isCurrentSessionActive()) {
                         StageUtils.open(Page.LOGIN, false);
                         return;
                     }

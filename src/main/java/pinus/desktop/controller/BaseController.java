@@ -53,7 +53,7 @@ import pinus.desktop.constant.Page;
 import pinus.desktop.constant.SimpleStatus;
 import pinus.desktop.constant.StringConstants;
 import pinus.desktop.exception.DomainException;
-import pinus.desktop.service.LoginService;
+import pinus.desktop.service.SessionService;
 import pinus.desktop.util.ResourceBundleUtils;
 import pinus.desktop.util.SpringUtils;
 
@@ -62,7 +62,7 @@ public abstract class BaseController {
 
     protected Translator t;
 
-    protected Optional<LoginService> loginService;
+    protected Optional<SessionService> sessionService;
 
     @FXML
     protected ResourceBundle resources;
@@ -73,7 +73,7 @@ public abstract class BaseController {
     @FXML
     void initialize() {
         t = new Translator(resources);
-        loginService = SpringUtils.getBeanOptionally(LoginService.class);
+        sessionService = SpringUtils.getBeanOptionally(SessionService.class);
         setDefaultUncaughtExceptionHandler();
         initServices(SpringUtils.getApplicationContext());
         initControlActions();
@@ -424,13 +424,13 @@ public abstract class BaseController {
         if (ArrayUtils.isEmpty(btns)) {
             return;
         }
-        if (loginService.isEmpty()) {
+        if (sessionService.isEmpty()) {
             for (Button btn : btns) {
                 btn.setDisable(true);
             }
             return;
         }
-        loginService.get().getLoginDetails().getUserGroupMenus().forEach(ugm -> {
+        sessionService.get().getCurrentSession().getUserGroupMenus().forEach(ugm -> {
             if (ugm.getMenuCode().equals(menuCode) && !SimpleStatus.YES.toString().equals(ugm.getWrite())) {
                 for (Button btn : btns) {
                     btn.setDisable(true);

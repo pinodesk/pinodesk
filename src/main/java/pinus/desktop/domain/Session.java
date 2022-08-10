@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Login extends DataModel {
+public class Session extends DataModel {
 
     public static final String C_USER_ID = "user_id";
     public static final String C_LOGIN_AT = "login_at";

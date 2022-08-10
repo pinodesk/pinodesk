@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import pinus.desktop.annotation.ForActivity;
-import pinus.desktop.service.LoginService;
+import pinus.desktop.service.SessionService;
 import pinus.desktop.util.AsyncQueueProcessor;
 
 @Slf4j
@@ -17,22 +17,22 @@ import pinus.desktop.util.AsyncQueueProcessor;
 public class ServiceAspect {
 
     @Autowired
-    private LoginService loginService;
+    private SessionService sessionService;
 
     @Autowired
     private AsyncQueueProcessor asyncQueueProcessor;
 
     @Around("""
             execution(public * pinus.desktop.service.*.*(..))
-            && !execution(public * pinus.desktop.service.LoginService.*(..))
+            && !execution(public * pinus.desktop.service.SessionService.*(..))
             && @annotation(forActivity)
             """)
     public Object beforeAllServiceMethods(ProceedingJoinPoint call, ForActivity forActivity) throws Throwable {
         Object result = null;
         try {
             result = call.proceed();
-            if (loginService.loginCheck()) {
-                asyncQueueProcessor.process(() -> loginService.updateLastActivity(forActivity.value()));
+            if (sessionService.isCurrentSessionActive()) {
+                asyncQueueProcessor.process(() -> sessionService.updateLastActivity(forActivity.value()));
             }
         } catch (Exception e) {
             if (log.isDebugEnabled()) {
