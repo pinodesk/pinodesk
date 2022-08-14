@@ -141,11 +141,10 @@ public class PurchaseMainController extends BaseController {
         TableViewUtils.setColumnValue(colOrderDate, PurchaseVM::getInvoiceDate);
         TableViewUtils.setColumnValue(colDueDate, PurchaseVM::getPaymentDueDate);
         TableViewUtils.setColumnValue(colSupplierName, PurchaseVM::getSupplierName);
-        TableViewUtils.setColumnValue(colPaymentStatus, vm -> {
-            PaymentStatus ps = PaymentStatus.valueOf(vm.getPaymentStatus());
-            return PaymentStatus.PAID.equals(ps) ?
-                    t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID);
-        });
+        TableViewUtils.setColumnValue(
+                colPaymentStatus,
+                vm -> PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?
+                        t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID));
         TableViewUtils.initTableColumn(
                 colTotalProduct,
                 new NumberCellFactory<>(locale),

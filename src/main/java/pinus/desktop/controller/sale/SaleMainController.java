@@ -139,14 +139,14 @@ public class SaleMainController extends BaseController {
         TableViewUtils.setColumnValue(colCustomerName, SaleVM::getCustomerName);
         TableViewUtils.setColumnValue(colDueDate, SaleVM::getPaymentDueDate);
         TableViewUtils.setColumnValue(colDoctorName, SaleVM::getDoctorName);
-        TableViewUtils.setColumnValue(colPaymentStatus, vm -> {
-            return PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?
-                    t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID);
-        });
-        TableViewUtils.setColumnValue(colSellingMode, vm -> {
-            return SellingMode.GENERAL.toString().equals(vm.getSellingMode()) ?
-                    t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION);
-        });
+        TableViewUtils.setColumnValue(
+                colPaymentStatus,
+                vm -> PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?
+                        t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID));
+        TableViewUtils.setColumnValue(
+                colSellingMode,
+                vm -> SellingMode.GENERAL.toString().equals(vm.getSellingMode()) ?
+                        t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION));
         TableViewUtils.initTableColumn(
                 colTotalProduct,
                 new NumberCellFactory<>(locale),
