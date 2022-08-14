@@ -11,6 +11,7 @@ import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
@@ -26,10 +27,12 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.Page;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.service.ReceivableService;
 import pinus.desktop.util.SpringUtils;
+import pinus.desktop.viewmodel.ReceivableFilterVM;
 import pinus.desktop.viewmodel.ReceivableVM;
 
 public class ReceivableMainController extends BaseController {
@@ -71,10 +74,19 @@ public class ReceivableMainController extends BaseController {
     private Label lblRows;
 
     private ReceivableService receivableService;
+    private ReceivableFilterVM receivableFilter;
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        // TODO
+        setPageData(receivableFilter);
+        StageUtils.modal(Page.TRANSACTION_RECEIVABLE_FILTER, false, we -> {
+            ReceivableFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            receivableFilter = result;
+            searchReceivables();
+        });
     }
 
     @Override
@@ -117,19 +129,20 @@ public class ReceivableMainController extends BaseController {
         tblReceivables.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblReceivables.setOnMouseClicked(event -> {
             if (EventUtils.isDoubleClick(event)) {
-                handleActionTablePayables();
+                handleActionTableReceivables();
             }
         });
         tblReceivables.setOnKeyPressed(event -> {
             if (EventUtils.isEnter(event)) {
-                handleActionTablePayables();
+                handleActionTableReceivables();
             }
         });
     }
 
     @Override
     protected void initControlValues() {
-        searchPayables();
+        receivableFilter = new ReceivableFilterVM();
+        searchReceivables();
     }
 
     @Override
@@ -137,21 +150,22 @@ public class ReceivableMainController extends BaseController {
         return null;
     }
 
-    private void searchPayables() {
+    private void searchReceivables() {
         tblReceivables.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblReceivables.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> receivableService.searchReceivables()).thenAccept(payables -> Platform.runLater(() -> {
-            if (payables.isEmpty()) {
-                tblReceivables.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                lblRows.setText("0");
-            }
-            tblReceivables.setItems(FXCollections.observableList(payables));
-            TableViewUtils.sortDescending(tblReceivables, colUpdatedAt);
-            lblRows.setText(payables.size() + "");
-        }));
+        AsyncUtils.supply(() -> receivableService.searchReceivables(receivableFilter))
+                .thenAccept(payables -> Platform.runLater(() -> {
+                    if (payables.isEmpty()) {
+                        tblReceivables.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                        lblRows.setText("0");
+                    }
+                    tblReceivables.setItems(FXCollections.observableList(payables));
+                    TableViewUtils.sortDescending(tblReceivables, colUpdatedAt);
+                    lblRows.setText(payables.size() + "");
+                }));
     }
 
-    private void handleActionTablePayables() {
+    private void handleActionTableReceivables() {
         // TODO
     }
 
