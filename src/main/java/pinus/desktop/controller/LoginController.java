@@ -6,6 +6,7 @@ import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
@@ -34,12 +35,14 @@ public class LoginController extends CommonDataSaveController {
     protected void onActionBtnSave(ActionEvent event) {
         processDataSave();
         if (isLastDataSaved()) {
-            close();
-            try {
-                Pinus.loadMainPage();
-            } catch (IOException e) {
-                log.error("Load main page error!", e);
-            }
+            Platform.runLater(() -> {
+                close();
+                try {
+                    Pinus.loadMainPage();
+                } catch (IOException e) {
+                    log.error("Load main page error!", e);
+                }
+            });
         }
     }
 

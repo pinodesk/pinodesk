@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import pinus.desktop.domain.Payable;
 
 @Repository
-public interface PayableRepository extends PagingAndSortingRepository<Payable, Long> {
+public interface PayableRepository extends PagingAndSortingRepository<Payable, Long>, PayableRepositoryCustom {
 
 }

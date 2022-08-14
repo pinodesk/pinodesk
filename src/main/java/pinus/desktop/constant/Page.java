@@ -63,6 +63,7 @@ public enum Page implements IPage {
     MASTER_DOCTOR_CHOOSE_CATEGORY("master/doctor/choose-category"),
 
     TRANSACTION_PAYABLE_MAIN("transaction/payable/main"),
+    TRANSACTION_PAYABLE_FILTER("transaction/payable/filter"),
 
     TRANSACTION_RECEIVABLE_MAIN("transaction/receivable/main");
 

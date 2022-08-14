@@ -11,6 +11,7 @@ import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
@@ -26,10 +27,12 @@ import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.CommonLabel;
+import pinus.desktop.constant.Page;
 import pinus.desktop.constant.StyleConstants;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.service.PayableService;
 import pinus.desktop.util.SpringUtils;
+import pinus.desktop.viewmodel.PayableFilterVM;
 import pinus.desktop.viewmodel.PayableVM;
 
 public class PayableMainController extends BaseController {
@@ -71,10 +74,19 @@ public class PayableMainController extends BaseController {
     private Label lblRows;
 
     private PayableService payableService;
+    private PayableFilterVM payableFilter;
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        // TODO
+        setPageData(payableFilter);
+        StageUtils.modal(Page.TRANSACTION_PAYABLE_FILTER, false, we -> {
+            PayableFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            payableFilter = result;
+            searchPayables();
+        });
     }
 
     @Override
@@ -129,6 +141,7 @@ public class PayableMainController extends BaseController {
 
     @Override
     protected void initControlValues() {
+        payableFilter = new PayableFilterVM();
         searchPayables();
     }
 
@@ -140,15 +153,16 @@ public class PayableMainController extends BaseController {
     private void searchPayables() {
         tblPayables.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblPayables.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> payableService.searchPayables()).thenAccept(payables -> Platform.runLater(() -> {
-            if (payables.isEmpty()) {
-                tblPayables.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                lblRows.setText("0");
-            }
-            tblPayables.setItems(FXCollections.observableList(payables));
-            TableViewUtils.sortDescending(tblPayables, colUpdatedAt);
-            lblRows.setText(payables.size() + "");
-        }));
+        AsyncUtils.supply(() -> payableService.searchPayables(payableFilter))
+                .thenAccept(payables -> Platform.runLater(() -> {
+                    if (payables.isEmpty()) {
+                        tblPayables.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                        lblRows.setText("0");
+                    }
+                    tblPayables.setItems(FXCollections.observableList(payables));
+                    TableViewUtils.sortDescending(tblPayables, colUpdatedAt);
+                    lblRows.setText(payables.size() + "");
+                }));
     }
 
     private void handleActionTablePayables() {
