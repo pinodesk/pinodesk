@@ -13,12 +13,12 @@ public class PayableFilterVM {
     private String invoiceNumber;
     private LocalDate invoiceDateMin;
     private LocalDate invoiceDateMax;
-    private BigDecimal paymentAmountMin;
-    private BigDecimal paymentAmountMax;
-    private LocalDate paymentDueDateMin;
-    private LocalDate paymentDueDateMax;
-    private LocalDate paymentDateMin;
-    private LocalDate paymentDateMax;
+    private BigDecimal amountMin;
+    private BigDecimal amountMax;
+    private LocalDate dueDateMin;
+    private LocalDate dueDateMax;
+    private LocalDate completionDateMin;
+    private LocalDate completionDateMax;
     private String remarks;
     private PaymentStatus paymentStatus;
 }

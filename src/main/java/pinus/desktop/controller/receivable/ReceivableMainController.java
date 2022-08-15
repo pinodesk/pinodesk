@@ -53,13 +53,13 @@ public class ReceivableMainController extends BaseController {
     private TableColumn<ReceivableVM, LocalDate> colInvoiceDate;
 
     @FXML
-    private TableColumn<ReceivableVM, BigDecimal> colPaymentAmount;
+    private TableColumn<ReceivableVM, BigDecimal> colAmount;
 
     @FXML
     private TableColumn<ReceivableVM, LocalDate> colDueDate;
 
     @FXML
-    private TableColumn<ReceivableVM, LocalDate> colPaymentDate;
+    private TableColumn<ReceivableVM, LocalDate> colCompletionDate;
 
     @FXML
     private TableColumn<ReceivableVM, String> colRemarks;
@@ -101,22 +101,22 @@ public class ReceivableMainController extends BaseController {
         TableViewUtils.setColumnValue(colInvoiceNumber, ReceivableVM::getInvoiceNumber);
         TableViewUtils.setColumnValue(colRemarks, ReceivableVM::getRemarks);
         TableViewUtils.initTableColumn(
-                colPaymentAmount,
+                colAmount,
                 new NumberCellFactory<>(locale),
-                ReceivableVM::getPaymentAmount,
+                ReceivableVM::getAmount,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colInvoiceDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 ReceivableVM::getInvoiceDate);
         TableViewUtils.initTableColumn(
-                colPaymentDate,
+                colCompletionDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                ReceivableVM::getPaymentDate);
+                ReceivableVM::getCompletionDate);
         TableViewUtils.initTableColumn(
                 colDueDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                ReceivableVM::getPaymentDueDate);
+                ReceivableVM::getDueDate);
         TableViewUtils.initTableColumn(
                 colCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),

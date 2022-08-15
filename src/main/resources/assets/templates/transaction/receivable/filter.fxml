@@ -102,12 +102,12 @@
                   </VBox>
                   <VBox maxWidth="361.0" spacing="5.0" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
                      <children>
-                        <Label text="%lbl_payment_date_min">
+                        <Label text="%lbl_completion_date_min">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <MaskedTextField fx:id="tfPaymentDateMin" mask="####-##-##" styleClass="input-primary">
+                        <MaskedTextField fx:id="tfCompletionDateMin" mask="####-##-##" styleClass="input-primary">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -116,12 +116,12 @@
                   </VBox>
                   <VBox maxWidth="361.0" spacing="5.0" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
                      <children>
-                        <Label text="%lbl_payment_date_max">
+                        <Label text="%lbl_completion_date_max">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <MaskedTextField fx:id="tfPaymentDateMax" mask="####-##-##" styleClass="input-primary">
+                        <MaskedTextField fx:id="tfCompletionDateMax" mask="####-##-##" styleClass="input-primary">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -130,12 +130,12 @@
                   </VBox>
                   <VBox maxWidth="361.0" spacing="5.0" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
                      <children>
-                        <Label text="%lbl_payment_amount_min">
+                        <Label text="%lbl_amount_min">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tfPaymentAmountMin" styleClass="input-primary">
+                        <TextField fx:id="tfAmountMin" styleClass="input-primary">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -144,12 +144,12 @@
                   </VBox>
                   <VBox maxWidth="361.0" spacing="5.0" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.vgrow="ALWAYS">
                      <children>
-                        <Label text="%lbl_payment_amount_max">
+                        <Label text="%lbl_amount_max">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tfPaymentAmountMax" styleClass="input-primary">
+                        <TextField fx:id="tfAmountMax" styleClass="input-primary">
                            <font>
                               <Font size="13.0" />
                            </font>

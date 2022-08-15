@@ -53,13 +53,13 @@ public class PayableMainController extends BaseController {
     private TableColumn<PayableVM, LocalDate> colInvoiceDate;
 
     @FXML
-    private TableColumn<PayableVM, BigDecimal> colPaymentAmount;
+    private TableColumn<PayableVM, BigDecimal> colAmount;
 
     @FXML
     private TableColumn<PayableVM, LocalDate> colDueDate;
 
     @FXML
-    private TableColumn<PayableVM, LocalDate> colPaymentDate;
+    private TableColumn<PayableVM, LocalDate> colCompletionDate;
 
     @FXML
     private TableColumn<PayableVM, String> colRemarks;
@@ -101,18 +101,18 @@ public class PayableMainController extends BaseController {
         TableViewUtils.setColumnValue(colInvoiceNumber, PayableVM::getInvoiceNumber);
         TableViewUtils.setColumnValue(colRemarks, PayableVM::getRemarks);
         TableViewUtils.initTableColumn(
-                colPaymentAmount,
+                colAmount,
                 new NumberCellFactory<>(locale),
-                PayableVM::getPaymentAmount,
+                PayableVM::getAmount,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colInvoiceDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PayableVM::getInvoiceDate);
         TableViewUtils.initTableColumn(
-                colPaymentDate,
+                colCompletionDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                PayableVM::getPaymentDate);
+                PayableVM::getCompletionDate);
         TableViewUtils.initTableColumn(
                 colDueDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),

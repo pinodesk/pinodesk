@@ -17,8 +17,8 @@ public class ReceivableVM {
     private Long saleId;
     private String invoiceNumber;
     private LocalDate invoiceDate;
-    private BigDecimal paymentAmount;
-    private LocalDate paymentDueDate;
-    private LocalDate paymentDate;
+    private BigDecimal amount;
+    private LocalDate dueDate;
+    private LocalDate completionDate;
     private String remarks;
 }

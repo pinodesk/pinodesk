@@ -22,7 +22,7 @@ public class ReceivableService extends BaseService {
     @ForActivity(Activity.SEARCH_RECEIVABLES_BY_FILTER)
     @Cacheable(CacheNameConstants.RECEIVABLES_BY_FILTER)
     public List<ReceivableVM> searchReceivables(ReceivableFilterVM filter) {
-        return objectConverter.convertList(receivableRepository.findByFilter(filter), ReceivableVM.class);
+        return receivableRepository.findByFilter(filter);
     }
 
 }

@@ -54,9 +54,9 @@
           <TableColumn fx:id="colCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />
           <TableColumn fx:id="colInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_sale_invoice_number" />
             <TableColumn fx:id="colInvoiceDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
-            <TableColumn fx:id="colPaymentAmount" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_amount" />
+            <TableColumn fx:id="colAmount" minWidth="-Infinity" prefWidth="150.0" text="%lbl_amount" />
             <TableColumn fx:id="colDueDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_due_date" />
-            <TableColumn fx:id="colPaymentDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_date" />
+            <TableColumn fx:id="colCompletionDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_completion_date" />
             <TableColumn fx:id="colRemarks" minWidth="-Infinity" prefWidth="200.0" text="%lbl_remarks" />
             <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
             <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />

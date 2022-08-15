@@ -10,11 +10,18 @@ import com.gitlab.muhammadkholidb.sequel.sql.Where;
 import pinus.desktop.constant.PaymentStatus;
 import pinus.desktop.domain.Receivable;
 import pinus.desktop.viewmodel.ReceivableFilterVM;
+import pinus.desktop.viewmodel.ReceivableVM;
 
 public class ReceivableRepositoryImpl extends AbstractRepository<Receivable> implements ReceivableRepositoryCustom {
 
     @Override
-    public List<Receivable> findByFilter(ReceivableFilterVM filter) {
+    public List<ReceivableVM> findByFilter(ReceivableFilterVM filter) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("""
+                select a.*, b.id as customer_id, b.name as customer_name
+                from receivable a
+                inner join customer b on b.id = a.customer_id
+                """);
         Where where = new Where();
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
             where.containsIgnoreCase(Receivable.C_INVOICE_NUMBER, filter.getInvoiceNumber());
@@ -25,23 +32,23 @@ public class ReceivableRepositoryImpl extends AbstractRepository<Receivable> imp
         if (filter.getInvoiceDateMin() != null) {
             where.andGreaterThanOrEqual(Receivable.C_INVOICE_DATE, filter.getInvoiceDateMin());
         }
-        if (filter.getPaymentAmountMax() != null) {
-            where.andLowerThanOrEqual(Receivable.C_PAYMENT_AMOUNT, filter.getPaymentAmountMax());
+        if (filter.getAmountMax() != null) {
+            where.andLowerThanOrEqual(Receivable.C_AMOUNT, filter.getAmountMax());
         }
-        if (filter.getPaymentAmountMin() != null) {
-            where.andGreaterThanOrEqual(Receivable.C_PAYMENT_AMOUNT, filter.getPaymentAmountMin());
+        if (filter.getAmountMin() != null) {
+            where.andGreaterThanOrEqual(Receivable.C_AMOUNT, filter.getAmountMin());
         }
-        if (filter.getPaymentDateMax() != null) {
-            where.andLowerThanOrEqual(Receivable.C_PAYMENT_DATE, filter.getPaymentDateMax());
+        if (filter.getCompletionDateMax() != null) {
+            where.andLowerThanOrEqual(Receivable.C_COMPLETION_DATE, filter.getCompletionDateMax());
         }
-        if (filter.getPaymentDateMin() != null) {
-            where.andGreaterThanOrEqual(Receivable.C_PAYMENT_DATE, filter.getPaymentDateMin());
+        if (filter.getCompletionDateMin() != null) {
+            where.andGreaterThanOrEqual(Receivable.C_COMPLETION_DATE, filter.getCompletionDateMin());
         }
-        if (filter.getPaymentDueDateMax() != null) {
-            where.andLowerThanOrEqual(Receivable.C_PAYMENT_DUE_DATE, filter.getPaymentDueDateMax());
+        if (filter.getDueDateMax() != null) {
+            where.andLowerThanOrEqual(Receivable.C_DUE_DATE, filter.getDueDateMax());
         }
-        if (filter.getPaymentDueDateMin() != null) {
-            where.andGreaterThanOrEqual(Receivable.C_PAYMENT_DUE_DATE, filter.getPaymentDueDateMin());
+        if (filter.getDueDateMin() != null) {
+            where.andGreaterThanOrEqual(Receivable.C_DUE_DATE, filter.getDueDateMin());
         }
         if (StringUtils.isNotBlank(filter.getRemarks())) {
             where.containsIgnoreCase(Receivable.C_REMARKS, filter.getRemarks());
@@ -50,11 +57,15 @@ public class ReceivableRepositoryImpl extends AbstractRepository<Receivable> imp
             where.andEquals(Receivable.C_CUSTOMER_ID, filter.getCustomerId());
         }
         if (PaymentStatus.PAID.equals(filter.getPaymentStatus())) {
-            where.isNotNull(Receivable.C_PAYMENT_DATE);
+            where.isNotNull(Receivable.C_COMPLETION_DATE);
         } else if (PaymentStatus.UNPAID.equals(filter.getPaymentStatus())) {
-            where.isNull(Receivable.C_PAYMENT_DATE);
+            where.isNull(Receivable.C_COMPLETION_DATE);
         }
-        return read(where);
+        sb.append(where.getClause());
+        List<Object> params = where.getValues();
+        sb.append(params.isEmpty() ? " WHERE " : " AND ");
+        sb.append(" a.deleted_at is null ");
+        return performSelect(sb.toString(), params, ReceivableVM.class);
     }
 
 }

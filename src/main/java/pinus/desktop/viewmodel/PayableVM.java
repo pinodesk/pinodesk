@@ -17,8 +17,8 @@ public class PayableVM {
     private Long purchaseId;
     private String invoiceNumber;
     private LocalDate invoiceDate;
-    private BigDecimal paymentAmount;
+    private BigDecimal amount;
     private LocalDate paymentDueDate;
-    private LocalDate paymentDate;
+    private LocalDate completionDate;
     private String remarks;
 }

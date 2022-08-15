@@ -2,11 +2,11 @@ package pinus.desktop.repository;
 
 import java.util.List;
 
-import pinus.desktop.domain.Payable;
 import pinus.desktop.viewmodel.PayableFilterVM;
+import pinus.desktop.viewmodel.PayableVM;
 
 public interface PayableRepositoryCustom {
 
-    List<Payable> findByFilter(PayableFilterVM filter);
+    List<PayableVM> findByFilter(PayableFilterVM filter);
 
 }

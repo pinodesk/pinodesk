@@ -22,7 +22,7 @@ public class PayableService extends BaseService {
     @ForActivity(Activity.SEARCH_PAYABLES_BY_FILTER)
     @Cacheable(CacheNameConstants.PAYABLES_BY_FILTER)
     public List<PayableVM> searchPayables(PayableFilterVM filter) {
-        return objectConverter.convertList(payableRepository.findByFilter(filter), PayableVM.class);
+        return payableRepository.findByFilter(filter);
     }
 
 }

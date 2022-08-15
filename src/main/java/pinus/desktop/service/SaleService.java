@@ -164,8 +164,8 @@ public class SaleService extends BaseService {
             Receivable receivable = new Receivable();
             receivable.setInvoiceDate(sale.getCreatedAt().toLocalDate());
             receivable.setInvoiceNumber(sale.getInvoiceNumber());
-            receivable.setPaymentAmount(sale.getTotalPayment());
-            receivable.setPaymentDueDate(sale.getPaymentDueDate());
+            receivable.setAmount(sale.getTotalPayment());
+            receivable.setDueDate(sale.getPaymentDueDate());
             receivable.setSaleId(sale.getId());
             receivable.setCustomerId(sale.getCustomerId());
             receivableRepository.save(receivable);

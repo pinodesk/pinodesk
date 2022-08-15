@@ -49,16 +49,16 @@ public class ReceivableFilterController extends CommonDataFilterController<Recei
     private MaskedTextField tfDueDateMax;
 
     @FXML
-    private TextField tfPaymentAmountMin;
+    private TextField tfAmountMin;
 
     @FXML
-    private TextField tfPaymentAmountMax;
+    private TextField tfAmountMax;
 
     @FXML
-    private MaskedTextField tfPaymentDateMin;
+    private MaskedTextField tfCompletionDateMin;
 
     @FXML
-    private MaskedTextField tfPaymentDateMax;
+    private MaskedTextField tfCompletionDateMax;
 
     @FXML
     private TextField tfRemarks;
@@ -73,25 +73,25 @@ public class ReceivableFilterController extends CommonDataFilterController<Recei
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
             tfCustomer.setText(currentFilter.getCustomerName());
             tfRemarks.setText(currentFilter.getRemarks());
-            tfPaymentAmountMax.setText(toStringOrNull(currentFilter.getPaymentAmountMax()));
-            tfPaymentAmountMin.setText(toStringOrNull(currentFilter.getPaymentAmountMin()));
+            tfAmountMax.setText(toStringOrNull(currentFilter.getAmountMax()));
+            tfAmountMin.setText(toStringOrNull(currentFilter.getAmountMin()));
             if (currentFilter.getInvoiceDateMin() != null) {
                 tfInvoiceDateMin.setText(currentFilter.getInvoiceDateMin().format(dateFormatter));
             }
             if (currentFilter.getInvoiceDateMax() != null) {
                 tfInvoiceDateMax.setText(currentFilter.getInvoiceDateMax().format(dateFormatter));
             }
-            if (currentFilter.getPaymentDueDateMax() != null) {
-                tfDueDateMax.setText(currentFilter.getPaymentDueDateMax().format(dateFormatter));
+            if (currentFilter.getDueDateMax() != null) {
+                tfDueDateMax.setText(currentFilter.getDueDateMax().format(dateFormatter));
             }
-            if (currentFilter.getPaymentDueDateMin() != null) {
-                tfDueDateMin.setText(currentFilter.getPaymentDueDateMin().format(dateFormatter));
+            if (currentFilter.getDueDateMin() != null) {
+                tfDueDateMin.setText(currentFilter.getDueDateMin().format(dateFormatter));
             }
-            if (currentFilter.getPaymentDateMax() != null) {
-                tfPaymentDateMax.setText(currentFilter.getPaymentDateMax().format(dateFormatter));
+            if (currentFilter.getCompletionDateMax() != null) {
+                tfCompletionDateMax.setText(currentFilter.getCompletionDateMax().format(dateFormatter));
             }
-            if (currentFilter.getPaymentDateMin() != null) {
-                tfPaymentDateMin.setText(currentFilter.getPaymentDateMin().format(dateFormatter));
+            if (currentFilter.getCompletionDateMin() != null) {
+                tfCompletionDateMin.setText(currentFilter.getCompletionDateMin().format(dateFormatter));
             }
             if (currentFilter.getPaymentStatus() != null) {
                 ComboBoxUtils.select(
@@ -111,35 +111,33 @@ public class ReceivableFilterController extends CommonDataFilterController<Recei
                 parseLocalDateQuietly(tfInvoiceDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         filter.setInvoiceDateMin(
                 parseLocalDateQuietly(tfInvoiceDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setPaymentDueDateMax(
-                parseLocalDateQuietly(tfDueDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setPaymentDueDateMin(
-                parseLocalDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setPaymentDateMax(
-                parseLocalDateQuietly(tfPaymentDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setPaymentDateMin(
-                parseLocalDateQuietly(tfPaymentDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setDueDateMax(parseLocalDateQuietly(tfDueDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setDueDateMin(parseLocalDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setCompletionDateMax(
+                parseLocalDateQuietly(tfCompletionDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setCompletionDateMin(
+                parseLocalDateQuietly(tfCompletionDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
         PaymentStatus selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         filter.setPaymentStatus(selectedPaymentStatus);
         if (selectedCustomer != null) {
             filter.setCustomerId(selectedCustomer.getId());
             filter.setCustomerName(selectedCustomer.getName());
         }
-        filter.setPaymentAmountMax(toBigDecimalOrNull(tfPaymentAmountMax.getText()));
-        filter.setPaymentAmountMin(toBigDecimalOrNull(tfPaymentAmountMin.getText()));
+        filter.setAmountMax(toBigDecimalOrNull(tfAmountMax.getText()));
+        filter.setAmountMin(toBigDecimalOrNull(tfAmountMin.getText()));
         filter.setRemarks(tfRemarks.getText());
         return filter;
     }
 
     @Override
     protected void resetControls() {
-        TextFieldUtils.setTextEmpty(tfInvoiceNumber, tfCustomer, tfPaymentAmountMax, tfPaymentAmountMin, tfRemarks);
+        TextFieldUtils.setTextEmpty(tfInvoiceNumber, tfCustomer, tfAmountMax, tfAmountMin, tfRemarks);
         tfInvoiceDateMax.setPlainText("");
         tfInvoiceDateMin.setPlainText("");
         tfDueDateMax.setPlainText("");
         tfDueDateMin.setPlainText("");
-        tfPaymentDateMax.setPlainText("");
-        tfPaymentDateMin.setPlainText("");
+        tfCompletionDateMax.setPlainText("");
+        tfCompletionDateMin.setPlainText("");
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         selectedCustomer = null;
     }
@@ -151,13 +149,13 @@ public class ReceivableFilterController extends CommonDataFilterController<Recei
 
     @Override
     protected void initDataFilterControlActions() {
-        TextFieldUtils.setDigitTextFields(tfPaymentAmountMax, tfPaymentAmountMin);
+        TextFieldUtils.setDigitTextFields(tfAmountMax, tfAmountMin);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(null, StringConstants.EMPTY),
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
                 new SimpleComboBoxModel(PaymentStatus.UNPAID, t.translate(CommonLabel.LBL_UNPAID)));
-        setCustomerChooser(tfCustomer, this::handleSelectedCustomer, tfPaymentDateMin);
+        setCustomerChooser(tfCustomer, this::handleSelectedCustomer, tfCompletionDateMin);
     }
 
     public void handleSelectedCustomer(ChooseResultVM<CustomerVM> result) {

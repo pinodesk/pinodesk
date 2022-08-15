@@ -126,8 +126,8 @@ public class PurchaseService extends BaseService {
             Payable payable = new Payable();
             payable.setInvoiceDate(purchaseAdd.getInvoiceDate());
             payable.setInvoiceNumber(purchaseAdd.getInvoiceNumber());
-            payable.setPaymentAmount(purchaseAdd.getTotalPayment());
-            payable.setPaymentDueDate(purchaseAdd.getPaymentDueDate());
+            payable.setAmount(purchaseAdd.getTotalPayment());
+            payable.setDueDate(purchaseAdd.getPaymentDueDate());
             payable.setPurchaseId(purchaseId);
             payable.setSupplierId(purchaseAdd.getSupplierId());
             payableRepository.save(payable);
