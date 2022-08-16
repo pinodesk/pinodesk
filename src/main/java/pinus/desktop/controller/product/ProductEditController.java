@@ -339,6 +339,7 @@ public class ProductEditController extends CommonDataSaveController {
                 colProductExpiryCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 ProductExpiryVM::getCreatedAt);
+        TableViewUtils.enableSort(false, tblExpiry);
     }
 
     private void initTableProductStock() {
@@ -354,6 +355,7 @@ public class ProductEditController extends CommonDataSaveController {
                 colProductStockCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 ProductStockVM::getCreatedAt);
+        TableViewUtils.enableSort(false, tblStock);
     }
 
     private void initTableProductPrice(Locale locale) {
@@ -376,6 +378,7 @@ public class ProductEditController extends CommonDataSaveController {
                 colProductPriceCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 ProductPriceVM::getCreatedAt);
+        TableViewUtils.enableSort(false, tblPrice);
     }
 
     @Override

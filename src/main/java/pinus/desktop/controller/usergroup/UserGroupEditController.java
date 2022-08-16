@@ -89,9 +89,7 @@ public class UserGroupEditController extends CommonDataSaveController {
                 cbStatus,
                 new SimpleComboBoxModel(UserGroupStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE)),
                 new SimpleComboBoxModel(UserGroupStatus.INACTIVE, t.translate(CommonLabel.LBL_INACTIVE)));
-        colName.setSortable(false);
-        colRead.setSortable(false);
-        colWrite.setSortable(false);
+        TableViewUtils.enableSort(false, tblMenus);
         TableViewUtils.setColumnValue(
                 colName,
                 vm -> vm.getParentMenuId() == null ? vm.getMenuName() : "\t" + vm.getMenuName());

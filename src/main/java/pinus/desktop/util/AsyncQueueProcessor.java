@@ -6,6 +6,9 @@ import java.util.concurrent.CompletableFuture;
 
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class AsyncQueueProcessor {
     private CompletableFuture<Void> future;
@@ -20,7 +23,10 @@ public class AsyncQueueProcessor {
     public void process(Runnable runnable) {
         queue.add(runnable);
         while (!queue.isEmpty()) {
-            future.thenRunAsync(queue.poll()).exceptionally(e -> null);
+            future.thenRunAsync(queue.poll()).exceptionally(e -> {
+                log.error("Process queue error!", e);
+                return null;
+            });
         }
     }
 }
