@@ -173,6 +173,9 @@
          </content>
       </ScrollPane>
       <AnchorPane fx:id="contentPane" layoutX="250.0" layoutY="70.0" prefHeight="623.0" prefWidth="774.0" AnchorPane.bottomAnchor="27.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="70.0" />
-      <AnchorPane layoutX="10.0" layoutY="688.0" prefHeight="27.0" prefWidth="1024.0" style="-fx-background-color: #008167;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <AnchorPane layoutX="10.0" layoutY="688.0" prefHeight="27.0" prefWidth="1024.0" style="-fx-background-color: #008167;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Label fx:id="lblVersion" layoutX="945.0" layoutY="5.0" textFill="WHITE" AnchorPane.rightAnchor="10.0" />
+         </children></AnchorPane>
    </children>
 </AnchorPane>

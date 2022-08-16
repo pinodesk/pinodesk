@@ -25,6 +25,7 @@ import pinus.desktop.constant.MessageCode;
 import pinus.desktop.constant.Page;
 import pinus.desktop.constant.SimpleStatus;
 import pinus.desktop.constant.StyleConstants;
+import pinus.desktop.properties.ApplicationProperties;
 import pinus.desktop.service.ConfigurationService;
 import pinus.desktop.util.SpringUtils;
 import pinus.desktop.viewmodel.CurrentSessionVM;
@@ -92,11 +93,16 @@ public class MainController extends BaseController {
     @FXML
     private Button btnLogout;
 
+    @FXML
+    private Label lblVersion;
+
     private ConfigurationService configurationService;
+    private ApplicationProperties applicationProperties;
 
     @Override
     protected void initServices(ApplicationContext ctx) {
         configurationService = SpringUtils.getBean(ConfigurationService.class);
+        applicationProperties = SpringUtils.getBean(ApplicationProperties.class);
     }
 
     @Override
@@ -113,6 +119,7 @@ public class MainController extends BaseController {
             }
             return;
         }
+        lblVersion.setText(String.format("v%s", applicationProperties.getVersion()));
         CurrentSessionVM currentSession = sessionService.get().getCurrentSession();
         String storeName = configurationService.getConfiguration(ConfigurationConstants.STORE_NAME);
         lblStoreName.setText(storeName);
