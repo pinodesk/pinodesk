@@ -21,9 +21,9 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
                 from purchase a
                 inner join supplier b on b.id = a.supplier_id
                 """);
-        Where where = new Where();
+        Where where = new Where().isNull("a.deleted_at");
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
-            where.containsIgnoreCase("a.invoice_number", filter.getInvoiceNumber().trim());
+            where.andContainsIgnoreCase("a.invoice_number", filter.getInvoiceNumber().trim());
         }
         if (filter.getInvoiceDateMin() != null) {
             where.andGreaterThanOrEqual("a.invoice_date", filter.getInvoiceDateMin());
@@ -56,10 +56,7 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
             where.andGreaterThanOrEqual("a.total_product", filter.getTotalProductMin());
         }
         sb.append(where.getClause());
-        List<Object> params = where.getValues();
-        sb.append(params.isEmpty() ? " WHERE " : " AND ");
-        sb.append(" a.deleted_at is null ");
-        return performSelect(sb.toString(), params, PurchaseVM.class);
+        return performSelect(sb.toString(), where.getValues(), PurchaseVM.class);
     }
 
 }

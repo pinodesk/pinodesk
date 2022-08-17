@@ -164,7 +164,13 @@ public enum MessageCode implements IMessage {
     ERROR_USER_NOT_FOUND,
 
     // Login
-    CONFIRMATION_LOGOUT;
+    CONFIRMATION_LOGOUT,
+
+    // Payable
+    ERROR_PAYABLE_NOT_FOUND_BY_ID,
+    ERROR_PAYMENT_AMOUNT_GREATER_THAN_PAYABLE_AMOUNT,
+    ERROR_INVALID_PAYMENT_DATE,
+    ERROR_INVALID_AMOUNT;
 
     @Override
     public String toString() {

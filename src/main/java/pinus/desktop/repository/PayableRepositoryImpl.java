@@ -16,56 +16,54 @@ public class PayableRepositoryImpl extends AbstractRepository<Payable> implement
 
     @Override
     public List<PayableVM> findByFilter(PayableFilterVM filter) {
+        String colCompletionDate = "a.completion_date";
         StringBuilder sb = new StringBuilder();
         sb.append("""
                 select a.*, b.id as supplier_id, b.name as supplier_name
                 from payable a
                 inner join supplier b on b.id = a.supplier_id
                 """);
-        Where where = new Where();
+        Where where = new Where().isNull("a.deleted_at");
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
-            where.containsIgnoreCase(Payable.C_INVOICE_NUMBER, filter.getInvoiceNumber());
+            where.andContainsIgnoreCase("a.invoice_number", filter.getInvoiceNumber());
         }
         if (filter.getInvoiceDateMax() != null) {
-            where.andLowerThanOrEqual(Payable.C_INVOICE_DATE, filter.getInvoiceDateMax());
+            where.andLowerThanOrEqual("a.invoice_date", filter.getInvoiceDateMax());
         }
         if (filter.getInvoiceDateMin() != null) {
-            where.andGreaterThanOrEqual(Payable.C_INVOICE_DATE, filter.getInvoiceDateMin());
+            where.andGreaterThanOrEqual("a.invoice_date", filter.getInvoiceDateMin());
         }
         if (filter.getAmountMax() != null) {
-            where.andLowerThanOrEqual(Payable.C_AMOUNT, filter.getAmountMax());
+            where.andLowerThanOrEqual("a.amount", filter.getAmountMax());
         }
         if (filter.getAmountMin() != null) {
-            where.andGreaterThanOrEqual(Payable.C_AMOUNT, filter.getAmountMin());
+            where.andGreaterThanOrEqual("a.amount", filter.getAmountMin());
         }
         if (filter.getCompletionDateMax() != null) {
-            where.andLowerThanOrEqual(Payable.C_COMPLETION_DATE, filter.getCompletionDateMax());
+            where.andLowerThanOrEqual(colCompletionDate, filter.getCompletionDateMax());
         }
         if (filter.getCompletionDateMin() != null) {
-            where.andGreaterThanOrEqual(Payable.C_COMPLETION_DATE, filter.getCompletionDateMin());
+            where.andGreaterThanOrEqual(colCompletionDate, filter.getCompletionDateMin());
         }
         if (filter.getDueDateMax() != null) {
-            where.andLowerThanOrEqual(Payable.C_DUE_DATE, filter.getDueDateMax());
+            where.andLowerThanOrEqual("a.due_date", filter.getDueDateMax());
         }
         if (filter.getDueDateMin() != null) {
-            where.andGreaterThanOrEqual(Payable.C_DUE_DATE, filter.getDueDateMin());
+            where.andGreaterThanOrEqual("a.due_date", filter.getDueDateMin());
         }
         if (StringUtils.isNotBlank(filter.getRemarks())) {
-            where.containsIgnoreCase(Payable.C_REMARKS, filter.getRemarks());
+            where.containsIgnoreCase("a.remarks", filter.getRemarks());
         }
         if (filter.getSupplierId() != null) {
-            where.andEquals(Payable.C_SUPPLIER_ID, filter.getSupplierId());
+            where.andEquals("a.supplier_id", filter.getSupplierId());
         }
         if (PaymentStatus.PAID.equals(filter.getPaymentStatus())) {
-            where.isNotNull(Payable.C_COMPLETION_DATE);
+            where.isNotNull(colCompletionDate);
         } else if (PaymentStatus.UNPAID.equals(filter.getPaymentStatus())) {
-            where.isNull(Payable.C_COMPLETION_DATE);
+            where.isNull(colCompletionDate);
         }
         sb.append(where.getClause());
-        List<Object> params = where.getValues();
-        sb.append(params.isEmpty() ? " WHERE " : " AND ");
-        sb.append(" a.deleted_at is null ");
-        return performSelect(sb.toString(), params, PayableVM.class);
+        return performSelect(sb.toString(), where.getValues(), PayableVM.class);
     }
 
 }

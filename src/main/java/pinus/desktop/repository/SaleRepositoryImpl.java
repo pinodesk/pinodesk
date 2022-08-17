@@ -27,9 +27,9 @@ public class SaleRepositoryImpl extends AbstractRepository<Sale> implements Sale
                 left join customer b on b.id = a.customer_id
                 left join doctor c on c.id = a.doctor_id
                 """);
-        Where where = new Where();
+        Where where = new Where().isNull("a.deleted_at");
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
-            where.containsIgnoreCase("a.invoice_number", filter.getInvoiceNumber().trim());
+            where.andContainsIgnoreCase("a.invoice_number", filter.getInvoiceNumber().trim());
         }
         if (filter.getCreatedDateMin() != null) {
             where.andGreaterThanOrEqual("a.created_at", filter.getCreatedDateMin());
@@ -65,10 +65,7 @@ public class SaleRepositoryImpl extends AbstractRepository<Sale> implements Sale
             where.andGreaterThanOrEqual("a.total_product", filter.getTotalProductMin());
         }
         sb.append(where.getClause());
-        List<Object> params = where.getValues();
-        sb.append(params.isEmpty() ? " WHERE " : " AND ");
-        sb.append(" a.deleted_at is null ");
-        return performSelect(sb.toString(), params, SaleVM.class);
+        return performSelect(sb.toString(), where.getValues(), SaleVM.class);
     }
 
 }

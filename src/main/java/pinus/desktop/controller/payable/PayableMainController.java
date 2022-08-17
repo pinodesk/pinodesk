@@ -116,7 +116,7 @@ public class PayableMainController extends BaseController {
         TableViewUtils.initTableColumn(
                 colDueDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                PayableVM::getPaymentDueDate);
+                PayableVM::getDueDate);
         TableViewUtils.initTableColumn(
                 colCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
@@ -166,7 +166,10 @@ public class PayableMainController extends BaseController {
     }
 
     private void handleActionTablePayables() {
-        // TODO
+        if (TableViewUtils.hasItemSelected(tblPayables)) {
+            setPageData(TableViewUtils.getSelectedItem(tblPayables));
+            StageUtils.modal(Page.TRANSACTION_PAYABLE_EDIT, false, event -> searchPayables());
+        }
     }
 
 }
