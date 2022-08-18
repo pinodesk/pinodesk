@@ -15,11 +15,14 @@ import pinus.desktop.annotation.ForActivity;
 import pinus.desktop.constant.Activity;
 import pinus.desktop.constant.CacheNameConstants;
 import pinus.desktop.constant.DomainError;
+import pinus.desktop.constant.PaymentStatus;
 import pinus.desktop.domain.Payable;
 import pinus.desktop.domain.PayablePayment;
+import pinus.desktop.domain.Purchase;
 import pinus.desktop.exception.DomainException;
 import pinus.desktop.repository.PayablePaymentRepository;
 import pinus.desktop.repository.PayableRepository;
+import pinus.desktop.repository.PurchaseRepository;
 import pinus.desktop.viewmodel.PayableEditVM;
 import pinus.desktop.viewmodel.PayableFilterVM;
 import pinus.desktop.viewmodel.PayablePaymentVM;
@@ -34,6 +37,9 @@ public class PayableService extends BaseService {
     @Autowired
     private PayablePaymentRepository payablePaymentRepository;
 
+    @Autowired
+    private PurchaseRepository purchaseRepository;
+
     @ForActivity(Activity.SEARCH_PAYABLES_BY_FILTER)
     @Cacheable(CacheNameConstants.PAYABLES_BY_FILTER)
     public List<PayableVM> searchPayables(PayableFilterVM filter) {
@@ -41,7 +47,8 @@ public class PayableService extends BaseService {
     }
 
     @ForActivity(Activity.EDIT_PAYABLE)
-    @CacheEvict(value = { CacheNameConstants.PAYABLES_BY_FILTER }, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.PAYABLES_BY_FILTER, CacheNameConstants.PURCHASES_BY_FILTER },
+        allEntries = true)
     @Transactional
     public void updatePayable(PayableEditVM payableEdit, Long payableId) {
         Payable payable = payableRepository.findById(payableId)
@@ -64,11 +71,15 @@ public class PayableService extends BaseService {
                 maxPaymentDate = vm.getPaymentDate();
             }
         }
+        Purchase purchase = purchaseRepository.findByIdAndDeletedAtIsNull(payable.getPurchaseId()).orElseThrow();
         if (total.compareTo(payable.getAmount()) == 0) {
             payable.setCompletionDate(maxPaymentDate);
+            purchase.setPaymentStatus(PaymentStatus.PAID.toString());
         } else {
             payable.setCompletionDate(null);
+            purchase.setPaymentStatus(PaymentStatus.UNPAID.toString());
         }
+        purchaseRepository.save(purchase);
         payablePaymentRepository.saveAll(payments);
         payableRepository.save(payable);
     }

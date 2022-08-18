@@ -27,5 +27,5 @@ create table if not exists receivable_payment (
 	payment_date date not null,
 	primary key (id),
 	index idx_receivable_payment__deleted_at (deleted_at),
-	index idx_receivable_payment__payable_id (receivable_id)
+	index idx_receivable_payment__receivable_id (receivable_id)
 );

@@ -166,7 +166,10 @@ public class ReceivableMainController extends BaseController {
     }
 
     private void handleActionTableReceivables() {
-        // TODO
+        if (TableViewUtils.hasItemSelected(tblReceivables)) {
+            setPageData(TableViewUtils.getSelectedItem(tblReceivables));
+            StageUtils.modal(Page.TRANSACTION_RECEIVABLE_EDIT, false, event -> searchReceivables());
+        }
     }
 
 }

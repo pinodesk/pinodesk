@@ -67,7 +67,8 @@ public enum Page implements IPage {
     TRANSACTION_PAYABLE_EDIT("transaction/payable/edit"),
 
     TRANSACTION_RECEIVABLE_MAIN("transaction/receivable/main"),
-    TRANSACTION_RECEIVABLE_FILTER("transaction/receivable/filter");
+    TRANSACTION_RECEIVABLE_FILTER("transaction/receivable/filter"),
+    TRANSACTION_RECEIVABLE_EDIT("transaction/receivable/edit");
 
     private final String templateName;
 

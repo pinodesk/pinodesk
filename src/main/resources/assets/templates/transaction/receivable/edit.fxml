@@ -15,11 +15,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.payable.PayableEditController">
+<VBox fx:id="contentPane" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.receivable.ReceivableEditController">
    <children>
       <AnchorPane>
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_edit_payable" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_edit_receivable" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -43,19 +43,19 @@
                   <RowConstraints minHeight="10.0" vgrow="NEVER" />
                </rowConstraints>
                <children>
-                  <Label text="%lbl_payable" textFill="#009c7c" GridPane.hgrow="ALWAYS">
+                  <Label text="%lbl_receivable" textFill="#009c7c" GridPane.hgrow="ALWAYS">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Label>
                   <VBox spacing="5.0" GridPane.columnSpan="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1">
                      <children>
-                        <Label text="%lbl_supplier">
+                        <Label text="%lbl_customer">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tfSupplier" editable="false" styleClass="input-primary">
+                        <TextField fx:id="tfCustomer" editable="false" styleClass="input-primary">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -64,7 +64,7 @@
                   </VBox>
                   <VBox spacing="5.0" GridPane.rowIndex="2">
                      <children>
-                        <Label text="%lbl_purchase_invoice_number">
+                        <Label text="%lbl_sale_invoice_number">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -97,7 +97,7 @@
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="tfPayableAmount" editable="false" styleClass="input-primary">
+                        <TextField fx:id="tfReceivableAmount" editable="false" styleClass="input-primary">
                            <font>
                               <Font size="13.0" />
                            </font>
