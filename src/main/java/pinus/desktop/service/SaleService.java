@@ -3,6 +3,7 @@ package pinus.desktop.service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -29,6 +30,7 @@ import pinus.desktop.repository.ProductExpiryRepository;
 import pinus.desktop.repository.ProductPriceRepository;
 import pinus.desktop.repository.ProductRepository;
 import pinus.desktop.repository.ProductStockRepository;
+import pinus.desktop.repository.ReceivablePaymentRepository;
 import pinus.desktop.repository.ReceivableRepository;
 import pinus.desktop.repository.SaleDetailRepository;
 import pinus.desktop.repository.SaleRepository;
@@ -63,6 +65,9 @@ public class SaleService extends BaseService {
     private ReceivableRepository receivableRepository;
 
     @Autowired
+    private ReceivablePaymentRepository receivablePaymentRepository;
+
+    @Autowired
     private ConfigurationService configurationService;
 
     @ForActivity(Activity.SEARCH_SALES_BY_FILTER)
@@ -89,7 +94,7 @@ public class SaleService extends BaseService {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_KEYWORD,
-            CacheNameConstants.PAYABLES_BY_FILTER },
+            CacheNameConstants.RECEIVABLES_BY_FILTER },
         allEntries = true)
     @Transactional
     public void createSale(SaleAddVM saleAdd) {
@@ -235,11 +240,56 @@ public class SaleService extends BaseService {
         saleDetailRepository.save(sd);
     }
 
+    private void processPaymentStatusChange(SaleEditVM saleEdit, Sale sale) {
+        boolean isChangedToPaid = !saleEdit.getPaymentStatus().toString().equals(sale.getPaymentStatus())
+                && saleEdit.getPaymentStatus().equals(PaymentStatus.PAID);
+        boolean isChangedToUnpaid = !saleEdit.getPaymentStatus().toString().equals(sale.getPaymentStatus())
+                && saleEdit.getPaymentStatus().equals(PaymentStatus.UNPAID);
+        Optional<Receivable> oreceivable = receivableRepository.findBySaleId(sale.getId());
+        if (isChangedToPaid) {
+            if (receivablePaymentRepository.existsBySaleId(sale.getId())) {
+                throw new DomainException(DomainError.RECEIVABLE_PAYMENT_EXISTS_BY_SALE_ID);
+            }
+            oreceivable.ifPresent(receivable -> {
+                receivablePaymentRepository.deleteByReceivableId(receivable.getId());
+                receivableRepository.delete(receivable);
+            });
+            return;
+        }
+        if (isChangedToUnpaid) {
+            if (oreceivable.isPresent()) {
+                throw new DomainException(DomainError.RECEIVABLE_ALREADY_COMPLETED_BY_SALE_ID);
+            }
+            if (saleEdit.getCustomerId() != null) {
+                Receivable receivable = new Receivable();
+                receivable.setInvoiceDate(sale.getCreatedAt().toLocalDate());
+                receivable.setInvoiceNumber(saleEdit.getInvoiceNumber());
+                receivable.setAmount(saleEdit.getTotalPayment());
+                receivable.setDueDate(saleEdit.getPaymentDueDate());
+                receivable.setSaleId(sale.getId());
+                receivable.setCustomerId(saleEdit.getCustomerId());
+                receivableRepository.save(receivable);
+            }
+            return;
+        }
+        // No changes on payment status, update receivable if present
+        oreceivable.ifPresent(receivable -> {
+            receivable.setInvoiceDate(sale.getCreatedAt().toLocalDate());
+            receivable.setInvoiceNumber(saleEdit.getInvoiceNumber());
+            receivable.setAmount(saleEdit.getTotalPayment());
+            receivable.setDueDate(saleEdit.getPaymentDueDate());
+            receivable.setSaleId(sale.getId());
+            receivable.setCustomerId(saleEdit.getCustomerId());
+            receivableRepository.save(receivable);
+        });
+    }
+
     @ForActivity(Activity.EDIT_SALE)
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
-            CacheNameConstants.PRODUCTS_BY_KEYWORD },
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.RECEIVABLES_BY_FILTER },
         allEntries = true)
     @Transactional
     public void updateSale(SaleEditVM saleEdit, Long saleId) {
@@ -247,6 +297,7 @@ public class SaleService extends BaseService {
         String invoiceNumber = saleEdit.getInvoiceNumber();
         Sale sale = saleRepository.findByIdAndDeletedAtIsNull(saleId)
                 .orElseThrow(() -> new DomainException(DomainError.SALE_NOT_FOUND_BY_ID));
+        processPaymentStatusChange(saleEdit, sale);
         if (!sale.getInvoiceNumber().equals(invoiceNumber)
                 && saleRepository.existsByInvoiceNumberIgnoreCaseAndDeletedAtIsNull(invoiceNumber)) {
             throw new DomainException(DomainError.SALE_OTHER_EXISTS_BY_INVOICE_NUMBER);

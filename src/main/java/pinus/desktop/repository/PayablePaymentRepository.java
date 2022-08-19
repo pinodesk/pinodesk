@@ -21,4 +21,11 @@ public interface PayablePaymentRepository extends PagingAndSortingRepository<Pay
 
     List<PayablePayment> findByPayableIdAndDeletedAtIsNull(Long payableId);
 
+    @Query("""
+            select count(a.id) > 0
+            from payable_payment a
+            inner join payable b on b.id = a.payable_id
+            where b.purchase_id = :purchaseId and b.deleted_at is null
+            """)
+    boolean existsByPurchaseId(@Param("purchaseId") Long purchaseId);
 }

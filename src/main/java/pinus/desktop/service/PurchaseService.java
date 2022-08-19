@@ -3,6 +3,7 @@ package pinus.desktop.service;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import pinus.desktop.domain.ProductStock;
 import pinus.desktop.domain.Purchase;
 import pinus.desktop.domain.PurchaseDetail;
 import pinus.desktop.exception.DomainException;
+import pinus.desktop.repository.PayablePaymentRepository;
 import pinus.desktop.repository.PayableRepository;
 import pinus.desktop.repository.ProductExpiryRepository;
 import pinus.desktop.repository.ProductPriceRepository;
@@ -61,6 +63,9 @@ public class PurchaseService extends BaseService {
 
     @Autowired
     private PayableRepository payableRepository;
+
+    @Autowired
+    private PayablePaymentRepository payablePaymentRepository;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -134,6 +139,48 @@ public class PurchaseService extends BaseService {
         }
     }
 
+    private void processPaymentStatusChange(PurchaseEditVM purchaseEdit, Purchase purchase) {
+        boolean isChangedToPaid = !purchaseEdit.getPaymentStatus().toString().equals(purchase.getPaymentStatus())
+                && purchaseEdit.getPaymentStatus().equals(PaymentStatus.PAID);
+        boolean isChangedToUnpaid = !purchaseEdit.getPaymentStatus().toString().equals(purchase.getPaymentStatus())
+                && purchaseEdit.getPaymentStatus().equals(PaymentStatus.UNPAID);
+        Optional<Payable> opayable = payableRepository.findByPurchaseId(purchase.getId());
+        if (isChangedToPaid) {
+            if (payablePaymentRepository.existsByPurchaseId(purchase.getId())) {
+                throw new DomainException(DomainError.PAYABLE_PAYMENT_EXISTS_BY_SALE_ID);
+            }
+            opayable.ifPresent(payable -> {
+                payablePaymentRepository.deleteByPayableId(payable.getId());
+                payableRepository.delete(payable);
+            });
+            return;
+        }
+        if (isChangedToUnpaid) {
+            if (opayable.isPresent()) {
+                throw new DomainException(DomainError.PAYABLE_ALREADY_COMPLETED_BY_SALE_ID);
+            }
+            Payable payable = new Payable();
+            payable.setInvoiceDate(purchaseEdit.getInvoiceDate());
+            payable.setInvoiceNumber(purchaseEdit.getInvoiceNumber());
+            payable.setAmount(purchaseEdit.getTotalPayment());
+            payable.setDueDate(purchaseEdit.getPaymentDueDate());
+            payable.setPurchaseId(purchase.getId());
+            payable.setSupplierId(purchaseEdit.getSupplierId());
+            payableRepository.save(payable);
+            return;
+        }
+        // No changes on payment status, update payable if present
+        opayable.ifPresent(payable -> {
+            payable.setInvoiceDate(purchaseEdit.getInvoiceDate());
+            payable.setInvoiceNumber(purchaseEdit.getInvoiceNumber());
+            payable.setAmount(purchaseEdit.getTotalPayment());
+            payable.setDueDate(purchaseEdit.getPaymentDueDate());
+            payable.setPurchaseId(purchase.getId());
+            payable.setSupplierId(purchaseEdit.getSupplierId());
+            payableRepository.save(payable);
+        });
+    }
+
     @ForActivity(Activity.EDIT_PURCHASE)
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
@@ -148,6 +195,7 @@ public class PurchaseService extends BaseService {
         Long supplierId = purchaseEdit.getSupplierId();
         Purchase purchase = purchaseRepository.findByIdAndDeletedAtIsNull(purchaseId)
                 .orElseThrow(() -> new DomainException(DomainError.PURCHASE_NOT_FOUND_BY_ID));
+        processPaymentStatusChange(purchaseEdit, purchase);
         if (isDifferentInvoiceNumberOrSupplierId(purchase, purchaseEdit) && purchaseRepository
                 .existsByInvoiceNumberIgnoreCaseAndSupplierIdAndDeletedAtIsNull(invoiceNumber, supplierId)) {
             throw new DomainException(DomainError.PURCHASE_OTHER_EXISTS_BY_INVOICE_NUMBER_AND_SUPPLIER_ID);

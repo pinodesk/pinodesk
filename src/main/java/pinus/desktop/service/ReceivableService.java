@@ -75,9 +75,11 @@ public class ReceivableService extends BaseService {
         if (total.compareTo(receivable.getAmount()) == 0) {
             receivable.setCompletionDate(maxPaymentDate);
             sale.setPaymentStatus(PaymentStatus.PAID.toString());
+            sale.setPaymentDueDate(null);
         } else {
             receivable.setCompletionDate(null);
             sale.setPaymentStatus(PaymentStatus.UNPAID.toString());
+            sale.setPaymentDueDate(receivable.getDueDate());
         }
         saleRepository.save(sale);
         receivablePaymentRepository.saveAll(payments);

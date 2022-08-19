@@ -21,4 +21,11 @@ public interface ReceivablePaymentRepository extends PagingAndSortingRepository<
 
     List<ReceivablePayment> findByReceivableIdAndDeletedAtIsNull(Long receivableId);
 
+    @Query("""
+            select count(a.id) > 0
+            from receivable_payment a
+            inner join receivable b on b.id = a.receivable_id
+            where b.sale_id = :saleId and b.deleted_at is null
+            """)
+    boolean existsBySaleId(@Param("saleId") Long saleId);
 }

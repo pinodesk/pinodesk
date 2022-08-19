@@ -62,6 +62,7 @@
       <TableView fx:id="tblSales" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn fx:id="colInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
+            <TableColumn fx:id="colInvoiceDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
           <TableColumn fx:id="colSellingMode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_selling_mode" />
             <TableColumn fx:id="colCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />
             <TableColumn fx:id="colDoctorName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_doctor_name" />

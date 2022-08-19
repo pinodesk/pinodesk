@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import org.springframework.context.ApplicationContext;
 
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
@@ -59,6 +60,9 @@ public class SaleMainController extends BaseController {
 
     @FXML
     private TableColumn<SaleVM, String> colInvoiceNumber;
+
+    @FXML
+    private TableColumn<SaleVM, LocalDate> colInvoiceDate;
 
     @FXML
     private TableColumn<SaleVM, String> colSellingMode;
@@ -157,6 +161,10 @@ public class SaleMainController extends BaseController {
                 new NumberCellFactory<>(locale),
                 SaleVM::getTotalPayment,
                 StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colInvoiceDate,
+                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
+                vm -> vm.getCreatedAt().toLocalDate());
         TableViewUtils.initTableColumn(
                 colCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),

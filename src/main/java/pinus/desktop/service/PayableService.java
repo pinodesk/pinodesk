@@ -75,9 +75,11 @@ public class PayableService extends BaseService {
         if (total.compareTo(payable.getAmount()) == 0) {
             payable.setCompletionDate(maxPaymentDate);
             purchase.setPaymentStatus(PaymentStatus.PAID.toString());
+            purchase.setPaymentDueDate(null);
         } else {
             payable.setCompletionDate(null);
             purchase.setPaymentStatus(PaymentStatus.UNPAID.toString());
+            purchase.setPaymentDueDate(payable.getDueDate());
         }
         purchaseRepository.save(purchase);
         payablePaymentRepository.saveAll(payments);
