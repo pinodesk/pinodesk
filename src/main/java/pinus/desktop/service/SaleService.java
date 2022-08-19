@@ -70,6 +70,9 @@ public class SaleService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
+    @Autowired
+    private SessionService sessionService;
+
     @ForActivity(Activity.SEARCH_SALES_BY_FILTER)
     @Cacheable(CacheNameConstants.SALES_BY_FILTER)
     public List<SaleVM> searchSales(SaleFilterVM filter) {
@@ -98,6 +101,7 @@ public class SaleService extends BaseService {
         allEntries = true)
     @Transactional
     public void createSale(SaleAddVM saleAdd) {
+        Long currentUserId = sessionService.getCurrentSession().getUser().getId();
         String activityName = Activity.ADD_SALE.toString();
         String invoiceNumber = saleAdd.getInvoiceNumber();
         if (saleRepository.existsByInvoiceNumberIgnoreCaseAndDeletedAtIsNull(invoiceNumber)) {
@@ -128,7 +132,7 @@ public class SaleService extends BaseService {
                 ps.setProductId(productId);
                 ps.setSaleId(saleId);
                 ps.setSaleInvoiceNumber(invoiceNumber);
-                ps.setUserId(1l);
+                ps.setUserId(currentUserId);
                 productStockRepository.save(ps);
                 product.setQuantity(saleProduct.getCurrentQuantity());
                 productNeedsUpdate = true;
@@ -139,7 +143,7 @@ public class SaleService extends BaseService {
                 pp.setActivity(activityName);
                 pp.setGeneralSellingPrice(sellingPrice);
                 pp.setProductId(productId);
-                pp.setUserId(1l);
+                pp.setUserId(currentUserId);
                 pp.setSaleId(saleId);
                 pp.setSaleInvoiceNumber(invoiceNumber);
                 if (SellingMode.PRESCRIPTION.equals(saleAdd.getSellingMode())) {
@@ -190,7 +194,7 @@ public class SaleService extends BaseService {
         px.setQuantityOut(saleQuantity);
         px.setSaleId(saleId);
         px.setSaleInvoiceNumber(invoiceNumber);
-        px.setUserId(1l);
+        px.setUserId(sessionService.getCurrentSession().getUser().getId());
         ProductExpiry pxByProductId = productExpiryRepository
                 .findFirstByProductIdOrderByIdDesc(saleProduct.getProductId()).orElseThrow();
         px.setFinalQuantity(pxByProductId.getFinalQuantity() - saleQuantity);
@@ -225,7 +229,7 @@ public class SaleService extends BaseService {
         ps.setQuantityOut(saleQuantity);
         ps.setSaleId(saleId);
         ps.setSaleInvoiceNumber(invoiceNumber);
-        ps.setUserId(1l);
+        ps.setUserId(sessionService.getCurrentSession().getUser().getId());
         productStockRepository.save(ps);
         return finalQuantity;
     }
@@ -293,6 +297,7 @@ public class SaleService extends BaseService {
         allEntries = true)
     @Transactional
     public void updateSale(SaleEditVM saleEdit, Long saleId) {
+        Long currentUserId = sessionService.getCurrentSession().getUser().getId();
         String activityName = Activity.EDIT_SALE.toString();
         String invoiceNumber = saleEdit.getInvoiceNumber();
         Sale sale = saleRepository.findByIdAndDeletedAtIsNull(saleId)
@@ -328,7 +333,7 @@ public class SaleService extends BaseService {
                 ps.setProductId(productId);
                 ps.setSaleId(saleId);
                 ps.setSaleInvoiceNumber(invoiceNumber);
-                ps.setUserId(1l);
+                ps.setUserId(currentUserId);
                 productStockRepository.save(ps);
                 product.setQuantity(saleProduct.getCurrentQuantity());
                 productNeedsUpdate = true;
@@ -339,7 +344,7 @@ public class SaleService extends BaseService {
                 pp.setActivity(activityName);
                 pp.setGeneralSellingPrice(sellingPrice);
                 pp.setProductId(productId);
-                pp.setUserId(1l);
+                pp.setUserId(currentUserId);
                 pp.setSaleId(saleId);
                 pp.setSaleInvoiceNumber(invoiceNumber);
                 if (SellingMode.PRESCRIPTION.equals(saleEdit.getSellingMode())) {
@@ -364,6 +369,7 @@ public class SaleService extends BaseService {
     }
 
     private void revertLastSaleProducts(Long saleId, String activityName) {
+        Long currentUserId = sessionService.getCurrentSession().getUser().getId();
         saleDetailRepository.findBySaleId(saleId).forEach(pd -> {
             Long productId = pd.getProductId();
             Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
@@ -374,7 +380,7 @@ public class SaleService extends BaseService {
                     int finalQuantity = ps.getFinalQuantity() + ps.getQuantityOut();
                     nps.setFinalQuantity(finalQuantity);
                     nps.setProductId(productId);
-                    nps.setUserId(1l);
+                    nps.setUserId(currentUserId);
                     productStockRepository.save(nps);
                     product.setQuantity(finalQuantity);
                 }
@@ -387,7 +393,7 @@ public class SaleService extends BaseService {
                     npx.setFinalQuantity(px.getFinalQuantity() + px.getQuantityOut());
                     npx.setFinalQuantityExpiredDate(px.getFinalQuantityExpiredDate() + px.getQuantityOut());
                     npx.setProductId(productId);
-                    npx.setUserId(1l);
+                    npx.setUserId(currentUserId);
                     productExpiryRepository.save(npx);
                 }
             });
@@ -399,7 +405,7 @@ public class SaleService extends BaseService {
                     ProductPrice pp = new ProductPrice();
                     pp.setActivity(activityName);
                     pp.setProductId(productId);
-                    pp.setUserId(1l);
+                    pp.setUserId(currentUserId);
                     if (pps.size() == 2) {
                         ProductPrice pp1 = pps.get(1);
                         pp.setGeneralSellingPrice(pp1.getGeneralSellingPrice());

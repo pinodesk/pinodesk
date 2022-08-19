@@ -81,6 +81,9 @@ public class ProductService extends BaseService {
     @Autowired
     private DrugClassificationRepository drugClassificationRepository;
 
+    @Autowired
+    private SessionService sessionService;
+
     @ForActivity(Activity.SEARCH_PRODUCTS_BY_FILTER)
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
     public List<ProductVM> searchProductsByFilter(ProductFilterVM filter) {
@@ -100,9 +103,8 @@ public class ProductService extends BaseService {
         allEntries = true)
     @Transactional
     public void updateProduct(ProductEditVM productEdit, Long productId) {
-
         validateConstraints(productEdit);
-
+        Long currentUserId = sessionService.getCurrentSession().getUser().getId();
         String activityName = Activity.EDIT_PRODUCT.toString();
         String name = productEdit.getName();
         String code = productEdit.getCode();
@@ -143,7 +145,7 @@ public class ProductService extends BaseService {
             pp.setPrescriptionSellingPrice(productEdit.getPrescriptionSellingPrice());
             pp.setRemarks(productEdit.getPriceRemarks());
             pp.setActivity(activityName);
-            pp.setUserId(1l);
+            pp.setUserId(currentUserId);
             productPriceRepository.save(pp);
         }
 
@@ -158,7 +160,7 @@ public class ProductService extends BaseService {
             ps.setFinalQuantity(productEdit.getStockQuantity());
             ps.setRemarks(productEdit.getStockRemarks());
             ps.setActivity(activityName);
-            ps.setUserId(1l);
+            ps.setUserId(currentUserId);
             productStockRepository.save(ps);
         }
 
@@ -185,7 +187,7 @@ public class ProductService extends BaseService {
                         px.setQuantityIn(expiryQuantity);
                         px.setFinalQuantity(totalExpiryQuantity);
                         px.setFinalQuantityExpiredDate(totalExpiryQuantityExpiredDate);
-                        px.setUserId(1l);
+                        px.setUserId(currentUserId);
                         px.setActivity(activityName);
                         px.setRemarks(productEdit.getExpiryRemarks());
                         productExpiryRepository.save(px);
@@ -246,9 +248,8 @@ public class ProductService extends BaseService {
         allEntries = true)
     @Transactional
     public void createProduct(ProductAddVM productAdd) {
-
         validateConstraints(productAdd);
-
+        Long currentUserId = sessionService.getCurrentSession().getUser().getId();
         String activityName = Activity.ADD_PRODUCT.toString();
         String code = productAdd.getCode();
         String barcode = productAdd.getBarcode();
@@ -302,7 +303,7 @@ public class ProductService extends BaseService {
             pp.setPrescriptionSellingPrice(productAdd.getPrescriptionSellingPrice());
             pp.setRemarks(productAdd.getPriceRemarks());
             pp.setActivity(activityName);
-            pp.setUserId(1l);
+            pp.setUserId(currentUserId);
             productPriceRepository.save(pp);
         }
 
@@ -312,7 +313,7 @@ public class ProductService extends BaseService {
             ps.setFinalQuantity(productAdd.getStockQuantity());
             ps.setRemarks(productAdd.getStockRemarks());
             ps.setActivity(activityName);
-            ps.setUserId(1l);
+            ps.setUserId(currentUserId);
             productStockRepository.save(ps);
         }
 
@@ -324,7 +325,7 @@ public class ProductService extends BaseService {
             px.setQuantityIn(productAdd.getExpiryQuantity());
             px.setFinalQuantity(productAdd.getExpiryQuantity());
             px.setFinalQuantityExpiredDate(productAdd.getExpiryQuantity());
-            px.setUserId(1l);
+            px.setUserId(currentUserId);
             px.setActivity(activityName);
             px.setRemarks(productAdd.getExpiryRemarks());
             productExpiryRepository.save(px);
@@ -375,7 +376,7 @@ public class ProductService extends BaseService {
             px.setBatchNumber(productExpiryAddVM.getBatchNumber());
             px.setQuantityIn(productExpiryAddVM.getQuantity());
             px.setActivity(activity.toString());
-            px.setUserId(1l);
+            px.setUserId(sessionService.getCurrentSession().getUser().getId());
             px.setFinalQuantity(totalExpiryQuantity);
             px.setFinalQuantityExpiredDate(totalExpiryQuantityExpiredDate);
             productExpiryRepository.save(px);
@@ -403,6 +404,7 @@ public class ProductService extends BaseService {
         allEntries = true)
     @Transactional
     public void importProducts(List<ProductImportVM> productImports) {
+        Long currentUserId = sessionService.getCurrentSession().getUser().getId();
         String activityName = Activity.IMPORT_PRODUCTS.toString();
         List<ProductImportMapping> mappings = new ArrayList<>();
         Set<String> checkedCategoryCodes = new HashSet<>();
@@ -457,14 +459,14 @@ public class ProductService extends BaseService {
                 pp.setGeneralSellingPrice(
                         getGeneralSellingPriceOrDefault(generalSellingPrice, prescriptionSellingPrice));
                 pp.setPrescriptionSellingPrice(prescriptionSellingPrice);
-                pp.setUserId(1l);
+                pp.setUserId(currentUserId);
                 mapping.setProductPrice(pp);
             }
             if (quantity != null) {
                 ProductStock ps = new ProductStock();
                 ps.setActivity(activityName);
                 ps.setFinalQuantity(quantity);
-                ps.setUserId(1l);
+                ps.setUserId(currentUserId);
                 mapping.setProductStock(ps);
 
                 if (expiredDate != null) {
@@ -474,7 +476,7 @@ public class ProductService extends BaseService {
                     px.setExpiredDate(expiredDate);
                     px.setFinalQuantity(quantity);
                     px.setFinalQuantityExpiredDate(quantity);
-                    px.setUserId(1l);
+                    px.setUserId(currentUserId);
                     mapping.setProductExpiry(px);
                 }
             }

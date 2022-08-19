@@ -70,6 +70,9 @@ public class PurchaseService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
+    @Autowired
+    private SessionService sessionService;
+
     @ForActivity(Activity.SEARCH_PURCHASES_BY_FILTER)
     @Cacheable(CacheNameConstants.PURCHASES_BY_FILTER)
     public List<PurchaseVM> searchPurchases(PurchaseFilterVM filter) {
@@ -238,6 +241,7 @@ public class PurchaseService extends BaseService {
     }
 
     private void revertLastPurchasedProducts(Long purchaseId, String activityName) {
+        Long currentUserId = sessionService.getCurrentSession().getUser().getId();
         purchaseDetailRepository.findByPurchaseId(purchaseId).forEach(pd -> {
             Long productId = pd.getProductId();
             Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
@@ -248,7 +252,7 @@ public class PurchaseService extends BaseService {
                     int finalQuantity = ps.getFinalQuantity() - ps.getQuantityIn();
                     nps.setFinalQuantity(finalQuantity);
                     nps.setProductId(productId);
-                    nps.setUserId(1l);
+                    nps.setUserId(currentUserId);
                     productStockRepository.save(nps);
                     product.setQuantity(finalQuantity);
                 }
@@ -261,7 +265,7 @@ public class PurchaseService extends BaseService {
                     npx.setFinalQuantity(px.getFinalQuantity() - px.getQuantityIn());
                     npx.setFinalQuantityExpiredDate(px.getFinalQuantityExpiredDate() - px.getQuantityIn());
                     npx.setProductId(productId);
-                    npx.setUserId(1l);
+                    npx.setUserId(currentUserId);
                     productExpiryRepository.save(npx);
                 }
             });
@@ -273,7 +277,7 @@ public class PurchaseService extends BaseService {
                     ProductPrice pp = new ProductPrice();
                     pp.setActivity(activityName);
                     pp.setProductId(productId);
-                    pp.setUserId(1l);
+                    pp.setUserId(currentUserId);
                     if (pps.size() == 2) {
                         ProductPrice pp1 = pps.get(1);
                         pp.setGeneralSellingPrice(pp1.getGeneralSellingPrice());
@@ -358,7 +362,7 @@ public class PurchaseService extends BaseService {
         px.setPurchaseId(purchaseId);
         px.setPurchaseInvoiceNumber(invoiceNumber);
         px.setQuantityIn(purchaseQuantity);
-        px.setUserId(1l);
+        px.setUserId(sessionService.getCurrentSession().getUser().getId());
         productExpiryRepository.save(px);
     }
 
@@ -376,7 +380,7 @@ public class PurchaseService extends BaseService {
         ps.setPurchaseInvoiceNumber(invoiceNumber);
         ps.setQuantityIn(purchaseQuantity);
         ps.setFinalQuantity(nextStockQuantity);
-        ps.setUserId(1l);
+        ps.setUserId(sessionService.getCurrentSession().getUser().getId());
         productStockRepository.save(ps);
     }
 
@@ -393,7 +397,7 @@ public class PurchaseService extends BaseService {
         pp.setProductId(productId);
         pp.setPurchaseId(purchaseId);
         pp.setPurchaseInvoiceNumber(invoiceNumber);
-        pp.setUserId(1l);
+        pp.setUserId(sessionService.getCurrentSession().getUser().getId());
         productPriceRepository.save(pp);
     }
 
