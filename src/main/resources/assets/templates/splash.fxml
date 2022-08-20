@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contentPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="400.0" style="-fx-background-color: black;" stylesheets="@../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.SplashController">
+<AnchorPane fx:id="contentPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="400.0" style="-fx-background-color: black;" stylesheets="@../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.SplashController">
    <children>
-      <Label layoutX="165.0" layoutY="107.0" text="Pinus" textFill="WHITE">
-         <font>
-            <Font size="30.0" />
-         </font>
-      </Label>
+      <ImageView fitHeight="150.0" fitWidth="128.0" layoutX="136.0" layoutY="127.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/stoready-text-white-128.png" />
+         </image>
+      </ImageView>
    </children>
 </AnchorPane>

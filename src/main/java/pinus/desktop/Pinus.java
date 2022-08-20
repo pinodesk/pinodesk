@@ -22,7 +22,15 @@ public class Pinus extends Application {
     public void init() throws Exception {
         super.init();
         PageLoader.init(CommonConstants.PAGE_TEMPLATE_DIR, ResourceBundleUtils::getDefaultResourceBundle);
-        StageUtils.init(CommonConstants.APP_TITLE, new String[] {});
+        StageUtils.init(
+                CommonConstants.APP_TITLE,
+                new String[] {
+                        "/assets/images/stoready-icon-circle-black-green-16.png",
+                        "/assets/images/stoready-icon-circle-black-green-24.png",
+                        "/assets/images/stoready-icon-circle-black-green-32.png",
+                        "/assets/images/stoready-icon-circle-black-green-64.png",
+                        "/assets/images/stoready-icon-circle-black-green-128.png",
+                        "/assets/images/stoready-icon-circle-black-green-256.png" });
     }
 
     @Override

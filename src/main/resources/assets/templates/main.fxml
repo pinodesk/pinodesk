@@ -35,22 +35,22 @@
       </AnchorPane>
       <AnchorPane layoutX="250.0" layoutY="-4.0" prefHeight="70.0" prefWidth="774.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <HBox alignment="CENTER_LEFT" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="200.0">
                <children>
                   <Label fx:id="lblStoreName" prefHeight="70.0" text="Store" textFill="WHITE">
                      <font>
-                        <Font size="20.0" />
+                        <Font size="24.0" />
                      </font>
                      <padding>
                         <Insets bottom="4.0" left="10.0" right="10.0" top="4.0" />
                      </padding>
                   </Label>
-                  <Button fx:id="btnLogout" mnemonicParsing="false" onAction="#onActionBtnLogout" styleClass="btn-danger" text="%btn_logout" />
+                  <Button fx:id="btnLogout" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnLogout" prefWidth="73.0" styleClass="btn-danger" text="%btn_logout" />
                </children>
             </HBox>
-            <ImageView fitHeight="56.0" fitWidth="63.0" layoutX="717.0" layoutY="7.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
+            <ImageView fitHeight="44.0" fitWidth="128.0" layoutX="640.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0">
                <image>
-                  <Image url="@../images/pinus2-icon-64.png" />
+                  <Image url="@../images/stoready-text-white-128.png" />
                </image>
             </ImageView>
          </children>

@@ -1,7 +1,7 @@
 package pinus.desktop.constant;
 
 public interface CommonConstants {
-    String APP_TITLE = "Pinus";
+    String APP_TITLE = "Stoready";
     String LANGUAGE_CODE_ENGLISH = "en";
     String LANGUAGE_CODE_INDONESIA = "id";
     String DATETIME_DISPLAY_PATTERN = "yyyy-MM-dd HH:mm:ss";
