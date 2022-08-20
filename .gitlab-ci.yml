@@ -2,7 +2,7 @@
 # https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Maven.gitlab-ci.yml
 # https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 
-image: ghcr.io/graalvm/jdk:ol8-java17
+image: bellsoft/liberica-openjdk-alpine:17
 
 variables:
   MAVEN_OPTS: "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
@@ -20,25 +20,35 @@ variables:
     -Dorg.slf4j.simpleLogger.showDateTime=true \
     -Djava.awt.headless=true"
 
+stages:
+  - build
+  - test
+  - release
+
 cache:
   paths:
     - .m2/repository/
 
-build:
-  stage: build
-  script: ./mvnw $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U 
-  allow_failure: false
+# build:
+#   stage: build
+#   script: ./mvnw $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U 
+#   allow_failure: false
 
-test:
-  variables:
-    JACOCO_REPORT_HTML: $CI_PROJECT_DIR/target/site/jacoco/index.html
-  stage: test
-  script:
-    - ./mvnw $MAVEN_CLI_OPTS verify -U 
-    - if [ -f $JACOCO_REPORT_HTML ]; then cat $JACOCO_REPORT_HTML | grep -o "Total[^%]*%"; fi
-  allow_failure: false
-  coverage: "/Total.*?([0-9]{1,3})%/"
-  artifacts:
-    reports:
-      junit:
-        - target/surefire-reports/TEST-*.xml
+# test:
+#   variables:
+#     JACOCO_REPORT_HTML: $CI_PROJECT_DIR/target/site/jacoco/index.html
+#   stage: test
+#   script:
+#     - ./mvnw $MAVEN_CLI_OPTS verify -U 
+#     - if [ -f $JACOCO_REPORT_HTML ]; then cat $JACOCO_REPORT_HTML | grep -o "Total[^%]*%"; fi
+#   allow_failure: false
+#   coverage: "/Total.*?([0-9]{1,3})%/"
+#   artifacts:
+#     reports:
+#       junit:
+#         - target/surefire-reports/TEST-*.xml
+
+create-exe:
+  image: mcr.microsoft.com/windows/nanoserver:1809
+  stage: build
+  script: ./mvnw $MAVEN_CLI_OPTS clean package

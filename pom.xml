@@ -74,7 +74,7 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>5.2.2</version>
+            <version>4.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -339,7 +339,7 @@
                     <plugin>
                         <groupId>io.github.fvarrui</groupId>
                         <artifactId>javapackager</artifactId>
-                        <version>1.4.2</version>
+                        <version>1.6.7</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -347,10 +347,17 @@
                                     <goal>package</goal>
                                 </goals>
                                 <configuration>
-                                    <name>Pinus</name>
-                                    <displayName>Pinus</displayName>
+                                    <name>${project.artifactId}</name>
+                                    <displayName>${project.name}</displayName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
+                                    <linuxConfig>
+                                        <generateAppImage>false</generateAppImage>
+                                        <generateRpm>false</generateRpm>
+                                    </linuxConfig>
+                                    <winConfig>
+                                        <generateMsi>false</generateMsi>
+                                    </winConfig>
                                 </configuration>
                             </execution>
                         </executions>
