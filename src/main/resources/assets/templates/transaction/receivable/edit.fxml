@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.receivable.ReceivableEditController">
+<VBox fx:id="contentPane" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.receivable.ReceivableEditController">
    <children>
       <AnchorPane>
          <children>

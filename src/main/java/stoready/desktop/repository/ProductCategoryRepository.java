@@ -1,0 +1,21 @@
+package stoready.desktop.repository;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Repository;
+
+import stoready.desktop.domain.ProductCategory;
+
+@Repository
+public interface ProductCategoryRepository
+        extends PagingAndSortingRepository<ProductCategory, Long>, ProductCategoryRepositoryCustom {
+
+    Optional<ProductCategory> findByIdAndDeletedAtIsNull(Long id);
+
+    boolean existsByCodeAndDeletedAtIsNull(String code);
+
+    List<ProductCategory> findByLanguageAndDeletedAtIsNullOrderByName(String language);
+
+}
