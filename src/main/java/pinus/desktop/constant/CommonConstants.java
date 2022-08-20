@@ -15,4 +15,12 @@ public interface CommonConstants {
     String EMPTY_DATE_MASK = "____-__-__";
     String IMPORT_TEMPLATE_FILE_NAME = "import-products-template.xlsx";
     Long USER_GROUP_ID_ADMINISTRATOR = 1l;
+    String[] APP_ICON_PATHS = new String[] {
+            "/assets/images/stoready-icon-circle-black-green-16.png",
+            "/assets/images/stoready-icon-circle-black-green-24.png",
+            "/assets/images/stoready-icon-circle-black-green-32.png",
+            "/assets/images/stoready-icon-circle-black-green-64.png",
+            "/assets/images/stoready-icon-circle-black-green-128.png",
+            "/assets/images/stoready-icon-circle-black-green-256.png" };
+
 }

@@ -30,8 +30,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
@@ -170,6 +170,7 @@ public abstract class BaseController {
         alert.setTitle(CommonConstants.APP_TITLE);
         alert.setHeaderText(t.translate(getAlertHeaderMessageCode(type)));
         DialogPane dialogPane = alert.getDialogPane();
+        StageUtils.setIcons((Stage) dialogPane.getScene().getWindow(), CommonConstants.APP_ICON_PATHS);
         Text text = new Text(message);
         text.setWrappingWidth(dialogPane.getWidth());
         text.setStyle("-fx-font-size: 13px");

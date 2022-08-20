@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,17 +17,22 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import pinus.desktop.Pinus;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.ConfigurationConstants;
 import pinus.desktop.constant.MenuCodeConstants;
 import pinus.desktop.constant.MessageCode;
+import pinus.desktop.constant.Page;
 import pinus.desktop.controller.BaseController;
 import pinus.desktop.javafx.converter.LanguageComboBoxConverter;
 import pinus.desktop.service.ConfigurationService;
+import pinus.desktop.service.SessionService;
 
 public class ConfigurationMainController extends BaseController {
+
+    @FXML
+    private VBox contentPane;
 
     @FXML
     private Button btnSave;
@@ -41,6 +47,7 @@ public class ConfigurationMainController extends BaseController {
     private ComboBox<Locale> cbLanguage;
 
     private ConfigurationService configurationService;
+    private SessionService sessionService;
 
     @FXML
     void onActionBtnSave(ActionEvent event) throws IOException {
@@ -51,12 +58,15 @@ public class ConfigurationMainController extends BaseController {
         map.put(ConfigurationConstants.STORE_ADDRESS, tfStoreAddress.getText());
         configurationService.updateConfiguration(map);
         displayInfo(MessageCode.SUCCESS_EDIT_CONFIGURATION);
-        Pinus.reload();
+        closeRootPane();
+        sessionService.logout();
+        StageUtils.open(Page.LOGIN, false);
     }
 
     @Override
     protected void initServices(ApplicationContext ctx) {
         configurationService = ctx.getBean(ConfigurationService.class);
+        sessionService = ctx.getBean(SessionService.class);
     }
 
     @Override
@@ -84,7 +94,11 @@ public class ConfigurationMainController extends BaseController {
 
     @Override
     protected Stage getCurrentStage() {
-        return null;
+        return (Stage) contentPane.getScene().getWindow();
+    }
+
+    private void closeRootPane() {
+        contentPane.getParent().getParent().getScene().getWindow().hide();
     }
 
 }

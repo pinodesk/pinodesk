@@ -1,10 +1,9 @@
 package pinus.desktop.controller;
 
-import java.io.IOException;
-
 import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -12,8 +11,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import lombok.extern.slf4j.Slf4j;
-import pinus.desktop.Pinus;
 import pinus.desktop.constant.MessageCode;
+import pinus.desktop.constant.Page;
 
 @Slf4j
 public class LoginController extends CommonDataSaveController {
@@ -37,11 +36,7 @@ public class LoginController extends CommonDataSaveController {
         if (isLastDataSaved()) {
             Platform.runLater(() -> {
                 close();
-                try {
-                    Pinus.loadMainPage();
-                } catch (IOException e) {
-                    log.error("Load main page error!", e);
-                }
+                StageUtils.open(Page.MAIN);
             });
         }
     }

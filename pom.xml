@@ -357,6 +357,7 @@
                                     </linuxConfig>
                                     <winConfig>
                                         <generateMsi>false</generateMsi>
+                                        <setupMode>installForCurrentUser</setupMode>
                                     </winConfig>
                                 </configuration>
                             </execution>

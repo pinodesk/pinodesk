@@ -1,10 +1,8 @@
 package pinus.desktop.controller;
 
-import java.io.IOException;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
@@ -12,7 +10,6 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
 import lombok.extern.slf4j.Slf4j;
-import pinus.desktop.Pinus;
 import pinus.desktop.PinusConfig;
 import pinus.desktop.constant.CommonConstants;
 import pinus.desktop.constant.ConfigurationConstants;
@@ -41,22 +38,18 @@ public class SplashController {
                 }
             }
             Platform.runLater(() -> {
-                try {
-                    contentPane.getScene().getWindow().hide();
-                    if (!isInitialSetupDone) {
-                        StageUtils.open(Page.INITIAL_SETUP, false);
-                        return;
-                    }
-                    SessionService sessionService = SpringUtils.getBean(SessionService.class);
-                    sessionService.activateLastSession();
-                    if (!sessionService.isCurrentSessionActive()) {
-                        StageUtils.open(Page.LOGIN, false);
-                        return;
-                    }
-                    Pinus.loadMainPage();
-                } catch (IOException e) {
-                    throw new CompletionException(e);
+                contentPane.getScene().getWindow().hide();
+                if (!isInitialSetupDone) {
+                    StageUtils.open(Page.INITIAL_SETUP, false);
+                    return;
                 }
+                SessionService sessionService = SpringUtils.getBean(SessionService.class);
+                sessionService.activateLastSession();
+                if (!sessionService.isCurrentSessionActive()) {
+                    StageUtils.open(Page.LOGIN, false);
+                    return;
+                }
+                StageUtils.open(Page.MAIN);
             });
         }).exceptionally(e -> {
             log.error("An error occurred in splash screen!", e);
