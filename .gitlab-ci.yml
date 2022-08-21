@@ -2,7 +2,7 @@
 # https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Maven.gitlab-ci.yml
 # https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 
-image: adoptopenjdk/openjdk16:alpine-slim
+image: bellsoft/liberica-openjdk-alpine:17
 
 variables:
   MAVEN_OPTS: "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
@@ -24,9 +24,22 @@ cache:
   paths:
     - .m2/repository/
 
+default:
+  before_script:
+    - apk add --update --no-cache git
+    - git --version
+    - git remote set-url --push origin "https://${GITLAB_USER_LOGIN}:${READ_WRITE_REPOSITORY_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+    - git config user.name "${GITLAB_USER_NAME}"
+    - git config user.email "${GITLAB_USER_EMAIL}"
+
+stages:
+  - build
+  - test
+  - release
+
 build:
   stage: build
-  script: ./mvnw $MAVEN_CLI_OPTS spotless:check test-compile -U 
+  script: ./mvnw $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U 
   allow_failure: false
 
 test:
@@ -42,3 +55,13 @@ test:
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
+
+release:
+  stage: release
+  dependencies:
+    - test
+  script:
+    - ./mvnw $MAVEN_CLI_OPTS gitflow:release -DargLine=$MAVEN_CLI_OPTS 
+  only:
+    - develop
+  when: manual

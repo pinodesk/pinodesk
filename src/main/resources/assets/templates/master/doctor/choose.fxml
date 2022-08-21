@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="contentPane" prefHeight="400.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.doctor.DoctorChooseController">
+   <children>
+      <AnchorPane prefWidth="774.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_choose_doctor" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Label>
+         </children>
+      </AnchorPane>
+      <HBox alignment="TOP_RIGHT" spacing="1.0">
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+         <children>
+            <TextField fx:id="tfSearch" minHeight="30.0" promptText="%prompt_search_doctors" styleClass="input-primary" HBox.hgrow="ALWAYS">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </TextField>
+         </children>
+      </HBox>
+      <TableView fx:id="tblDoctor" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
+          <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_code" />
+            <TableColumn fx:id="colCategory" minWidth="-Infinity" prefWidth="400.0" text="%lbl_category" />
+            <TableColumn fx:id="colRegistrationNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_registration_number" />
+            <TableColumn fx:id="colMedicalLicenseNumber" minWidth="-Infinity" prefWidth="300.0" text="%lbl_medical_license_number" />
+            <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
+            <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
+        </columns>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </TableView>
+      <AnchorPane prefWidth="774.0" style="-fx-background-color: #ececec;">
+         <children>
+            <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
+                  <Button fx:id="btnChoose" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnChoose" styleClass="btn-primary" text="%btn_choose" textFill="WHITE" />
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

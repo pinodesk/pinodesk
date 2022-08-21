@@ -12,11 +12,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinus-desktop.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinus.desktop.controller.purchase.PurchaseFilterController">
+<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.purchase.PurchaseFilterController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl.title.filterpurchase" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_filter_purchases" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -34,12 +34,12 @@
                      <children>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.ordernumber">
+                              <Label text="%lbl_invoice_number">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfOrderNumber" styleClass="input-primary">
+                              <TextField fx:id="tfInvoiceNumber" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -48,12 +48,12 @@
                         </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.orderdatemin">
+                              <Label text="%lbl_invoice_date_min">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <MaskedTextField fx:id="tfOrderDateMin" mask="####-##-##" styleClass="input-primary">
+                              <MaskedTextField fx:id="tfInvoiceDateMin" mask="####-##-##" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -62,12 +62,12 @@
                         </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.orderdatemax">
+                              <Label text="%lbl_invoice_date_max">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <MaskedTextField fx:id="tfOrderDateMax" mask="####-##-##" styleClass="input-primary">
+                              <MaskedTextField fx:id="tfInvoiceDateMax" mask="####-##-##" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -76,75 +76,12 @@
                         </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.supplier">
+                              <Label text="%lbl_supplier">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfSupplier" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </HBox>
-                  <HBox spacing="10.0">
-                     <children>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl.totalproductmin">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfTotalProductMin" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl.totalproductmax">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfTotalProductMax" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl.totalpaymentmin">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfTotalPaymentMin" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl.totalpaymentmax">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfTotalPaymentMax" styleClass="input-primary">
+                              <TextField fx:id="tfSupplier" editable="false" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -160,37 +97,7 @@
                      <children>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.paymentmethod">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="cbPaymentMethod" maxWidth="1.7976931348623157E308" prefWidth="163.0">
-                                 <styleClass>
-                                    <String fx:value="combo-box-autocomplete" />
-                                    <String fx:value="input-primary" />
-                                 </styleClass>
-                              </ComboBox>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl.paymentperiod">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="cbPaymentPeriod" maxWidth="1.7976931348623157E308" prefWidth="163.0">
-                                 <styleClass>
-                                    <String fx:value="combo-box-autocomplete" />
-                                    <String fx:value="input-primary" />
-                                 </styleClass>
-                              </ComboBox>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl.duedatemin">
+                              <Label text="%lbl_due_date_min">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -204,7 +111,7 @@
                         </VBox>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.duedatemax">
+                              <Label text="%lbl_due_date_max">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -216,9 +123,9 @@
                               </MaskedTextField>
                            </children>
                         </VBox>
-                        <VBox spacing="5.0">
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl.paymentstatus">
+                              <Label text="%lbl_payment_status">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -229,6 +136,69 @@
                                     <String fx:value="input-primary" />
                                  </styleClass>
                               </ComboBox>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                     </padding>
+                  </HBox>
+                  <HBox spacing="10.0">
+                     <children>
+                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl_total_product_min">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfTotalProductMin" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl_total_product_max">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfTotalProductMax" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl_total_payment_min">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfTotalPaymentMin" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl_total_payment_max">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfTotalPaymentMax" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
                            </children>
                         </VBox>
                      </children>
@@ -247,9 +217,9 @@
          <children>
             <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
-                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn.cancel" textFill="WHITE" />
-                  <Button fx:id="btnReset" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnReset" styleClass="btn-secondary" text="%btn.reset" textFill="WHITE" />
-                  <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" styleClass="btn-primary" text="%btn.filter" textFill="WHITE" />
+                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
+                  <Button fx:id="btnReset" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnReset" styleClass="btn-secondary" text="%btn_reset" textFill="WHITE" />
+                  <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" styleClass="btn-primary" text="%btn_filter" textFill="WHITE" />
                </children>
             </HBox>
          </children>

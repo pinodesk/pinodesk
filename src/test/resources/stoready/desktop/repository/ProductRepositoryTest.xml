@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <unit id='1' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' name='Pieces' label='PCS' />
+  <product_category id='1000000001' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' name='Peralatan Makan' code='000000001' description='' language='id' />
+  <product_category id='1000000002' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' name='Makanan Ringan' code='000000002' description='' language='id' />
+  <product id='1' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' name='Gelas Belimbing Kaca' code='P00001' barcode='' description='' quantity='10' unit_id='1' unit_label='PCS' category_code='000000001' status='ACTIVE' />
+  <product id='2' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' name='Piring Kaca Putih Bunga Biru' code='P00002' barcode='' description='' quantity='20' unit_id='1' unit_label='PCS' category_code='000000001' status='ACTIVE' />
+  <product id='3' created_at='2021-04-01 20:00:00' updated_at='2021-04-01 20:00:00' name='Potato BBQ' code='P00003' barcode='111100001' description='' quantity='100' unit_id='1' unit_label='PCS' category_code='000000002' status='ACTIVE' />
+</dataset>

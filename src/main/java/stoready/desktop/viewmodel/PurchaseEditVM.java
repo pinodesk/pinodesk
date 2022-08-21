@@ -1,0 +1,23 @@
+package stoready.desktop.viewmodel;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.List;
+
+import lombok.Data;
+import stoready.desktop.constant.PaymentStatus;
+
+@Data
+public class PurchaseEditVM {
+    private Long supplierId;
+    private String invoiceNumber;
+    private LocalDate invoiceDate;
+    private Integer totalProduct;
+    private BigDecimal totalPayment;
+    private LocalDate paymentDueDate;
+    private PaymentStatus paymentStatus;
+    private BigDecimal discount;
+    private BigDecimal tax;
+    private BigDecimal totalPurchase;
+    private List<PurchaseProductVM> purchaseProducts;
+}

@@ -4,7 +4,7 @@ create table if not exists configuration (
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
 	code varchar(128) not null,
-	value varchar(1024) not null,
+	"value" varchar(1024) not null,
 	description varchar(512),
 	primary key (id),
 	index idx_configuration__code (code),
@@ -12,9 +12,9 @@ create table if not exists configuration (
 	index idx_configuration__code__deleted_at (code, deleted_at)
 );
 
-insert into configuration (id, created_at, updated_at, deleted_at, code, value, description) values 
-(null, current_timestamp, current_timestamp, null, 'language_code', 'en', ''),
-(null, current_timestamp, current_timestamp, null, 'store_name', 'Hello Store', ''),
-(null, current_timestamp, current_timestamp, null, 'store_address', 'Jakarta, Indonesia', ''),
-(null, current_timestamp, current_timestamp, null, 'vat_percentage', '10', ''),
-(null, current_timestamp, current_timestamp, null, 'drug_category_base_id', '1', '');
+insert into configuration (id, created_at, updated_at, deleted_at, code, "value", description) values 
+(null, current_timestamp, current_timestamp, null, 'language', 'en', ''),
+(null, current_timestamp, current_timestamp, null, 'store_name', '', ''),
+(null, current_timestamp, current_timestamp, null, 'store_address', '', ''),
+(null, current_timestamp, current_timestamp, null, 'initial_setup_done', 'no', ''),
+(null, current_timestamp, current_timestamp, null, 'session_max_duration_hour', '8', '');

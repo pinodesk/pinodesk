@@ -1,0 +1,95 @@
+package stoready.desktop.controller.customer;
+
+import java.util.Arrays;
+
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
+import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
+
+import org.springframework.context.ApplicationContext;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import stoready.desktop.constant.MenuCodeConstants;
+import stoready.desktop.constant.MessageCode;
+import stoready.desktop.controller.CommonDataSaveController;
+import stoready.desktop.service.CustomerService;
+import stoready.desktop.viewmodel.CustomerEditVM;
+import stoready.desktop.viewmodel.CustomerVM;
+
+public class CustomerEditController extends CommonDataSaveController {
+
+    @FXML
+    private TextField tfName;
+
+    @FXML
+    private TextField tfCode;
+
+    @FXML
+    private TextField tfPhone;
+
+    @FXML
+    private TextField tfEmail;
+
+    @FXML
+    private TextField tfAddress;
+
+    @FXML
+    private Button btnRemove;
+
+    private CustomerService customerService;
+
+    private CustomerVM currentCustomer;
+
+    @FXML
+    void onActionBtnRemove(ActionEvent event) {
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_CUSTOMER);
+        if (result.isConfirmed()) {
+            customerService.removeCustomers(Arrays.asList(currentCustomer.getId()));
+            displayInfo(MessageCode.SUCCESS_REMOVE_CUSTOMER);
+            setPageData(Boolean.TRUE);
+            close();
+        }
+    }
+
+    @Override
+    protected void initDataSaveControlActions() {
+        disableWriteAction(MenuCodeConstants.MASTER_CUSTOMERS, btnSave, btnRemove);
+        TextFieldUtils.setDigitTextFields(tfPhone);
+    }
+
+    @Override
+    protected void initDataSaveControlValues() {
+        currentCustomer = getPageData();
+        tfName.setText(currentCustomer.getName());
+        tfCode.setText(currentCustomer.getCode());
+        tfPhone.setText(currentCustomer.getPhone());
+        tfEmail.setText(currentCustomer.getEmail());
+        tfAddress.setText(currentCustomer.getAddress());
+    }
+
+    @Override
+    protected void validate(ControlValidator validator) {
+        validator.validateBlank(tfName, MessageCode.ERROR_EMPTY_NAME);
+    }
+
+    @Override
+    protected Object save() {
+        CustomerEditVM customer = new CustomerEditVM();
+        customer.setId(currentCustomer.getId());
+        customer.setName(tfName.getText());
+        customer.setCode(tfCode.getText());
+        customer.setPhone(tfPhone.getText());
+        customer.setEmail(tfEmail.getText());
+        customer.setAddress(tfAddress.getText());
+        return customerService.updateCustomer(customer);
+    }
+
+    @Override
+    protected void initServices(ApplicationContext ctx) {
+        customerService = ctx.getBean(CustomerService.class);
+    }
+
+}
