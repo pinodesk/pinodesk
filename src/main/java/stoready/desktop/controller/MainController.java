@@ -120,7 +120,7 @@ public class MainController extends BaseController {
             }
             return;
         }
-        lblVersion.setText(String.format("%s v%s", CommonConstants.APP_TITLE, applicationProperties.getVersion()));
+        lblVersion.setText(String.format("%s %s", CommonConstants.APP_TITLE, applicationProperties.getVersion()));
         CurrentSessionVM currentSession = sessionService.get().getCurrentSession();
         String storeName = configurationService.getConfiguration(ConfigurationConstants.STORE_NAME);
         lblStoreName.setText(storeName);

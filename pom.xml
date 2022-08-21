@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>stoready</groupId>
     <artifactId>stoready-desktop</artifactId>
@@ -15,6 +14,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <java.version>17</java.version>
+        <dollar>$</dollar>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -152,22 +152,22 @@
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
             <artifactId>sequel</artifactId>
-            <version>develop-SNAPSHOT</version>
+            <version>0.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
             <artifactId>pandora</artifactId>
-            <version>develop-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
             <artifactId>toolbox</artifactId>
-            <version>develop-SNAPSHOT</version>
+            <version>0.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.gitlab.muhammadkholidb</groupId>
             <artifactId>norway</artifactId>
-            <version>develop-SNAPSHOT</version>
+            <version>0.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.jasypt</groupId>
@@ -329,11 +329,58 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>com.amashchenko.maven.plugin</groupId>
+                <artifactId>gitflow-maven-plugin</artifactId>
+                <version>1.18.0</version>
+                <configuration>
+                    <mvnExecutable>./mvnw</mvnExecutable>
+                    <skipTestProject>true</skipTestProject>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>rename-profile-prefixed-files</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <copy file="${project.build.outputDirectory}/application-${currentProfile}.properties" tofile="${project.build.outputDirectory}/application.properties" />
+                                <copy file="${project.build.outputDirectory}/logback-${currentProfile}.xml" tofile="${project.build.outputDirectory}/logback.xml" />
+                                <delete>
+                                    <fileset dir="${project.build.outputDirectory}">
+                                        <include name="application-*.properties" />
+                                        <include name="logback-*.xml" />
+                                    </fileset>
+                                </delete>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <profiles>
         <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <currentProfile>dev</currentProfile>
+            </properties>
+        </profile>
+        <profile>
             <id>dist</id>
+            <properties>
+                <currentProfile>dist</currentProfile>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -347,8 +394,9 @@
                                     <goal>package</goal>
                                 </goals>
                                 <configuration>
-                                    <name>${project.artifactId}</name>
+                                    <name>${project.name}</name>
                                     <displayName>${project.name}</displayName>
+                                    <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
                                     <linuxConfig>
@@ -357,11 +405,16 @@
                                     </linuxConfig>
                                     <winConfig>
                                         <generateMsi>false</generateMsi>
-                                        <setupMode>installForCurrentUser</setupMode>
+                                        <setupMode>installForAllUsers</setupMode>
                                         <fileDescription>${project.description}</fileDescription>
-                                        <productName>${project.name}</productName>
-                                        <internalName>${project.artifactId}</internalName>
-                                        <originalFilename>${project.artifactId}.exe</originalFilename>
+                                        <disableWelcomePage>false</disableWelcomePage>
+                                        <disableDirPage>false</disableDirPage>
+                                        <disableFinishedPage>false</disableFinishedPage>
+                                        <disableRunAfterInstall>false</disableRunAfterInstall>
+                                        <removeOldLibs>true</removeOldLibs>
+                                        <setupLanguages>
+                                            <english>compiler:Default.isl</english>
+                                        </setupLanguages>
                                     </winConfig>
                                 </configuration>
                             </execution>

@@ -12,7 +12,3 @@ create table if not exists drug (
 	index idx_drug__classification_code (classification_code),
 	index idx_drug__classification_code__deleted_at (classification_code, deleted_at)
 );
-
--- Insert drugs from products
-insert into drug (created_at, updated_at, product_id) 
-select now(), now(), id from product where category_code = '000000518';
