@@ -353,7 +353,7 @@
                                     </HBox>
                                  </children>
                               </HBox>
-                              <TableView fx:id="tblSaleProduct" prefHeight="250.0" VBox.vgrow="ALWAYS">
+                              <TableView fx:id="tblSaleProduct" prefHeight="200.0" VBox.vgrow="ALWAYS">
                                  <columns>
                                     <TableColumn fx:id="colProductName" minWidth="-Infinity" prefWidth="300.0" text="%lbl_product_name" />
                                     <TableColumn fx:id="colProductCategory" minWidth="-Infinity" prefWidth="200.0" text="%lbl_product_category" />
