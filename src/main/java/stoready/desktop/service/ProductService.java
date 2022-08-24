@@ -290,7 +290,7 @@ public class ProductService extends BaseService {
             DrugClassificationVM drugClassification = productAdd.getDrugClassification();
             Drug drug = new Drug();
             drug.setProductId(productId);
-            drug.setClassificationCode(drugClassification == null ? null : drugClassification.getCode());
+            drug.setClassificationCode(StringUtils.trimToNull(drugClassification.getCode()));
             drug.setIndication(productAdd.getIndication());
             drug.setContraindication(productAdd.getContraindication());
             drugRepository.save(drug);
@@ -436,7 +436,7 @@ public class ProductService extends BaseService {
                 Drug drug = new Drug();
                 drug.setContraindication(pi.getContraindication());
                 drug.setIndication(pi.getIndication());
-                drug.setClassificationCode(drugClassificationCode);
+                drug.setClassificationCode(StringUtils.trimToNull(drugClassificationCode));
                 mapping.setDrug(drug);
             }
             Product product = new Product();
