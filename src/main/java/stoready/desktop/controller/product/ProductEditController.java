@@ -399,7 +399,7 @@ public class ProductEditController extends CommonDataSaveController {
         }).findAny().orElseThrow());
         if (isProductCategoryDrugSelected()) {
             DrugVM drug = drugService.getDrugByProductId(currentProduct.getId());
-            if (drug.getClassificationCode() != null) {
+            if (StringUtils.isNotBlank(drug.getClassificationCode())) {
                 selectedDrugClassification = drugClassificationService
                         .getDrugClassificationByCode(drug.getClassificationCode(), resources.getLocale().getLanguage());
                 tfDrugClassification.setText(selectedDrugClassification.getName());
