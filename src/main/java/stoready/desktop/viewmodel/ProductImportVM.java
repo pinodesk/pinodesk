@@ -3,9 +3,9 @@ package stoready.desktop.viewmodel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -45,13 +45,13 @@ public class ProductImportVM {
     @Size(max = 512)
     private String contraindication;
 
-    @Positive
+    @Min(0)
     private BigDecimal generalSellingPrice;
 
-    @Positive
+    @Min(0)
     private BigDecimal prescriptionSellingPrice;
 
-    @Positive
+    @Min(0)
     private Integer quantity;
 
     private LocalDate expiredDate;

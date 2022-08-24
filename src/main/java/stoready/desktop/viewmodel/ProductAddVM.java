@@ -3,9 +3,9 @@ package stoready.desktop.viewmodel;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 
 import lombok.Data;
@@ -45,16 +45,16 @@ public class ProductAddVM {
     @Size(max = 512)
     private String contraindication;
 
-    @Positive
+    @Min(0)
     private BigDecimal generalSellingPrice;
 
-    @Positive
+    @Min(0)
     private BigDecimal prescriptionSellingPrice;
 
     @Size(max = 128)
     private String priceRemarks;
 
-    @Positive
+    @Min(0)
     private Integer stockQuantity;
 
     @Size(max = 128)
@@ -65,7 +65,7 @@ public class ProductAddVM {
     @Size(max = 64)
     private String batchNumber;
 
-    @Positive
+    @Min(0)
     private Integer expiryQuantity;
 
     @Size(max = 128)
