@@ -100,9 +100,9 @@ public class SaleService extends BaseService {
             CacheNameConstants.RECEIVABLES_BY_FILTER },
         allEntries = true)
     @Transactional
-    public void createSale(SaleAddVM saleAdd) {
+    public void createSale(SaleAddVM saleAdd, Activity activity) {
         Long currentUserId = sessionService.getCurrentSession().getUser().getId();
-        String activityName = Activity.ADD_SALE.toString();
+        String activityName = activity.toString();
         String invoiceNumber = saleAdd.getInvoiceNumber();
         if (saleRepository.existsByInvoiceNumberIgnoreCaseAndDeletedAtIsNull(invoiceNumber)) {
             throw new DomainException(DomainError.SALE_EXISTS_BY_INVOICE_NUMBER);
@@ -426,6 +426,18 @@ public class SaleService extends BaseService {
     public List<SaleProductVM> getSaleProducts(Long saleId) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return saleDetailRepository.findBySaleIdJoinProducts(saleId, language);
+    }
+
+    @ForActivity(Activity.ADD_SALE_CASHIER)
+    @CacheEvict(value = {
+            CacheNameConstants.SALES_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.RECEIVABLES_BY_FILTER },
+        allEntries = true)
+    @Transactional
+    public void createSaleCashier(SaleAddVM saleAdd) {
+        createSale(saleAdd, Activity.ADD_SALE_CASHIER);
     }
 
 }

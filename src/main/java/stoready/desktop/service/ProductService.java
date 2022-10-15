@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.lang3.ObjectUtils;
@@ -98,8 +99,18 @@ public class ProductService extends BaseService {
         return productRepository.findByKeyword(keyword, language);
     }
 
+    @ForActivity(Activity.SEARCH_PRODUCT_BY_CODE)
+    @Cacheable(CacheNameConstants.PRODUCT_BY_CODE)
+    public Optional<ProductVM> searchProductByCode(String code) {
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return productRepository.findByCode(code, language);
+    }
+
     @ForActivity(Activity.EDIT_PRODUCT)
-    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+    @CacheEvict(value = {
+            CacheNameConstants.PRODUCTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.PRODUCT_BY_CODE },
         allEntries = true)
     @Transactional
     public void updateProduct(ProductEditVM productEdit, Long productId) {
@@ -236,7 +247,10 @@ public class ProductService extends BaseService {
     }
 
     @ForActivity(Activity.REMOVE_PRODUCTS)
-    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+    @CacheEvict(value = {
+            CacheNameConstants.PRODUCTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.PRODUCT_BY_CODE },
         allEntries = true)
     @Transactional
     public void removeProducts(List<Long> ids) {
@@ -400,7 +414,10 @@ public class ProductService extends BaseService {
     }
 
     @ForActivity(Activity.IMPORT_PRODUCTS)
-    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+    @CacheEvict(value = {
+            CacheNameConstants.PRODUCTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.PRODUCT_BY_CODE },
         allEntries = true)
     @Transactional
     public void importProducts(List<ProductImportVM> productImports) {

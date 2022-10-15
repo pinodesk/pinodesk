@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -67,7 +68,12 @@ public class ConfigurationService extends BaseService {
     }
 
     private void evictAllCaches() {
-        cacheManager.getCacheNames().stream().forEach(name -> cacheManager.getCache(name).clear());
+        cacheManager.getCacheNames().stream().forEach(name -> {
+            Cache cache = cacheManager.getCache(name);
+            if (cache != null) {
+                cache.clear();
+            }
+        });
     }
 
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import stoready.desktop.domain.Product;
+import stoready.desktop.viewmodel.ProductVM;
 
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<Product, Long>, ProductRepositoryCustom {
@@ -35,5 +36,16 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     Integer updateClosestExpiredDateById(
             @Param("id") Long id,
             @Param("closestExpiredDate") LocalDate closestExpiredDate);
+
+    @Query("""
+            select
+            a.*,
+            b.id as category_id,
+            b.name as category_name
+            from product a
+            inner join product_category b on b.code = a.category_code and b.language = :language
+            where (a.code = :code or a.barcode = :code) and a.deleted_at is null
+            """)
+    Optional<ProductVM> findByCode(@Param("code") String code, @Param("language") String language);
 
 }

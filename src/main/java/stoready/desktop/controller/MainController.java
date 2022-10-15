@@ -109,6 +109,7 @@ public class MainController extends BaseController {
     @Override
     protected void initControlActions() {
         // No controls to initialize
+        // print();
     }
 
     @Override

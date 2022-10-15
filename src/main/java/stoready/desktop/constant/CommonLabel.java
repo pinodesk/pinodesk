@@ -43,7 +43,15 @@ public enum CommonLabel implements IMessage {
     LBL_SAMPLE_PRODUCT,
     LBL_XLSX_FILES,
     LBL_DRUG_CLASSIFICATION,
-    LBL_DRUG_CLASSIFICATION_CODE;
+    LBL_DRUG_CLASSIFICATION_CODE,
+    LBL_DATE,
+    LBL_INVOICE_NUMBER,
+    LBL_TOTAL,
+    LBL_PAY,
+    LBL_CHANGE,
+    LBL_POWERED_BY_STOREADY,
+    LBL_WWW_STOREADY,
+    LBL_COPY_RECEIPT;
 
     @Override
     public String toString() {
