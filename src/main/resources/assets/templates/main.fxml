@@ -48,9 +48,9 @@
                   <Button fx:id="btnLogout" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnLogout" prefWidth="73.0" styleClass="btn-danger" text="%btn_logout" />
                </children>
             </HBox>
-            <ImageView fitHeight="44.0" fitWidth="128.0" layoutX="640.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0">
+            <ImageView fitHeight="70.0" fitWidth="180.0" layoutX="704.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
                <image>
-                  <Image url="@../images/stoready-text-white-128.png" />
+                  <Image url="@../images/stoready-icon-128-nopadding.png" />
                </image>
             </ImageView>
          </children>

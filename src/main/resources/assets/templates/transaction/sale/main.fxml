@@ -55,6 +55,11 @@
                         <Font size="13.0" />
                      </font>
                   </Button>
+                  <Button fx:id="btnCashier" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCashier" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_cashier" textFill="WHITE">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
                </children>
             </HBox>
          </children>

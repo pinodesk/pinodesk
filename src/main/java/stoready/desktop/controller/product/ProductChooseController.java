@@ -12,6 +12,7 @@ import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
@@ -133,7 +134,11 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
 
     @Override
     protected void initDataChooseControlValues() {
-        // Nothing to do
+        String keyword = getPageData();
+        if (StringUtils.isNotBlank(keyword)) {
+            tfSearch.setText(keyword);
+            searchProducts();
+        }
     }
 
     @Override

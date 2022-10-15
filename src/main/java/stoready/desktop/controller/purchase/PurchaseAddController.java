@@ -435,6 +435,7 @@ public class PurchaseAddController extends CommonDataSaveController {
         return TableViewUtils.getItemIndex(productExists, table);
     }
 
+    @SuppressWarnings("null")
     private void calculatePurchaseSummary() {
         Locale locale = resources.getLocale();
         ObservableList<PurchaseProductVM> items = tblPurchaseProduct.getItems();

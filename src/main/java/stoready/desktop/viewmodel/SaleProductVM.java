@@ -9,6 +9,8 @@ import lombok.Data;
 public class SaleProductVM {
     private Long productId;
     private String productName;
+    private String productCode;
+    private String productBarcode;
     private String productCategoryName;
     private String productCategoryCode;
     private String productUnitLabel;

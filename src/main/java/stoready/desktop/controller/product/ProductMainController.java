@@ -1,9 +1,13 @@
 package stoready.desktop.controller.product;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
+
+import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
@@ -13,8 +17,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
-
-import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -105,7 +107,7 @@ public class ProductMainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnFilter(ActionEvent event) {
+    void onActionBtnFilter(ActionEvent event) throws MalformedURLException, IOException {
         setPageData(productFilter);
         StageUtils.modal(Page.MASTER_PRODUCT_FILTER, false, we -> {
             ProductFilterVM result = getPageData();
@@ -132,9 +134,7 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnImport(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_PRODUCT_IMPORT, false, we -> {
-            searchProducts();
-        });
+        StageUtils.modal(Page.MASTER_PRODUCT_IMPORT, false, we -> searchProducts());
     }
 
     @Override
@@ -230,13 +230,13 @@ public class ProductMainController extends BaseController {
                     if (products.isEmpty()) {
                         tblProduct.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
-                        btnImport.setVisible(true);
+                        setVisibleInLayout(true, btnImport);
                         return;
                     }
                     tblProduct.setItems(FXCollections.observableList(products));
                     TableViewUtils.sortDescending(tblProduct, colUpdatedAt);
                     lblRows.setText(products.size() + "");
-                    btnImport.setVisible(false);
+                    setVisibleInLayout(false, btnImport);
                 }));
     }
 

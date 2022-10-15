@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="contentPane" maxWidth="400.0" prefWidth="400.0" style="-fx-background-color: white;" stylesheets="@../../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.sale.CashierSaleCompleteController">
+   <children>
+      <AnchorPane>
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_sale_complete" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <padding>
+                  <Insets bottom="5.0" top="5.0" />
+               </padding>
+            </Label>
+         </children>
+      </AnchorPane>
+      <Label text="%lbl_info_sale_complete" wrapText="true" VBox.vgrow="ALWAYS">
+         <font>
+            <Font size="13.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+      </Label>
+      <VBox minWidth="-Infinity" prefWidth="300.0" spacing="10.0" style="-fx-border-color: #bebebe #bebebe;">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <children>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_sale_summary" textFill="#009c7c" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_invoice_number" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblInvoiceNumber" alignment="CENTER_RIGHT" layoutX="114.0" text="-" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_selling_mode" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblSellingMode" alignment="CENTER_RIGHT" layoutX="114.0" text="-" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_customer" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblCustomer" alignment="CENTER_RIGHT" layoutX="114.0" text="-" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_total_product" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblTotalProduct" layoutX="106.0" text="0" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_total_sale" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblTotalSale" alignment="CENTER_RIGHT" layoutX="114.0" text="0" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_payment_status" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblPaymentStatus" alignment="CENTER_RIGHT" layoutX="114.0" text="-" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_payment_due_date" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblPaymentDueDate" alignment="CENTER_RIGHT" layoutX="114.0" text="-" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_payment_amount" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblPaymentAmount" alignment="CENTER_RIGHT" layoutX="114.0" text="0" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane>
+               <children>
+                  <Label text="%lbl_change" AnchorPane.leftAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="lblChange" alignment="CENTER_RIGHT" layoutX="114.0" text="0" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </children>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </VBox>
+      <AnchorPane style="-fx-background-color: #ececec;">
+         <children>
+            <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <Button fx:id="btnPrintCopy" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnPrintCopy" styleClass="btn-primary" text="%btn_print_copy" textFill="WHITE" />
+                  <Button fx:id="btnSave" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSave" styleClass="btn-primary" text="%btn_ok" textFill="WHITE" />
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

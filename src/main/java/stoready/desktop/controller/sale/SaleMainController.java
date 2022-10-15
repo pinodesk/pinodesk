@@ -91,9 +91,21 @@ public class SaleMainController extends BaseController {
     @FXML
     private TableColumn<SaleVM, LocalDateTime> colUpdatedAt;
 
+    @FXML
+    private Button btnCashier;
+
     private SaleService saleService;
 
     private SaleFilterVM saleFilter;
+
+    @FXML
+    void onActionBtnCashier(ActionEvent event) {
+        btnCashier.setDisable(true);
+        StageUtils.open(Page.TRANSACTION_SALE_CASHIER_MAIN, true, we -> {
+            searchSales();
+            btnCashier.setDisable(false);
+        });
+    }
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {

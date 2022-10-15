@@ -57,6 +57,10 @@ public enum Page implements IPage {
     TRANSACTION_SALE_FILTER("transaction/sale/filter"),
     TRANSACTION_SALE_ADD("transaction/sale/add"),
     TRANSACTION_SALE_EDIT("transaction/sale/edit"),
+    TRANSACTION_SALE_CASHIER_MAIN("transaction/sale/cashier/main"),
+    TRANSACTION_SALE_CASHIER_PAY("transaction/sale/cashier/pay"),
+    TRANSACTION_SALE_CASHIER_SALE_COMPLETE("transaction/sale/cashier/sale-complete"),
+    TRANSACTION_SALE_CASHIER_CONFIRM_PRODUCT("transaction/sale/cashier/confirm-product"),
 
     MASTER_DOCTOR_ADD("master/doctor/add"),
     MASTER_DOCTOR_CHOOSE("master/doctor/choose"),

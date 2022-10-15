@@ -125,6 +125,7 @@ public class PayableEditController extends CommonDataSaveController {
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PayablePaymentVM::getPaymentDate);
         TextFieldUtils.setDigitTextFields(tfPayableAmount);
+        setFocused(tfPaymentDate);
     }
 
     @Override
