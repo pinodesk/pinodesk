@@ -97,7 +97,7 @@ hotfix-finish:
     - hotfix-start
   script:
     - *git_setup
-    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DhotfixBranch=${CI_COMMIT_BRANCH} -DargLine=$MAVEN_CLI_OPTS
+    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DhotfixVersion=${CI_COMMIT_BRANCH} -DargLine=$MAVEN_CLI_OPTS
   only:
     - /^hotfix\/.*$/
   when: manual
