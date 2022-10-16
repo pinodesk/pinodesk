@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>stoready</groupId>
     <artifactId>stoready-desktop</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
     <name>Stoready</name>
     <description>Stoready POS (Point-of-Sale)</description>
@@ -49,6 +49,11 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
+            <version>15.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-graphics</artifactId>
             <version>15.0.1</version>
         </dependency>
         <dependency>
@@ -155,22 +160,22 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.gitlab.muhammadkholidb</groupId>
+            <groupId>com.gitlab.stoready</groupId>
             <artifactId>sequel</artifactId>
             <version>0.0.2</version>
         </dependency>
         <dependency>
-            <groupId>com.gitlab.muhammadkholidb</groupId>
+            <groupId>com.gitlab.stoready</groupId>
             <artifactId>pandora</artifactId>
             <version>0.0.1</version>
         </dependency>
         <dependency>
-            <groupId>com.gitlab.muhammadkholidb</groupId>
+            <groupId>com.gitlab.stoready</groupId>
             <artifactId>toolbox</artifactId>
             <version>0.0.2</version>
         </dependency>
         <dependency>
-            <groupId>com.gitlab.muhammadkholidb</groupId>
+            <groupId>com.gitlab.stoready</groupId>
             <artifactId>norway</artifactId>
             <version>0.0.1</version>
         </dependency>
@@ -245,6 +250,7 @@
                     <includePathExceptionsInClasspath>true</includePathExceptionsInClasspath>
                     <options>
                         <option>--add-opens=javafx.graphics/javafx.scene=ALL-UNNAMED</option>
+                        <option>--add-exports=javafx.graphics/com.sun.javafx.print=ALL-UNNAMED</option>
                     </options>
                 </configuration>
             </plugin>

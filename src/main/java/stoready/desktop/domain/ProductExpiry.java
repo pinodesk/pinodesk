@@ -21,6 +21,7 @@ public class ProductExpiry extends DataModel {
     public static final String C_PURCHASE_ID = "purchase_id";
     public static final String C_PURCHASE_INVOICE_NUMBER = "purchase_invoice_number";
     public static final String C_SALE_ID = "sale_id";
+    public static final String C_SALE_DETAIL_ID = "sale_detail_id";
     public static final String C_SALE_INVOICE_NUMBER = "sale_invoice_number";
     public static final String C_USER_ID = "user_id";
     public static final String C_ACTIVITY = "activity";
@@ -36,6 +37,7 @@ public class ProductExpiry extends DataModel {
     private Long purchaseId;
     private String purchaseInvoiceNumber;
     private Long saleId;
+    private Long saleDetailId;
     private String saleInvoiceNumber;
     private Long userId;
     private String activity;

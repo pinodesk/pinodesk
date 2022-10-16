@@ -19,6 +19,8 @@ variables:
     -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN \
     -Dorg.slf4j.simpleLogger.showDateTime=true \
     -Djava.awt.headless=true"
+  RELEASE_DIGIT: 1
+  HOTFIX_DIGIT: 2
 
 cache:
   paths:
@@ -61,7 +63,27 @@ release:
   dependencies:
     - test
   script:
-    - ./mvnw $MAVEN_CLI_OPTS gitflow:release -DargLine=$MAVEN_CLI_OPTS 
+    - ./mvnw $MAVEN_CLI_OPTS gitflow:release -DgitflowDigitToIncrement=$RELEASE_DIGIT -DargLine=$MAVEN_CLI_OPTS 
   only:
     - develop
+  when: manual
+
+hotfix-start:
+  stage: release
+  dependencies:
+      - release
+  script:
+      - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-start -DgitflowDigitToIncrement=$HOTFIX_DIGIT -DargLine=$MAVEN_CLI_OPTS 
+  only:
+      - master
+  when: manual
+
+hotfix-finish:
+  stage: release
+  dependencies:
+      - hotfix-start
+  script:
+      - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DgitflowDigitToIncrement=$HOTFIX_DIGIT -DhotfixBranch=${CI_COMMIT_BRANCH} -DargLine=$MAVEN_CLI_OPTS 
+  only:
+      - /^hotfix\/.*$/
   when: manual

@@ -154,7 +154,7 @@ public class ProductEditController extends CommonDataSaveController {
     private TableColumn<ProductPriceVM, String> colProductPriceRemarks;
 
     @FXML
-    private TableColumn<ProductPriceVM, Long> colProductPriceUser;
+    private TableColumn<ProductPriceVM, String> colProductPriceUser;
 
     @FXML
     private TableColumn<ProductPriceVM, LocalDateTime> colProductPriceCreatedAt;
@@ -184,7 +184,7 @@ public class ProductEditController extends CommonDataSaveController {
     private TableColumn<ProductStockVM, String> colProductStockRemarks;
 
     @FXML
-    private TableColumn<ProductStockVM, Long> colProductStockUser;
+    private TableColumn<ProductStockVM, String> colProductStockUser;
 
     @FXML
     private TableColumn<ProductStockVM, LocalDateTime> colProductStockCreatedAt;
@@ -220,7 +220,7 @@ public class ProductEditController extends CommonDataSaveController {
     private TableColumn<ProductExpiryVM, String> colProductExpiryRemarks;
 
     @FXML
-    private TableColumn<ProductExpiryVM, Long> colProductExpiryUser;
+    private TableColumn<ProductExpiryVM, String> colProductExpiryUser;
 
     @FXML
     private TableColumn<ProductExpiryVM, LocalDateTime> colProductExpiryCreatedAt;
@@ -334,7 +334,7 @@ public class ProductEditController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colProductExpirySaleInvoiceNumber, ProductExpiryVM::getSaleInvoiceNumber);
         TableViewUtils.setColumnValue(colProductExpiryActivity, ProductExpiryVM::getActivity);
         TableViewUtils.setColumnValue(colProductExpiryRemarks, ProductExpiryVM::getRemarks);
-        TableViewUtils.setColumnValue(colProductExpiryUser, ProductExpiryVM::getUserId);
+        TableViewUtils.setColumnValue(colProductExpiryUser, ProductExpiryVM::getUserFullName);
         TableViewUtils.initTableColumn(
                 colProductExpiryCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
@@ -350,7 +350,7 @@ public class ProductEditController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colProductStockSaleInvoceNumber, ProductStockVM::getSaleInvoiceNumber);
         TableViewUtils.setColumnValue(colProductStockActivity, ProductStockVM::getActivity);
         TableViewUtils.setColumnValue(colProductStockRemarks, ProductStockVM::getRemarks);
-        TableViewUtils.setColumnValue(colProductStockUser, ProductStockVM::getUserId);
+        TableViewUtils.setColumnValue(colProductStockUser, ProductStockVM::getUserFullName);
         TableViewUtils.initTableColumn(
                 colProductStockCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
@@ -373,7 +373,7 @@ public class ProductEditController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colProductPriceSaleInvoiceNumber, ProductPriceVM::getSaleInvoiceNumber);
         TableViewUtils.setColumnValue(colProductPriceActivity, ProductPriceVM::getActivity);
         TableViewUtils.setColumnValue(colProductPriceRemarks, ProductPriceVM::getRemarks);
-        TableViewUtils.setColumnValue(colProductPriceUser, ProductPriceVM::getUserId);
+        TableViewUtils.setColumnValue(colProductPriceUser, ProductPriceVM::getUserFullName);
         TableViewUtils.initTableColumn(
                 colProductPriceCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),

@@ -42,6 +42,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import stoready.desktop.constant.Activity;
 import stoready.desktop.constant.CommonConstants;
 import stoready.desktop.constant.CommonLabel;
 import stoready.desktop.constant.MessageCode;
@@ -311,9 +312,7 @@ public class SaleAddController extends CommonDataSaveController {
             }
             vboxDueDate.setDisable(isPaid);
         });
-        ComboBoxUtils.onSelectedItemChanged(cbSellingMode, (ov, nv) -> {
-            updateDisplaySellingPrice(nv.getValue());
-        });
+        ComboBoxUtils.onSelectedItemChanged(cbSellingMode, (ov, nv) -> updateDisplaySellingPrice(nv.getValue()));
     }
 
     @Override
@@ -341,7 +340,7 @@ public class SaleAddController extends CommonDataSaveController {
         saleAdd.setTotalProduct(totalProduct);
         saleAdd.setTotalSale(totalSale);
         saleAdd.setSaleProducts(tblSaleProduct.getItems());
-        saleService.createSale(saleAdd);
+        saleService.createSale(saleAdd, Activity.ADD_SALE);
         return true;
     }
 
@@ -464,6 +463,7 @@ public class SaleAddController extends CommonDataSaveController {
         return TableViewUtils.getItemIndex(productExists, table);
     }
 
+    @SuppressWarnings("null")
     private void calculateSaleSummary() {
         Locale locale = resources.getLocale();
         ObservableList<SaleProductVM> items = tblSaleProduct.getItems();
@@ -530,7 +530,7 @@ public class SaleAddController extends CommonDataSaveController {
         cv.validatePositive(tfCurrentQuantity, MessageCode.ERROR_EMPTY_CURRENT_QUANTITY);
         cv.validatePositive(tfSaleQuantity, MessageCode.ERROR_EMPTY_QUANTITY);
         cv.validateCustom(() -> {
-            if (!isProductSelected) {
+            if (selectedProduct == null) {
                 return false;
             }
             Integer selectedProductQuantity = selectedProduct.getQuantity() == null ?

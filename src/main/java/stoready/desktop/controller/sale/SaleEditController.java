@@ -522,6 +522,7 @@ public class SaleEditController extends CommonDataSaveController {
         return TableViewUtils.getItemIndex(productExists, table);
     }
 
+    @SuppressWarnings("null")
     private void calculateSaleSummary() {
         Locale locale = resources.getLocale();
         ObservableList<SaleProductVM> items = tblSaleProduct.getItems();
@@ -566,7 +567,7 @@ public class SaleEditController extends CommonDataSaveController {
         cv.validatePositive(tfCurrentQuantity, MessageCode.ERROR_EMPTY_CURRENT_QUANTITY);
         cv.validatePositive(tfSaleQuantity, MessageCode.ERROR_EMPTY_QUANTITY);
         cv.validateCustom(() -> {
-            if (!isProductSelected) {
+            if (selectedProduct == null) {
                 return false;
             }
             Integer selectedProductQuantity = selectedProduct.getQuantity() == null ?

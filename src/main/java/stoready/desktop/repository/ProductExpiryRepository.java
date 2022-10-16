@@ -11,11 +11,22 @@ import org.springframework.stereotype.Repository;
 
 import stoready.desktop.domain.ProductExpiry;
 import stoready.desktop.viewmodel.GroupedProductExpiryVM;
+import stoready.desktop.viewmodel.ProductExpiryVM;
 
 @Repository
 public interface ProductExpiryRepository extends PagingAndSortingRepository<ProductExpiry, Long> {
 
-    List<ProductExpiry> findByProductIdAndDeletedAtIsNullOrderByIdDesc(Long productId);
+    @Query("""
+            select
+            a.*,
+            b.full_name as user_full_name,
+            b.username as user_username
+            from product_expiry a
+            inner join `user` b on b.id = a.user_id
+            where a.product_id = :productId and a.deleted_at is null
+            order by a.id desc
+            """)
+    List<ProductExpiryVM> findByProductIdOrderByIdDesc(@Param("productId") Long productId);
 
     Optional<ProductExpiry> findFirstByProductIdOrderByIdDesc(Long productId);
 

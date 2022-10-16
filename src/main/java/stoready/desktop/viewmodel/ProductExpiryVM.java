@@ -22,6 +22,8 @@ public class ProductExpiryVM {
     private Integer quantityOut;
     private Integer finalQuantity;
     private Long userId;
+    private String userFullName;
+    private String userUsername;
     private String activity;
     private String remarks;
 }

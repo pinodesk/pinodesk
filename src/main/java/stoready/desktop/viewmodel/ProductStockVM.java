@@ -19,6 +19,8 @@ public class ProductStockVM {
     private Long saleId;
     private String saleInvoiceNumber;
     private Long userId;
+    private String userFullName;
+    private String userUsername;
     private String activity;
     private String remarks;
 }

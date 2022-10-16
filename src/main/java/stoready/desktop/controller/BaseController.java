@@ -209,6 +209,14 @@ public abstract class BaseController {
         return displayError(t.translate(messageCode.toString()));
     }
 
+    protected AlertResult displayWarning(String message) {
+        return displayAlert(AlertType.WARNING, message);
+    }
+
+    protected AlertResult displayWarning(IMessage messageCode) {
+        return displayWarning(t.translate(messageCode.toString()));
+    }
+
     protected AlertResult displayError(Collection<?> messageCodes) {
         List<String> messages = messageCodes.stream().map(val -> {
             if (val instanceof String str) {
@@ -439,6 +447,23 @@ public abstract class BaseController {
                 return;
             }
         });
+    }
+
+    // Reference:
+    // https://edencoding.com/how-to-hide-a-button-in-javafx/#set-visibility
+    /**
+     * Sets visibility of a node in its layout.
+     * 
+     * @param visible
+     * @param node
+     */
+    protected void setVisibleInLayout(boolean visible, Node node) {
+        node.setVisible(visible);
+        node.setManaged(visible);
+    }
+
+    protected boolean isNullOrZero(Number num) {
+        return num == null || num.doubleValue() == 0;
     }
 
 }
