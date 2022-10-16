@@ -26,13 +26,12 @@ cache:
   paths:
     - .m2/repository/
 
-default:
-  before_script:
-    - apk add --update --no-cache git
-    - git --version
-    - git remote set-url --push origin "https://${GITLAB_USER_LOGIN}:${READ_WRITE_REPOSITORY_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
-    - git config user.name "${GITLAB_USER_NAME}"
-    - git config user.email "${GITLAB_USER_EMAIL}"
+.git_setup_template: &git_setup
+  - apk add --update --no-cache git
+  - git --version
+  - git remote set-url --push origin "https://${GITLAB_USER_LOGIN}:${READ_WRITE_REPOSITORY_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+  - git config user.name "${GITLAB_USER_NAME}"
+  - git config user.email "${GITLAB_USER_EMAIL}"
 
 stages:
   - build
@@ -41,15 +40,22 @@ stages:
 
 build:
   stage: build
-  script: ./mvnw $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U 
+  script: 
+    - *git_setup
+    - ./mvnw $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U
   allow_failure: false
+  except:
+    - /^hotfix\/.*$/
+    - master
+    - tags
 
 test:
   variables:
     JACOCO_REPORT_HTML: $CI_PROJECT_DIR/target/site/jacoco/index.html
   stage: test
   script:
-    - ./mvnw $MAVEN_CLI_OPTS verify -U 
+    - *git_setup
+    - ./mvnw $MAVEN_CLI_OPTS verify -U
     - if [ -f $JACOCO_REPORT_HTML ]; then cat $JACOCO_REPORT_HTML | grep -o "Total[^%]*%"; fi
   allow_failure: false
   coverage: "/Total.*?([0-9]{1,3})%/"
@@ -57,13 +63,18 @@ test:
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
+  except:
+    - /^hotfix\/.*$/
+    - master
+    - tags
 
 release:
   stage: release
   dependencies:
     - test
   script:
-    - ./mvnw $MAVEN_CLI_OPTS gitflow:release -DgitflowDigitToIncrement=$RELEASE_DIGIT -DargLine=$MAVEN_CLI_OPTS 
+    - *git_setup
+    - ./mvnw $MAVEN_CLI_OPTS gitflow:release -DversionDigitToIncrement=$RELEASE_DIGIT -DargLine=$MAVEN_CLI_OPTS
   only:
     - develop
   when: manual
@@ -71,19 +82,22 @@ release:
 hotfix-start:
   stage: release
   dependencies:
-      - release
+    - release
   script:
-      - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-start -DgitflowDigitToIncrement=$HOTFIX_DIGIT -DargLine=$MAVEN_CLI_OPTS 
+    - *git_setup
+    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-start -DhotfixVersionDigitToIncrement=$HOTFIX_DIGIT -DargLine=$MAVEN_CLI_OPTS
+    - git push origin HEAD
   only:
-      - master
+    - master
   when: manual
 
 hotfix-finish:
   stage: release
   dependencies:
-      - hotfix-start
+    - hotfix-start
   script:
-      - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DgitflowDigitToIncrement=$HOTFIX_DIGIT -DhotfixBranch=${CI_COMMIT_BRANCH} -DargLine=$MAVEN_CLI_OPTS 
+    - *git_setup
+    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DhotfixBranch=${CI_COMMIT_BRANCH} -DargLine=$MAVEN_CLI_OPTS
   only:
-      - /^hotfix\/.*$/
+    - /^hotfix\/.*$/
   when: manual
