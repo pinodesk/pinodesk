@@ -40,7 +40,7 @@ stages:
 
 build:
   stage: build
-  script: 
+  script:
     - *git_setup
     - ./mvnw $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U
   allow_failure: false
@@ -97,7 +97,9 @@ hotfix-finish:
     - hotfix-start
   script:
     - *git_setup
-    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DhotfixVersion=${CI_COMMIT_BRANCH} -DargLine=$MAVEN_CLI_OPTS
+    # Manually fix the git refs. gitflow plugin uses the heads ref, but we do not have it set up locally, however we have the remote ref
+    - git symbolic-ref refs/heads/$CI_COMMIT_BRANCH refs/remotes/origin/$CI_COMMIT_BRANCH
+    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DhotfixBranch=$CI_COMMIT_BRANCH -DargLine=$MAVEN_CLI_OPTS
   only:
     - /^hotfix\/.*$/
   when: manual
