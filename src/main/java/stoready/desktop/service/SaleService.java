@@ -158,9 +158,9 @@ public class SaleService extends BaseService {
                 product = productRepository.save(product);
             }
             Integer finalQuantity = createProductStock(activityName, saleId, saleProduct, invoiceNumber);
-            createSaleDetail(saleId, saleProduct);
+            SaleDetail sd = createSaleDetail(saleId, saleProduct);
             if (saleProduct.getExpiredDate() != null) {
-                createProductExpiry(activityName, saleId, saleProduct, invoiceNumber);
+                createProductExpiry(activityName, sd, saleProduct, invoiceNumber);
             }
             product.setQuantity(finalQuantity);
             productRepository.save(product);
@@ -183,7 +183,7 @@ public class SaleService extends BaseService {
 
     private void createProductExpiry(
             String activityName,
-            Long saleId,
+            SaleDetail saleDetail,
             SaleProductVM saleProduct,
             String invoiceNumber) {
         Integer saleQuantity = saleProduct.getSaleQuantity();
@@ -192,7 +192,8 @@ public class SaleService extends BaseService {
         px.setExpiredDate(saleProduct.getExpiredDate());
         px.setProductId(saleProduct.getProductId());
         px.setQuantityOut(saleQuantity);
-        px.setSaleId(saleId);
+        px.setSaleId(saleDetail.getSaleId());
+        px.setSaleDetailId(saleDetail.getId());
         px.setSaleInvoiceNumber(invoiceNumber);
         px.setUserId(sessionService.getCurrentSession().getUser().getId());
         ProductExpiry pxByProductId = productExpiryRepository
@@ -234,14 +235,14 @@ public class SaleService extends BaseService {
         return finalQuantity;
     }
 
-    private void createSaleDetail(Long saleId, SaleProductVM saleProduct) {
+    private SaleDetail createSaleDetail(Long saleId, SaleProductVM saleProduct) {
         SaleDetail sd = new SaleDetail();
         sd.setProductId(saleProduct.getProductId());
         sd.setQuantity(saleProduct.getSaleQuantity());
         sd.setSaleId(saleId);
         sd.setSellingPrice(saleProduct.getSellingPrice());
         sd.setSubtotal(saleProduct.getSubtotal());
-        saleDetailRepository.save(sd);
+        return saleDetailRepository.save(sd);
     }
 
     private void processPaymentStatusChange(SaleEditVM saleEdit, Sale sale) {
@@ -359,9 +360,9 @@ public class SaleService extends BaseService {
                 product = productRepository.save(product);
             }
             Integer finalQuantity = createProductStock(activityName, saleId, saleProduct, invoiceNumber);
-            createSaleDetail(saleId, saleProduct);
+            SaleDetail sd = createSaleDetail(saleId, saleProduct);
             if (saleProduct.getExpiredDate() != null) {
-                createProductExpiry(activityName, saleId, saleProduct, invoiceNumber);
+                createProductExpiry(activityName, sd, saleProduct, invoiceNumber);
             }
             product.setQuantity(finalQuantity);
             productRepository.save(product);
