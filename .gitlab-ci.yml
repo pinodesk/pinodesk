@@ -91,6 +91,7 @@ hotfix-start:
     - master
   when: manual
 
+# Inspired from here: https://github.com/viesure/blog-gitflow-maven/blob/master/.gitlab-ci.yml
 hotfix-finish:
   stage: release
   dependencies:
