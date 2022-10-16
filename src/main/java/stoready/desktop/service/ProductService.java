@@ -348,23 +348,17 @@ public class ProductService extends BaseService {
 
     @ForActivity(Activity.GET_PRODUCT_PRICES_BY_PRODUCT_ID)
     public List<ProductPriceVM> getProductPriceByProductId(Long productId) {
-        return objectConverter.convertList(
-                productPriceRepository.findByProductIdAndDeletedAtIsNullOrderByIdDesc(productId),
-                ProductPriceVM.class);
+        return productPriceRepository.findByProductIdOrderByIdDesc(productId);
     }
 
     @ForActivity(Activity.GET_PRODUCT_EXPIRIES_BY_PRODUCT_ID)
     public List<ProductExpiryVM> getProductExpiryByProductId(Long productId) {
-        return objectConverter.convertList(
-                productExpiryRepository.findByProductIdAndDeletedAtIsNullOrderByIdDesc(productId),
-                ProductExpiryVM.class);
+        return productExpiryRepository.findByProductIdOrderByIdDesc(productId);
     }
 
     @ForActivity(Activity.GET_PRODUCT_STOCKS_BY_PRODUCT_ID)
     public List<ProductStockVM> getProductStockByProductId(Long productId) {
-        return objectConverter.convertList(
-                productStockRepository.findByProductIdAndDeletedAtIsNullOrderByIdDesc(productId),
-                ProductStockVM.class);
+        return productStockRepository.findByProductIdOrderByIdDesc(productId);
     }
 
     @ForActivity(Activity.ADD_PRODUCT_EXPIRY)

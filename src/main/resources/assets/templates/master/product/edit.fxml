@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.product.ProductEditController">
+<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.product.ProductEditController">
    <children>
       <VBox AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -283,7 +283,7 @@
                                           <TableColumn fx:id="colProductPriceSaleInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_sale_invoice_number" />
                                           <TableColumn fx:id="colProductPriceActivity" minWidth="-Infinity" prefWidth="150.0" text="%lbl_activity" />
                                           <TableColumn fx:id="colProductPriceRemarks" minWidth="-Infinity" prefWidth="200.0" text="%lbl_remarks" />
-                                          <TableColumn fx:id="colProductPriceUser" minWidth="-Infinity" prefWidth="150.0" text="%lbl_user" />
+                                          <TableColumn fx:id="colProductPriceUser" minWidth="-Infinity" prefWidth="200.0" text="%lbl_user" />
                                           <TableColumn fx:id="colProductPriceCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
                                       </columns>
                                     </TableView>
@@ -347,7 +347,7 @@
                                           <TableColumn fx:id="colProductStockSaleInvoceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_sale_invoice_number" />
                                           <TableColumn fx:id="colProductStockActivity" minWidth="-Infinity" prefWidth="150.0" text="%lbl_activity" />
                                           <TableColumn fx:id="colProductStockRemarks" minWidth="-Infinity" prefWidth="200.0" text="%lbl_remarks" />
-                                          <TableColumn fx:id="colProductStockUser" minWidth="-Infinity" prefWidth="150.0" text="%lbl_user" />
+                                          <TableColumn fx:id="colProductStockUser" minWidth="-Infinity" prefWidth="200.0" text="%lbl_user" />
                                           <TableColumn fx:id="colProductStockCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
                                        </columns>
                                     </TableView>
@@ -445,7 +445,7 @@
                                           <TableColumn fx:id="colProductExpirySaleInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_sale_invoice_number" />
                                           <TableColumn fx:id="colProductExpiryActivity" minWidth="-Infinity" prefWidth="150.0" text="%lbl_activity" />
                                           <TableColumn fx:id="colProductExpiryRemarks" minWidth="-Infinity" prefWidth="200.0" text="%lbl_remarks" />
-                                          <TableColumn fx:id="colProductExpiryUser" minWidth="-Infinity" prefWidth="150.0" text="%lbl_user" />
+                                          <TableColumn fx:id="colProductExpiryUser" minWidth="-Infinity" prefWidth="200.0" text="%lbl_user" />
                                           <TableColumn fx:id="colProductExpiryCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
                                        </columns>
                                     </TableView>
