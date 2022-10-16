@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>stoready</groupId>
     <artifactId>stoready-desktop</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Stoready</name>
     <description>Stoready POS (Point-of-Sale)</description>
