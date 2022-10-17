@@ -466,6 +466,7 @@ public class CashierController extends CommonContentPaneController {
         totalSale = items.stream().map(SaleProductVM::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
         lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
         lblTotalSale.setText(formatOrDefault(totalSale, locale, "0"));
+        lblTotal.setText(formatOrDefault(totalSale, locale, "0"));
     }
 
     private SellingMode getSelectedSellingMode() {
