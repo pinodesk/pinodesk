@@ -73,6 +73,7 @@ public class DoctorAddController extends CommonDataSaveController {
     @Override
     protected void validate(ControlValidator validator) {
         validator.validateBlank(tfName, MessageCode.ERROR_EMPTY_NAME);
+        validator.validateBlank(tfCategory, MessageCode.ERROR_EMPTY_CATEGORY);
     }
 
     @Override
@@ -82,9 +83,7 @@ public class DoctorAddController extends CommonDataSaveController {
         doctor.setCode(tfCode.getText());
         doctor.setMedicalLicenseNumber(tfMedicalLicenseNumber.getText());
         doctor.setRegistrationNumber(tfRegistrationNumber.getText());
-        if (selectedDoctorCategory != null) {
-            doctor.setCategoryCode(selectedDoctorCategory.getCode());
-        }
+        doctor.setCategoryCode(selectedDoctorCategory.getCode());
         return doctorService.createDoctor(doctor);
     }
 

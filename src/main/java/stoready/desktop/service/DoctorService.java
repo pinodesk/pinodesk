@@ -25,6 +25,7 @@ import stoready.desktop.repository.DoctorCategoryRepository;
 import stoready.desktop.repository.DoctorRepository;
 import stoready.desktop.viewmodel.DoctorAddVM;
 import stoready.desktop.viewmodel.DoctorCategoryVM;
+import stoready.desktop.viewmodel.DoctorFilterVM;
 import stoready.desktop.viewmodel.DoctorVM;
 
 @Service
@@ -38,6 +39,21 @@ public class DoctorService extends BaseService {
 
     @Autowired
     private ConfigurationService configurationService;
+
+    @ForActivity(Activity.SEARCH_DOCTORS_BY_FILTER)
+    @Cacheable(CacheNameConstants.DOCTORS_BY_FILTER)
+    public List<DoctorVM> searchDoctorsByFilter(DoctorFilterVM filter) {
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return doctorRepository.findByFilter(filter, language);
+    }
+
+    @ForActivity(Activity.REMOVE_DOCTORS)
+    @CacheEvict(value = { CacheNameConstants.DOCTORS_BY_FILTER, CacheNameConstants.DOCTORS_BY_KEYWORD },
+        allEntries = true)
+    @Transactional
+    public void removeDoctors(List<Long> ids) {
+        doctorRepository.deleteUpdateByIdIn(ids);
+    }
 
     @ForActivity(Activity.SEARCH_DOCTORS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.DOCTORS_BY_KEYWORD)

@@ -181,6 +181,11 @@ public class MainController extends BaseController {
     }
 
     @FXML
+    void onActionBtnMenuDoctors(ActionEvent event) {
+        changeContent(Page.MASTER_DOCTOR_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
     void onActionBtnMenuPurchases(ActionEvent event) {
         changeContent(Page.TRANSACTION_PURCHASE_MAIN, (Button) event.getSource());
     }

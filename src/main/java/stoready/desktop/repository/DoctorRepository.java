@@ -3,8 +3,12 @@ package stoready.desktop.repository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jdbc.repository.query.Modifying;
+import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import stoready.desktop.domain.Doctor;
 
@@ -20,4 +24,10 @@ public interface DoctorRepository extends PagingAndSortingRepository<Doctor, Lon
     boolean existsByMedicalLicenseNumberAndDeletedAtIsNull(String code);
 
     Optional<Doctor> findFirstByCodeStartingWithOrderByCodeDesc(String prefix);
+
+    @Transactional
+    @Modifying
+    @Query("update doctor set updated_at=now(), deleted_at=now() where id in (:ids)")
+    Long deleteUpdateByIdIn(@Param("ids") List<Long> ids);
+
 }
