@@ -1,21 +1,27 @@
 package stoready.desktop.controller.doctor;
 
-import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
-import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
-import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
+import java.util.Arrays;
 
 import org.springframework.context.ApplicationContext;
+
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
+import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import stoready.desktop.constant.MenuCodeConstants;
 import stoready.desktop.constant.MessageCode;
 import stoready.desktop.controller.CommonDataSaveController;
 import stoready.desktop.service.DoctorService;
-import stoready.desktop.viewmodel.*;
+import stoready.desktop.viewmodel.ChooseResultVM;
+import stoready.desktop.viewmodel.DoctorCategoryVM;
+import stoready.desktop.viewmodel.DoctorEditVM;
+import stoready.desktop.viewmodel.DoctorVM;
 
-public class DoctorAddController extends CommonDataSaveController {
+public class DoctorEditController extends CommonDataSaveController {
 
     @FXML
     private TextField tfName;
@@ -42,19 +48,22 @@ public class DoctorAddController extends CommonDataSaveController {
     private TextField tfAddress;
 
     @FXML
-    private Button btnSaveAndAdd;
+    private Button btnRemove;
 
     private DoctorService doctorService;
 
     private DoctorCategoryVM selectedDoctorCategory;
 
+    private DoctorVM currentDoctor;
+
     @FXML
-    void onActionBtnSaveAndAdd(ActionEvent event) {
-        processDataSave();
-        if (isLastDataSaved()) {
-            displayInfo(MessageCode.SUCCESS_ADD_DOCTOR);
-            resetControls();
-            initDataSaveControlValues();
+    void onActionBtnRemove(ActionEvent event) {
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_DOCTOR);
+        if (result.isConfirmed()) {
+            doctorService.removeDoctors(Arrays.asList(currentDoctor.getId()));
+            displayInfo(MessageCode.SUCCESS_REMOVE_DOCTOR);
+            setPageData(Boolean.TRUE);
+            close();
         }
     }
 
@@ -65,19 +74,23 @@ public class DoctorAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        disableWriteAction(MenuCodeConstants.MASTER_DOCTORS, btnSave, btnRemove);
         setDoctorCategoryChooser(tfCategory, this::handleSelectedDoctorCategory, tfRegistrationNumber);
-        addContentPaneOnKeyPressedHandler(event -> {
-            if (KeyConstants.CTRL_SHIFT_S.match(event)) {
-                btnSaveAndAdd.fire();
-                return;
-            }
-        });
+        TextFieldUtils.setDigitTextFields(tfPhone);
     }
 
     @Override
     protected void initDataSaveControlValues() {
-        String nextCustomerCode = doctorService.getNextDoctorCode();
-        tfCode.setText(nextCustomerCode);
+        currentDoctor = getPageData();
+        tfName.setText(currentDoctor.getName());
+        tfCode.setText(currentDoctor.getCode());
+        tfMedicalLicenseNumber.setText(currentDoctor.getMedicalLicenseNumber());
+        tfRegistrationNumber.setText(currentDoctor.getRegistrationNumber());
+        tfCategory.setText(currentDoctor.getCategoryName());
+        tfAddress.setText(currentDoctor.getAddress());
+        tfEmail.setText(currentDoctor.getEmail());
+        tfPhone.setText(currentDoctor.getPhone());
+        selectedDoctorCategory = doctorService.getDoctorCategoryById(currentDoctor.getCategoryId());
     }
 
     @Override
@@ -89,29 +102,16 @@ public class DoctorAddController extends CommonDataSaveController {
 
     @Override
     protected Object save() {
-        DoctorAddVM doctor = new DoctorAddVM();
+        DoctorEditVM doctor = new DoctorEditVM();
         doctor.setName(tfName.getText());
         doctor.setCode(tfCode.getText());
         doctor.setMedicalLicenseNumber(tfMedicalLicenseNumber.getText());
         doctor.setRegistrationNumber(tfRegistrationNumber.getText());
-        doctor.setCategoryCode(selectedDoctorCategory.getCode());
+        doctor.setCategory(selectedDoctorCategory);
         doctor.setAddress(tfAddress.getText());
         doctor.setEmail(tfEmail.getText());
         doctor.setPhone(tfPhone.getText());
-        return doctorService.createDoctor(doctor);
-    }
-
-    private void resetControls() {
-        TextFieldUtils.setTextEmpty(
-                tfName,
-                tfCode,
-                tfMedicalLicenseNumber,
-                tfRegistrationNumber,
-                tfCategory,
-                tfPhone,
-                tfEmail,
-                tfAddress);
-        selectedDoctorCategory = null;
+        return doctorService.updateDoctor(doctor, currentDoctor.getId());
     }
 
     public void handleSelectedDoctorCategory(ChooseResultVM<DoctorCategoryVM> result) {

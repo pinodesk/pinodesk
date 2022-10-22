@@ -66,6 +66,9 @@
             <TableColumn fx:id="colCategory" minWidth="-Infinity" prefWidth="300.0" text="%lbl_category" />
             <TableColumn fx:id="colRegistrationNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_registration_number" />
             <TableColumn fx:id="colMedicalLicenseNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_medical_license_number" />
+            <TableColumn fx:id="colPhone" minWidth="-Infinity" prefWidth="150.0" text="%lbl_phone" />
+            <TableColumn fx:id="colEmail" minWidth="-Infinity" prefWidth="150.0" text="%lbl_email" />
+            <TableColumn fx:id="colAddress" minWidth="-Infinity" prefWidth="300.0" text="%lbl_address" />
             <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
             <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
         </columns>

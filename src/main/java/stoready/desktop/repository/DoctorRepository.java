@@ -23,11 +23,17 @@ public interface DoctorRepository extends PagingAndSortingRepository<Doctor, Lon
 
     boolean existsByMedicalLicenseNumberAndDeletedAtIsNull(String code);
 
+    boolean existsByEmailIgnoreCaseAndDeletedAtIsNull(String email);
+
+    boolean existsByPhoneAndDeletedAtIsNull(String phone);
+
     Optional<Doctor> findFirstByCodeStartingWithOrderByCodeDesc(String prefix);
 
     @Transactional
     @Modifying
     @Query("update doctor set updated_at=now(), deleted_at=now() where id in (:ids)")
     Long deleteUpdateByIdIn(@Param("ids") List<Long> ids);
+
+    Optional<Doctor> findByIdAndDeletedAtIsNull(Long doctorId);
 
 }

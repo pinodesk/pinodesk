@@ -9,11 +9,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.doctor.DoctorFilterController">
+<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.doctor.DoctorEditController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_filter_doctors" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_edit_doctor" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -24,8 +24,11 @@
          </children>
       </AnchorPane>
       <AnchorPane style="-fx-border-color: #bebebe; -fx-border-width: 1px;">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </VBox.margin>
          <children>
-            <VBox layoutX="11.0" layoutY="11.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <HBox spacing="10.0">
                      <children>
@@ -54,7 +57,7 @@
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfCode" styleClass="input-primary">
+                              <TextField fx:id="tfCode" editable="false" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -68,7 +71,7 @@
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfCategory" styleClass="input-primary">
+                              <TextField fx:id="tfCategory" editable="false" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -165,17 +168,14 @@
                </padding>
             </VBox>
          </children>
-         <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" />
-         </VBox.margin>
       </AnchorPane>
       <AnchorPane prefWidth="774.0" style="-fx-background-color: #ececec;" VBox.vgrow="NEVER">
          <children>
             <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                <children>
                   <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
-                  <Button fx:id="btnReset" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnReset" styleClass="btn-secondary" text="%btn_reset" textFill="WHITE" />
-                  <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" styleClass="btn-primary" text="%btn_filter" textFill="WHITE" />
+                  <Button fx:id="btnRemove" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemove" styleClass="btn-danger" text="%btn_remove" textFill="WHITE" />
+                  <Button fx:id="btnSave" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSave" styleClass="btn-primary" text="%btn_save" textFill="WHITE" />
                </children>
             </HBox>
          </children>

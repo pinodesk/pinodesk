@@ -9,4 +9,7 @@ public class DoctorAddVM {
     private String name;
     private String registrationNumber;
     private String medicalLicenseNumber;
+    private String phone;
+    private String email;
+    private String address;
 }

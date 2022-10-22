@@ -5,10 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -28,15 +25,7 @@
       </AnchorPane>
       <AnchorPane style="-fx-border-color: #bebebe; -fx-border-width: 1px;">
          <children>
-            <GridPane hgap="10.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <columnConstraints>
-                  <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="750.0" minWidth="10.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints maxHeight="-Infinity" minHeight="0.0" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="0.0" />
-                  <RowConstraints maxHeight="-Infinity" minHeight="0.0" />
-               </rowConstraints>
+            <VBox layoutX="1.0" layoutY="1.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <HBox spacing="10.0">
                      <children>
@@ -54,6 +43,10 @@
                               </TextField>
                            </children>
                         </VBox>
+                     </children>
+                  </HBox>
+                  <HBox spacing="10.0">
+                     <children>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
                               <Label text="%lbl_code">
@@ -68,9 +61,23 @@
                               </TextField>
                            </children>
                         </VBox>
+                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl_category">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfCategory" editable="false" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
                      </children>
                   </HBox>
-                  <HBox spacing="10.0" GridPane.rowIndex="1">
+                  <HBox spacing="10.0">
                      <children>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
@@ -102,16 +109,48 @@
                         </VBox>
                      </children>
                   </HBox>
-                  <HBox spacing="10.0" GridPane.rowIndex="2">
+                  <HBox spacing="10.0">
                      <children>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <Label text="%lbl_category">
+                              <Label text="%lbl_phone">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
                               </Label>
-                              <TextField fx:id="tfCategory" styleClass="input-primary">
+                              <TextField fx:id="tfPhone" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl_email">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfEmail" styleClass="input-primary">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </TextField>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox spacing="10.0">
+                     <children>
+                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <Label text="%lbl_address">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <TextField fx:id="tfAddress" styleClass="input-primary">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -124,7 +163,7 @@
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-            </GridPane>
+            </VBox>
          </children>
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" />

@@ -25,6 +25,7 @@ import stoready.desktop.repository.DoctorCategoryRepository;
 import stoready.desktop.repository.DoctorRepository;
 import stoready.desktop.viewmodel.DoctorAddVM;
 import stoready.desktop.viewmodel.DoctorCategoryVM;
+import stoready.desktop.viewmodel.DoctorEditVM;
 import stoready.desktop.viewmodel.DoctorFilterVM;
 import stoready.desktop.viewmodel.DoctorVM;
 
@@ -80,7 +81,58 @@ public class DoctorService extends BaseService {
                 && doctorRepository.existsByMedicalLicenseNumberAndDeletedAtIsNull(medicalLicenseNumber)) {
             throw new DomainException(DomainError.DOCTOR_EXISTS_BY_MEDICAL_LICENSE_NUMBER);
         }
+        String email = doctorAdd.getEmail();
+        if (StringUtils.isNotBlank(email) && doctorRepository.existsByEmailIgnoreCaseAndDeletedAtIsNull(email)) {
+            throw new DomainException(DomainError.DOCTOR_EXISTS_BY_EMAIL);
+        }
+        String phone = doctorAdd.getPhone();
+        if (StringUtils.isNotBlank(phone) && doctorRepository.existsByPhoneAndDeletedAtIsNull(phone)) {
+            throw new DomainException(DomainError.DOCTOR_EXISTS_BY_PHONE);
+        }
         return doctorRepository.save(objectConverter.convertObject(doctorAdd, Doctor.class));
+    }
+
+    @ForActivity(Activity.EDIT_DOCTOR)
+    @CacheEvict(value = { CacheNameConstants.DOCTORS_BY_FILTER, CacheNameConstants.DOCTORS_BY_KEYWORD },
+        allEntries = true)
+    @Transactional
+    public Doctor updateDoctor(DoctorEditVM doctorEdit, Long doctorId) {
+        String code = doctorEdit.getCode();
+        Doctor doctor = doctorRepository.findByIdAndDeletedAtIsNull(doctorId)
+                .orElseThrow(() -> new DomainException(DomainError.DOCTOR_NOT_FOUND_BY_ID));
+        if (!doctor.getCode().equals(code) && doctorRepository.existsByCodeIgnoreCaseAndDeletedAtIsNull(code)) {
+            throw new DomainException(DomainError.DOCTOR_EXISTS_BY_CODE);
+        }
+        String registrationNumber = doctorEdit.getRegistrationNumber();
+        if (StringUtils.isNotBlank(registrationNumber) && !doctor.getRegistrationNumber().equals(registrationNumber)
+                && doctorRepository.existsByRegistrationNumberAndDeletedAtIsNull(registrationNumber)) {
+            throw new DomainException(DomainError.DOCTOR_EXISTS_BY_REGISTRATION_NUMBER);
+        }
+        String medicalLicenseNumber = doctorEdit.getMedicalLicenseNumber();
+        if (StringUtils.isNotBlank(medicalLicenseNumber)
+                && !doctor.getMedicalLicenseNumber().equals(medicalLicenseNumber)
+                && doctorRepository.existsByMedicalLicenseNumberAndDeletedAtIsNull(medicalLicenseNumber)) {
+            throw new DomainException(DomainError.DOCTOR_EXISTS_BY_MEDICAL_LICENSE_NUMBER);
+        }
+        String email = doctorEdit.getEmail();
+        if (StringUtils.isNotBlank(email) && !doctor.getEmail().equals(email)
+                && doctorRepository.existsByEmailIgnoreCaseAndDeletedAtIsNull(email)) {
+            throw new DomainException(DomainError.DOCTOR_EXISTS_BY_EMAIL);
+        }
+        String phone = doctorEdit.getPhone();
+        if (StringUtils.isNotBlank(phone) && !doctor.getPhone().equals(phone)
+                && doctorRepository.existsByPhoneAndDeletedAtIsNull(phone)) {
+            throw new DomainException(DomainError.DOCTOR_EXISTS_BY_PHONE);
+        }
+        doctor.setCategoryCode(doctorEdit.getCategory().getCode());
+        doctor.setCode(code);
+        doctor.setMedicalLicenseNumber(doctorEdit.getMedicalLicenseNumber());
+        doctor.setName(doctorEdit.getName());
+        doctor.setRegistrationNumber(doctorEdit.getRegistrationNumber());
+        doctor.setAddress(doctorEdit.getAddress());
+        doctor.setEmail(doctorEdit.getEmail());
+        doctor.setPhone(doctorEdit.getPhone());
+        return doctorRepository.save(doctor);
     }
 
     public String getNextDoctorCode() {
@@ -99,6 +151,14 @@ public class DoctorService extends BaseService {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         List<DoctorCategory> categories = doctorCategoryRepository.findByKeyword(keyword, language);
         return objectConverter.convertList(categories, DoctorCategoryVM.class);
+    }
+
+    @ForActivity(Activity.GET_DOCTOR_CATEGORY_BY_ID)
+    public DoctorCategoryVM getDoctorCategoryById(Long id) {
+        return objectConverter.convertOptionalOrThrow(
+                doctorCategoryRepository.findByIdAndDeletedAtIsNull(id),
+                DoctorCategoryVM.class,
+                new DomainException(DomainError.DOCTOR_CATEGORY_NOT_FOUND_BY_ID));
     }
 
 }

@@ -72,7 +72,9 @@ public enum Activity {
     ADD_USER,
     EDIT_USER,
     SEARCH_DOCTORS_BY_FILTER,
-    REMOVE_DOCTORS;
+    REMOVE_DOCTORS,
+    GET_DOCTOR_CATEGORY_BY_ID,
+    EDIT_DOCTOR;
 
     @Override
     public String toString() {

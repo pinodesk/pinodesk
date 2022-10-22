@@ -28,6 +28,15 @@ public class DoctorFilterController extends CommonDataFilterController<DoctorFil
     @FXML
     private TextField tfCategory;
 
+    @FXML
+    private TextField tfPhone;
+
+    @FXML
+    private TextField tfEmail;
+
+    @FXML
+    private TextField tfAddress;
+
     private DoctorCategoryVM selectedDoctorCategory;
 
     @Override
@@ -41,6 +50,9 @@ public class DoctorFilterController extends CommonDataFilterController<DoctorFil
             if (selectedDoctorCategory != null) {
                 tfCategory.setText(selectedDoctorCategory.getName());
             }
+            tfAddress.setText(currentFilter.getAddress());
+            tfEmail.setText(currentFilter.getEmail());
+            tfPhone.setText(currentFilter.getPhone());
         }
     }
 
@@ -52,12 +64,23 @@ public class DoctorFilterController extends CommonDataFilterController<DoctorFil
         filter.setMedicalLicenseNumber(tfMedicalLicenseNumber.getText());
         filter.setRegistrationNumber(tfRegistrationNumber.getText());
         filter.setCategory(selectedDoctorCategory);
+        filter.setAddress(tfAddress.getText());
+        filter.setEmail(tfEmail.getText());
+        filter.setPhone(tfPhone.getText());
         return filter;
     }
 
     @Override
     protected void resetControls() {
-        TextFieldUtils.setTextEmpty(tfName, tfCode, tfMedicalLicenseNumber, tfRegistrationNumber, tfCategory);
+        TextFieldUtils.setTextEmpty(
+                tfName,
+                tfCode,
+                tfMedicalLicenseNumber,
+                tfRegistrationNumber,
+                tfCategory,
+                tfAddress,
+                tfEmail,
+                tfPhone);
         selectedDoctorCategory = null;
     }
 
@@ -69,6 +92,7 @@ public class DoctorFilterController extends CommonDataFilterController<DoctorFil
     @Override
     protected void initDataFilterControlActions() {
         setDoctorCategoryChooser(tfCategory, this::handleSelectedDoctorCategory, contentPane);
+        TextFieldUtils.setDigitTextFields(tfPhone);
     }
 
     public void handleSelectedDoctorCategory(ChooseResultVM<DoctorCategoryVM> result) {

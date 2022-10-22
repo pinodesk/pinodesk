@@ -36,9 +36,12 @@ public class DoctorRepositoryImpl extends AbstractRepository<Doctor> implements 
                     and (lower(a.name) like ?
                     or a.registration_number like ?
                     or a.medical_license_number like ?
+                    or a.phone like ?
+                    or lower(a.email) like ?
+                    or lower(a.address) like ?
                     or b.code like ?)
                     """);
-            lb.add(likeValue).add(likeValue).add(likeValue).add(likeValue);
+            lb.add(likeValue).add(likeValue).add(likeValue).add(likeValue).add(likeValue).add(likeValue).add(likeValue);
         }
         return performSelect(sb.toString(), lb.build(), DoctorVM.class);
     }
@@ -67,6 +70,15 @@ public class DoctorRepositoryImpl extends AbstractRepository<Doctor> implements 
         }
         if (StringUtils.isNotBlank(filter.getMedicalLicenseNumber())) {
             where.containsIgnoreCase("a.medical_license_number", filter.getMedicalLicenseNumber());
+        }
+        if (StringUtils.isNotBlank(filter.getEmail())) {
+            where.containsIgnoreCase("a.email", filter.getEmail());
+        }
+        if (StringUtils.isNotBlank(filter.getPhone())) {
+            where.containsIgnoreCase("a.phone", filter.getPhone());
+        }
+        if (StringUtils.isNotBlank(filter.getAddress())) {
+            where.containsIgnoreCase("a.address", filter.getAddress());
         }
         if (filter.getCategory() != null) {
             where.equals("b.id", filter.getCategory().getId());
