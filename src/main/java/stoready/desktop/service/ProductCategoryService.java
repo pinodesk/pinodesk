@@ -47,4 +47,11 @@ public class ProductCategoryService extends BaseService {
         return objectConverter.convertList(categories, ProductCategoryVM.class);
     }
 
+    public ProductCategoryVM getProductCategoryByCode(String code, String language) {
+        return objectConverter.convertOptionalOrThrow(
+                productCategoryRepository.findByCodeAndLanguageAndDeletedAtIsNull(code, language),
+                ProductCategoryVM.class,
+                new DomainException(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_CODE));
+    }
+
 }

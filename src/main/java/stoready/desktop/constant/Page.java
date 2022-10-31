@@ -20,6 +20,7 @@ public enum Page implements IPage {
     MASTER_PRODUCT_CHOOSE_DRUG_CATEGORY("master/product/choose-drug-category"),
     MASTER_PRODUCT_IMPORT("master/product/import"),
     MASTER_PRODUCT_CHOOSE_DRUG_CLASSIFICATION("master/product/choose-drug-classification"),
+    MASTER_PRODUCT_ADD_PACKAGE("master/product/add-package"),
 
     MASTER_CUSTOMER_MAIN("master/customer/main"),
     MASTER_CUSTOMER_FILTER("master/customer/filter"),

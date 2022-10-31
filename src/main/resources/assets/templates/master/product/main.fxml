@@ -50,12 +50,17 @@
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onActionBtnAdd" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_add" textFill="WHITE">
+                  <Button fx:id="btnPackage" mnemonicParsing="false" onAction="#onActionBtnPackage" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_package" textFill="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Button>
                   <Button fx:id="btnImport" mnemonicParsing="false" onAction="#onActionBtnImport" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_import" textFill="WHITE">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onActionBtnAdd" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_add" textFill="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>

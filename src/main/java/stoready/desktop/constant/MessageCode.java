@@ -62,6 +62,7 @@ public enum MessageCode implements IMessage {
     ERROR_PRODUCT_EXISTS_BY_CODE,
     ERROR_PRODUCT_EXISTS_BY_BARCODE,
     ERROR_PRODUCT_EXISTS_BY_NAME_AND_UNIT,
+    ERROR_PRODUCT_CATEGORY_CUSTOM_PACKAGE_NOT_ALLOWED,
 
     // Drug category
     ERROR_DRUG_CATEGORY_NOT_FOUND_BY_ID,
@@ -72,6 +73,7 @@ public enum MessageCode implements IMessage {
 
     // Unit
     ERROR_UNIT_NOT_FOUND_BY_ID,
+    ERROR_UNIT_NOT_FOUND_BY_LABEL,
 
     // Rack
     ERROR_RACK_NOT_FOUND_BY_ID,

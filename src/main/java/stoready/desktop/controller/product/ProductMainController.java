@@ -1,8 +1,6 @@
 package stoready.desktop.controller.product;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -85,6 +83,9 @@ public class ProductMainController extends BaseController {
     private Label lblRows;
 
     @FXML
+    private Button btnPackage;
+
+    @FXML
     private Button btnImport;
 
     @FXML
@@ -107,7 +108,7 @@ public class ProductMainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnFilter(ActionEvent event) throws MalformedURLException, IOException {
+    void onActionBtnFilter(ActionEvent event) {
         setPageData(productFilter);
         StageUtils.modal(Page.MASTER_PRODUCT_FILTER, false, we -> {
             ProductFilterVM result = getPageData();
@@ -137,6 +138,11 @@ public class ProductMainController extends BaseController {
         StageUtils.modal(Page.MASTER_PRODUCT_IMPORT, false, we -> searchProducts());
     }
 
+    @FXML
+    void onActionBtnPackage(ActionEvent event) {
+        StageUtils.modal(Page.MASTER_PRODUCT_ADD_PACKAGE, false, we -> searchProducts());
+    }
+
     @Override
     protected void initServices(ApplicationContext ctx) {
         productService = ctx.getBean(ProductService.class);
@@ -144,7 +150,7 @@ public class ProductMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_PRODUCTS, btnAdd, btnRemove, btnImport);
+        disableWriteAction(MenuCodeConstants.MASTER_PRODUCTS, btnAdd, btnRemove, btnImport, btnPackage);
         initTableProduct();
         registerKeyListener();
     }
@@ -216,9 +222,7 @@ public class ProductMainController extends BaseController {
     private void handleActionTableProduct() {
         if (TableViewUtils.hasItemSelected(tblProduct)) {
             setPageData(TableViewUtils.getSelectedItem(tblProduct));
-            StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> {
-                searchProducts();
-            });
+            StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> searchProducts());
         }
     }
 

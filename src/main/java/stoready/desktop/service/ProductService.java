@@ -25,6 +25,7 @@ import stoready.desktop.constant.CommonConstants;
 import stoready.desktop.constant.ConfigurationConstants;
 import stoready.desktop.constant.DomainError;
 import stoready.desktop.domain.Drug;
+import stoready.desktop.domain.PackageDetail;
 import stoready.desktop.domain.Product;
 import stoready.desktop.domain.ProductExpiry;
 import stoready.desktop.domain.ProductPrice;
@@ -33,6 +34,7 @@ import stoready.desktop.domain.Unit;
 import stoready.desktop.exception.DomainException;
 import stoready.desktop.repository.DrugClassificationRepository;
 import stoready.desktop.repository.DrugRepository;
+import stoready.desktop.repository.PackageDetailRepository;
 import stoready.desktop.repository.ProductCategoryRepository;
 import stoready.desktop.repository.ProductExpiryRepository;
 import stoready.desktop.repository.ProductPriceRepository;
@@ -42,6 +44,7 @@ import stoready.desktop.repository.UnitRepository;
 import stoready.desktop.util.ProductUtils;
 import stoready.desktop.viewmodel.DrugClassificationVM;
 import stoready.desktop.viewmodel.GroupedProductExpiryVM;
+import stoready.desktop.viewmodel.PackageProductVM;
 import stoready.desktop.viewmodel.ProductAddVM;
 import stoready.desktop.viewmodel.ProductEditVM;
 import stoready.desktop.viewmodel.ProductExpiryAddVM;
@@ -81,6 +84,9 @@ public class ProductService extends BaseService {
 
     @Autowired
     private DrugClassificationRepository drugClassificationRepository;
+
+    @Autowired
+    private PackageDetailRepository packageDetailRepository;
 
     @Autowired
     private SessionService sessionService;
@@ -262,9 +268,13 @@ public class ProductService extends BaseService {
         allEntries = true)
     @Transactional
     public void createProduct(ProductAddVM productAdd) {
+        createProduct(productAdd, Activity.ADD_PRODUCT);
+    }
+
+    public Product createProduct(ProductAddVM productAdd, Activity activity) {
         validateConstraints(productAdd);
         Long currentUserId = sessionService.getCurrentSession().getUser().getId();
-        String activityName = Activity.ADD_PRODUCT.toString();
+        String activityName = activity.toString();
         String code = productAdd.getCode();
         String barcode = productAdd.getBarcode();
         String categoryCode = productAdd.getProductCategory().getCode();
@@ -344,6 +354,7 @@ public class ProductService extends BaseService {
             px.setRemarks(productAdd.getExpiryRemarks());
             productExpiryRepository.save(px);
         }
+        return created;
     }
 
     @ForActivity(Activity.GET_PRODUCT_PRICES_BY_PRODUCT_ID)
@@ -494,6 +505,22 @@ public class ProductService extends BaseService {
             mappings.add(mapping);
         });
         processProductImportMappings(mappings);
+    }
+
+    @ForActivity(Activity.ADD_PACKAGE)
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
+    @Transactional
+    public void createPackage(ProductAddVM productAdd, List<PackageProductVM> packageProducts) {
+        Product created = createProduct(productAdd, Activity.ADD_PACKAGE);
+        List<PackageDetail> packageDetails = packageProducts.stream().map(pp -> {
+            PackageDetail packageDetail = new PackageDetail();
+            packageDetail.setPackageProductId(created.getId());
+            packageDetail.setProductId(pp.getProduct().getId());
+            packageDetail.setQuantity(pp.getQuantity());
+            return packageDetail;
+        }).toList();
+        packageDetailRepository.saveAll(packageDetails);
     }
 
     private BigDecimal getGeneralSellingPriceOrDefault(BigDecimal generalSellingPrice, BigDecimal defaultPrice) {

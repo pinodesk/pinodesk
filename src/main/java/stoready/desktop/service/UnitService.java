@@ -40,4 +40,11 @@ public class UnitService extends BaseService {
                 new DomainException(DomainError.UNIT_NOT_FOUND_BY_ID));
     }
 
+    public UnitVM getUnitByLabel(String label) {
+        return objectConverter.convertOptionalOrThrow(
+                unitRepository.findByLabelAndDeletedAtIsNull(label),
+                UnitVM.class,
+                new DomainException(DomainError.UNIT_NOT_FOUND_BY_LABEL));
+    }
+
 }

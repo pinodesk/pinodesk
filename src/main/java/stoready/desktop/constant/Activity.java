@@ -2,6 +2,7 @@ package stoready.desktop.constant;
 
 public enum Activity {
     ADD_PRODUCT,
+    ADD_PACKAGE,
     EDIT_PRODUCT,
     REMOVE_PRODUCTS,
     IMPORT_PRODUCTS,

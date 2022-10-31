@@ -23,6 +23,7 @@ public enum DomainError {
 
     // Unit (03)
     UNIT_NOT_FOUND_BY_ID("DE03001", MessageCode.ERROR_UNIT_NOT_FOUND_BY_ID),
+    UNIT_NOT_FOUND_BY_LABEL("DE03002", MessageCode.ERROR_UNIT_NOT_FOUND_BY_LABEL),
 
     // Rack (04)
     RACK_NOT_FOUND_BY_ID("DE04001", MessageCode.ERROR_RACK_NOT_FOUND_BY_ID),
