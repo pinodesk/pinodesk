@@ -272,7 +272,6 @@
                                                 </VBox>
                                              </children>
                                           </HBox>
-                                          <HBox alignment="TOP_RIGHT" />
                                        </children>
                                     </VBox>
                                     <TableView fx:id="tblPrice" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
@@ -335,7 +334,6 @@
                                                 </VBox>
                                              </children>
                                           </HBox>
-                                          <HBox alignment="TOP_RIGHT" />
                                        </children>
                                     </VBox>
                                     <TableView fx:id="tblStock" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">

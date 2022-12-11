@@ -221,8 +221,13 @@ public class ProductMainController extends BaseController {
 
     private void handleActionTableProduct() {
         if (TableViewUtils.hasItemSelected(tblProduct)) {
-            setPageData(TableViewUtils.getSelectedItem(tblProduct));
-            StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> searchProducts());
+            ProductVM product = TableViewUtils.getSelectedItem(tblProduct);
+            setPageData(product);
+            if (CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE.equals(product.getCategoryCode())) {
+                StageUtils.modal(Page.MASTER_PRODUCT_EDIT_PACKAGE, event -> searchProducts());
+            } else {
+                StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> searchProducts());
+            }
         }
     }
 

@@ -5,21 +5,26 @@ import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toIntege
 import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrEmpty;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Predicate;
 
 import org.springframework.context.ApplicationContext;
 
-import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -44,12 +49,13 @@ import stoready.desktop.service.UnitService;
 import stoready.desktop.util.SpringUtils;
 import stoready.desktop.viewmodel.ChooseResultVM;
 import stoready.desktop.viewmodel.PackageProductVM;
-import stoready.desktop.viewmodel.ProductAddVM;
 import stoready.desktop.viewmodel.ProductCategoryVM;
+import stoready.desktop.viewmodel.ProductEditVM;
+import stoready.desktop.viewmodel.ProductPriceVM;
 import stoready.desktop.viewmodel.ProductVM;
 import stoready.desktop.viewmodel.UnitVM;
 
-public class ProductPackageAddController extends CommonDataSaveController {
+public class ProductPackageEditController extends CommonDataSaveController {
 
     @FXML
     private TabPane tabPaneAddPackage;
@@ -124,7 +130,34 @@ public class ProductPackageAddController extends CommonDataSaveController {
     private TextField tfPriceRemarks;
 
     @FXML
-    private Button btnSaveAndAdd;
+    private TableView<ProductPriceVM> tblPrice;
+
+    @FXML
+    private TableColumn<ProductPriceVM, BigDecimal> colGeneralSellingPrice1;
+
+    @FXML
+    private TableColumn<ProductPriceVM, BigDecimal> colPrescriptionSellingPrice1;
+
+    @FXML
+    private TableColumn<ProductPriceVM, String> colProductPricePurchaseInvoiceNumber;
+
+    @FXML
+    private TableColumn<ProductPriceVM, String> colProductPriceSaleInvoiceNumber;
+
+    @FXML
+    private TableColumn<ProductPriceVM, String> colProductPriceActivity;
+
+    @FXML
+    private TableColumn<ProductPriceVM, String> colProductPriceRemarks;
+
+    @FXML
+    private TableColumn<ProductPriceVM, String> colProductPriceUser;
+
+    @FXML
+    private TableColumn<ProductPriceVM, LocalDateTime> colProductPriceCreatedAt;
+
+    @FXML
+    protected Button btnRemove;
 
     private ProductService productService;
 
@@ -138,7 +171,20 @@ public class ProductPackageAddController extends CommonDataSaveController {
 
     private ProductVM selectedProduct;
 
+    private ProductVM currentPackage;
+
     private ObjectConverter objectConverter;
+
+    @FXML
+    void onActionBtnRemove(ActionEvent event) {
+        AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_PRODUCT);
+        if (result.isConfirmed()) {
+            productService.removeProducts(Arrays.asList(currentPackage.getId()));
+            displayInfo(MessageCode.SUCCESS_REMOVE_PRODUCT);
+            setPageData(Boolean.TRUE);
+            close();
+        }
+    }
 
     @FXML
     void onActionBtnAddProduct(ActionEvent event) {
@@ -206,16 +252,35 @@ public class ProductPackageAddController extends CommonDataSaveController {
                 new NumberCellFactory<>(locale),
                 PackageProductVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
-        addContentPaneOnKeyPressedHandler(event -> {
-            if (KeyConstants.CTRL_SHIFT_S.match(event)) {
-                btnSaveAndAdd.fire();
-                return;
-            }
-        });
+        initTableProductPrice(locale);
+    }
+
+    private void initTableProductPrice(Locale locale) {
+        TableViewUtils.initTableColumn(
+                colGeneralSellingPrice1,
+                new NumberCellFactory<>(locale),
+                ProductPriceVM::getGeneralSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colPrescriptionSellingPrice1,
+                new NumberCellFactory<>(locale),
+                ProductPriceVM::getPrescriptionSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.setColumnValue(colProductPricePurchaseInvoiceNumber, ProductPriceVM::getPurchaseInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductPriceSaleInvoiceNumber, ProductPriceVM::getSaleInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductPriceActivity, ProductPriceVM::getActivity);
+        TableViewUtils.setColumnValue(colProductPriceRemarks, ProductPriceVM::getRemarks);
+        TableViewUtils.setColumnValue(colProductPriceUser, ProductPriceVM::getUserFullName);
+        TableViewUtils.initTableColumn(
+                colProductPriceCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                ProductPriceVM::getCreatedAt);
+        TableViewUtils.enableSort(false, tblPrice);
     }
 
     @Override
     protected void initDataSaveControlValues() {
+        currentPackage = getPageData();
         Locale locale = resources.getLocale();
         selectedProductCategory = productCategoryService
                 .getProductCategoryByCode(CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE, locale.getLanguage());
@@ -223,23 +288,31 @@ public class ProductPackageAddController extends CommonDataSaveController {
         tfCategory.setText(selectedProductCategory.getName());
         tfUnit.setText(selectedUnit.getLabel());
         tfQuantity.setText("1");
+        tfName.setText(currentPackage.getName());
+        tfBarcode.setText(currentPackage.getBarcode());
+        tfCode.setText(currentPackage.getCode());
+        tfDescription.setText(currentPackage.getDescription());
+        tfGeneralSellPrice.setText(toStringOrEmpty(currentPackage.getGeneralSellingPrice()));
+        tfPrescriptionSellPrice.setText(toStringOrEmpty(currentPackage.getPrescriptionSellingPrice()));
+        loadProductPrice(currentPackage.getId());
+        loadPackageProducts(currentPackage.getId());
     }
 
     @Override
     protected Object save() {
-        ProductAddVM productAdd = new ProductAddVM();
-        productAdd.setName(tfName.getText());
-        productAdd.setCode(tfCode.getText());
-        productAdd.setBarcode(tfBarcode.getText());
-        productAdd.setDescription(tfDescription.getText());
-        productAdd.setProductCategory(selectedProductCategory);
-        productAdd.setUnit(selectedUnit);
+        ProductEditVM productEdit = new ProductEditVM();
+        productEdit.setName(tfName.getText());
+        productEdit.setCode(tfCode.getText());
+        productEdit.setBarcode(tfBarcode.getText());
+        productEdit.setDescription(tfDescription.getText());
+        productEdit.setProductCategory(selectedProductCategory);
+        productEdit.setUnit(selectedUnit);
         SimpleComboBoxModel status = ComboBoxUtils.getSelectedItem(cbStatus);
-        productAdd.setStatus(status.getValue());
-        productAdd.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellPrice.getText()));
-        productAdd.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellPrice.getText()));
-        productAdd.setPriceRemarks(tfPriceRemarks.getText());
-        productService.createPackage(productAdd, tblProducts.getItems());
+        productEdit.setStatus(status.getValue());
+        productEdit.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellPrice.getText()));
+        productEdit.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellPrice.getText()));
+        productEdit.setPriceRemarks(tfPriceRemarks.getText());
+        productService.updatePackage(productEdit, currentPackage.getId(), tblProducts.getItems());
         return true;
     }
 
@@ -297,7 +370,6 @@ public class ProductPackageAddController extends CommonDataSaveController {
                 tfPrescriptionSellPrice,
                 tfPriceRemarks);
         ComboBoxUtils.selectIndex(cbStatus, 0);
-        tblProducts.setItems(FXCollections.observableArrayList());
     }
 
     private void calculatePrice() {
@@ -316,6 +388,30 @@ public class ProductPackageAddController extends CommonDataSaveController {
         }
         tfGeneralSellPrice.setText(toStringOrEmpty(generalSellPrice));
         tfPrescriptionSellPrice.setText(toStringOrEmpty(prescriptionSellPrice));
+    }
+
+    private void loadProductPrice(Long productId) {
+        tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblPrice.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(() -> productService.getProductPriceByProductId(productId))
+                .thenAccept(list -> Platform.runLater(() -> {
+                    if (list.isEmpty()) {
+                        tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                    }
+                    tblPrice.setItems(FXCollections.observableList(list));
+                }));
+    }
+
+    private void loadPackageProducts(Long productId) {
+        tblProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblProducts.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(() -> productService.getPackageProductsByProductId(productId))
+                .thenAccept(list -> Platform.runLater(() -> {
+                    if (list.isEmpty()) {
+                        tblProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                    }
+                    tblProducts.setItems(FXCollections.observableList(list));
+                }));
     }
 
 }

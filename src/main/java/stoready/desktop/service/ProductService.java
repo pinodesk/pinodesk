@@ -120,9 +120,13 @@ public class ProductService extends BaseService {
         allEntries = true)
     @Transactional
     public void updateProduct(ProductEditVM productEdit, Long productId) {
+        updateProduct(productEdit, productId, Activity.EDIT_PRODUCT);
+    }
+
+    public void updateProduct(ProductEditVM productEdit, Long productId, Activity activity) {
         validateConstraints(productEdit);
         Long currentUserId = sessionService.getCurrentSession().getUser().getId();
-        String activityName = Activity.EDIT_PRODUCT.toString();
+        String activityName = activity.toString();
         String name = productEdit.getName();
         String code = productEdit.getCode();
         String barcode = productEdit.getBarcode();
@@ -515,9 +519,31 @@ public class ProductService extends BaseService {
         Product created = createProduct(productAdd, Activity.ADD_PACKAGE);
         List<PackageDetail> packageDetails = packageProducts.stream().map(pp -> {
             PackageDetail packageDetail = new PackageDetail();
-            packageDetail.setPackageProductId(created.getId());
-            packageDetail.setProductId(pp.getProduct().getId());
-            packageDetail.setQuantity(pp.getQuantity());
+            packageDetail.setProductId(created.getId());
+            packageDetail.setPackageProductId(pp.getId());
+            packageDetail.setQuantity(pp.getQuantityInPackage());
+            return packageDetail;
+        }).toList();
+        packageDetailRepository.saveAll(packageDetails);
+    }
+
+    @ForActivity(Activity.GET_PACKAGE_PRODUCTS_BY_PRODUCT_ID)
+    public List<PackageProductVM> getPackageProductsByProductId(Long productId) {
+        return packageDetailRepository.findByProductId(productId);
+    }
+
+    @ForActivity(Activity.EDIT_PACKAGE)
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
+    @Transactional
+    public void updatePackage(ProductEditVM productEdit, Long productId, List<PackageProductVM> packageProducts) {
+        updateProduct(productEdit, productId, Activity.EDIT_PACKAGE);
+        packageDetailRepository.deleteByProductId(productId);
+        List<PackageDetail> packageDetails = packageProducts.stream().map(pp -> {
+            PackageDetail packageDetail = new PackageDetail();
+            packageDetail.setProductId(productId);
+            packageDetail.setPackageProductId(pp.getId());
+            packageDetail.setQuantity(pp.getQuantityInPackage());
             return packageDetail;
         }).toList();
         packageDetailRepository.saveAll(packageDetails);
