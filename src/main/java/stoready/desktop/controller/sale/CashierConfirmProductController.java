@@ -122,7 +122,6 @@ public class CashierConfirmProductController extends CommonDataSaveController {
         return confirmProduct;
     }
 
-    @SuppressWarnings("null")
     @Override
     protected void validate(ControlValidator validator) {
         validator.validatePositive(tfCurrentQuantity, MessageCode.ERROR_EMPTY_CURRENT_QUANTITY);
@@ -178,7 +177,7 @@ public class CashierConfirmProductController extends CommonDataSaveController {
         tfProductUnit.setText(currentSaleProduct.getProductUnitLabel());
         tfSaleQuantity.setText(toStringOrEmpty(currentSaleProduct.getSaleQuantity()));
         tfCurrentQuantity.setText(toStringOrEmpty(currentSaleProduct.getCurrentQuantity()));
-        tfCurrentQuantity.setEditable(true);
+        tfCurrentQuantity.setEditable(!isEdit);
         tfSellingPrice.setText(toStringOrEmpty(currentSaleProduct.getSellingPrice()));
         if (!productExpiries.isEmpty()) {
             productExpiries.add(0, null);

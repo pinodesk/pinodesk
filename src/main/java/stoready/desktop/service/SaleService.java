@@ -26,6 +26,7 @@ import stoready.desktop.domain.Receivable;
 import stoready.desktop.domain.Sale;
 import stoready.desktop.domain.SaleDetail;
 import stoready.desktop.exception.DomainException;
+import stoready.desktop.repository.PackageDetailRepository;
 import stoready.desktop.repository.ProductExpiryRepository;
 import stoready.desktop.repository.ProductPriceRepository;
 import stoready.desktop.repository.ProductRepository;
@@ -34,6 +35,7 @@ import stoready.desktop.repository.ReceivablePaymentRepository;
 import stoready.desktop.repository.ReceivableRepository;
 import stoready.desktop.repository.SaleDetailRepository;
 import stoready.desktop.repository.SaleRepository;
+import stoready.desktop.util.ProductUtils;
 import stoready.desktop.viewmodel.SaleAddVM;
 import stoready.desktop.viewmodel.SaleEditVM;
 import stoready.desktop.viewmodel.SaleFilterVM;
@@ -68,6 +70,9 @@ public class SaleService extends BaseService {
     private ReceivablePaymentRepository receivablePaymentRepository;
 
     @Autowired
+    private PackageDetailRepository packageDetailRepository;
+
+    @Autowired
     private ConfigurationService configurationService;
 
     @Autowired
@@ -90,6 +95,31 @@ public class SaleService extends BaseService {
         ids.forEach(id -> revertLastSaleProducts(id, Activity.REMOVE_SALES.toString()));
         saleDetailRepository.deleteUpdateBySaleIdIn(ids);
         saleRepository.deleteUpdateByIdIn(ids);
+    }
+
+    private void handleSalePackageProduct(
+            String activityName,
+            SaleProductVM saleProduct,
+            Long saleId,
+            String invoiceNumber) {
+        packageDetailRepository.findByProductId(saleProduct.getProductId()).forEach(pp -> {
+            Product product = productRepository.findByIdAndDeletedAtIsNull(pp.getId()).orElseThrow();
+            Integer finalQuantity = createProductStock(
+                    activityName,
+                    saleId,
+                    pp.getId(),
+                    pp.getName(),
+                    pp.getQuantityInPackage(),
+                    invoiceNumber,
+                    saleProduct.getProductName());
+            product.setQuantity(finalQuantity);
+            productRepository.save(product);
+        });
+        createSaleDetail(saleId, saleProduct);
+    }
+
+    private boolean isProductPricesUnset(Product product) {
+        return product.getGeneralSellingPrice() == null && product.getPrescriptionSellingPrice() == null;
     }
 
     @ForActivity(Activity.ADD_SALE)
@@ -122,6 +152,10 @@ public class SaleService extends BaseService {
         Sale created = saleRepository.save(sale);
         Long saleId = created.getId();
         saleAdd.getSaleProducts().forEach(saleProduct -> {
+            if (ProductUtils.isProductCategoryCustomPackage(saleProduct.getProductCategoryCode())) {
+                handleSalePackageProduct(activityName, saleProduct, saleId, invoiceNumber);
+                return;
+            }
             Long productId = saleProduct.getProductId();
             Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
             boolean productNeedsUpdate = false;
@@ -137,7 +171,7 @@ public class SaleService extends BaseService {
                 product.setQuantity(saleProduct.getCurrentQuantity());
                 productNeedsUpdate = true;
             }
-            if (product.getGeneralSellingPrice() == null && product.getPrescriptionSellingPrice() == null) {
+            if (isProductPricesUnset(product)) {
                 BigDecimal sellingPrice = saleProduct.getSellingPrice();
                 ProductPrice pp = new ProductPrice();
                 pp.setActivity(activityName);
@@ -214,13 +248,29 @@ public class SaleService extends BaseService {
             Long saleId,
             SaleProductVM saleProduct,
             String invoiceNumber) {
-        Long productId = saleProduct.getProductId();
-        Integer saleQuantity = saleProduct.getSaleQuantity();
+        return createProductStock(
+                activityName,
+                saleId,
+                saleProduct.getProductId(),
+                saleProduct.getProductName(),
+                saleProduct.getSaleQuantity(),
+                invoiceNumber,
+                null);
+    }
+
+    private Integer createProductStock(
+            String activityName,
+            Long saleId,
+            Long productId,
+            String productName,
+            Integer saleQuantity,
+            String invoiceNumber,
+            String remarks) {
         Integer lastStockQuantity = productStockRepository
                 .findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId).stream()
                 .map(ProductStock::getFinalQuantity).findAny().orElse(0);
         if (lastStockQuantity < saleQuantity) {
-            throw new DomainException(DomainError.PRODUCT_QUANTITY_INSUFFICIENT_FOR_SALE, saleProduct.getProductName());
+            throw new DomainException(DomainError.PRODUCT_QUANTITY_INSUFFICIENT_FOR_SALE, productName);
         }
         Integer finalQuantity = lastStockQuantity - saleQuantity;
         ProductStock ps = new ProductStock();
@@ -231,6 +281,7 @@ public class SaleService extends BaseService {
         ps.setSaleId(saleId);
         ps.setSaleInvoiceNumber(invoiceNumber);
         ps.setUserId(sessionService.getCurrentSession().getUser().getId());
+        ps.setRemarks(remarks);
         productStockRepository.save(ps);
         return finalQuantity;
     }

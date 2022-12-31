@@ -549,6 +549,17 @@ public class ProductService extends BaseService {
         packageDetailRepository.saveAll(packageDetails);
     }
 
+    /**
+     * Returns the package quantity based on the lowest quantity of all products in
+     * it.
+     */
+    @ForActivity(Activity.GET_PACKAGE_QUANTITY)
+    public int getPackageQuantity(Long productId) {
+        List<PackageProductVM> products = packageDetailRepository.findByProductId(productId);
+        return products.stream().map(pp -> pp.getQuantity() == null ? 0 : pp.getQuantity().intValue())
+                .reduce(Integer::min).orElse(0);
+    }
+
     private BigDecimal getGeneralSellingPriceOrDefault(BigDecimal generalSellingPrice, BigDecimal defaultPrice) {
         return generalSellingPrice == null ? defaultPrice : generalSellingPrice;
     }
