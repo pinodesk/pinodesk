@@ -236,7 +236,7 @@ public class PurchaseEditController extends CommonDataSaveController {
                 && ProductUtils.isProductCategoryDrugs(selectedProduct.getCategoryCode());
         LocalDate expiredDate = DateTimeUtils
                 .parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-        ValidationResult validationResult = validateEditProduct(isProductSelected, isProductCategoryDrugs, expiredDate);
+        ValidationResult validationResult = validateAddProduct(isProductSelected, isProductCategoryDrugs, expiredDate);
         if (!validationResult.isValid()) {
             displayError(validationResult.getMessages());
             return;
@@ -483,7 +483,6 @@ public class PurchaseEditController extends CommonDataSaveController {
         return TableViewUtils.getItemIndex(productExists, table);
     }
 
-    @SuppressWarnings("null")
     private void calculatePurchaseSummary() {
         Locale locale = resources.getLocale();
         ObservableList<PurchaseProductVM> items = tblPurchaseProduct.getItems();
@@ -522,7 +521,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         }
     }
 
-    private ValidationResult validateEditProduct(
+    private ValidationResult validateAddProduct(
             boolean isProductSelected,
             boolean isProductCategoryDrugs,
             LocalDate expiredDate) {
@@ -539,6 +538,10 @@ public class PurchaseEditController extends CommonDataSaveController {
         cv.validateCustom(
                 () -> StringUtils.isNotBlank(tfExpiredDate.getPlainText()) && expiredDate == null,
                 MessageCode.ERROR_INVALID_EXPIRED_DATE);
+        cv.validateCustom(
+                () -> isProductSelected && CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE
+                        .equals(selectedProduct.getCategoryCode()),
+                MessageCode.ERROR_PRODUCT_CATEGORY_CUSTOM_PACKAGE_NOT_ALLOWED);
         return cv.getResult();
     }
 }
