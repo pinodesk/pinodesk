@@ -1,6 +1,5 @@
 package stoready.desktop.controller.configuration;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -32,7 +31,6 @@ import stoready.desktop.constant.StringConstants;
 import stoready.desktop.controller.BaseController;
 import stoready.desktop.javafx.converter.LanguageComboBoxConverter;
 import stoready.desktop.service.ConfigurationService;
-import stoready.desktop.service.SessionService;
 
 public class ConfigurationMainController extends BaseController {
 
@@ -40,7 +38,10 @@ public class ConfigurationMainController extends BaseController {
     private VBox contentPane;
 
     @FXML
-    private Button btnSave;
+    private Button btnSaveGeneral;
+
+    @FXML
+    private Button btnSavePrinter;
 
     @FXML
     private TextField tfStoreName;
@@ -58,33 +59,38 @@ public class ConfigurationMainController extends BaseController {
     private TextField tfPrinterFooter;
 
     private ConfigurationService configurationService;
-    private SessionService sessionService;
     private List<Locale> locales;
     private Map<String, String> configurationMap;
 
     @FXML
-    void onActionBtnSave(ActionEvent event) throws IOException {
+    void onActionBtnSaveGeneral(ActionEvent event) {
         Locale selectedLocale = ComboBoxUtils.getSelectedItem(cbLanguage);
-        Printer selectedPrinter = ComboBoxUtils.getSelectedItem(cbPrinterName).getValue();
         Map<String, String> map = new HashMap<>();
         map.put(ConfigurationConstants.LANGUAGE, selectedLocale.getLanguage());
         map.put(ConfigurationConstants.STORE_NAME, tfStoreName.getText());
         map.put(ConfigurationConstants.STORE_ADDRESS, tfStoreAddress.getText());
+        configurationService.updateConfiguration(map);
+        displayInfo(MessageCode.SUCCESS_EDIT_CONFIGURATION_WITH_LOGOUT);
+        closeRootPane();
+        sessionService.get().logout();
+        StageUtils.open(Page.LOGIN, false);
+    }
+
+    @FXML
+    void onActionBtnSavePrinter(ActionEvent event) {
+        Printer selectedPrinter = ComboBoxUtils.getSelectedItem(cbPrinterName).getValue();
+        Map<String, String> map = new HashMap<>();
         map.put(
                 ConfigurationConstants.PRINTER_NAME,
                 selectedPrinter == null ? StringConstants.EMPTY : selectedPrinter.getName());
         map.put(ConfigurationConstants.PRINTER_FOOTER, tfPrinterFooter.getText());
         configurationService.updateConfiguration(map);
         displayInfo(MessageCode.SUCCESS_EDIT_CONFIGURATION);
-        closeRootPane();
-        sessionService.logout();
-        StageUtils.open(Page.LOGIN, false);
     }
 
     @Override
     protected void initServices(ApplicationContext ctx) {
         configurationService = ctx.getBean(ConfigurationService.class);
-        sessionService = ctx.getBean(SessionService.class);
         locales = FXCollections.observableArrayList(
                 new Locale(CommonConstants.LANGUAGE_CODE_ENGLISH),
                 new Locale(CommonConstants.LANGUAGE_CODE_INDONESIA));
@@ -93,7 +99,7 @@ public class ConfigurationMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        disableWriteAction(MenuCodeConstants.SETTINGS_CONFIGURATION, btnSave);
+        disableWriteAction(MenuCodeConstants.SETTINGS_CONFIGURATION, btnSaveGeneral);
         ComboBoxUtils.init(
                 cbLanguage,
                 new LanguageComboBoxConverter(cbLanguage, configurationMap.get(ConfigurationConstants.LANGUAGE)),

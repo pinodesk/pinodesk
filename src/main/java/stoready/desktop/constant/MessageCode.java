@@ -48,6 +48,7 @@ public enum MessageCode implements IMessage {
     ERROR_PRINTER_UNAVAILABLE,
 
     // Configuration
+    SUCCESS_EDIT_CONFIGURATION_WITH_LOGOUT,
     SUCCESS_EDIT_CONFIGURATION,
 
     // Product
