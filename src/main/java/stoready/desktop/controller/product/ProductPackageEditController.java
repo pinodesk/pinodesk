@@ -103,7 +103,10 @@ public class ProductPackageEditController extends CommonDataSaveController {
     private TableColumn<PackageProductVM, String> colName;
 
     @FXML
-    private TableColumn<PackageProductVM, Integer> colQuantity;
+    private TableColumn<PackageProductVM, Integer> colCurrentQuantity;
+
+    @FXML
+    private TableColumn<PackageProductVM, Integer> colQuantityInPackage;
 
     @FXML
     private TableColumn<PackageProductVM, String> colUnit;
@@ -238,9 +241,14 @@ public class ProductPackageEditController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colName, PackageProductVM::getName);
         TableViewUtils.setColumnValue(colUnit, PackageProductVM::getUnitLabel);
         TableViewUtils.initTableColumn(
-                colQuantity,
+                colQuantityInPackage,
                 new NumberCellFactory<>(locale),
                 PackageProductVM::getQuantityInPackage,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colCurrentQuantity,
+                new NumberCellFactory<>(locale),
+                PackageProductVM::getQuantity,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colGeneralSellingPrice,

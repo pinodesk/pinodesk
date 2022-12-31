@@ -203,15 +203,21 @@
                                                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                              </padding>
                                           </VBox>
-                                          <HBox alignment="TOP_RIGHT" spacing="1.0">
+                                          <HBox alignment="CENTER_LEFT" spacing="1.0">
                                              <children>
-                                                <Button fx:id="btnRemoveProduct" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemoveProduct" styleClass="btn-danger" text="%btn_remove" textFill="WHITE" />
+                                                <Label text="%lbl_product_in_package" textFill="#009c7c" />
+                                                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Button fx:id="btnRemoveProduct" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemoveProduct" styleClass="btn-danger" text="%btn_remove" textFill="WHITE" />
+                                                   </children>
+                                                </HBox>
                                              </children>
                                           </HBox>
                                           <TableView fx:id="tblProducts" prefHeight="150.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                                              <columns>
                                                 <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="300.0" text="%lbl_name" />
-                                                <TableColumn fx:id="colQuantity" minWidth="-Infinity" prefWidth="100.0" text="%lbl_quantity" />
+                                                <TableColumn fx:id="colQuantityInPackage" minWidth="-Infinity" prefWidth="150.0" text="%lbl_quantity_in_package" />
+                                                <TableColumn fx:id="colCurrentQuantity" minWidth="-Infinity" prefWidth="150.0" text="%lbl_current_quantity" />
                                                 <TableColumn fx:id="colUnit" minWidth="-Infinity" prefWidth="100.0" text="%lbl_unit" />
                                                 <TableColumn fx:id="colGeneralSellingPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_general_selling_price" />
                                                 <TableColumn fx:id="colPrescriptionSellingPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_prescription_selling_price" />
