@@ -24,5 +24,6 @@ public class ProductVM {
     private BigDecimal averageBuyingPrice;
     private LocalDate closestExpiredDate;
     private String status;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

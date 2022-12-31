@@ -77,6 +77,9 @@ public class ProductMainController extends BaseController {
     private TableColumn<ProductVM, LocalDate> colClosestExpiry;
 
     @FXML
+    private TableColumn<ProductVM, LocalDateTime> colCreatedAt;
+
+    @FXML
     private TableColumn<ProductVM, LocalDateTime> colUpdatedAt;
 
     @FXML
@@ -198,6 +201,10 @@ public class ProductMainController extends BaseController {
                 colClosestExpiry,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 ProductVM::getClosestExpiredDate);
+        TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                ProductVM::getCreatedAt);
         TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),

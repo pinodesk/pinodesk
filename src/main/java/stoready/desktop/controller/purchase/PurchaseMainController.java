@@ -85,6 +85,9 @@ public class PurchaseMainController extends BaseController {
     private TableColumn<PurchaseVM, LocalDate> colDueDate;
 
     @FXML
+    private TableColumn<PurchaseVM, LocalDateTime> colCreatedAt;
+
+    @FXML
     private TableColumn<PurchaseVM, LocalDateTime> colUpdatedAt;
 
     @FXML
@@ -174,6 +177,10 @@ public class PurchaseMainController extends BaseController {
                 colOrderDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PurchaseVM::getInvoiceDate);
+        TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                PurchaseVM::getCreatedAt);
         TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
