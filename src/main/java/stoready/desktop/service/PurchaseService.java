@@ -253,6 +253,7 @@ public class PurchaseService extends BaseService {
                     nps.setFinalQuantity(finalQuantity);
                     nps.setProductId(productId);
                     nps.setUserId(currentUserId);
+                    nps.setRemarks("Revert stock");
                     productStockRepository.save(nps);
                     product.setQuantity(finalQuantity);
                 }
@@ -266,6 +267,7 @@ public class PurchaseService extends BaseService {
                     npx.setFinalQuantityExpiredDate(px.getFinalQuantityExpiredDate() - px.getQuantityIn());
                     npx.setProductId(productId);
                     npx.setUserId(currentUserId);
+                    npx.setRemarks("Revert expiry stock");
                     productExpiryRepository.save(npx);
                 }
             });
@@ -283,6 +285,7 @@ public class PurchaseService extends BaseService {
                         pp.setGeneralSellingPrice(pp1.getGeneralSellingPrice());
                         pp.setPrescriptionSellingPrice(pp1.getPrescriptionSellingPrice());
                     }
+                    pp.setRemarks("Revert price");
                     productPriceRepository.save(pp);
                     product.setGeneralSellingPrice(pp.getGeneralSellingPrice());
                     product.setPrescriptionSellingPrice(pp.getPrescriptionSellingPrice());

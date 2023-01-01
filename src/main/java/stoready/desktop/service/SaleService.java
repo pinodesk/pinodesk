@@ -375,6 +375,10 @@ public class SaleService extends BaseService {
         revertLastSaleProducts(saleId, activityName);
         saleDetailRepository.deleteBySaleId(saleId);
         saleEdit.getSaleProducts().forEach(saleProduct -> {
+            if (ProductUtils.isProductCategoryCustomPackage(saleProduct.getProductCategoryCode())) {
+                handleSalePackageProduct(activityName, saleProduct, saleId, invoiceNumber);
+                return;
+            }
             Long productId = saleProduct.getProductId();
             Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
             boolean productNeedsUpdate = false;
@@ -390,7 +394,7 @@ public class SaleService extends BaseService {
                 product.setQuantity(saleProduct.getCurrentQuantity());
                 productNeedsUpdate = true;
             }
-            if (product.getGeneralSellingPrice() == null && product.getPrescriptionSellingPrice() == null) {
+            if (isProductPricesUnset(product)) {
                 BigDecimal sellingPrice = saleProduct.getSellingPrice();
                 ProductPrice pp = new ProductPrice();
                 pp.setActivity(activityName);
@@ -425,52 +429,75 @@ public class SaleService extends BaseService {
         saleDetailRepository.findBySaleId(saleId).forEach(pd -> {
             Long productId = pd.getProductId();
             Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
-            productStockRepository.findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId).ifPresent(ps -> {
-                if (Objects.equals(saleId, ps.getSaleId())) {
-                    ProductStock nps = new ProductStock();
-                    nps.setActivity(activityName);
-                    int finalQuantity = ps.getFinalQuantity() + ps.getQuantityOut();
-                    nps.setFinalQuantity(finalQuantity);
-                    nps.setProductId(productId);
-                    nps.setUserId(currentUserId);
-                    productStockRepository.save(nps);
-                    product.setQuantity(finalQuantity);
-                }
-            });
-            productExpiryRepository.findFirstByProductIdOrderByIdDesc(productId).ifPresent(px -> {
-                if (Objects.equals(saleId, px.getSaleId())) {
-                    ProductExpiry npx = new ProductExpiry();
-                    npx.setActivity(activityName);
-                    npx.setExpiredDate(px.getExpiredDate());
-                    npx.setFinalQuantity(px.getFinalQuantity() + px.getQuantityOut());
-                    npx.setFinalQuantityExpiredDate(px.getFinalQuantityExpiredDate() + px.getQuantityOut());
-                    npx.setProductId(productId);
-                    npx.setUserId(currentUserId);
-                    productExpiryRepository.save(npx);
-                }
-            });
-            List<ProductPrice> pps = productPriceRepository
-                    .findFirst2ByProductIdAndDeletedAtIsNullOrderByIdDesc(productId);
-            if (!pps.isEmpty()) {
-                ProductPrice pp0 = pps.get(0);
-                if (Objects.equals(saleId, pp0.getSaleId())) {
-                    ProductPrice pp = new ProductPrice();
-                    pp.setActivity(activityName);
-                    pp.setProductId(productId);
-                    pp.setUserId(currentUserId);
-                    if (pps.size() == 2) {
-                        ProductPrice pp1 = pps.get(1);
-                        pp.setGeneralSellingPrice(pp1.getGeneralSellingPrice());
-                        pp.setPrescriptionSellingPrice(pp1.getPrescriptionSellingPrice());
-                    }
-                    productPriceRepository.save(pp);
-                    product.setGeneralSellingPrice(pp.getGeneralSellingPrice());
-                    product.setPrescriptionSellingPrice(pp.getPrescriptionSellingPrice());
-                }
+            List<Product> products = List.of(product);
+            if (ProductUtils.isProductCategoryCustomPackage(product.getCategoryCode())) {
+                products = packageDetailRepository.findByProductId(productId).stream()
+                        .map(pp -> objectConverter.convertObject(pp, Product.class)).toList();
             }
-            productExpiryRepository.findClosestExpiredDateAvailableByProductId(productId)
-                    .ifPresentOrElse(product::setClosestExpiredDate, () -> product.setClosestExpiredDate(null));
-            productRepository.save(product);
+            products.forEach(p -> {
+                revertProductStock(saleId, activityName, currentUserId, p);
+                revertProductExpiry(saleId, activityName, currentUserId, productId);
+                revertProductPrice(saleId, activityName, currentUserId, p);
+                productExpiryRepository.findClosestExpiredDateAvailableByProductId(productId)
+                        .ifPresentOrElse(p::setClosestExpiredDate, () -> p.setClosestExpiredDate(null));
+                productRepository.save(p);
+            });
+        });
+    }
+
+    private void revertProductPrice(Long saleId, String activityName, Long currentUserId, Product product) {
+        Long productId = product.getId();
+        List<ProductPrice> pps = productPriceRepository.findFirst2ByProductIdAndDeletedAtIsNullOrderByIdDesc(productId);
+        if (!pps.isEmpty()) {
+            ProductPrice pp0 = pps.get(0);
+            if (Objects.equals(saleId, pp0.getSaleId())) {
+                ProductPrice pp = new ProductPrice();
+                pp.setActivity(activityName);
+                pp.setProductId(productId);
+                pp.setUserId(currentUserId);
+                if (pps.size() == 2) {
+                    ProductPrice pp1 = pps.get(1);
+                    pp.setGeneralSellingPrice(pp1.getGeneralSellingPrice());
+                    pp.setPrescriptionSellingPrice(pp1.getPrescriptionSellingPrice());
+                }
+                pp.setRemarks("Revert price");
+                productPriceRepository.save(pp);
+                product.setGeneralSellingPrice(pp.getGeneralSellingPrice());
+                product.setPrescriptionSellingPrice(pp.getPrescriptionSellingPrice());
+            }
+        }
+    }
+
+    private void revertProductExpiry(Long saleId, String activityName, Long currentUserId, Long productId) {
+        productExpiryRepository.findFirstByProductIdOrderByIdDesc(productId).ifPresent(px -> {
+            if (Objects.equals(saleId, px.getSaleId())) {
+                ProductExpiry npx = new ProductExpiry();
+                npx.setActivity(activityName);
+                npx.setExpiredDate(px.getExpiredDate());
+                npx.setFinalQuantity(px.getFinalQuantity() + px.getQuantityOut());
+                npx.setFinalQuantityExpiredDate(px.getFinalQuantityExpiredDate() + px.getQuantityOut());
+                npx.setProductId(productId);
+                npx.setUserId(currentUserId);
+                npx.setRemarks("Revert expiry stock");
+                productExpiryRepository.save(npx);
+            }
+        });
+    }
+
+    private void revertProductStock(Long saleId, String activityName, Long currentUserId, Product product) {
+        Long productId = product.getId();
+        productStockRepository.findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId).ifPresent(ps -> {
+            if (Objects.equals(saleId, ps.getSaleId())) {
+                ProductStock nps = new ProductStock();
+                nps.setActivity(activityName);
+                int finalQuantity = ps.getFinalQuantity() + ps.getQuantityOut();
+                nps.setFinalQuantity(finalQuantity);
+                nps.setProductId(productId);
+                nps.setUserId(currentUserId);
+                nps.setRemarks("Revert stock");
+                productStockRepository.save(nps);
+                product.setQuantity(finalQuantity);
+            }
         });
     }
 

@@ -30,18 +30,6 @@
                   </Label>
                </children>
             </AnchorPane>
-            <AnchorPane prefWidth="774.0" styleClass="bg-danger">
-               <children>
-                  <Label layoutX="14.0" layoutY="8.0" text="%lbl_warning_edit_purchase" textFill="WHITE" wrapText="true" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
-                     <padding>
-                        <Insets bottom="5.0" top="5.0" />
-                     </padding>
-                  </Label>
-               </children>
-               <VBox.margin>
-                  <Insets bottom="10.0" />
-               </VBox.margin>
-            </AnchorPane>
             <VBox spacing="10.0" style="-fx-background-color: white;" VBox.vgrow="ALWAYS">
                <children>
                   <HBox spacing="10.0">

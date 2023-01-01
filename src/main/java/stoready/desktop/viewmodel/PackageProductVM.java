@@ -24,6 +24,7 @@ public class PackageProductVM {
     private BigDecimal averageBuyingPrice;
     private LocalDate closestExpiredDate;
     private String status;
+    private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Integer quantityInPackage;
 }
