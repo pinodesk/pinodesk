@@ -20,6 +20,8 @@ public enum Page implements IPage {
     MASTER_PRODUCT_CHOOSE_DRUG_CATEGORY("master/product/choose-drug-category"),
     MASTER_PRODUCT_IMPORT("master/product/import"),
     MASTER_PRODUCT_CHOOSE_DRUG_CLASSIFICATION("master/product/choose-drug-classification"),
+    MASTER_PRODUCT_ADD_PACKAGE("master/product/add-package"),
+    MASTER_PRODUCT_EDIT_PACKAGE("master/product/edit-package"),
 
     MASTER_CUSTOMER_MAIN("master/customer/main"),
     MASTER_CUSTOMER_FILTER("master/customer/filter"),
@@ -62,7 +64,10 @@ public enum Page implements IPage {
     TRANSACTION_SALE_CASHIER_SALE_COMPLETE("transaction/sale/cashier/sale-complete"),
     TRANSACTION_SALE_CASHIER_CONFIRM_PRODUCT("transaction/sale/cashier/confirm-product"),
 
+    MASTER_DOCTOR_MAIN("master/doctor/main"),
+    MASTER_DOCTOR_FILTER("master/doctor/filter"),
     MASTER_DOCTOR_ADD("master/doctor/add"),
+    MASTER_DOCTOR_EDIT("master/doctor/edit"),
     MASTER_DOCTOR_CHOOSE("master/doctor/choose"),
     MASTER_DOCTOR_CHOOSE_CATEGORY("master/doctor/choose-category"),
 

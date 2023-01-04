@@ -61,6 +61,7 @@ import stoready.desktop.controller.sale.CashierPayController.PaymentData;
 import stoready.desktop.properties.ApplicationProperties;
 import stoready.desktop.service.ConfigurationService;
 import stoready.desktop.service.ProductService;
+import stoready.desktop.util.ProductUtils;
 import stoready.desktop.util.SpringUtils;
 import stoready.desktop.viewmodel.ChooseResultVM;
 import stoready.desktop.viewmodel.CurrentSessionVM;
@@ -373,37 +374,53 @@ public class CashierController extends CommonContentPaneController {
         });
     }
 
+    private void showConfirmationPage(ProductVM product, int saleQty, List<GroupedProductExpiryVM> productExpiries) {
+        ConfirmProduct confirmProduct = prepareConfirmProduct(product, null, saleQty, productExpiries);
+        setPageData(confirmProduct);
+        StageUtils.modal(Page.TRANSACTION_SALE_CASHIER_CONFIRM_PRODUCT, false, we -> {
+            ConfirmProduct result = getPageData();
+            if (result == null) {
+                selectedProduct = null;
+                setFocused(tfProduct);
+                return;
+            }
+            SaleProductVM sp = result.getSaleProduct();
+            if (sp == null) {
+                selectedProduct = null;
+                setFocused(tfProduct);
+                return;
+            }
+            int idx = getProductIndexInTable(sp.getProductId(), sp.getExpiredDate(), tblSaleProducts);
+            if (idx != -1) {
+                SaleProductVM removed = tblSaleProducts.getItems().remove(idx);
+                int newQty = sp.getSaleQuantity() + removed.getSaleQuantity();
+                sp.setSaleQuantity(newQty);
+                sp.setSubtotal(sp.getSellingPrice().multiply(new BigDecimal(newQty)));
+            }
+            tblSaleProducts.getItems().add(sp);
+            calculateSaleSummary();
+            reset();
+        });
+    }
+
     public void handleAddProduct(ProductVM product) {
-        // Show product confirmation page if price, quantity, or expiry date is empty
         int saleQty = StringNumberUtils.toIntegerOrDefault(tfQuantity.getText(), 1);
-        List<GroupedProductExpiryVM> productExpiries = productService.getRemainingProductExpiry(product.getId());
+        List<GroupedProductExpiryVM> productExpiries = new ArrayList<>();
+        if (ProductUtils.isProductCategoryCustomPackage(product.getCategoryCode())) {
+            // Validate package must have available products
+            int packageQty = productService.getPackageQuantity(product.getId());
+            if (packageQty < saleQty) {
+                displayError(MessageCode.ERROR_INSUFFICIENT_PACKAGE_QUANTITY);
+                return;
+            }
+            if (isNullOrZero(product.getQuantity())) {
+                product.setQuantity(packageQty);
+            }
+        } else {
+            productExpiries = productService.getRemainingProductExpiry(product.getId());
+        }
         if (isRequiredToConfirmProduct(product, productExpiries)) {
-            ConfirmProduct confirmProduct = prepareConfirmProduct(product, null, saleQty, productExpiries);
-            setPageData(confirmProduct);
-            StageUtils.modal(Page.TRANSACTION_SALE_CASHIER_CONFIRM_PRODUCT, false, we -> {
-                ConfirmProduct result = getPageData();
-                if (result == null) {
-                    selectedProduct = null;
-                    setFocused(tfProduct);
-                    return;
-                }
-                SaleProductVM sp = result.getSaleProduct();
-                if (sp == null) {
-                    selectedProduct = null;
-                    setFocused(tfProduct);
-                    return;
-                }
-                int idx = getProductIndexInTable(sp.getProductId(), sp.getExpiredDate(), tblSaleProducts);
-                if (idx != -1) {
-                    SaleProductVM removed = tblSaleProducts.getItems().remove(idx);
-                    int newQty = sp.getSaleQuantity() + removed.getSaleQuantity();
-                    sp.setSaleQuantity(newQty);
-                    sp.setSubtotal(sp.getSellingPrice().multiply(new BigDecimal(newQty)));
-                }
-                tblSaleProducts.getItems().add(sp);
-                calculateSaleSummary();
-                reset();
-            });
+            showConfirmationPage(product, saleQty, productExpiries);
             return;
         }
         SaleProductVM saleProduct = new SaleProductVM();
@@ -458,7 +475,6 @@ public class CashierController extends CommonContentPaneController {
         return !productExpiries.isEmpty() || (emptyQtyOrPrice && notAdded);
     }
 
-    @SuppressWarnings("null")
     private void calculateSaleSummary() {
         Locale locale = resources.getLocale();
         ObservableList<SaleProductVM> items = tblSaleProducts.getItems();
@@ -466,6 +482,7 @@ public class CashierController extends CommonContentPaneController {
         totalSale = items.stream().map(SaleProductVM::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
         lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
         lblTotalSale.setText(formatOrDefault(totalSale, locale, "0"));
+        lblTotal.setText(formatOrDefault(totalSale, locale, "0"));
     }
 
     private SellingMode getSelectedSellingMode() {
@@ -527,9 +544,9 @@ public class CashierController extends CommonContentPaneController {
 
         String sep = "--------------------------------------------------";
 
-        Label lblStoreName = new Label(config.get(ConfigurationConstants.STORE_NAME));
-        lblStoreName.setWrapText(true);
-        lblStoreName.setTextAlignment(TextAlignment.CENTER);
+        Label lblReceiptStoreName = new Label(config.get(ConfigurationConstants.STORE_NAME));
+        lblReceiptStoreName.setWrapText(true);
+        lblReceiptStoreName.setTextAlignment(TextAlignment.CENTER);
 
         Label lblStoreAddress = new Label(config.get(ConfigurationConstants.STORE_ADDRESS));
         lblStoreAddress.setTextAlignment(TextAlignment.CENTER);
@@ -555,7 +572,7 @@ public class CashierController extends CommonContentPaneController {
             vbox.getChildren().add(new Label());
         }
         vbox.getChildren().addAll(
-                lblStoreName,
+                lblReceiptStoreName,
                 lblStoreAddress,
                 new Label(sep),
                 topGridPane(paymentData, locale),
@@ -583,10 +600,10 @@ public class CashierController extends CommonContentPaneController {
         col3.setPercentWidth(50);
         gp.getColumnConstraints().addAll(col1, col2, col3);
         gp.setHgap(5);
-        Label lblTotalProduct = new Label(formatOrDefault(saleData.getTotalProduct(), locale, "0"));
-        GridPane.setHalignment(lblTotalProduct, HPos.RIGHT);
-        Label lblTotalSale = new Label(formatOrDefault(saleData.getTotalSale(), locale, "0"));
-        GridPane.setHalignment(lblTotalSale, HPos.RIGHT);
+        Label lblReceiptTotalProduct = new Label(formatOrDefault(saleData.getTotalProduct(), locale, "0"));
+        GridPane.setHalignment(lblReceiptTotalProduct, HPos.RIGHT);
+        Label lblReceiptTotalSale = new Label(formatOrDefault(saleData.getTotalSale(), locale, "0"));
+        GridPane.setHalignment(lblReceiptTotalSale, HPos.RIGHT);
         Label lblPaymentAmount = new Label(formatOrDefault(paymentData.getPaymentAmount(), locale, "0"));
         GridPane.setHalignment(lblPaymentAmount, HPos.RIGHT);
         Label lblChangeAmount = new Label(formatOrDefault(paymentData.getChangeAmount(), locale, "0"));
@@ -594,7 +611,7 @@ public class CashierController extends CommonContentPaneController {
         VBox.setMargin(gp, new Insets(0, 15, 0, 0));
         gp.add(new Label(t.translate(CommonLabel.LBL_TOTAL)), 0, 0);
         gp.add(new Label(":"), 1, 0);
-        gp.add(lblTotalSale, 2, 0);
+        gp.add(lblReceiptTotalSale, 2, 0);
         gp.add(new Label(t.translate(CommonLabel.LBL_PAY)), 0, 1);
         gp.add(new Label(":"), 1, 1);
         gp.add(lblPaymentAmount, 2, 1);

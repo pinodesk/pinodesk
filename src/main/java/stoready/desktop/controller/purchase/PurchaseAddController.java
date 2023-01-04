@@ -435,7 +435,6 @@ public class PurchaseAddController extends CommonDataSaveController {
         return TableViewUtils.getItemIndex(productExists, table);
     }
 
-    @SuppressWarnings("null")
     private void calculatePurchaseSummary() {
         Locale locale = resources.getLocale();
         ObservableList<PurchaseProductVM> items = tblPurchaseProduct.getItems();
@@ -517,6 +516,10 @@ public class PurchaseAddController extends CommonDataSaveController {
         cv.validateCustom(
                 () -> StringUtils.isNotBlank(tfExpiredDate.getPlainText()) && expiredDate == null,
                 MessageCode.ERROR_INVALID_EXPIRED_DATE);
+        cv.validateCustom(
+                () -> isProductSelected && CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE
+                        .equals(selectedProduct.getCategoryCode()),
+                MessageCode.ERROR_PRODUCT_CATEGORY_CUSTOM_PACKAGE_NOT_ALLOWED);
         return cv.getResult();
     }
 }

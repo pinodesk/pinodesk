@@ -93,6 +93,15 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
+                        <Button fx:id="btnMenuDoctors" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuDoctors" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_doctors" textFill="WHITE">
+                           <styleClass>
+                              <String fx:value="btn-primary" />
+                              <String fx:value="align-left" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </Button>
                         <Label fx:id="lblMenuTransaction" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167;" styleClass="bg-secondary" text="%lbl_menu_transaction" textFill="WHITE">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

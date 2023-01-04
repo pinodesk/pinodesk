@@ -1,8 +1,6 @@
 package stoready.desktop.controller.product;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
@@ -79,10 +77,16 @@ public class ProductMainController extends BaseController {
     private TableColumn<ProductVM, LocalDate> colClosestExpiry;
 
     @FXML
+    private TableColumn<ProductVM, LocalDateTime> colCreatedAt;
+
+    @FXML
     private TableColumn<ProductVM, LocalDateTime> colUpdatedAt;
 
     @FXML
     private Label lblRows;
+
+    @FXML
+    private Button btnPackage;
 
     @FXML
     private Button btnImport;
@@ -107,7 +111,7 @@ public class ProductMainController extends BaseController {
     }
 
     @FXML
-    void onActionBtnFilter(ActionEvent event) throws MalformedURLException, IOException {
+    void onActionBtnFilter(ActionEvent event) {
         setPageData(productFilter);
         StageUtils.modal(Page.MASTER_PRODUCT_FILTER, false, we -> {
             ProductFilterVM result = getPageData();
@@ -137,6 +141,11 @@ public class ProductMainController extends BaseController {
         StageUtils.modal(Page.MASTER_PRODUCT_IMPORT, false, we -> searchProducts());
     }
 
+    @FXML
+    void onActionBtnPackage(ActionEvent event) {
+        StageUtils.modal(Page.MASTER_PRODUCT_ADD_PACKAGE, false, we -> searchProducts());
+    }
+
     @Override
     protected void initServices(ApplicationContext ctx) {
         productService = ctx.getBean(ProductService.class);
@@ -144,7 +153,7 @@ public class ProductMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_PRODUCTS, btnAdd, btnRemove, btnImport);
+        disableWriteAction(MenuCodeConstants.MASTER_PRODUCTS, btnAdd, btnRemove, btnImport, btnPackage);
         initTableProduct();
         registerKeyListener();
     }
@@ -193,6 +202,10 @@ public class ProductMainController extends BaseController {
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 ProductVM::getClosestExpiredDate);
         TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                ProductVM::getCreatedAt);
+        TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
                 ProductVM::getUpdatedAt);
@@ -215,10 +228,13 @@ public class ProductMainController extends BaseController {
 
     private void handleActionTableProduct() {
         if (TableViewUtils.hasItemSelected(tblProduct)) {
-            setPageData(TableViewUtils.getSelectedItem(tblProduct));
-            StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> {
-                searchProducts();
-            });
+            ProductVM product = TableViewUtils.getSelectedItem(tblProduct);
+            setPageData(product);
+            if (CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE.equals(product.getCategoryCode())) {
+                StageUtils.modal(Page.MASTER_PRODUCT_EDIT_PACKAGE, event -> searchProducts());
+            } else {
+                StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> searchProducts());
+            }
         }
     }
 

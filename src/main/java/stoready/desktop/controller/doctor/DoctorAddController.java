@@ -2,6 +2,7 @@ package stoready.desktop.controller.doctor;
 
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
+import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import org.springframework.context.ApplicationContext;
 
@@ -32,6 +33,15 @@ public class DoctorAddController extends CommonDataSaveController {
     private TextField tfCategory;
 
     @FXML
+    private TextField tfPhone;
+
+    @FXML
+    private TextField tfEmail;
+
+    @FXML
+    private TextField tfAddress;
+
+    @FXML
     private Button btnSaveAndAdd;
 
     private DoctorService doctorService;
@@ -55,7 +65,7 @@ public class DoctorAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        setDoctorCategoryChooser(tfCategory, this::handleSelectedDoctorCategory, contentPane);
+        setDoctorCategoryChooser(tfCategory, this::handleSelectedDoctorCategory, tfRegistrationNumber);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyConstants.CTRL_SHIFT_S.match(event)) {
                 btnSaveAndAdd.fire();
@@ -73,6 +83,8 @@ public class DoctorAddController extends CommonDataSaveController {
     @Override
     protected void validate(ControlValidator validator) {
         validator.validateBlank(tfName, MessageCode.ERROR_EMPTY_NAME);
+        validator.validateBlank(tfCategory, MessageCode.ERROR_EMPTY_CATEGORY);
+        validator.validateEmail(tfEmail, MessageCode.ERROR_INVALID_EMAIL_FORMAT);
     }
 
     @Override
@@ -82,18 +94,24 @@ public class DoctorAddController extends CommonDataSaveController {
         doctor.setCode(tfCode.getText());
         doctor.setMedicalLicenseNumber(tfMedicalLicenseNumber.getText());
         doctor.setRegistrationNumber(tfRegistrationNumber.getText());
-        if (selectedDoctorCategory != null) {
-            doctor.setCategoryCode(selectedDoctorCategory.getCode());
-        }
+        doctor.setCategoryCode(selectedDoctorCategory.getCode());
+        doctor.setAddress(tfAddress.getText());
+        doctor.setEmail(tfEmail.getText());
+        doctor.setPhone(tfPhone.getText());
         return doctorService.createDoctor(doctor);
     }
 
     private void resetControls() {
-        tfName.setText(null);
-        tfCode.setText(null);
-        tfMedicalLicenseNumber.setText(null);
-        tfRegistrationNumber.setText(null);
-        tfCategory.setText(null);
+        TextFieldUtils.setTextEmpty(
+                tfName,
+                tfCode,
+                tfMedicalLicenseNumber,
+                tfRegistrationNumber,
+                tfCategory,
+                tfPhone,
+                tfEmail,
+                tfAddress);
+        selectedDoctorCategory = null;
     }
 
     public void handleSelectedDoctorCategory(ChooseResultVM<DoctorCategoryVM> result) {

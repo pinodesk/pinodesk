@@ -47,6 +47,15 @@ public class DoctorChooseController extends CommonDataChooseController<DoctorVM>
     private TableColumn<DoctorVM, String> colMedicalLicenseNumber;
 
     @FXML
+    private TableColumn<DoctorVM, String> colPhone;
+
+    @FXML
+    private TableColumn<DoctorVM, String> colEmail;
+
+    @FXML
+    private TableColumn<DoctorVM, String> colAddress;
+
+    @FXML
     private TableColumn<DoctorVM, LocalDateTime> colCreatedAt;
 
     @FXML
@@ -61,6 +70,9 @@ public class DoctorChooseController extends CommonDataChooseController<DoctorVM>
         TableViewUtils.setColumnValue(colCategory, DoctorVM::getCategoryName);
         TableViewUtils.setColumnValue(colRegistrationNumber, DoctorVM::getRegistrationNumber);
         TableViewUtils.setColumnValue(colMedicalLicenseNumber, DoctorVM::getMedicalLicenseNumber);
+        TableViewUtils.setColumnValue(colEmail, DoctorVM::getEmail);
+        TableViewUtils.setColumnValue(colPhone, DoctorVM::getPhone);
+        TableViewUtils.setColumnValue(colAddress, DoctorVM::getAddress);
         TableViewUtils.initTableColumn(
                 colCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),

@@ -65,6 +65,9 @@ public class MainController extends BaseController {
     private Button btnMenuSuppliers;
 
     @FXML
+    private Button btnMenuDoctors;
+
+    @FXML
     private Label lblMenuTransaction;
 
     @FXML
@@ -135,6 +138,7 @@ public class MainController extends BaseController {
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.MASTER_PRODUCTS, btnMenuProducts);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.MASTER_CUSTOMERS, btnMenuCustomers);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.MASTER_SUPPLIERS, btnMenuSuppliers);
+        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.MASTER_DOCTORS, btnMenuDoctors);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION, lblMenuTransaction);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION_PURCHASES, btnMenuPurchases);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION_SALES, btnMenuSales);
@@ -178,6 +182,11 @@ public class MainController extends BaseController {
     @FXML
     void onActionBtnMenuSuppliers(ActionEvent event) {
         changeContent(Page.MASTER_SUPPLIER_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
+    void onActionBtnMenuDoctors(ActionEvent event) {
+        changeContent(Page.MASTER_DOCTOR_MAIN, (Button) event.getSource());
     }
 
     @FXML

@@ -25,6 +25,7 @@ import stoready.desktop.constant.CommonConstants;
 import stoready.desktop.constant.ConfigurationConstants;
 import stoready.desktop.constant.DomainError;
 import stoready.desktop.domain.Drug;
+import stoready.desktop.domain.PackageDetail;
 import stoready.desktop.domain.Product;
 import stoready.desktop.domain.ProductExpiry;
 import stoready.desktop.domain.ProductPrice;
@@ -33,6 +34,7 @@ import stoready.desktop.domain.Unit;
 import stoready.desktop.exception.DomainException;
 import stoready.desktop.repository.DrugClassificationRepository;
 import stoready.desktop.repository.DrugRepository;
+import stoready.desktop.repository.PackageDetailRepository;
 import stoready.desktop.repository.ProductCategoryRepository;
 import stoready.desktop.repository.ProductExpiryRepository;
 import stoready.desktop.repository.ProductPriceRepository;
@@ -42,6 +44,7 @@ import stoready.desktop.repository.UnitRepository;
 import stoready.desktop.util.ProductUtils;
 import stoready.desktop.viewmodel.DrugClassificationVM;
 import stoready.desktop.viewmodel.GroupedProductExpiryVM;
+import stoready.desktop.viewmodel.PackageProductVM;
 import stoready.desktop.viewmodel.ProductAddVM;
 import stoready.desktop.viewmodel.ProductEditVM;
 import stoready.desktop.viewmodel.ProductExpiryAddVM;
@@ -83,6 +86,9 @@ public class ProductService extends BaseService {
     private DrugClassificationRepository drugClassificationRepository;
 
     @Autowired
+    private PackageDetailRepository packageDetailRepository;
+
+    @Autowired
     private SessionService sessionService;
 
     @ForActivity(Activity.SEARCH_PRODUCTS_BY_FILTER)
@@ -114,9 +120,13 @@ public class ProductService extends BaseService {
         allEntries = true)
     @Transactional
     public void updateProduct(ProductEditVM productEdit, Long productId) {
+        updateProduct(productEdit, productId, Activity.EDIT_PRODUCT);
+    }
+
+    public void updateProduct(ProductEditVM productEdit, Long productId, Activity activity) {
         validateConstraints(productEdit);
         Long currentUserId = sessionService.getCurrentSession().getUser().getId();
-        String activityName = Activity.EDIT_PRODUCT.toString();
+        String activityName = activity.toString();
         String name = productEdit.getName();
         String code = productEdit.getCode();
         String barcode = productEdit.getBarcode();
@@ -262,9 +272,13 @@ public class ProductService extends BaseService {
         allEntries = true)
     @Transactional
     public void createProduct(ProductAddVM productAdd) {
+        createProduct(productAdd, Activity.ADD_PRODUCT);
+    }
+
+    public Product createProduct(ProductAddVM productAdd, Activity activity) {
         validateConstraints(productAdd);
         Long currentUserId = sessionService.getCurrentSession().getUser().getId();
-        String activityName = Activity.ADD_PRODUCT.toString();
+        String activityName = activity.toString();
         String code = productAdd.getCode();
         String barcode = productAdd.getBarcode();
         String categoryCode = productAdd.getProductCategory().getCode();
@@ -344,6 +358,7 @@ public class ProductService extends BaseService {
             px.setRemarks(productAdd.getExpiryRemarks());
             productExpiryRepository.save(px);
         }
+        return created;
     }
 
     @ForActivity(Activity.GET_PRODUCT_PRICES_BY_PRODUCT_ID)
@@ -494,6 +509,55 @@ public class ProductService extends BaseService {
             mappings.add(mapping);
         });
         processProductImportMappings(mappings);
+    }
+
+    @ForActivity(Activity.ADD_PACKAGE)
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
+    @Transactional
+    public void createPackage(ProductAddVM productAdd, List<PackageProductVM> packageProducts) {
+        Product created = createProduct(productAdd, Activity.ADD_PACKAGE);
+        List<PackageDetail> packageDetails = packageProducts.stream().map(pp -> {
+            PackageDetail packageDetail = new PackageDetail();
+            packageDetail.setProductId(created.getId());
+            packageDetail.setPackageProductId(pp.getId());
+            packageDetail.setQuantity(pp.getQuantityInPackage());
+            return packageDetail;
+        }).toList();
+        packageDetailRepository.saveAll(packageDetails);
+    }
+
+    @ForActivity(Activity.GET_PACKAGE_PRODUCTS_BY_PRODUCT_ID)
+    public List<PackageProductVM> getPackageProductsByProductId(Long productId) {
+        return packageDetailRepository.findByProductId(productId);
+    }
+
+    @ForActivity(Activity.EDIT_PACKAGE)
+    @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
+        allEntries = true)
+    @Transactional
+    public void updatePackage(ProductEditVM productEdit, Long productId, List<PackageProductVM> packageProducts) {
+        updateProduct(productEdit, productId, Activity.EDIT_PACKAGE);
+        packageDetailRepository.deleteByProductId(productId);
+        List<PackageDetail> packageDetails = packageProducts.stream().map(pp -> {
+            PackageDetail packageDetail = new PackageDetail();
+            packageDetail.setProductId(productId);
+            packageDetail.setPackageProductId(pp.getId());
+            packageDetail.setQuantity(pp.getQuantityInPackage());
+            return packageDetail;
+        }).toList();
+        packageDetailRepository.saveAll(packageDetails);
+    }
+
+    /**
+     * Returns the package quantity based on the lowest quantity of all products in
+     * it.
+     */
+    @ForActivity(Activity.GET_PACKAGE_QUANTITY)
+    public int getPackageQuantity(Long productId) {
+        List<PackageProductVM> products = packageDetailRepository.findByProductId(productId);
+        return products.stream().map(pp -> pp.getQuantity() == null ? 0 : pp.getQuantity().intValue())
+                .reduce(Integer::min).orElse(0);
     }
 
     private BigDecimal getGeneralSellingPriceOrDefault(BigDecimal generalSellingPrice, BigDecimal defaultPrice) {

@@ -65,6 +65,9 @@ public class SupplierMainController extends BaseController {
     private TableColumn<SupplierVM, String> colWebsite;
 
     @FXML
+    private TableColumn<SupplierVM, LocalDateTime> colCreatedAt;
+
+    @FXML
     private TableColumn<SupplierVM, LocalDateTime> colUpdatedAt;
 
     @FXML
@@ -123,6 +126,10 @@ public class SupplierMainController extends BaseController {
         TableViewUtils.setColumnValue(colEmail, SupplierVM::getEmail);
         TableViewUtils.setColumnValue(colAddress, SupplierVM::getAddress);
         TableViewUtils.setColumnValue(colWebsite, SupplierVM::getWebsite);
+        TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                SupplierVM::getCreatedAt);
         TableViewUtils.initTableColumn(
                 colUpdatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),

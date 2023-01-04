@@ -11,4 +11,8 @@ public final class ProductUtils {
         return CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS.equals(categoryCode);
     }
 
+    public static boolean isProductCategoryCustomPackage(String categoryCode) {
+        return CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE.equals(categoryCode);
+    }
+
 }

@@ -165,7 +165,10 @@ public class UserGroupService extends BaseService {
     }
 
     @ForActivity(Activity.EDIT_USER_GROUP)
-    @CacheEvict(value = { CacheNameConstants.USER_GROUPS_BY_FILTER, CacheNameConstants.USER_GROUPS_BY_KEYWORD },
+    @CacheEvict(value = {
+            CacheNameConstants.USER_GROUPS_BY_FILTER,
+            CacheNameConstants.USER_GROUPS_BY_KEYWORD,
+            CacheNameConstants.USERS_BY_FILTER },
         allEntries = true)
     @Transactional
     public UserGroup updateUserGroup(UserGroupEditVM userGroupEdit, Long userGroupId) {

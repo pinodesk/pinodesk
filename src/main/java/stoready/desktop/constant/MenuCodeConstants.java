@@ -7,6 +7,7 @@ public interface MenuCodeConstants {
     String MASTER_PRODUCTS = "0004";
     String MASTER_CUSTOMERS = "0005";
     String MASTER_SUPPLIERS = "0006";
+    String MASTER_DOCTORS = "0014";
     String TRANSACTION_PURCHASES = "0007";
     String TRANSACTION_SALES = "0008";
     String TRANSACTION_PAYABLES = "0009";

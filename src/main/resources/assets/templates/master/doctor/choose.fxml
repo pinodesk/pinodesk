@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefHeight="400.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.doctor.DoctorChooseController">
+<VBox fx:id="contentPane" prefHeight="400.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.doctor.DoctorChooseController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -41,9 +41,12 @@
         <columns>
           <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
           <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_code" />
-            <TableColumn fx:id="colCategory" minWidth="-Infinity" prefWidth="400.0" text="%lbl_category" />
+            <TableColumn fx:id="colCategory" minWidth="-Infinity" prefWidth="300.0" text="%lbl_category" />
             <TableColumn fx:id="colRegistrationNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_registration_number" />
             <TableColumn fx:id="colMedicalLicenseNumber" minWidth="-Infinity" prefWidth="300.0" text="%lbl_medical_license_number" />
+            <TableColumn fx:id="colPhone" minWidth="-Infinity" prefWidth="150.0" text="%lbl_phone" />
+            <TableColumn fx:id="colEmail" minWidth="-Infinity" prefWidth="150.0" text="%lbl_email" />
+            <TableColumn fx:id="colAddress" minWidth="-Infinity" prefWidth="300.0" text="%lbl_address" />
             <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
             <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
         </columns>

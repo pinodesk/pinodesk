@@ -67,6 +67,7 @@
             <TableColumn fx:id="colEmail" minWidth="-Infinity" prefWidth="200.0" text="%lbl_email" />
             <TableColumn fx:id="colWebsite" minWidth="-Infinity" prefWidth="200.0" text="%lbl_website" />
             <TableColumn fx:id="colAddress" minWidth="-Infinity" prefWidth="300.0" text="%lbl_address" />
+            <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
             <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
         </columns>
          <VBox.margin>

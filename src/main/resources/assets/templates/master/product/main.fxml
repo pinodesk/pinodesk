@@ -50,12 +50,17 @@
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onActionBtnAdd" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_add" textFill="WHITE">
+                  <Button fx:id="btnPackage" mnemonicParsing="false" onAction="#onActionBtnPackage" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_package" textFill="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Button>
                   <Button fx:id="btnImport" mnemonicParsing="false" onAction="#onActionBtnImport" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_import" textFill="WHITE">
+                     <font>
+                        <Font size="13.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onActionBtnAdd" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_add" textFill="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -77,6 +82,7 @@
             <TableColumn fx:id="colBarcode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_barcode" />
             <TableColumn fx:id="colClosestExpiry" minWidth="-Infinity" prefWidth="150.0" text="%lbl_closest_expiry" />
             <TableColumn fx:id="colStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_status" />
+            <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
             <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
         </columns>
          <VBox.margin>

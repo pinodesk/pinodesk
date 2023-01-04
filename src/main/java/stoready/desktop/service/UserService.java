@@ -28,6 +28,9 @@ import stoready.desktop.viewmodel.UserVM;
 public class UserService extends BaseService {
 
     @Autowired
+    private SessionService sessionService;
+
+    @Autowired
     private UserRepository userRepository;
 
     @ForActivity(Activity.SEARCH_USERS_BY_FILTER)
@@ -40,6 +43,10 @@ public class UserService extends BaseService {
     @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
     @Transactional
     public void removeUsers(List<Long> ids) {
+        UserVM currentUser = sessionService.getCurrentSession().getUser();
+        if (ids.contains(currentUser.getId())) {
+            throw new DomainException(DomainError.DELETE_CURRENT_USER_FORBIDDEN);
+        }
         userRepository.deleteUpdateByIdIn(ids);
         if (!userRepository.existsByUserGroupIdAndStatusAndDeletedAtIsNull(
                 CommonConstants.USER_GROUP_ID_ADMINISTRATOR,
