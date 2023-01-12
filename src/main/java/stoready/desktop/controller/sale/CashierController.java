@@ -4,12 +4,9 @@ import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.formatOr
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -28,13 +25,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.HPos;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.print.PageLayout;
-import javafx.print.Printer;
-import javafx.print.PrinterJob;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -42,13 +32,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
-import javafx.scene.transform.Scale;
 import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import stoready.desktop.constant.CommonConstants;
 import stoready.desktop.constant.CommonLabel;
 import stoready.desktop.constant.ConfigurationConstants;
@@ -57,7 +41,6 @@ import stoready.desktop.constant.Page;
 import stoready.desktop.constant.SellingMode;
 import stoready.desktop.constant.StyleConstants;
 import stoready.desktop.controller.CommonContentPaneController;
-import stoready.desktop.controller.sale.CashierPayController.PaymentData;
 import stoready.desktop.properties.ApplicationProperties;
 import stoready.desktop.service.ConfigurationService;
 import stoready.desktop.service.ProductService;
@@ -67,10 +50,12 @@ import stoready.desktop.viewmodel.ChooseResultVM;
 import stoready.desktop.viewmodel.CurrentSessionVM;
 import stoready.desktop.viewmodel.CustomerVM;
 import stoready.desktop.viewmodel.GroupedProductExpiryVM;
+import stoready.desktop.viewmodel.PackageProductVM;
+import stoready.desktop.viewmodel.PaymentDataVM;
 import stoready.desktop.viewmodel.ProductVM;
+import stoready.desktop.viewmodel.SaleDataVM;
 import stoready.desktop.viewmodel.SaleProductVM;
 
-@Slf4j
 public class CashierController extends CommonContentPaneController {
 
     @FXML
@@ -194,7 +179,7 @@ public class CashierController extends CommonContentPaneController {
         if (saleProducts.isEmpty()) {
             return;
         }
-        SaleData saleData = new SaleData();
+        SaleDataVM saleData = new SaleDataVM();
         saleData.setCustomer(Optional.ofNullable(selectedCustomer));
         saleData.setSaleProducts(saleProducts);
         saleData.setSellingMode(getSelectedSellingMode());
@@ -202,13 +187,11 @@ public class CashierController extends CommonContentPaneController {
         saleData.setTotalSale(totalSale);
         setPageData(saleData);
         StageUtils.modal(Page.TRANSACTION_SALE_CASHIER_PAY, false, we -> {
-            PaymentData paymentData = getPageData();
+            PaymentDataVM paymentData = getPageData();
             if (paymentData == null) {
                 return;
             }
-            printReceipt(saleData, paymentData, false);
-            Runnable printFn = () -> printReceipt(saleData, paymentData, true);
-            setPageData(List.of(saleData, paymentData, printFn));
+            setPageData(List.of(saleData, paymentData));
             StageUtils.modal(Page.TRANSACTION_SALE_CASHIER_SALE_COMPLETE, false);
             reset();
             toggleSellingMode.selectToggle(rbGeneral);
@@ -362,6 +345,7 @@ public class CashierController extends CommonContentPaneController {
             tblSaleProducts.getItems().remove(selectedIdx);
             if (result.isDelete()) {
                 // Stop when the product is marked to delete
+                calculateSaleSummary();
                 return;
             }
             int idx = getProductIndexInTable(sp.getProductId(), sp.getExpiredDate(), tblSaleProducts);
@@ -403,18 +387,56 @@ public class CashierController extends CommonContentPaneController {
         });
     }
 
+    private String validateCustomPackageProduct(ProductVM product, int saleQty) {
+        List<PackageProductVM> packageProducts = productService.getPackageProductsByProductId(product.getId());
+        for (PackageProductVM pp : packageProducts) {
+            int expectedQty = pp.getQuantityInPackage() * saleQty;
+            if (pp.getQuantity() < expectedQty) {
+                return String.format(
+                        t.translate(MessageCode.ERROR_INSUFFICIENT_PACKAGE_QUANTITY),
+                        pp.getName(),
+                        expectedQty,
+                        pp.getQuantity());
+            }
+            int idx = getProductIndexInTable(pp.getId(), null, tblSaleProducts);
+            if (idx != -1) {
+                SaleProductVM sp = tblSaleProducts.getItems().get(idx);
+                int availableQty = sp.getCurrentQuantity() - sp.getSaleQuantity();
+                if (availableQty < expectedQty) {
+                    return String.format(
+                            t.translate(MessageCode.ERROR_INSUFFICIENT_PACKAGE_QUANTITY),
+                            pp.getName(),
+                            expectedQty,
+                            availableQty);
+                }
+            }
+        }
+        return null;
+    }
+
     public void handleAddProduct(ProductVM product) {
         int saleQty = StringNumberUtils.toIntegerOrDefault(tfQuantity.getText(), 1);
         List<GroupedProductExpiryVM> productExpiries = new ArrayList<>();
         if (ProductUtils.isProductCategoryCustomPackage(product.getCategoryCode())) {
+            String errorMessage = validateCustomPackageProduct(product, saleQty);
+            if (errorMessage != null) {
+                displayError(errorMessage);
+                return;
+            }
             // Validate package must have available products
-            int packageQty = productService.getPackageQuantity(product.getId());
-            if (packageQty < saleQty) {
+            PackageProductVM lowestQtyProduct = productService.getLowestQuantityPackageProduct(product.getId());
+            int lowestQty = lowestQtyProduct.getQuantity();
+            int idx = getProductIndexInTable(lowestQtyProduct.getId(), null, tblSaleProducts);
+            if (idx != -1) {
+                SaleProductVM sp = tblSaleProducts.getItems().get(idx);
+                lowestQty = lowestQty - sp.getSaleQuantity();
+            }
+            if (lowestQty < saleQty) {
                 displayError(MessageCode.ERROR_INSUFFICIENT_PACKAGE_QUANTITY);
                 return;
             }
             if (isNullOrZero(product.getQuantity())) {
-                product.setQuantity(packageQty);
+                product.setQuantity(lowestQty);
             }
         } else {
             productExpiries = productService.getRemainingProductExpiry(product.getId());
@@ -507,189 +529,6 @@ public class CashierController extends CommonContentPaneController {
         setFocused(tfProduct);
     }
 
-    // https://examples.javacodegeeks.com/desktop-java/javafx/javafx-print-api/
-    // https://stackoverflow.com/questions/38470568/javafx-doesnt-detect-changes-of-available-printers
-    private void printReceipt(SaleData saleData, PaymentData paymentData, boolean isCopy) {
-        String printerName = configurationService.getConfiguration(ConfigurationConstants.PRINTER_NAME);
-        if (StringUtils.isBlank(printerName)) {
-            log.debug("Printer name is empty");
-            return;
-        }
-        Optional<Printer> printer = Printer.getAllPrinters().stream().filter(p -> p.getName().equals(printerName))
-                .findAny();
-        if (printer.isEmpty()) {
-            displayWarning(MessageCode.ERROR_PRINTER_NOT_FOUND);
-            return;
-        }
-        PrinterJob job = PrinterJob.createPrinterJob(printer.get());
-        if (job == null) {
-            displayWarning(MessageCode.ERROR_PRINTER_UNAVAILABLE);
-            return;
-        }
-        job.getJobSettings().setJobName("Stoready Print Job");
-        PageLayout pl = job.getJobSettings().getPageLayout();
-        PageLayout pageLayout = job.getPrinter().createPageLayout(pl.getPaper(), pl.getPageOrientation(), 0, 0, 0, 0);
-        double scale = 0.6;
-        Node node = prepareReceipt(saleData, paymentData, isCopy);
-        node.getTransforms().add(new Scale(scale, scale));
-        boolean printed = job.printPage(pageLayout, node);
-        if (printed) {
-            job.endJob();
-        }
-    }
-
-    public Node prepareReceipt(SaleData saleData, PaymentData paymentData, boolean isCopy) {
-        Locale locale = resources.getLocale();
-        Map<String, String> config = configurationService.getConfigurationMap();
-
-        String sep = "--------------------------------------------------";
-
-        Label lblReceiptStoreName = new Label(config.get(ConfigurationConstants.STORE_NAME));
-        lblReceiptStoreName.setWrapText(true);
-        lblReceiptStoreName.setTextAlignment(TextAlignment.CENTER);
-
-        Label lblStoreAddress = new Label(config.get(ConfigurationConstants.STORE_ADDRESS));
-        lblStoreAddress.setTextAlignment(TextAlignment.CENTER);
-        lblStoreAddress.setWrapText(true);
-
-        Label lblFooter = new Label(config.get(ConfigurationConstants.PRINTER_FOOTER));
-        lblFooter.setTextAlignment(TextAlignment.CENTER);
-
-        Label lblPowered = new Label(t.translate(CommonLabel.LBL_POWERED_BY_STOREADY));
-        lblPowered.setTextAlignment(TextAlignment.CENTER);
-
-        Label lblWww = new Label(t.translate(CommonLabel.LBL_WWW_STOREADY));
-        lblWww.setTextAlignment(TextAlignment.CENTER);
-
-        VBox vbox = new VBox();
-        vbox.setAlignment(Pos.CENTER);
-        vbox.setSpacing(5d);
-        vbox.setMaxWidth(240);
-        if (isCopy) {
-            Label lblCopyReceipt = new Label("--- " + t.translate(CommonLabel.LBL_COPY_RECEIPT) + " ---");
-            lblCopyReceipt.setTextAlignment(TextAlignment.CENTER);
-            vbox.getChildren().add(lblCopyReceipt);
-            vbox.getChildren().add(new Label());
-        }
-        vbox.getChildren().addAll(
-                lblReceiptStoreName,
-                lblStoreAddress,
-                new Label(sep),
-                topGridPane(paymentData, locale),
-                new Label(sep),
-                mainGridPane(saleData, locale),
-                new Label(sep),
-                bottomGridPane(saleData, paymentData, locale),
-                new Label(sep),
-                lblFooter,
-                new Label(),
-                lblPowered,
-                lblWww,
-                new Label(),
-                new Label());
-        return vbox;
-    }
-
-    private GridPane bottomGridPane(SaleData saleData, PaymentData paymentData, Locale locale) {
-        GridPane gp = new GridPane();
-        ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(40);
-        ColumnConstraints col2 = new ColumnConstraints();
-        col2.setPercentWidth(10);
-        ColumnConstraints col3 = new ColumnConstraints();
-        col3.setPercentWidth(50);
-        gp.getColumnConstraints().addAll(col1, col2, col3);
-        gp.setHgap(5);
-        Label lblReceiptTotalProduct = new Label(formatOrDefault(saleData.getTotalProduct(), locale, "0"));
-        GridPane.setHalignment(lblReceiptTotalProduct, HPos.RIGHT);
-        Label lblReceiptTotalSale = new Label(formatOrDefault(saleData.getTotalSale(), locale, "0"));
-        GridPane.setHalignment(lblReceiptTotalSale, HPos.RIGHT);
-        Label lblPaymentAmount = new Label(formatOrDefault(paymentData.getPaymentAmount(), locale, "0"));
-        GridPane.setHalignment(lblPaymentAmount, HPos.RIGHT);
-        Label lblChangeAmount = new Label(formatOrDefault(paymentData.getChangeAmount(), locale, "0"));
-        GridPane.setHalignment(lblChangeAmount, HPos.RIGHT);
-        VBox.setMargin(gp, new Insets(0, 15, 0, 0));
-        gp.add(new Label(t.translate(CommonLabel.LBL_TOTAL)), 0, 0);
-        gp.add(new Label(":"), 1, 0);
-        gp.add(lblReceiptTotalSale, 2, 0);
-        gp.add(new Label(t.translate(CommonLabel.LBL_PAY)), 0, 1);
-        gp.add(new Label(":"), 1, 1);
-        gp.add(lblPaymentAmount, 2, 1);
-        gp.add(new Label(t.translate(CommonLabel.LBL_CHANGE)), 0, 2);
-        gp.add(new Label(":"), 1, 2);
-        gp.add(lblChangeAmount, 2, 2);
-        return gp;
-    }
-
-    private GridPane mainGridPane(SaleData saleData, Locale locale) {
-        GridPane gp = new GridPane();
-        ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(10);
-        ColumnConstraints col2 = new ColumnConstraints();
-        col2.setPercentWidth(40);
-        ColumnConstraints col3 = new ColumnConstraints();
-        col3.setPercentWidth(50);
-        gp.getColumnConstraints().addAll(col1, col2, col3);
-        gp.setHgap(5);
-        VBox.setMargin(gp, new Insets(0, 15, 0, 0));
-        int row = 0;
-        List<SaleProductVM> saleProducts = new ArrayList<>();
-        saleData.getSaleProducts().forEach(sp -> {
-            boolean found = false;
-            for (SaleProductVM sp1 : saleProducts) {
-                if (sp1.getProductId().equals(sp.getProductId())) {
-                    sp1.setSaleQuantity(sp1.getSaleQuantity() + sp.getSaleQuantity());
-                    sp1.setSubtotal(sp1.getSubtotal().add(sp.getSubtotal()));
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                saleProducts.add(sp);
-            }
-        });
-        for (SaleProductVM sp : saleProducts) {
-            Label prod = new Label(sp.getProductName());
-            Label qty = new Label(sp.getSaleQuantity() + " x");
-            Label price = new Label(formatOrDefault(sp.getSellingPrice(), locale, "0"));
-            Label total = new Label(formatOrDefault(sp.getSubtotal(), locale, "0"));
-            GridPane.setColumnSpan(prod, 3);
-            GridPane.setHalignment(total, HPos.RIGHT);
-            gp.add(prod, 0, row);
-            row++;
-            gp.add(qty, 0, row);
-            gp.add(price, 1, row);
-            gp.add(total, 2, row);
-            row++;
-        }
-        return gp;
-    }
-
-    private GridPane topGridPane(PaymentData paymentData, Locale locale) {
-        GridPane gp = new GridPane();
-        ColumnConstraints col1 = new ColumnConstraints();
-        col1.setPercentWidth(40);
-        ColumnConstraints col2 = new ColumnConstraints();
-        col2.setPercentWidth(10);
-        ColumnConstraints col3 = new ColumnConstraints();
-        col3.setPercentWidth(50);
-        gp.getColumnConstraints().addAll(col1, col2, col3);
-        gp.setHgap(5);
-        String date = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm", locale).format(LocalDateTime.now());
-        Label lblDate = new Label(date);
-        GridPane.setHalignment(lblDate, HPos.RIGHT);
-        Label lblInvoiceNumber = new Label(paymentData.getInvoiceNumber());
-        GridPane.setHalignment(lblInvoiceNumber, HPos.RIGHT);
-        VBox.setMargin(gp, new Insets(0, 15, 0, 0));
-        gp.add(new Label(t.translate(CommonLabel.LBL_DATE)), 0, 0);
-        gp.add(new Label(":"), 1, 0);
-        gp.add(lblDate, 2, 0);
-        gp.add(new Label(t.translate(CommonLabel.LBL_INVOICE_NUMBER)), 0, 1);
-        gp.add(new Label(":"), 1, 1);
-        gp.add(lblInvoiceNumber, 2, 1);
-        return gp;
-    }
-
     private ConfirmProduct prepareConfirmProduct(
             ProductVM product,
             SaleProductVM saleProduct,
@@ -716,15 +555,6 @@ public class CashierController extends CommonContentPaneController {
         private List<SaleProductVM> currentSaleProducts;
         private boolean isEdit = false;
         private boolean isDelete = false;
-    }
-
-    @Data
-    class SaleData {
-        private List<SaleProductVM> saleProducts;
-        private Optional<CustomerVM> customer;
-        private SellingMode sellingMode;
-        private Integer totalProduct;
-        private BigDecimal totalSale;
     }
 
 }

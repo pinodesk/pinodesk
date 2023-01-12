@@ -34,15 +34,15 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
     @FXML
     protected void onActionBtnSave(ActionEvent event) {
         processDataSave();
-        if (hasDataSaved) {
+        if (hasDataSaved && lastDataSaved != null) {
             setPageData(lastDataSaved);
-            close();
         }
+        close();
     }
 
     @FXML
     protected void onActionBtnCancel(ActionEvent event) {
-        if (hasDataSaved) {
+        if (hasDataSaved && lastDataSaved != null) {
             setPageData(lastDataSaved);
         }
         close();
