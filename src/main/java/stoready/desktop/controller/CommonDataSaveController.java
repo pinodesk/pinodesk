@@ -88,7 +88,7 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
     protected abstract void initDataSaveControlValues();
 
     /**
-     * Handles the process of storing and returns true or non empty object for
+     * Handles the process of storing data and returns true or non empty object for
      * successful operation.
      * 
      * @return the saved object.
