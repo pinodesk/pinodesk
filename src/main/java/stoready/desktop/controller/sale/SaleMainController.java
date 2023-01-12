@@ -102,6 +102,9 @@ public class SaleMainController extends BaseController {
     void onActionBtnCashier(ActionEvent event) {
         btnCashier.setDisable(true);
         StageUtils.open(Page.TRANSACTION_SALE_CASHIER_MAIN, true, we -> {
+            // Remove the last data from the stack and ignore (if not used) to avoid such
+            // this issue https://gitlab.com/stoready/stoready-desktop/-/issues/52
+            getPageData();
             searchSales();
             btnCashier.setDisable(false);
         });
@@ -227,7 +230,12 @@ public class SaleMainController extends BaseController {
     private void handleActionTableSales() {
         if (TableViewUtils.hasItemSelected(tblSales)) {
             setPageData(TableViewUtils.getSelectedItem(tblSales));
-            StageUtils.modal(Page.TRANSACTION_SALE_EDIT, event -> searchSales());
+            StageUtils.modal(Page.TRANSACTION_SALE_EDIT, event -> {
+                // Remove the last data from the stack and ignore (if not used) to avoid such
+                // this issue https://gitlab.com/stoready/stoready-desktop/-/issues/52
+                getPageData();
+                searchSales();
+            });
         }
     }
 

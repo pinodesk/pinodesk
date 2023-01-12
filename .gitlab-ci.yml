@@ -45,7 +45,6 @@ build:
     - ./mvnw $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U
   allow_failure: false
   except:
-    - /^hotfix\/.*$/
     - master
     - tags
 
@@ -64,7 +63,6 @@ test:
       junit:
         - target/surefire-reports/TEST-*.xml
   except:
-    - /^hotfix\/.*$/
     - master
     - tags
 

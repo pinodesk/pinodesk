@@ -168,7 +168,12 @@ public class ReceivableMainController extends BaseController {
     private void handleActionTableReceivables() {
         if (TableViewUtils.hasItemSelected(tblReceivables)) {
             setPageData(TableViewUtils.getSelectedItem(tblReceivables));
-            StageUtils.modal(Page.TRANSACTION_RECEIVABLE_EDIT, false, event -> searchReceivables());
+            StageUtils.modal(Page.TRANSACTION_RECEIVABLE_EDIT, false, event -> {
+                // Remove the last data from the stack and ignore (if not used) to avoid such
+                // this issue https://gitlab.com/stoready/stoready-desktop/-/issues/52
+                getPageData();
+                searchReceivables();
+            });
         }
     }
 

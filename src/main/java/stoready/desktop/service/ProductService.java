@@ -550,14 +550,17 @@ public class ProductService extends BaseService {
     }
 
     /**
-     * Returns the package quantity based on the lowest quantity of all products in
-     * it.
+     * Returns the package product with the lowest quantity from all products in
+     * this package.
      */
     @ForActivity(Activity.GET_PACKAGE_QUANTITY)
-    public int getPackageQuantity(Long productId) {
+    public PackageProductVM getLowestQuantityPackageProduct(Long productId) {
         List<PackageProductVM> products = packageDetailRepository.findByProductId(productId);
-        return products.stream().map(pp -> pp.getQuantity() == null ? 0 : pp.getQuantity().intValue())
-                .reduce(Integer::min).orElse(0);
+        return products.stream().min((p1, p2) -> {
+            int q1 = p1.getQuantity() == null ? 0 : p1.getQuantity().intValue();
+            int q2 = p2.getQuantity() == null ? 0 : p2.getQuantity().intValue();
+            return Integer.compare(q1, q2);
+        }).orElseThrow();
     }
 
     private BigDecimal getGeneralSellingPriceOrDefault(BigDecimal generalSellingPrice, BigDecimal defaultPrice) {
