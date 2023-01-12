@@ -25,7 +25,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import lombok.Data;
 import stoready.desktop.constant.CommonConstants;
 import stoready.desktop.constant.CommonLabel;
 import stoready.desktop.constant.MessageCode;
@@ -33,11 +32,12 @@ import stoready.desktop.constant.PaymentStatus;
 import stoready.desktop.constant.SellingMode;
 import stoready.desktop.constant.StringConstants;
 import stoready.desktop.controller.CommonDataSaveController;
-import stoready.desktop.controller.sale.CashierController.SaleData;
 import stoready.desktop.service.SaleService;
 import stoready.desktop.util.SpringUtils;
 import stoready.desktop.viewmodel.CustomerVM;
+import stoready.desktop.viewmodel.PaymentDataVM;
 import stoready.desktop.viewmodel.SaleAddVM;
+import stoready.desktop.viewmodel.SaleDataVM;
 
 public class CashierPayController extends CommonDataSaveController {
 
@@ -70,7 +70,7 @@ public class CashierPayController extends CommonDataSaveController {
 
     private BigDecimal changeAmount = BigDecimal.ZERO;
 
-    private SaleData saleData;
+    private SaleDataVM saleData;
 
     private SaleService saleService;
 
@@ -131,7 +131,7 @@ public class CashierPayController extends CommonDataSaveController {
         saleAdd.setTotalSale(saleData.getTotalSale());
         saleAdd.setSaleProducts(saleData.getSaleProducts());
         saleService.createSaleCashier(saleAdd);
-        PaymentData paymentData = new PaymentData();
+        PaymentDataVM paymentData = new PaymentDataVM();
         paymentData.setChangeAmount(changeAmount);
         paymentData.setInvoiceNumber(invoiceNumber);
         paymentData.setPaymentAmount(toBigDecimalOrNull(tfPaymentAmount.getText()));
@@ -163,15 +163,6 @@ public class CashierPayController extends CommonDataSaveController {
     @Override
     protected void initServices(ApplicationContext ctx) {
         saleService = SpringUtils.getBean(SaleService.class);
-    }
-
-    @Data
-    class PaymentData {
-        private BigDecimal paymentAmount;
-        private PaymentStatus paymentStatus;
-        private LocalDate paymentDueDate;
-        private BigDecimal changeAmount;
-        private String invoiceNumber;
     }
 
 }

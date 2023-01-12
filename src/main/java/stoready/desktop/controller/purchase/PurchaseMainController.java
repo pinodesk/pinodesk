@@ -229,6 +229,9 @@ public class PurchaseMainController extends BaseController {
         if (TableViewUtils.hasItemSelected(tblPurchase)) {
             setPageData(TableViewUtils.getSelectedItem(tblPurchase));
             StageUtils.modal(Page.TRANSACTION_PURCHASE_EDIT, event -> {
+                // Remove the last data from the stack and ignore (if not used) to avoid such
+                // this issue https://gitlab.com/stoready/stoready-desktop/-/issues/52
+                getPageData();
                 searchPurchases();
             });
         }

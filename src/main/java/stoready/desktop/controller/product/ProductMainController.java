@@ -138,12 +138,20 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnImport(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_PRODUCT_IMPORT, false, we -> searchProducts());
+        StageUtils.modal(Page.MASTER_PRODUCT_IMPORT, false, we -> {
+            // Remove the last data from the stack and ignore (if not used) to avoid such
+            // this issue https://gitlab.com/stoready/stoready-desktop/-/issues/52
+            getPageData();
+            searchProducts();
+        });
     }
 
     @FXML
     void onActionBtnPackage(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_PRODUCT_ADD_PACKAGE, false, we -> searchProducts());
+        StageUtils.modal(Page.MASTER_PRODUCT_ADD_PACKAGE, false, we -> {
+            getPageData();
+            searchProducts();
+        });
     }
 
     @Override
@@ -231,9 +239,17 @@ public class ProductMainController extends BaseController {
             ProductVM product = TableViewUtils.getSelectedItem(tblProduct);
             setPageData(product);
             if (CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE.equals(product.getCategoryCode())) {
-                StageUtils.modal(Page.MASTER_PRODUCT_EDIT_PACKAGE, event -> searchProducts());
+                StageUtils.modal(Page.MASTER_PRODUCT_EDIT_PACKAGE, event -> {
+                    // Remove the last data from the stack and ignore (if not used) to avoid such
+                    // this issue https://gitlab.com/stoready/stoready-desktop/-/issues/52
+                    getPageData();
+                    searchProducts();
+                });
             } else {
-                StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> searchProducts());
+                StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> {
+                    getPageData();
+                    searchProducts();
+                });
             }
         }
     }

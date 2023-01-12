@@ -8,23 +8,26 @@ import java.util.Locale;
 
 import org.springframework.context.ApplicationContext;
 
-import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SplitMenuButton;
 import stoready.desktop.constant.CommonConstants;
 import stoready.desktop.constant.CommonLabel;
 import stoready.desktop.constant.PaymentStatus;
 import stoready.desktop.constant.SellingMode;
 import stoready.desktop.constant.StringConstants;
-import stoready.desktop.controller.CommonDataSaveController;
-import stoready.desktop.controller.sale.CashierController.SaleData;
-import stoready.desktop.controller.sale.CashierPayController.PaymentData;
+import stoready.desktop.controller.CommonContentPaneController;
+import stoready.desktop.service.ConfigurationService;
+import stoready.desktop.util.PrintUtils;
+import stoready.desktop.util.SpringUtils;
 import stoready.desktop.viewmodel.CustomerVM;
+import stoready.desktop.viewmodel.PaymentDataVM;
+import stoready.desktop.viewmodel.SaleDataVM;
 
-public class CashierSaleCompleteController extends CommonDataSaveController {
+public class CashierSaleCompleteController extends CommonContentPaneController {
 
     @FXML
     private Label lblInvoiceNumber;
@@ -54,27 +57,47 @@ public class CashierSaleCompleteController extends CommonDataSaveController {
     private Label lblChange;
 
     @FXML
-    private Button btnPrintCopy;
-
-    private Runnable printFn;
+    private Button btnClose;
 
     @FXML
-    void onActionBtnPrintCopy(ActionEvent event) {
-        printFn.run();
+    private SplitMenuButton btnPrint;
+
+    private MenuItem btnPrintCopy;
+
+    private ConfigurationService configurationService;
+
+    private PrintUtils printer;
+
+    SaleDataVM saleData;
+
+    PaymentDataVM paymentData;
+
+    @FXML
+    void onActionBtnClose(ActionEvent event) {
+        close();
+    }
+
+    @FXML
+    void onActionBtnPrint(ActionEvent event) {
+        printer.printReceipt(saleData, paymentData, false);
     }
 
     @Override
-    protected void initDataSaveControlActions() {
-        setFocused(btnSave);
+    protected void initContentPaneControlActions() {
+        btnPrintCopy = new MenuItem(t.translate(CommonLabel.BTN_PRINT_COPY));
+        btnPrintCopy.setOnAction(event -> {
+            printer.printReceipt(saleData, paymentData, true);
+        });
+        btnPrint.getItems().addAll(btnPrintCopy);
+        setFocused(contentPane);
     }
 
     @Override
-    protected void initDataSaveControlValues() {
+    protected void initControlValues() {
         Locale locale = resources.getLocale();
         List<Object> list = getPageData();
-        SaleData saleData = (SaleData) list.get(0);
-        PaymentData paymentData = (PaymentData) list.get(1);
-        printFn = (Runnable) list.get(2);
+        saleData = (SaleDataVM) list.get(0);
+        paymentData = (PaymentDataVM) list.get(1);
         lblInvoiceNumber.setText(paymentData.getInvoiceNumber());
         lblSellingMode.setText(
                 SellingMode.GENERAL.equals(saleData.getSellingMode()) ?
@@ -96,18 +119,9 @@ public class CashierSaleCompleteController extends CommonDataSaveController {
     }
 
     @Override
-    protected Object save() {
-        return null;
-    }
-
-    @Override
-    protected void validate(ControlValidator validator) {
-        // Nothing to do
-    }
-
-    @Override
     protected void initServices(ApplicationContext ctx) {
-        // Nothing to do
+        configurationService = SpringUtils.getBean(ConfigurationService.class);
+        printer = new PrintUtils(configurationService, t, resources);
     }
 
 }

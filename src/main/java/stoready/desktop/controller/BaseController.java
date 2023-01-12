@@ -53,8 +53,8 @@ import stoready.desktop.constant.Page;
 import stoready.desktop.constant.SimpleStatus;
 import stoready.desktop.constant.StringConstants;
 import stoready.desktop.exception.DomainException;
+import stoready.desktop.exception.PrinterException;
 import stoready.desktop.service.SessionService;
-import stoready.desktop.util.ResourceBundleUtils;
 import stoready.desktop.util.SpringUtils;
 
 @Slf4j
@@ -135,6 +135,10 @@ public abstract class BaseController {
             handleDomainException(domainException);
             return;
         }
+        if (rootCause instanceof PrinterException printerException) {
+            handlePrinterException(printerException);
+            return;
+        }
         if (log.isErrorEnabled()) {
             log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
         }
@@ -142,11 +146,13 @@ public abstract class BaseController {
     }
 
     protected void handleDomainException(DomainException e) {
-        ResourceBundle rb = ResourceBundleUtils.getDefaultResourceBundle();
-        Translator translator = new Translator(rb);
         DomainError err = e.getError();
-        String message = String.format(translator.translate(err.messageCode()), e.getArguments());
+        String message = String.format(t.translate(err.messageCode()), e.getArguments());
         displayError(String.format("%s. (%s)", message, err.code()));
+    }
+
+    protected void handlePrinterException(PrinterException e) {
+        displayError(t.translate(e.getMessageCode()));
     }
 
     private IMessage getAlertHeaderMessageCode(AlertType type) {

@@ -14,6 +14,7 @@ public enum CommonLabel implements IMessage {
     BTN_YES,
     BTN_NO,
     BTN_SAVE_AND_COPY,
+    BTN_PRINT_COPY,
     LBL_PAID,
     LBL_UNPAID,
     LBL_SYSTEM_ERROR,

@@ -179,7 +179,7 @@
                                                       </VBox>
                                                       <VBox spacing="5.0" HBox.hgrow="NEVER">
                                                          <children>
-                                                            <Label text="%lbl_quantity">
+                                                            <Label text="%lbl_quantity_in_package">
                                                                <font>
                                                                   <Font size="13.0" />
                                                                </font>

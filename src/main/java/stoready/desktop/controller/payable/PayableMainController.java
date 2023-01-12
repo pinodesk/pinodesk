@@ -168,7 +168,12 @@ public class PayableMainController extends BaseController {
     private void handleActionTablePayables() {
         if (TableViewUtils.hasItemSelected(tblPayables)) {
             setPageData(TableViewUtils.getSelectedItem(tblPayables));
-            StageUtils.modal(Page.TRANSACTION_PAYABLE_EDIT, false, event -> searchPayables());
+            StageUtils.modal(Page.TRANSACTION_PAYABLE_EDIT, false, event -> {
+                // Remove the last data from the stack and ignore (if not used) to avoid such
+                // this issue https://gitlab.com/stoready/stoready-desktop/-/issues/52
+                getPageData();
+                searchPayables();
+            });
         }
     }
 

@@ -109,7 +109,7 @@ public class SaleService extends BaseService {
                     saleId,
                     pp.getId(),
                     pp.getName(),
-                    pp.getQuantityInPackage(),
+                    pp.getQuantityInPackage() * saleProduct.getSaleQuantity(),
                     invoiceNumber,
                     saleProduct.getProductName());
             product.setQuantity(finalQuantity);
