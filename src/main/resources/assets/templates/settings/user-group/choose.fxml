@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefHeight="400.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.usergroup.UserGroupChooseController">
+<VBox fx:id="contentPane" prefHeight="400.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.usergroup.UserGroupChooseController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>

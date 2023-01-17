@@ -1,0 +1,62 @@
+package pospino.desktop.constant;
+
+import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
+
+public enum CommonLabel implements IMessage {
+    LBL_LOADING_DATA,
+    LBL_NO_DATA,
+    LBL_INFORMATION,
+    LBL_ERROR,
+    LBL_CONFIRMATION,
+    LBL_ACTIVE,
+    LBL_INACTIVE,
+    BTN_OK,
+    BTN_YES,
+    BTN_NO,
+    BTN_SAVE_AND_COPY,
+    BTN_PRINT_COPY,
+    LBL_PAID,
+    LBL_UNPAID,
+    LBL_SYSTEM_ERROR,
+    LBL_DETAILS,
+    LBL_GENERAL,
+    LBL_PRESCRIPTION,
+    LBL_PRODUCT,
+    LBL_CATEGORY,
+    LBL_UNIT,
+    LBL_NAME,
+    LBL_CODE,
+    LBL_BARCODE,
+    LBL_DESCRIPTION,
+    LBL_UNIT_ID,
+    LBL_PRODUCT_CATEGORY_CODE,
+    LBL_DRUG_CATEGORY_ID,
+    LBL_INDICATION,
+    LBL_CONTRAINDICATION,
+    LBL_GENERAL_SELLING_PRICE,
+    LBL_PRESCRIPTION_SELLING_PRICE,
+    LBL_QUANTITY,
+    LBL_EXPIRED_DATE,
+    LBL_ID,
+    LBL_LABEL,
+    LBL_PRODUCT_CATEGORY,
+    LBL_DRUG_CATEGORY,
+    LBL_SAMPLE_PRODUCT,
+    LBL_XLSX_FILES,
+    LBL_DRUG_CLASSIFICATION,
+    LBL_DRUG_CLASSIFICATION_CODE,
+    LBL_DATE,
+    LBL_INVOICE_NUMBER,
+    LBL_TOTAL,
+    LBL_PAY,
+    LBL_CHANGE,
+    LBL_POWERED_BY_STOREADY,
+    LBL_WWW_STOREADY,
+    LBL_COPY_RECEIPT;
+
+    @Override
+    public String toString() {
+        return this.name().toLowerCase();
+    }
+
+}
