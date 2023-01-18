@@ -3,6 +3,8 @@ package pospino.desktop.controller.sale;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 import org.springframework.context.ApplicationContext;
@@ -14,6 +16,7 @@ import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
@@ -34,6 +37,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.PaymentStatus;
 import pospino.desktop.constant.SellingMode;
+import pospino.desktop.constant.StringConstants;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.SaleService;
@@ -42,9 +46,6 @@ import pospino.desktop.viewmodel.SaleFilterVM;
 import pospino.desktop.viewmodel.SaleVM;
 
 public class SaleMainController extends BaseController {
-
-    @FXML
-    private Label lblRows;
 
     @FXML
     private Button btnFilter;
@@ -93,6 +94,15 @@ public class SaleMainController extends BaseController {
 
     @FXML
     private Button btnCashier;
+
+    @FXML
+    private Label lblPeriod;
+
+    @FXML
+    private Label lblRevenue;
+
+    @FXML
+    private Label lblTotalSales;
 
     private SaleService saleService;
 
@@ -204,7 +214,10 @@ public class SaleMainController extends BaseController {
 
     @Override
     protected void initControlValues() {
-        saleFilter = new SaleFilterVM();
+        saleFilter = getPageData();
+        if (saleFilter == null) {
+            saleFilter = new SaleFilterVM();
+        }
         searchSales();
     }
 
@@ -219,11 +232,10 @@ public class SaleMainController extends BaseController {
         AsyncUtils.supply(() -> saleService.searchSales(saleFilter)).thenAccept(sales -> Platform.runLater(() -> {
             if (sales.isEmpty()) {
                 tblSales.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                lblRows.setText("0");
             }
             tblSales.setItems(FXCollections.observableList(sales));
             TableViewUtils.sortDescending(tblSales, colUpdatedAt);
-            lblRows.setText(sales.size() + "");
+            calculateSummary(sales);
         }));
     }
 
@@ -237,6 +249,43 @@ public class SaleMainController extends BaseController {
                 searchSales();
             });
         }
+    }
+
+    private void calculateSummary(List<SaleVM> sales) {
+        Locale locale = resources.getLocale();
+        LocalDate createdAtMin = saleFilter.getCreatedDateMin();
+        LocalDate createdAtMax = saleFilter.getCreatedDateMax();
+        int totalSales = 0;
+        BigDecimal revenue = BigDecimal.ZERO;
+        if (sales != null) {
+            totalSales = sales.size();
+            revenue = sales.stream().map(SaleVM::getTotalPayment).reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+        lblRevenue.setText(StringNumberUtils.format(revenue, locale));
+        lblTotalSales.setText(StringNumberUtils.format(totalSales, locale));
+        StringBuilder period = new StringBuilder();
+        if (createdAtMin == null && createdAtMax == null) {
+            period.append(StringConstants.MINUS);
+        } else if (createdAtMin == null) {
+            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(createdAtMax);
+            period.append(format);
+            period.append(StringConstants.SPACE);
+            period.append(t.translate(CommonLabel.LBL_AND_BEFORE));
+        } else if (createdAtMax == null) {
+            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(createdAtMin);
+            period.append(format);
+            period.append(StringConstants.SPACE);
+            period.append(t.translate(CommonLabel.LBL_AND_AFTER));
+        } else {
+            String formatMin = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(createdAtMin);
+            String formatMax = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(createdAtMax);
+            period.append(formatMin);
+            period.append(StringConstants.SPACE);
+            period.append(t.translate(CommonLabel.LBL_UNTIL));
+            period.append(StringConstants.SPACE);
+            period.append(formatMax);
+        }
+        lblPeriod.setText(period.toString());
     }
 
 }

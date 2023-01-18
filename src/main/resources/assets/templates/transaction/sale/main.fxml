@@ -6,11 +6,14 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.sale.SaleMainController">
+<VBox prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.sale.SaleMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -29,15 +32,6 @@
             <Insets left="10.0" right="10.0" top="10.0" />
          </VBox.margin>
          <children>
-            <HBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-border-color: #009c7c;" HBox.hgrow="NEVER">
-               <children>
-                  <Label fx:id="lblRows" text="0" textFill="#009c7c" />
-                  <Label text="%lbl_sales" textFill="#009c7c" />
-               </children>
-               <padding>
-                  <Insets left="10.0" right="10.0" />
-               </padding>
-            </HBox>
             <HBox alignment="TOP_RIGHT" spacing="1.0" HBox.hgrow="ALWAYS">
                <children>
                   <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" prefHeight="30.0" prefWidth="73.0" styleClass="btn-secondary" text="%btn_filter" textFill="WHITE">
@@ -64,7 +58,7 @@
             </HBox>
          </children>
       </HBox>
-      <TableView fx:id="tblSales" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
+      <TableView fx:id="tblSales" prefHeight="300.0" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
         <columns>
           <TableColumn fx:id="colInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
             <TableColumn fx:id="colInvoiceDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
@@ -82,5 +76,68 @@
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </VBox.margin>
       </TableView>
+      <GridPane>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" />
+         </VBox.margin>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <VBox minWidth="-Infinity" prefWidth="300.0" spacing="5.0" style="-fx-border-color: #bebebe #bebebe;" GridPane.columnIndex="1">
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+               <children>
+                  <AnchorPane>
+                     <children>
+                        <Label text="%lbl_period" AnchorPane.leftAnchor="0.0">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblPeriod" alignment="CENTER_RIGHT" layoutX="114.0" text="-" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane>
+                     <children>
+                        <Label text="%lbl_total_sales" AnchorPane.leftAnchor="0.0">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblTotalSales" alignment="CENTER_RIGHT" layoutX="114.0" text="-" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane>
+                     <children>
+                        <Label text="%lbl_revenue" AnchorPane.leftAnchor="0.0">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="lblRevenue" alignment="CENTER_RIGHT" layoutX="114.0" text="-" textAlignment="RIGHT" AnchorPane.rightAnchor="0.0">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+      </GridPane>
    </children>
 </VBox>

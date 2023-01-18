@@ -32,6 +32,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.input.KeyCode;
 import lombok.Data;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
@@ -123,6 +124,9 @@ public class CashierController extends CommonContentPaneController {
 
     @FXML
     private Button btnPay;
+
+    @FXML
+    private Button btnCancel;
 
     @FXML
     private RadioButton rbGeneral;
@@ -255,6 +259,22 @@ public class CashierController extends CommonContentPaneController {
             }
         });
         setFocused(tfProduct);
+        addContentPaneOnKeyPressedHandler(event -> {
+            if (KeyCode.ENTER.equals(event.getCode())) {
+                if (btnCustomer.isFocused()) {
+                    btnCustomer.fire();
+                    return;
+                }
+                if (btnPay.isFocused()) {
+                    btnPay.fire();
+                    return;
+                }
+                if (btnCancel.isFocused()) {
+                    btnCancel.fire();
+                    return;
+                }
+            }
+        });
     }
 
     @Override

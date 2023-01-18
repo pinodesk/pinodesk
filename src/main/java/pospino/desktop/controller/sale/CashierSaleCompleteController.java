@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
+import javafx.scene.input.KeyCode;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.PaymentStatus;
@@ -90,6 +91,18 @@ public class CashierSaleCompleteController extends CommonContentPaneController {
         });
         btnPrint.getItems().addAll(btnPrintCopy);
         setFocused(contentPane);
+        addContentPaneOnKeyPressedHandler(event -> {
+            if (KeyCode.ENTER.equals(event.getCode())) {
+                if (btnClose.isFocused()) {
+                    btnClose.fire();
+                    return;
+                }
+                if (btnPrint.isFocused()) {
+                    btnPrint.fire();
+                    return;
+                }
+            }
+        });
     }
 
     @Override

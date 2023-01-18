@@ -52,7 +52,10 @@ public enum CommonLabel implements IMessage {
     LBL_CHANGE,
     LBL_POWERED_BY_STOREADY,
     LBL_WWW_STOREADY,
-    LBL_COPY_RECEIPT;
+    LBL_COPY_RECEIPT,
+    LBL_UNTIL,
+    LBL_AND_AFTER,
+    LBL_AND_BEFORE;
 
     @Override
     public String toString() {

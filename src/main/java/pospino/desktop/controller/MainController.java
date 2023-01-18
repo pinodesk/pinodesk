@@ -1,6 +1,7 @@
 package pospino.desktop.controller;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -30,6 +31,7 @@ import pospino.desktop.properties.ApplicationProperties;
 import pospino.desktop.service.ConfigurationService;
 import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.CurrentSessionVM;
+import pospino.desktop.viewmodel.SaleFilterVM;
 import pospino.desktop.viewmodel.UserGroupMenuVM;
 
 public class MainController extends BaseController {
@@ -196,6 +198,11 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnMenuSales(ActionEvent event) {
+        LocalDate today = LocalDate.now();
+        SaleFilterVM saleFilter = new SaleFilterVM();
+        saleFilter.setCreatedDateMax(today);
+        saleFilter.setCreatedDateMin(today.withDayOfMonth(1));
+        setPageData(saleFilter);
         changeContent(Page.TRANSACTION_SALE_MAIN, (Button) event.getSource());
     }
 
