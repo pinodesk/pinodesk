@@ -35,7 +35,7 @@ public class SaleRepositoryImpl extends AbstractRepository<Sale> implements Sale
             where.andGreaterThanOrEqual("a.created_at", filter.getCreatedDateMin());
         }
         if (filter.getCreatedDateMax() != null) {
-            where.andLowerThanOrEqual("a.created_at", filter.getCreatedDateMax());
+            where.andLowerThanOrEqual("a.created_at", filter.getCreatedDateMax().atTime(23, 59, 59));
         }
         if (filter.getDueDateMin() != null) {
             where.andGreaterThanOrEqual("a.payment_due_date", filter.getDueDateMin());
