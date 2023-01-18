@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contentPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.sale.CashierController">
+<AnchorPane fx:id="contentPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.sale.CashierController">
    <children>
       <HBox layoutX="892.4000244140625" layoutY="83.0" spacing="10.0" AnchorPane.rightAnchor="10.0">
          <children>
@@ -68,9 +68,9 @@
                   </Label>
                </children>
             </HBox>
-            <ImageView fitHeight="70.0" fitWidth="180.0" layoutX="704.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
+            <ImageView fitHeight="42.0" fitWidth="58.0" layoutX="704.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../../../../images/stoready-icon-128-nopadding.png" />
+                  <Image url="@../../../../images/pospino-icon-128.png" />
                </image>
             </ImageView>
          </children>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOG_DIR" value="${dollar}{user.home}/.stoready/logs" />
+    <property name="LOG_DIR" value="${dollar}{user.home}/.pospino/logs" />
 
     <appender name="STDOUT_COLOR" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

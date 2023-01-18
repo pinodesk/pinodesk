@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="640.0" minWidth="1024.0" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.MainController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="640.0" minWidth="1024.0" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.MainController">
    <children>
       <AnchorPane layoutY="61.0" prefHeight="70.0" prefWidth="250.0" style="-fx-background-color: black;" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -48,9 +48,9 @@
                   <Button fx:id="btnLogout" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnLogout" prefWidth="73.0" styleClass="btn-danger" text="%btn_logout" />
                </children>
             </HBox>
-            <ImageView fitHeight="70.0" fitWidth="180.0" layoutX="704.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="0.0">
+            <ImageView fitHeight="42.0" fitWidth="58.0" layoutX="704.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="14.21875">
                <image>
-                  <Image url="@../images/stoready-icon-128-nopadding.png" />
+                  <Image url="@../images/pospino-icon-128.png" />
                </image>
             </ImageView>
          </children>
