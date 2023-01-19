@@ -29,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
@@ -96,6 +97,9 @@ public class SaleMainController extends BaseController {
     private Button btnCashier;
 
     @FXML
+    private Label lblRows;
+
+    @FXML
     private Label lblPeriod;
 
     @FXML
@@ -104,9 +108,20 @@ public class SaleMainController extends BaseController {
     @FXML
     private Label lblTotalSales;
 
+    @FXML
+    private GridPane gridSummary;
+
+    @FXML
+    private Button btnSummary;
+
     private SaleService saleService;
 
     private SaleFilterVM saleFilter;
+
+    @FXML
+    void onActionBtnSummary(ActionEvent event) {
+        setVisibleInLayout(!gridSummary.isVisible(), gridSummary);
+    }
 
     @FXML
     void onActionBtnCashier(ActionEvent event) {
@@ -232,6 +247,7 @@ public class SaleMainController extends BaseController {
         AsyncUtils.supply(() -> saleService.searchSales(saleFilter)).thenAccept(sales -> Platform.runLater(() -> {
             if (sales.isEmpty()) {
                 tblSales.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                lblRows.setText("0");
             }
             tblSales.setItems(FXCollections.observableList(sales));
             TableViewUtils.sortDescending(tblSales, colUpdatedAt);
@@ -286,6 +302,7 @@ public class SaleMainController extends BaseController {
             period.append(formatMax);
         }
         lblPeriod.setText(period.toString());
+        lblRows.setText(StringNumberUtils.format(totalSales, locale));
     }
 
 }

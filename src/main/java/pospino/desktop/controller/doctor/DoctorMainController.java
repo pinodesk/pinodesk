@@ -9,6 +9,7 @@ import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
@@ -178,7 +179,7 @@ public class DoctorMainController extends BaseController {
                     }
                     tblDoctors.setItems(FXCollections.observableList(doctors));
                     TableViewUtils.sortDescending(tblDoctors, colUpdatedAt);
-                    lblRows.setText(doctors.size() + "");
+                    lblRows.setText(StringNumberUtils.format(doctors.size(), resources.getLocale()));
                 }));
     }
 

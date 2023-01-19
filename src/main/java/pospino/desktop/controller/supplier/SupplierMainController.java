@@ -2,14 +2,15 @@ package pospino.desktop.controller.supplier;
 
 import java.time.LocalDateTime;
 
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
-
-import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -170,7 +171,7 @@ public class SupplierMainController extends BaseController {
                     }
                     tableSupplier.setItems(FXCollections.observableList(suppliers));
                     TableViewUtils.sortDescending(tableSupplier, colUpdatedAt);
-                    lblRows.setText(suppliers.size() + "");
+                    lblRows.setText(StringNumberUtils.format(suppliers.size(), resources.getLocale()));
                 }));
     }
 

@@ -27,29 +27,43 @@
             </Label>
          </children>
       </AnchorPane>
-      <HBox>
+      <HBox spacing="1.0">
          <VBox.margin>
             <Insets left="10.0" right="10.0" top="10.0" />
          </VBox.margin>
          <children>
+            <HBox alignment="CENTER_LEFT" spacing="5.0" style="-fx-border-color: #009c7c;">
+               <children>
+                  <Label fx:id="lblRows" text="0" textFill="#009c7c" />
+                  <Label text="%lbl_sales" textFill="#009c7c" />
+               </children>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
+            </HBox>
+            <Button fx:id="btnSummary" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSummary" prefHeight="30.0" styleClass="btn-primary" text="%btn_summary" textFill="WHITE">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Button>
             <HBox alignment="TOP_RIGHT" spacing="1.0" HBox.hgrow="ALWAYS">
                <children>
-                  <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" prefHeight="30.0" prefWidth="73.0" styleClass="btn-secondary" text="%btn_filter" textFill="WHITE">
+                  <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" prefHeight="30.0" styleClass="btn-secondary" text="%btn_filter" textFill="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnRemove" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemove" prefHeight="30.0" prefWidth="73.0" styleClass="btn-danger" text="%btn_remove" textFill="WHITE">
+                  <Button fx:id="btnRemove" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemove" prefHeight="30.0" styleClass="btn-danger" text="%btn_remove" textFill="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnAdd" mnemonicParsing="false" onAction="#onActionBtnAdd" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_add" textFill="WHITE">
+                  <Button fx:id="btnAdd" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnAdd" prefHeight="30.0" styleClass="btn-primary" text="%btn_add" textFill="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>
                   </Button>
-                  <Button fx:id="btnCashier" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCashier" prefHeight="30.0" prefWidth="73.0" styleClass="btn-primary" text="%btn_cashier" textFill="WHITE">
+                  <Button fx:id="btnCashier" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCashier" prefHeight="30.0" styleClass="btn-primary" text="%btn_cashier" textFill="WHITE">
                      <font>
                         <Font size="13.0" />
                      </font>
@@ -58,37 +72,19 @@
             </HBox>
          </children>
       </HBox>
-      <TableView fx:id="tblSales" prefHeight="300.0" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
-        <columns>
-          <TableColumn fx:id="colInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
-            <TableColumn fx:id="colInvoiceDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
-          <TableColumn fx:id="colSellingMode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_selling_mode" />
-            <TableColumn fx:id="colCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />
-            <TableColumn fx:id="colDoctorName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_doctor_name" />
-            <TableColumn fx:id="colTotalProduct" minWidth="-Infinity" prefWidth="150.0" text="%lbl_total_product" />
-            <TableColumn fx:id="colTotalPayment" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_payment" />
-            <TableColumn fx:id="colPaymentStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_status" />
-            <TableColumn fx:id="colDueDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_due_date" />
-            <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
-            <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
-        </columns>
+      <GridPane fx:id="gridSummary" style="-fx-border-color: #bebebe #bebebe;">
          <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-         </VBox.margin>
-      </TableView>
-      <GridPane>
-         <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" />
+            <Insets left="10.0" right="10.0" top="10.0" />
          </VBox.margin>
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="40.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <VBox minWidth="-Infinity" prefWidth="300.0" spacing="5.0" style="-fx-border-color: #bebebe #bebebe;" GridPane.columnIndex="1">
+            <VBox spacing="5.0">
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
@@ -139,5 +135,23 @@
             </VBox>
          </children>
       </GridPane>
+      <TableView fx:id="tblSales" prefHeight="300.0" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="colInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
+            <TableColumn fx:id="colInvoiceDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
+          <TableColumn fx:id="colSellingMode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_selling_mode" />
+            <TableColumn fx:id="colCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />
+            <TableColumn fx:id="colDoctorName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_doctor_name" />
+            <TableColumn fx:id="colTotalProduct" minWidth="-Infinity" prefWidth="150.0" text="%lbl_total_product" />
+            <TableColumn fx:id="colTotalPayment" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_payment" />
+            <TableColumn fx:id="colPaymentStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_status" />
+            <TableColumn fx:id="colDueDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_due_date" />
+            <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
+            <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
+        </columns>
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+      </TableView>
    </children>
 </VBox>

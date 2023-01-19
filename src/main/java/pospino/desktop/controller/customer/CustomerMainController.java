@@ -3,14 +3,15 @@ package pospino.desktop.controller.customer;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationContext;
+
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
-
-import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -167,7 +168,7 @@ public class CustomerMainController extends BaseController {
                     }
                     tableCustomer.setItems(FXCollections.observableList(customers));
                     TableViewUtils.sortDescending(tableCustomer, colUpdatedAt);
-                    lblRows.setText(customers.size() + "");
+                    lblRows.setText(StringNumberUtils.format(customers.size(), resources.getLocale()));
                 }));
     }
 

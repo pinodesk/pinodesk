@@ -9,6 +9,7 @@ import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
@@ -163,7 +164,7 @@ public class UserMainController extends BaseController {
                     }
                     tblUsers.setItems(FXCollections.observableList(users));
                     TableViewUtils.sortDescending(tblUsers, colUpdatedAt);
-                    lblRows.setText(users.size() + "");
+                    lblRows.setText(StringNumberUtils.format(users.size(), resources.getLocale()));
                 }));
     }
 

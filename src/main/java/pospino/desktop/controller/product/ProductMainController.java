@@ -14,6 +14,7 @@ import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
@@ -267,7 +268,7 @@ public class ProductMainController extends BaseController {
                     }
                     tblProduct.setItems(FXCollections.observableList(products));
                     TableViewUtils.sortDescending(tblProduct, colUpdatedAt);
-                    lblRows.setText(products.size() + "");
+                    lblRows.setText(StringNumberUtils.format(products.size(), resources.getLocale()));
                     setVisibleInLayout(false, btnImport);
                 }));
     }

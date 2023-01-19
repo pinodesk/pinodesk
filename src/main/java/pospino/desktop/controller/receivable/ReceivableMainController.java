@@ -13,6 +13,7 @@ import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
@@ -154,14 +155,14 @@ public class ReceivableMainController extends BaseController {
         tblReceivables.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblReceivables.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> receivableService.searchReceivables(receivableFilter))
-                .thenAccept(payables -> Platform.runLater(() -> {
-                    if (payables.isEmpty()) {
+                .thenAccept(receivables -> Platform.runLater(() -> {
+                    if (receivables.isEmpty()) {
                         tblReceivables.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                     }
-                    tblReceivables.setItems(FXCollections.observableList(payables));
+                    tblReceivables.setItems(FXCollections.observableList(receivables));
                     TableViewUtils.sortDescending(tblReceivables, colUpdatedAt);
-                    lblRows.setText(payables.size() + "");
+                    lblRows.setText(StringNumberUtils.format(receivables.size(), resources.getLocale()));
                 }));
     }
 

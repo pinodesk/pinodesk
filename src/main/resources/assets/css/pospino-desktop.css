@@ -18,6 +18,7 @@
     -fx-font-size: 13px;
     font-size: 13px;
     -fx-text-fill: white;
+    -fx-background-insets: 0;
 }
 
 .btn-primary:hover,
@@ -31,6 +32,7 @@
     -fx-font-size: 13px;
     font-size: 13px;
     -fx-text-fill: white;
+    -fx-background-insets: 0;
 }
 
 .btn-secondary {
@@ -42,6 +44,7 @@
     -fx-font-size: 13px;
     font-size: 13px;
     -fx-text-fill: white;
+    -fx-background-insets: 0;
 }
 
 .btn-secondary:hover,
@@ -54,6 +57,7 @@
     -fx-font-size: 13px;
     font-size: 13px;
     -fx-text-fill: white;
+    -fx-background-insets: 0;
 }
 
 .btn-danger {
@@ -65,6 +69,7 @@
     -fx-font-size: 13px;
     font-size: 13px;
     -fx-text-fill: white;
+    -fx-background-insets: 0;
 }
 
 .btn-danger:hover {
@@ -76,6 +81,7 @@
     -fx-font-size: 13px;
     font-size: 13px;
     -fx-text-fill: white;
+    -fx-background-insets: 0;
 }
 
 .label-primary {

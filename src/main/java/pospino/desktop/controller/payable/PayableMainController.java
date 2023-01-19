@@ -13,6 +13,7 @@ import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
@@ -161,7 +162,7 @@ public class PayableMainController extends BaseController {
                     }
                     tblPayables.setItems(FXCollections.observableList(payables));
                     TableViewUtils.sortDescending(tblPayables, colUpdatedAt);
-                    lblRows.setText(payables.size() + "");
+                    lblRows.setText(StringNumberUtils.format(payables.size(), resources.getLocale()));
                 }));
     }
 
