@@ -8,10 +8,10 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
 import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.jasypt.spring4.properties.EncryptablePreferencesPlaceholderConfigurer;
+import org.jasypt.spring4.properties.EncryptablePropertySourcesPlaceholderConfigurer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
@@ -20,6 +20,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.jdbc.repository.config.AbstractJdbcConfiguration;
 import org.springframework.data.jdbc.repository.config.EnableJdbcAuditing;
@@ -117,20 +118,19 @@ public class PospinoConfig extends AbstractJdbcConfiguration {
         return encryptor;
     }
 
-    /**
-     * Current version of Jasypt (1.9.3) does not support Spring's
-     * PropertySourcesPlaceholderConfigurer, the properties value were not
-     * decrypted. Just stick with PropertyPlaceholderConfigurer to get the benefit
-     * from the encryption of properties values.
-     * 
-     * @return PropertyPlaceholderConfigurer
-     */
     @Bean
-    public static PropertyPlaceholderConfigurer propertyPlaceholderConfigurer() {
-        EncryptablePreferencesPlaceholderConfigurer configurer = new EncryptablePreferencesPlaceholderConfigurer(
-                stringEncryptor());
-        configurer.setLocation(new ClassPathResource("application.properties"));
-        return configurer;
+    public static StandardPBEByteEncryptor byteEncryptor() {
+        StandardPBEByteEncryptor encryptor = new StandardPBEByteEncryptor();
+        encryptor.setAlgorithm("PBEWITHMD5ANDTRIPLEDES");
+        encryptor.setPassword("EQ46GXc4yMybYMa4yuYaOIUqUNO7rqh4");
+        return encryptor;
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(StringEncryptor se) {
+        EncryptablePropertySourcesPlaceholderConfigurer c = new EncryptablePropertySourcesPlaceholderConfigurer(se);
+        c.setLocation(new ClassPathResource("application.properties"));
+        return c;
     }
 
 }

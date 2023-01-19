@@ -10,8 +10,10 @@ import static org.mockito.Mockito.when;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.sql.DataSource;
 import javax.validation.Validator;
 
+import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -21,6 +23,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
 
@@ -73,6 +76,21 @@ public class ResourceBundleUtilsTest {
         @Bean
         public ConfigurationRepository configurationRepository() {
             return mock(ConfigurationRepository.class);
+        }
+
+        @Bean
+        public JdbcTemplate jdbcTemplate() {
+            return mock(JdbcTemplate.class);
+        }
+
+        @Bean
+        public DataSource dataSource() {
+            return mock(DataSource.class);
+        }
+
+        @Bean
+        public static StandardPBEByteEncryptor byteEncryptor() {
+            return mock(StandardPBEByteEncryptor.class);
         }
 
         @Bean

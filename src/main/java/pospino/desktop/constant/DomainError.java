@@ -104,7 +104,11 @@ public enum DomainError {
     // Receivable (16)
     RECEIVABLE_NOT_FOUND_BY_ID("DE16001", MessageCode.ERROR_RECEIVABLE_NOT_FOUND_BY_ID),
     PAYMENT_AMOUNT_GREATER_THAN_RECEIVABLE_AMOUNT("DE16002",
-            MessageCode.ERROR_PAYMENT_AMOUNT_GREATER_THAN_RECEIVABLE_AMOUNT);
+            MessageCode.ERROR_PAYMENT_AMOUNT_GREATER_THAN_RECEIVABLE_AMOUNT),
+
+    // Other SQL errors (99)
+    BACKUP_DATABASE_ERROR("DE99001", MessageCode.BACKUP_DATABASE_ERROR),
+    RESTORE_DATABASE_ERROR("DE99002", MessageCode.RESTORE_DATABASE_ERROR);
 
     private final String code;
     private final MessageCode messageCode;

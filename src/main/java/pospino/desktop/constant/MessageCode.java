@@ -50,6 +50,8 @@ public enum MessageCode implements IMessage {
     // Configuration
     SUCCESS_EDIT_CONFIGURATION_WITH_LOGOUT,
     SUCCESS_EDIT_CONFIGURATION,
+    SUCCESS_BACKUP,
+    SUCCESS_RESTORE,
 
     // Product
     SUCCESS_ADD_PRODUCT,
@@ -194,7 +196,12 @@ public enum MessageCode implements IMessage {
 
     // Receivable
     ERROR_RECEIVABLE_NOT_FOUND_BY_ID,
-    ERROR_PAYMENT_AMOUNT_GREATER_THAN_RECEIVABLE_AMOUNT;
+    ERROR_PAYMENT_AMOUNT_GREATER_THAN_RECEIVABLE_AMOUNT,
+
+    // Other SQL errors
+    RESTORE_DATABASE_ERROR,
+    BACKUP_DATABASE_ERROR,
+    CONFIRMATION_RESTORE_DATA;
 
     @Override
     public String toString() {
