@@ -29,7 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
@@ -109,18 +109,20 @@ public class SaleMainController extends BaseController {
     private Label lblTotalSales;
 
     @FXML
-    private GridPane gridSummary;
+    private VBox vboxSummary;
 
     @FXML
-    private Button btnSummary;
+    private Button btnToggleSummary;
 
     private SaleService saleService;
 
     private SaleFilterVM saleFilter;
 
     @FXML
-    void onActionBtnSummary(ActionEvent event) {
-        setVisibleInLayout(!gridSummary.isVisible(), gridSummary);
+    void onActionBtnToggleSummary(ActionEvent event) {
+        boolean visible = vboxSummary.isVisible();
+        setVisibleInLayout(!visible, vboxSummary);
+        btnToggleSummary.setText(visible ? "←" : "→");
     }
 
     @FXML
