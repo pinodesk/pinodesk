@@ -62,11 +62,14 @@ public class SessionService extends BaseService {
                 .orElseThrow(() -> new DomainException(DomainError.USER_GROUP_NOT_FOUND_BY_ID));
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         List<UserGroupMenuVM> userGroupMenus = userGroupMenuRepository.findByUserGroupId(userGroup.getId(), language);
-        // Delete all unlogged out sessions to make sure only one session is active
+        // Delete all unlogged-out sessions to make sure only one session is active
         sessionRepository.deleteUpdateByDeletedAtIsNull();
+        LocalDateTime now = LocalDateTime.now();
         Session session = new Session();
-        session.setLoginAt(LocalDateTime.now());
+        session.setLoginAt(now);
         session.setUserId(user.getId());
+        session.setLastActivity(Activity.LOGIN.toString());
+        session.setLastActivityAt(now);
         Session created = sessionRepository.save(session);
         currentSession = new CurrentSessionVM();
         currentSession.setSession(objectConverter.convertObject(created, SessionVM.class));

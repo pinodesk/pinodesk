@@ -102,6 +102,9 @@ public class MainController extends BaseController {
     @FXML
     private Label lblVersion;
 
+    @FXML
+    private Label lblHelloName;
+
     private ConfigurationService configurationService;
     private ApplicationProperties applicationProperties;
 
@@ -132,6 +135,7 @@ public class MainController extends BaseController {
         lblStoreName.setText(storeName);
         lblUser.setText(currentSession.getUser().getFullName());
         lblUserGroup.setText(currentSession.getUserGroup().getName());
+        lblHelloName.setText(currentSession.getUser().getFullName());
         List<UserGroupMenuVM> userGroupMenus = currentSession.getUserGroupMenus();
         List<String> userGroupMenuCodes = userGroupMenus.stream()
                 .filter(ugm -> SimpleStatus.YES.toString().equals(ugm.getRead())).map(UserGroupMenuVM::getMenuCode)
