@@ -19,6 +19,8 @@ import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -114,6 +116,9 @@ public class SaleMainController extends BaseController {
     @FXML
     private Button btnToggleSummary;
 
+    @FXML
+    private FontAwesomeIconView faBtnSummary;
+
     private SaleService saleService;
 
     private SaleFilterVM saleFilter;
@@ -122,7 +127,7 @@ public class SaleMainController extends BaseController {
     void onActionBtnToggleSummary(ActionEvent event) {
         boolean visible = vboxSummary.isVisible();
         setVisibleInLayout(!visible, vboxSummary);
-        btnToggleSummary.setText(visible ? "←" : "→");
+        faBtnSummary.setGlyphName(visible ? FontAwesomeIcon.ANGLE_LEFT.name() : FontAwesomeIcon.ANGLE_RIGHT.name());
     }
 
     @FXML
