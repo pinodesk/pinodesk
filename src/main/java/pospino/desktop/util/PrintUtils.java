@@ -33,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.ConfigurationConstants;
 import pospino.desktop.constant.MessageCode;
+import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.exception.PrinterException;
 import pospino.desktop.service.ConfigurationService;
 import pospino.desktop.viewmodel.PaymentDataVM;
@@ -119,13 +120,16 @@ public class PrintUtils {
                 new Label(sep),
                 bottomGridPane(saleData, paymentData, locale),
                 new Label(sep),
-                lblFooter,
-                new Label(),
-                lblPowered,
-                lblWww,
-                new Label(),
-                new Label(),
-                new Label());
+                lblFooter);
+        String poweredBy = configurationService.getConfiguration(ConfigurationConstants.PRINTER_FOOTER_POWERED_BY);
+        if (SimpleStatus.YES.toString().equals(poweredBy)) {
+            vbox.getChildren().add(new Label());
+            vbox.getChildren().add(lblPowered);
+            vbox.getChildren().add(lblWww);
+        }
+        vbox.getChildren().add(new Label());
+        vbox.getChildren().add(new Label());
+        vbox.getChildren().add(new Label());
         return vbox;
     }
 

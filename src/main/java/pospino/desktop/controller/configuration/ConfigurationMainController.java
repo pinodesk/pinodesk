@@ -31,10 +31,12 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pospino.desktop.constant.CommonConstants;
+import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.ConfigurationConstants;
 import pospino.desktop.constant.MenuCodeConstants;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
+import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.StringConstants;
 import pospino.desktop.constant.SystemConstants;
 import pospino.desktop.controller.CommonContentPaneController;
@@ -76,6 +78,9 @@ public class ConfigurationMainController extends CommonContentPaneController {
     @FXML
     private TextField tfPrinterFooter;
 
+    @FXML
+    private ComboBox<SimpleComboBoxModel> cbFooterPoweredBy;
+
     private FileChooser fileChooser = new FileChooser();
 
     private ConfigurationService configurationService;
@@ -104,6 +109,9 @@ public class ConfigurationMainController extends CommonContentPaneController {
                 ConfigurationConstants.PRINTER_NAME,
                 selectedPrinter == null ? StringConstants.EMPTY : selectedPrinter.getName());
         map.put(ConfigurationConstants.PRINTER_FOOTER, tfPrinterFooter.getText());
+        map.put(
+                ConfigurationConstants.PRINTER_FOOTER_POWERED_BY,
+                ComboBoxUtils.getSelectedItem(cbFooterPoweredBy).getValue().toString());
         configurationService.updateConfiguration(map);
         displayInfo(MessageCode.SUCCESS_EDIT_CONFIGURATION);
     }
@@ -186,6 +194,10 @@ public class ConfigurationMainController extends CommonContentPaneController {
             printerModels.add(new SimpleComboBoxModel(p, p.getName()));
         });
         ComboBoxUtils.initSimple(cbPrinterName, printerModels);
+        ComboBoxUtils.initSimple(
+                cbFooterPoweredBy,
+                new SimpleComboBoxModel(SimpleStatus.YES, t.translate(CommonLabel.LBL_SHOW.toString())),
+                new SimpleComboBoxModel(SimpleStatus.NO, t.translate(CommonLabel.LBL_HIDE.toString())));
         String timestamp = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now());
         fileChooser.setInitialDirectory(new File(SystemConstants.USER_HOME_DIR));
         fileChooser.setInitialFileName(String.format("pospino-backup-%s.zip", timestamp));
@@ -232,6 +244,10 @@ public class ConfigurationMainController extends CommonContentPaneController {
             }).findAny().orElseGet(() -> items.stream().filter(model -> model.getValue() == null).findAny().get());
         });
         tfPrinterFooter.setText(configurationMap.get(ConfigurationConstants.PRINTER_FOOTER));
+        ComboBoxUtils.select(cbFooterPoweredBy, () -> cbFooterPoweredBy.getItems().stream().filter(model -> {
+            String show = configurationMap.get(ConfigurationConstants.PRINTER_FOOTER_POWERED_BY);
+            return show.equals(model.getValue().toString());
+        }).findAny().get());
     }
 
     @Override

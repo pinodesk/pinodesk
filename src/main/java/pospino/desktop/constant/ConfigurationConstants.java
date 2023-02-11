@@ -9,4 +9,5 @@ public interface ConfigurationConstants {
     String SESSION_MAX_DURATION_HOUR = "session_max_duration_hour";
     String PRINTER_NAME = "printer_name";
     String PRINTER_FOOTER = "printer_footer";
+    String PRINTER_FOOTER_POWERED_BY = "printer_footer_powered_by";
 }
