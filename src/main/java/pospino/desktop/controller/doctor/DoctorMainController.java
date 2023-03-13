@@ -2,8 +2,6 @@ package pospino.desktop.controller.doctor;
 
 import java.time.LocalDateTime;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
@@ -30,6 +28,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.DoctorService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.DoctorFilterVM;
 import pospino.desktop.viewmodel.DoctorVM;
 
@@ -120,8 +119,8 @@ public class DoctorMainController extends BaseController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        doctorService = ctx.getBean(DoctorService.class);
+    protected void initServices() {
+        doctorService = SpringUtils.getBean(DoctorService.class);
     }
 
     @Override

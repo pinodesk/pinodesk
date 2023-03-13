@@ -13,7 +13,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -139,6 +138,9 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
             tfSearch.setText(keyword);
             searchProducts();
         }
+        if (!isPharmacyFeatureEnabled()) {
+            tblProduct.getColumns().remove(colPrescriptionSellingPrice);
+        }
     }
 
     @Override
@@ -147,7 +149,7 @@ public class ProductChooseController extends CommonDataChooseController<ProductV
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         productService = SpringUtils.getBean(ProductService.class);
     }
 

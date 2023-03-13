@@ -9,14 +9,12 @@ import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
@@ -48,12 +46,15 @@ import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
+import pospino.desktop.constant.ConfigurationConstants;
 import pospino.desktop.constant.DomainError;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.StringConstants;
 import pospino.desktop.exception.DomainException;
 import pospino.desktop.exception.PrinterException;
+import pospino.desktop.properties.ApplicationProperties;
+import pospino.desktop.service.ConfigurationService;
 import pospino.desktop.service.SessionService;
 import pospino.desktop.util.SpringUtils;
 
@@ -62,7 +63,11 @@ public abstract class BaseController {
 
     protected Translator t;
 
-    protected Optional<SessionService> sessionService;
+    protected ApplicationProperties applicationProperties;
+
+    protected SessionService sessionService;
+
+    protected ConfigurationService configurationService;
 
     @FXML
     protected ResourceBundle resources;
@@ -73,14 +78,16 @@ public abstract class BaseController {
     @FXML
     void initialize() {
         t = new Translator(resources);
-        sessionService = SpringUtils.getBeanOptionally(SessionService.class);
+        applicationProperties = SpringUtils.getBean(ApplicationProperties.class);
+        sessionService = SpringUtils.getBean(SessionService.class);
+        configurationService = SpringUtils.getBean(ConfigurationService.class);
         setDefaultUncaughtExceptionHandler();
-        initServices(SpringUtils.getApplicationContext());
+        initServices();
         initControlActions();
         initControlValues();
     }
 
-    protected abstract void initServices(ApplicationContext ctx);
+    protected abstract void initServices();
 
     protected abstract void initControlActions();
 
@@ -439,13 +446,13 @@ public abstract class BaseController {
         if (ArrayUtils.isEmpty(btns)) {
             return;
         }
-        if (sessionService.isEmpty()) {
+        if (!sessionService.isCurrentSessionActive()) {
             for (Button btn : btns) {
                 btn.setDisable(true);
             }
             return;
         }
-        sessionService.get().getCurrentSession().getUserGroupMenus().forEach(ugm -> {
+        sessionService.getCurrentSession().getUserGroupMenus().forEach(ugm -> {
             if (ugm.getMenuCode().equals(menuCode) && !SimpleStatus.YES.toString().equals(ugm.getWrite())) {
                 for (Button btn : btns) {
                     btn.setDisable(true);
@@ -470,6 +477,11 @@ public abstract class BaseController {
 
     protected boolean isNullOrZero(Number num) {
         return num == null || num.doubleValue() == 0;
+    }
+
+    protected boolean isPharmacyFeatureEnabled() {
+        String enabled = configurationService.getConfiguration(ConfigurationConstants.PHARMACY_FEATURES_ENABLED);
+        return SimpleStatus.YES.toString().equals(enabled);
     }
 
 }

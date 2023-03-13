@@ -1,7 +1,5 @@
 package pospino.desktop.controller.product;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
@@ -16,6 +14,7 @@ import javafx.scene.control.TextField;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.controller.CommonDataChooseController;
 import pospino.desktop.service.ProductCategoryService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.ProductCategoryVM;
 
 public class ProductCategoryChooseController extends CommonDataChooseController<ProductCategoryVM> {
@@ -58,8 +57,8 @@ public class ProductCategoryChooseController extends CommonDataChooseController<
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        productCategoryService = ctx.getBean(ProductCategoryService.class);
+    protected void initServices() {
+        productCategoryService = SpringUtils.getBean(ProductCategoryService.class);
     }
 
     private void searchProductCategories() {

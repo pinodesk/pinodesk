@@ -8,8 +8,6 @@ import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toString
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 
@@ -143,7 +141,7 @@ public class CashierConfirmProductController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // Nothing to do
     }
 

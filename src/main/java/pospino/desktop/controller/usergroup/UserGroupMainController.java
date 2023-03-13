@@ -2,8 +2,6 @@ package pospino.desktop.controller.usergroup;
 
 import java.time.LocalDateTime;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
@@ -30,6 +28,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.UserGroupService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.UserGroupFilterVM;
 import pospino.desktop.viewmodel.UserGroupVM;
 
@@ -105,8 +104,8 @@ public class UserGroupMainController extends BaseController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        userGroupService = ctx.getBean(UserGroupService.class);
+    protected void initServices() {
+        userGroupService = SpringUtils.getBean(UserGroupService.class);
     }
 
     @Override

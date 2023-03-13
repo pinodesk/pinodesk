@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
@@ -52,6 +51,7 @@ import pospino.desktop.service.DrugService;
 import pospino.desktop.service.ProductCategoryService;
 import pospino.desktop.service.ProductService;
 import pospino.desktop.service.UnitService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.ChooseResultVM;
 import pospino.desktop.viewmodel.DrugClassificationVM;
 import pospino.desktop.viewmodel.DrugVM;
@@ -412,6 +412,11 @@ public class ProductEditController extends CommonDataSaveController {
         loadProductPrice(productId);
         loadProductStock(productId);
         loadProductExpiry(productId);
+        if (!isPharmacyFeatureEnabled()) {
+            setVisibleInLayout(false, vboxMedicine);
+            setVisibleInLayout(false, vboxPresciptionSellPrice);
+            tblPrice.getColumns().remove(colPrescripionSellingPrice);
+        }
     }
 
     @Override
@@ -482,12 +487,12 @@ public class ProductEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        productService = ctx.getBean(ProductService.class);
-        productCategoryService = ctx.getBean(ProductCategoryService.class);
-        unitService = ctx.getBean(UnitService.class);
-        drugClassificationService = ctx.getBean(DrugClassificationService.class);
-        drugService = ctx.getBean(DrugService.class);
+    protected void initServices() {
+        productService = SpringUtils.getBean(ProductService.class);
+        productCategoryService = SpringUtils.getBean(ProductCategoryService.class);
+        unitService = SpringUtils.getBean(UnitService.class);
+        drugClassificationService = SpringUtils.getBean(DrugClassificationService.class);
+        drugService = SpringUtils.getBean(DrugService.class);
     }
 
     private void handleSelectedProductCategory(ChooseResultVM<ProductCategoryVM> result) {

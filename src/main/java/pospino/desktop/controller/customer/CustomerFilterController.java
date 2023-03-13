@@ -2,8 +2,6 @@ package pospino.desktop.controller.customer;
 
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
-import org.springframework.context.ApplicationContext;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import pospino.desktop.controller.CommonDataFilterController;
@@ -58,7 +56,7 @@ public class CustomerFilterController extends CommonDataFilterController<Custome
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // No services to initialize
     }
 

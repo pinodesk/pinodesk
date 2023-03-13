@@ -20,7 +20,6 @@ import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
 import com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils;
@@ -170,7 +169,7 @@ public class ProductImportController extends CommonContentPaneController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         productService = SpringUtils.getBean(ProductService.class);
         unitService = SpringUtils.getBean(UnitService.class);
         productCategoryService = SpringUtils.getBean(ProductCategoryService.class);

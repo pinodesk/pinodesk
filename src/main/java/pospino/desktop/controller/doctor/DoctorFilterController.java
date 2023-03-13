@@ -1,7 +1,5 @@
 package pospino.desktop.controller.doctor;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import javafx.fxml.FXML;
@@ -85,7 +83,7 @@ public class DoctorFilterController extends CommonDataFilterController<DoctorFil
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // No services to initialize
     }
 

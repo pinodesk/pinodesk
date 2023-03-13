@@ -1,7 +1,5 @@
 package pospino.desktop.controller;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 
@@ -53,7 +51,7 @@ public class LoginController extends CommonDataSaveController {
 
     @Override
     protected Object save() {
-        sessionService.get().login(tfUsername.getText(), pfPassword.getText());
+        sessionService.login(tfUsername.getText(), pfPassword.getText());
         return true;
     }
 
@@ -64,7 +62,7 @@ public class LoginController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // Nothing to init
     }
 

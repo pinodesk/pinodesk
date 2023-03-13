@@ -26,5 +26,6 @@ public class PackageProductVM {
     private String status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
     private Integer quantityInPackage;
 }

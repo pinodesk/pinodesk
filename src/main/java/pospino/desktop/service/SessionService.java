@@ -3,6 +3,7 @@ package pospino.desktop.service;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,8 @@ public class SessionService extends BaseService {
         }
         UserGroup userGroup = userGroupRepository.findById(user.getUserGroupId())
                 .orElseThrow(() -> new DomainException(DomainError.USER_GROUP_NOT_FOUND_BY_ID));
-        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        Map<String, String> configurationMap = configurationService.getConfigurationMap();
+        String language = configurationMap.get(ConfigurationConstants.LANGUAGE);
         List<UserGroupMenuVM> userGroupMenus = userGroupMenuRepository.findByUserGroupId(userGroup.getId(), language);
         // Delete all unlogged-out sessions to make sure only one session is active
         sessionRepository.deleteUpdateByDeletedAtIsNull();
@@ -76,6 +78,7 @@ public class SessionService extends BaseService {
         currentSession.setUser(objectConverter.convertObject(user, UserVM.class));
         currentSession.setUserGroup(objectConverter.convertObject(userGroup, UserGroupVM.class));
         currentSession.setUserGroupMenus(userGroupMenus);
+        currentSession.setConfigurationMap(configurationMap);
     }
 
     @Transactional

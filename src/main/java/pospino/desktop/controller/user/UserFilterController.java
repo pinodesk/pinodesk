@@ -1,7 +1,5 @@
 package pospino.desktop.controller.user;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
@@ -72,7 +70,7 @@ public class UserFilterController extends CommonDataFilterController<UserFilterV
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // No services to initialize
     }
 

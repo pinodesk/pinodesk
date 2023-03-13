@@ -6,8 +6,6 @@ import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toString
 
 import java.time.format.DateTimeFormatter;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
@@ -143,7 +141,7 @@ public class ReceivableFilterController extends CommonDataFilterController<Recei
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // No services to initialize
     }
 

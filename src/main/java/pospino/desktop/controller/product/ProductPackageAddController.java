@@ -8,8 +8,6 @@ import java.math.BigDecimal;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
@@ -231,6 +229,10 @@ public class ProductPackageAddController extends CommonDataSaveController {
         tfCategory.setText(selectedProductCategory.getName());
         tfUnit.setText(selectedUnit.getLabel());
         tfQuantity.setText("1");
+        if (!isPharmacyFeatureEnabled()) {
+            setVisibleInLayout(false, vboxPresciptionSellPrice);
+            tblProducts.getColumns().remove(colPrescriptionSellingPrice);
+        }
     }
 
     @Override
@@ -259,7 +261,7 @@ public class ProductPackageAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         productCategoryService = SpringUtils.getBean(ProductCategoryService.class);
         unitService = SpringUtils.getBean(UnitService.class);
         productService = SpringUtils.getBean(ProductService.class);

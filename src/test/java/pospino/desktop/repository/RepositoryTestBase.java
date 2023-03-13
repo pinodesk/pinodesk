@@ -2,12 +2,7 @@ package pospino.desktop.repository;
 
 import java.sql.SQLException;
 
-import javax.annotation.Resource;
 import javax.sql.DataSource;
-
-import com.github.springtestdbunit.DbUnitTestExecutionListener;
-import com.github.springtestdbunit.annotation.DbUnitConfiguration;
-import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.dbunit.DatabaseUnitException;
@@ -15,6 +10,7 @@ import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseDataSourceConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.ext.h2.H2DataTypeFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +33,10 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.github.springtestdbunit.DbUnitTestExecutionListener;
+import com.github.springtestdbunit.annotation.DbUnitConfiguration;
+import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
+
 @TestExecutionListeners({ DbUnitTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
 @DbUnitConfiguration(databaseConnection = "databaseConnection")
 @SpringJUnitConfig(RepositoryTestBase.Config.class)
@@ -51,7 +51,7 @@ public abstract class RepositoryTestBase {
     @PropertySource({ "classpath:application-test.properties" })
     static class Config extends AbstractJdbcConfiguration {
 
-        @Resource // https://stackoverflow.com/questions/19421092/autowired-environment-is-null
+        @Autowired
         private Environment env;
 
         @Bean

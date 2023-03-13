@@ -4,6 +4,7 @@ import static com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils.parseLocalDa
 import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrNull;
+
 import java.time.format.DateTimeFormatter;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
@@ -11,11 +12,10 @@ import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
-import org.springframework.context.ApplicationContext;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.PaymentStatus;
@@ -48,6 +48,9 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
 
     @FXML
     private TextField tfCustomer;
+
+    @FXML
+    private VBox vboxDoctor;
 
     @FXML
     private TextField tfDoctor;
@@ -98,6 +101,9 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
                                 .filter(vm -> currentFilter.getPaymentStatus().equals(vm.getValue())).findAny()
                                 .orElseThrow());
             }
+        }
+        if (!isPharmacyFeatureEnabled()) {
+            vboxDoctor.setVisible(false);
         }
     }
 
@@ -160,7 +166,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // No services to initialize
     }
 

@@ -6,8 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
@@ -33,6 +31,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.PayableService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.PayableEditVM;
 import pospino.desktop.viewmodel.PayablePaymentVM;
 import pospino.desktop.viewmodel.PayableVM;
@@ -157,8 +156,8 @@ public class PayableEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        payableService = ctx.getBean(PayableService.class);
+    protected void initServices() {
+        payableService = SpringUtils.getBean(PayableService.class);
     }
 
     private ValidationResult validateAddPayment(LocalDate paymentDate) {

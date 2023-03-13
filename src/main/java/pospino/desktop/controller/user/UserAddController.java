@@ -1,7 +1,6 @@
 package pospino.desktop.controller.user;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
@@ -19,6 +18,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.UserStatus;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.UserService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.ChooseResultVM;
 import pospino.desktop.viewmodel.UserAddVM;
 import pospino.desktop.viewmodel.UserGroupVM;
@@ -61,8 +61,8 @@ public class UserAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        userService = ctx.getBean(UserService.class);
+    protected void initServices() {
+        userService = SpringUtils.getBean(UserService.class);
     }
 
     @Override

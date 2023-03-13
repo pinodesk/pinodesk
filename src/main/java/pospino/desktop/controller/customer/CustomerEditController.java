@@ -6,8 +6,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
-import org.springframework.context.ApplicationContext;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -16,6 +14,7 @@ import pospino.desktop.constant.MenuCodeConstants;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.CustomerService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.CustomerEditVM;
 import pospino.desktop.viewmodel.CustomerVM;
 
@@ -88,8 +87,8 @@ public class CustomerEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        customerService = ctx.getBean(CustomerService.class);
+    protected void initServices() {
+        customerService = SpringUtils.getBean(CustomerService.class);
     }
 
 }

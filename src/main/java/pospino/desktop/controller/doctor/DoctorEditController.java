@@ -2,8 +2,6 @@ package pospino.desktop.controller.doctor;
 
 import java.util.Arrays;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
@@ -16,6 +14,7 @@ import pospino.desktop.constant.MenuCodeConstants;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.DoctorService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.ChooseResultVM;
 import pospino.desktop.viewmodel.DoctorCategoryVM;
 import pospino.desktop.viewmodel.DoctorEditVM;
@@ -68,8 +67,8 @@ public class DoctorEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        doctorService = ctx.getBean(DoctorService.class);
+    protected void initServices() {
+        doctorService = SpringUtils.getBean(DoctorService.class);
     }
 
     @Override

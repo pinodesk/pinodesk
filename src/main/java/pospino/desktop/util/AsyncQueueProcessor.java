@@ -21,6 +21,8 @@ public class AsyncQueueProcessor {
     }
 
     public void process(Runnable runnable) {
+        log.debug("queue: " + queue);
+        log.debug("future: " + future);
         queue.add(runnable);
         while (!queue.isEmpty()) {
             future.thenRunAsync(queue.poll()).exceptionally(e -> {

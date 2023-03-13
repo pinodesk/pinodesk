@@ -4,8 +4,6 @@ import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
-import org.springframework.context.ApplicationContext;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,6 +11,7 @@ import javafx.scene.control.TextField;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.CustomerService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.CustomerAddVM;
 
 public class CustomerAddController extends CommonDataSaveController {
@@ -48,8 +47,8 @@ public class CustomerAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        customerService = ctx.getBean(CustomerService.class);
+    protected void initServices() {
+        customerService = SpringUtils.getBean(CustomerService.class);
     }
 
     @Override

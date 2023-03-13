@@ -3,7 +3,6 @@ package pospino.desktop.controller.user;
 import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
@@ -22,6 +21,7 @@ import pospino.desktop.constant.UserStatus;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.UserGroupService;
 import pospino.desktop.service.UserService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.ChooseResultVM;
 import pospino.desktop.viewmodel.UserEditVM;
 import pospino.desktop.viewmodel.UserGroupVM;
@@ -118,9 +118,9 @@ public class UserEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        userService = ctx.getBean(UserService.class);
-        userGroupService = ctx.getBean(UserGroupService.class);
+    protected void initServices() {
+        userService = SpringUtils.getBean(UserService.class);
+        userGroupService = SpringUtils.getBean(UserGroupService.class);
     }
 
     public void handleSelectedUserGroup(ChooseResultVM<UserGroupVM> result) {

@@ -5,8 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
@@ -36,6 +34,7 @@ import pospino.desktop.constant.Page;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.ProductService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.ProductFilterVM;
 import pospino.desktop.viewmodel.ProductVM;
 
@@ -104,7 +103,7 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_PRODUCT_ADD, false, we -> {
+        StageUtils.modal(Page.MASTER_PRODUCT_ADD, we -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchProducts();
             }
@@ -156,8 +155,8 @@ public class ProductMainController extends BaseController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        productService = ctx.getBean(ProductService.class);
+    protected void initServices() {
+        productService = SpringUtils.getBean(ProductService.class);
     }
 
     @Override
@@ -171,6 +170,9 @@ public class ProductMainController extends BaseController {
     protected void initControlValues() {
         productFilter = new ProductFilterVM();
         searchProducts();
+        if (!isPharmacyFeatureEnabled()) {
+            tblProduct.getColumns().remove(colPrescriptionSellingPrice);
+        }
     }
 
     @Override

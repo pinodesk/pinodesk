@@ -1,7 +1,5 @@
 package pospino.desktop.controller.product;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
@@ -16,6 +14,7 @@ import javafx.scene.control.TextField;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.controller.CommonDataChooseController;
 import pospino.desktop.service.DrugClassificationService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.DrugClassificationVM;
 
 public class DrugClassificationChooseController extends CommonDataChooseController<DrugClassificationVM> {
@@ -57,8 +56,8 @@ public class DrugClassificationChooseController extends CommonDataChooseControll
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        drugClassificationService = ctx.getBean(DrugClassificationService.class);
+    protected void initServices() {
+        drugClassificationService = SpringUtils.getBean(DrugClassificationService.class);
     }
 
     private void searchProductCategories() {

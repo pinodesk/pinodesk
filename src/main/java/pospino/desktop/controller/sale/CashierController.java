@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
@@ -280,17 +279,20 @@ public class CashierController extends CommonContentPaneController {
     @Override
     protected void initControlValues() {
         lblVersion.setText(String.format("%s %s", CommonConstants.APP_TITLE, applicationProperties.getVersion()));
-        CurrentSessionVM currentSession = sessionService.get().getCurrentSession();
+        CurrentSessionVM currentSession = sessionService.getCurrentSession();
         String storeName = configurationService.getConfiguration(ConfigurationConstants.STORE_NAME);
         lblStoreName.setText(storeName);
         lblUser.setText(currentSession.getUser().getFullName());
         lblUserGroup.setText(currentSession.getUserGroup().getName());
         RadioButton selectedSellingMode = (RadioButton) toggleSellingMode.getSelectedToggle();
         handleSelectedSellingMode(selectedSellingMode);
+        if (!isPharmacyFeatureEnabled()) {
+            setVisibleInLayout(false, rbPrescription);
+        }
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         productService = SpringUtils.getBean(ProductService.class);
         configurationService = SpringUtils.getBean(ConfigurationService.class);
         applicationProperties = SpringUtils.getBean(ApplicationProperties.class);
@@ -441,6 +443,8 @@ public class CashierController extends CommonContentPaneController {
             String errorMessage = validateCustomPackageProduct(product, saleQty);
             if (errorMessage != null) {
                 displayError(errorMessage);
+                selectedProduct = null;
+                setFocused(tfProduct);
                 return;
             }
             // Validate package must have available products
@@ -453,6 +457,8 @@ public class CashierController extends CommonContentPaneController {
             }
             if (lowestQty < saleQty) {
                 displayError(MessageCode.ERROR_INSUFFICIENT_PACKAGE_QUANTITY);
+                selectedProduct = null;
+                setFocused(tfProduct);
                 return;
             }
             if (isNullOrZero(product.getQuantity())) {

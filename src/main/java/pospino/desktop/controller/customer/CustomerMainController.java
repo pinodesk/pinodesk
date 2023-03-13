@@ -3,8 +3,6 @@ package pospino.desktop.controller.customer;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
@@ -31,6 +29,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.CustomerService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.CustomerFilterVM;
 import pospino.desktop.viewmodel.CustomerVM;
 
@@ -112,8 +111,8 @@ public class CustomerMainController extends BaseController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        customerService = ctx.getBean(CustomerService.class);
+    protected void initServices() {
+        customerService = SpringUtils.getBean(CustomerService.class);
     }
 
     @Override

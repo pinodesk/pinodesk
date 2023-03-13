@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
@@ -27,6 +26,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.SupplierService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.SupplierContactAddVM;
 import pospino.desktop.viewmodel.SupplierEditVM;
 import pospino.desktop.viewmodel.SupplierVM;
@@ -148,8 +148,8 @@ public class SupplierEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        supplierService = ctx.getBean(SupplierService.class);
+    protected void initServices() {
+        supplierService = SpringUtils.getBean(SupplierService.class);
     }
 
 }

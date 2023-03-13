@@ -4,8 +4,6 @@ import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
-import org.springframework.context.ApplicationContext;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,7 +11,10 @@ import javafx.scene.control.TextField;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.DoctorService;
-import pospino.desktop.viewmodel.*;
+import pospino.desktop.util.SpringUtils;
+import pospino.desktop.viewmodel.ChooseResultVM;
+import pospino.desktop.viewmodel.DoctorAddVM;
+import pospino.desktop.viewmodel.DoctorCategoryVM;
 
 public class DoctorAddController extends CommonDataSaveController {
 
@@ -59,8 +60,8 @@ public class DoctorAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        doctorService = ctx.getBean(DoctorService.class);
+    protected void initServices() {
+        doctorService = SpringUtils.getBean(DoctorService.class);
     }
 
     @Override

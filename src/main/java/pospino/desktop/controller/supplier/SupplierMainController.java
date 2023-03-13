@@ -2,8 +2,6 @@ package pospino.desktop.controller.supplier;
 
 import java.time.LocalDateTime;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
@@ -30,6 +28,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.SupplierService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.SupplierFilterVM;
 import pospino.desktop.viewmodel.SupplierVM;
 
@@ -114,8 +113,8 @@ public class SupplierMainController extends BaseController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        supplierService = ctx.getBean(SupplierService.class);
+    protected void initServices() {
+        supplierService = SpringUtils.getBean(SupplierService.class);
     }
 
     @Override

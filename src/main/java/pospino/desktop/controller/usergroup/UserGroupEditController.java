@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
@@ -131,7 +130,7 @@ public class UserGroupEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         userGroupService = SpringUtils.getBean(UserGroupService.class);
     }
 

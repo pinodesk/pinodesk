@@ -3,8 +3,7 @@ package pospino.desktop.controller;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-
-import org.springframework.context.ApplicationContext;
+import java.util.Map;
 
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
@@ -27,9 +26,6 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.StyleConstants;
-import pospino.desktop.properties.ApplicationProperties;
-import pospino.desktop.service.ConfigurationService;
-import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.CurrentSessionVM;
 import pospino.desktop.viewmodel.SaleFilterVM;
 import pospino.desktop.viewmodel.UserGroupMenuVM;
@@ -105,13 +101,8 @@ public class MainController extends BaseController {
     @FXML
     private Label lblHelloName;
 
-    private ConfigurationService configurationService;
-    private ApplicationProperties applicationProperties;
-
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        configurationService = SpringUtils.getBean(ConfigurationService.class);
-        applicationProperties = SpringUtils.getBean(ApplicationProperties.class);
+    protected void initServices() {
     }
 
     @Override
@@ -122,7 +113,7 @@ public class MainController extends BaseController {
 
     @Override
     protected void initControlValues() {
-        if (sessionService.isEmpty()) {
+        if (!sessionService.isCurrentSessionActive()) {
             ObservableList<Node> children = vboxMenu.getChildren();
             for (Node node : children) {
                 vboxMenu.getChildren().remove(node);
@@ -130,9 +121,9 @@ public class MainController extends BaseController {
             return;
         }
         lblVersion.setText(String.format("%s %s", CommonConstants.APP_TITLE, applicationProperties.getVersion()));
-        CurrentSessionVM currentSession = sessionService.get().getCurrentSession();
-        String storeName = configurationService.getConfiguration(ConfigurationConstants.STORE_NAME);
-        lblStoreName.setText(storeName);
+        CurrentSessionVM currentSession = sessionService.getCurrentSession();
+        Map<String, String> configurationMap = configurationService.getConfigurationMap();
+        lblStoreName.setText(configurationMap.get(ConfigurationConstants.STORE_NAME));
         lblUser.setText(currentSession.getUser().getFullName());
         lblUserGroup.setText(currentSession.getUserGroup().getName());
         lblHelloName.setText(currentSession.getUser().getFullName());
@@ -154,6 +145,11 @@ public class MainController extends BaseController {
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS_CONFIGURATION, btnMenuConfiguration);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS_USERS, btnMenuUsers);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS_USER_GROUPS, btnMenuUserGroups);
+        if (!isPharmacyFeatureEnabled()) {
+            if (btnMenuDoctors.isVisible()) {
+                vboxMenu.getChildren().remove(btnMenuDoctors);
+            }
+        }
     }
 
     @Override
@@ -163,13 +159,13 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnLogout(ActionEvent event) {
-        if (sessionService.isEmpty()) {
+        if (!sessionService.isCurrentSessionActive()) {
             close();
             return;
         }
         AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_LOGOUT);
         if (result.isConfirmed()) {
-            sessionService.get().logout();
+            sessionService.logout();
             close();
             StageUtils.open(Page.LOGIN, false);
         }

@@ -2,8 +2,6 @@ package pospino.desktop.controller.usergroup;
 
 import java.time.LocalDateTime;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
@@ -91,7 +89,7 @@ public class UserGroupChooseController extends CommonDataChooseController<UserGr
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         userGroupService = SpringUtils.getBean(UserGroupService.class);
     }
 

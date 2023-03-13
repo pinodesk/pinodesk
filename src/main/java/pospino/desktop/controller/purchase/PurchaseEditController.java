@@ -15,7 +15,6 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
@@ -388,6 +387,10 @@ public class PurchaseEditController extends CommonDataSaveController {
         lblTotalPurchase.setText(formatOrDefault(totalPurchase, locale, "0"));
         tfDiscount.setText(toStringOrEmpty(discount));
         tfTax.setText(toStringOrEmpty(tax));
+        if (!isPharmacyFeatureEnabled()) {
+            vboxPrescriptionSellingPrice.setVisible(false);
+            tblPurchaseProduct.getColumns().remove(colPrescriptionSellingPrice);
+        }
     }
 
     @Override
@@ -436,7 +439,7 @@ public class PurchaseEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         purchaseService = SpringUtils.getBean(PurchaseService.class);
     }
 

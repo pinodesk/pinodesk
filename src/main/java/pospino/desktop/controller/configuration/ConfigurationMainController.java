@@ -11,7 +11,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
@@ -42,6 +41,7 @@ import pospino.desktop.constant.SystemConstants;
 import pospino.desktop.controller.CommonContentPaneController;
 import pospino.desktop.javafx.converter.LanguageComboBoxConverter;
 import pospino.desktop.service.ConfigurationService;
+import pospino.desktop.util.SpringUtils;
 
 public class ConfigurationMainController extends CommonContentPaneController {
 
@@ -81,6 +81,9 @@ public class ConfigurationMainController extends CommonContentPaneController {
     @FXML
     private ComboBox<SimpleComboBoxModel> cbFooterPoweredBy;
 
+    @FXML
+    private ComboBox<SimpleComboBoxModel> cbPharmacyFeatures;
+
     private FileChooser fileChooser = new FileChooser();
 
     private ConfigurationService configurationService;
@@ -94,10 +97,13 @@ public class ConfigurationMainController extends CommonContentPaneController {
         map.put(ConfigurationConstants.LANGUAGE, selectedLocale.getLanguage());
         map.put(ConfigurationConstants.STORE_NAME, tfStoreName.getText());
         map.put(ConfigurationConstants.STORE_ADDRESS, tfStoreAddress.getText());
+        map.put(
+                ConfigurationConstants.PHARMACY_FEATURES_ENABLED,
+                ComboBoxUtils.getSelectedItem(cbPharmacyFeatures).getValue().toString());
         configurationService.updateConfiguration(map);
         displayInfo(MessageCode.SUCCESS_EDIT_CONFIGURATION_WITH_LOGOUT);
         closeRootPane();
-        sessionService.get().logout();
+        sessionService.logout();
         StageUtils.open(Page.LOGIN, false);
     }
 
@@ -173,8 +179,8 @@ public class ConfigurationMainController extends CommonContentPaneController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        configurationService = ctx.getBean(ConfigurationService.class);
+    protected void initServices() {
+        configurationService = SpringUtils.getBean(ConfigurationService.class);
         locales = FXCollections.observableArrayList(
                 new Locale(CommonConstants.LANGUAGE_CODE_ENGLISH),
                 new Locale(CommonConstants.LANGUAGE_CODE_INDONESIA));
@@ -198,6 +204,10 @@ public class ConfigurationMainController extends CommonContentPaneController {
                 cbFooterPoweredBy,
                 new SimpleComboBoxModel(SimpleStatus.YES, t.translate(CommonLabel.LBL_SHOW.toString())),
                 new SimpleComboBoxModel(SimpleStatus.NO, t.translate(CommonLabel.LBL_HIDE.toString())));
+        ComboBoxUtils.initSimple(
+                cbPharmacyFeatures,
+                new SimpleComboBoxModel(SimpleStatus.YES, t.translate(CommonLabel.LBL_ENABLE.toString())),
+                new SimpleComboBoxModel(SimpleStatus.NO, t.translate(CommonLabel.LBL_DISABLE.toString())));
         String timestamp = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now());
         fileChooser.setInitialDirectory(new File(SystemConstants.USER_HOME_DIR));
         fileChooser.setInitialFileName(String.format("pospino-backup-%s.zip", timestamp));
@@ -245,8 +255,12 @@ public class ConfigurationMainController extends CommonContentPaneController {
         });
         tfPrinterFooter.setText(configurationMap.get(ConfigurationConstants.PRINTER_FOOTER));
         ComboBoxUtils.select(cbFooterPoweredBy, () -> cbFooterPoweredBy.getItems().stream().filter(model -> {
-            String show = configurationMap.get(ConfigurationConstants.PRINTER_FOOTER_POWERED_BY);
-            return show.equals(model.getValue().toString());
+            String val = configurationMap.get(ConfigurationConstants.PRINTER_FOOTER_POWERED_BY);
+            return val.equals(model.getValue().toString());
+        }).findAny().get());
+        ComboBoxUtils.select(cbPharmacyFeatures, () -> cbPharmacyFeatures.getItems().stream().filter(model -> {
+            String val = configurationMap.get(ConfigurationConstants.PHARMACY_FEATURES_ENABLED);
+            return val.equals(model.getValue().toString());
         }).findAny().get());
     }
 

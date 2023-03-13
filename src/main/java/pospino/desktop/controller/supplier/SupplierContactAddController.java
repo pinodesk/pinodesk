@@ -8,7 +8,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -79,7 +78,7 @@ public class SupplierContactAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // Nothing to do here
     }
 

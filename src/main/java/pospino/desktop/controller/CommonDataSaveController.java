@@ -36,8 +36,8 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
         processDataSave();
         if (hasDataSaved && lastDataSaved != null) {
             setPageData(lastDataSaved);
+            close();
         }
-        close();
     }
 
     @FXML

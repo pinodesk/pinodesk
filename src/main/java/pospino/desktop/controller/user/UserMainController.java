@@ -2,8 +2,6 @@ package pospino.desktop.controller.user;
 
 import java.time.LocalDateTime;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
@@ -30,6 +28,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.UserService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.UserFilterVM;
 import pospino.desktop.viewmodel.UserVM;
 
@@ -108,8 +107,8 @@ public class UserMainController extends BaseController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        userService = ctx.getBean(UserService.class);
+    protected void initServices() {
+        userService = SpringUtils.getBean(UserService.class);
     }
 
     @Override

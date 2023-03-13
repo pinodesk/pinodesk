@@ -1,11 +1,11 @@
 package pospino.desktop.controller.doctor;
 
+import java.time.LocalDateTime;
+
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
-
-import org.springframework.context.ApplicationContext;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -18,9 +18,8 @@ import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.controller.CommonDataChooseController;
 import pospino.desktop.service.DoctorService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.DoctorCategoryVM;
-
-import java.time.LocalDateTime;
 
 public class DoctorCategoryChooseController extends CommonDataChooseController<DoctorCategoryVM> {
 
@@ -72,8 +71,8 @@ public class DoctorCategoryChooseController extends CommonDataChooseController<D
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        doctorService = ctx.getBean(DoctorService.class);
+    protected void initServices() {
+        doctorService = SpringUtils.getBean(DoctorService.class);
     }
 
     private void searchDoctorCategories() {

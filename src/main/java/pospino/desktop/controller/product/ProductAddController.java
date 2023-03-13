@@ -7,7 +7,6 @@ import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toIntege
 import java.time.LocalDate;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.ApplicationContext;
 
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
@@ -32,6 +31,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.ProductStatus;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.ProductService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.ChooseResultVM;
 import pospino.desktop.viewmodel.DrugClassificationVM;
 import pospino.desktop.viewmodel.ProductAddVM;
@@ -114,13 +114,13 @@ public class ProductAddController extends CommonDataSaveController {
 
     private MenuItem btnSaveAndCopy;
 
-    private ProductService productService;
-
     private ProductCategoryVM selectedProductCategory;
 
     private UnitVM selectedUnit;
 
     private DrugClassificationVM selectedDrugClassification;
+
+    private ProductService productService;
 
     @FXML
     void onActionBtnSaveAndAdd(ActionEvent event) {
@@ -164,7 +164,10 @@ public class ProductAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
-        // Nothing to init
+        if (!isPharmacyFeatureEnabled()) {
+            setVisibleInLayout(false, vboxMedicine);
+            setVisibleInLayout(false, vboxPresciptionSellPrice);
+        }
     }
 
     @Override
@@ -235,8 +238,8 @@ public class ProductAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        productService = ctx.getBean(ProductService.class);
+    protected void initServices() {
+        productService = SpringUtils.getBean(ProductService.class);
     }
 
     private void resetControls() {

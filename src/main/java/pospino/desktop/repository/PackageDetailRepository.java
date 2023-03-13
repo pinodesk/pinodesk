@@ -19,7 +19,7 @@ public interface PackageDetailRepository extends PagingAndSortingRepository<Pack
             select b.*, a.quantity as quantity_in_package
             from package_detail a
             inner join product b on b.id = a.package_product_id
-            where a.product_id = :productId and a.deleted_at is null
+            where a.product_id = :productId and a.deleted_at is null and b.deleted_at is null
             """)
     public List<PackageProductVM> findByProductId(@Param("productId") Long productId);
 

@@ -14,11 +14,11 @@ import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
-import org.springframework.context.ApplicationContext;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.ProductStatus;
@@ -79,6 +79,9 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
     @FXML
     private TextField tfDescription;
 
+    @FXML
+    private HBox hboxPrescriptionSellingPrice;
+
     private UnitVM selectedUnit;
 
     private ProductCategoryVM selectedProductCategory;
@@ -126,6 +129,9 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
                 selectedUnit = unit;
                 tfUnit.setText(unit.getLabel());
             }
+        }
+        if (!isPharmacyFeatureEnabled()) {
+            setVisibleInLayout(false, hboxPrescriptionSellingPrice);
         }
     }
 
@@ -200,7 +206,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // No services used
     }
 

@@ -12,6 +12,8 @@ public enum CommonLabel implements IMessage {
     LBL_INACTIVE,
     LBL_SHOW,
     LBL_HIDE,
+    LBL_ENABLE,
+    LBL_DISABLE,
     BTN_OK,
     BTN_YES,
     BTN_NO,

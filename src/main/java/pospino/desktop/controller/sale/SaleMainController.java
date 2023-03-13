@@ -7,8 +7,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
@@ -178,7 +176,7 @@ public class SaleMainController extends BaseController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         saleService = SpringUtils.getBean(SaleService.class);
     }
 
@@ -241,6 +239,9 @@ public class SaleMainController extends BaseController {
             saleFilter = new SaleFilterVM();
         }
         searchSales();
+        if (!isPharmacyFeatureEnabled()) {
+            tblSales.getColumns().remove(colDoctorName);
+        }
     }
 
     @Override

@@ -10,8 +10,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.Predicate;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
 import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
@@ -304,6 +302,11 @@ public class ProductPackageEditController extends CommonDataSaveController {
         tfPrescriptionSellPrice.setText(toStringOrEmpty(currentPackage.getPrescriptionSellingPrice()));
         loadProductPrice(currentPackage.getId());
         loadPackageProducts(currentPackage.getId());
+        if (!isPharmacyFeatureEnabled()) {
+            setVisibleInLayout(false, vboxPresciptionSellPrice);
+            tblProducts.getColumns().remove(colPrescriptionSellingPrice);
+            tblPrice.getColumns().remove(colPrescriptionSellingPrice1);
+        }
     }
 
     @Override
@@ -332,7 +335,7 @@ public class ProductPackageEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         productCategoryService = SpringUtils.getBean(ProductCategoryService.class);
         unitService = SpringUtils.getBean(UnitService.class);
         productService = SpringUtils.getBean(ProductService.class);

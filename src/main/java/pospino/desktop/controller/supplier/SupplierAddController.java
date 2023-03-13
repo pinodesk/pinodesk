@@ -2,14 +2,13 @@ package pospino.desktop.controller.supplier;
 
 import java.util.List;
 
+import org.apache.commons.collections.CollectionUtils;
+
 import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
 import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
 import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.context.ApplicationContext;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +24,7 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.controller.CommonDataSaveController;
 import pospino.desktop.service.SupplierService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.SupplierAddVM;
 import pospino.desktop.viewmodel.SupplierContactAddVM;
 
@@ -100,8 +100,8 @@ public class SupplierAddController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        supplierService = ctx.getBean(SupplierService.class);
+    protected void initServices() {
+        supplierService = SpringUtils.getBean(SupplierService.class);
     }
 
     @Override

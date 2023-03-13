@@ -14,8 +14,6 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import org.springframework.context.ApplicationContext;
-
 import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
 import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
@@ -41,6 +39,7 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
@@ -74,6 +73,9 @@ public class SaleEditController extends CommonDataSaveController {
 
     @FXML
     private Button btnNewCustomer;
+
+    @FXML
+    private HBox hboxDoctor;
 
     @FXML
     private TextField tfDoctor;
@@ -380,6 +382,10 @@ public class SaleEditController extends CommonDataSaveController {
         lblTotalPayment.setText(formatOrDefault(totalPayment, locale, "0"));
         lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
         lblTotalSale.setText(formatOrDefault(totalSale, locale, "0"));
+        if (!isPharmacyFeatureEnabled()) {
+            setVisibleInLayout(false, hboxDoctor);
+            cbSellingMode.getItems().remove(1);
+        }
     }
 
     @Override
@@ -422,7 +428,7 @@ public class SaleEditController extends CommonDataSaveController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         saleService = SpringUtils.getBean(SaleService.class);
         productService = SpringUtils.getBean(ProductService.class);
     }

@@ -4,8 +4,6 @@ import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
-import org.springframework.context.ApplicationContext;
-
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -16,6 +14,7 @@ import javafx.scene.control.TextField;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.controller.CommonDataChooseController;
 import pospino.desktop.service.UnitService;
+import pospino.desktop.util.SpringUtils;
 import pospino.desktop.viewmodel.UnitVM;
 
 public class UnitChooseController extends CommonDataChooseController<UnitVM> {
@@ -53,8 +52,8 @@ public class UnitChooseController extends CommonDataChooseController<UnitVM> {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
-        unitService = ctx.getBean(UnitService.class);
+    protected void initServices() {
+        unitService = SpringUtils.getBean(UnitService.class);
     }
 
     private void searchProductCategories() {

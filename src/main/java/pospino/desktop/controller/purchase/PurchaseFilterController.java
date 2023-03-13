@@ -12,8 +12,6 @@ import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
 import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
 import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
 
-import org.springframework.context.ApplicationContext;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
@@ -137,7 +135,7 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         // No services to initialize
     }
 
@@ -146,9 +144,9 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         TextFieldUtils.setDigitTextFields(tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax, tfTotalProductMin);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
-                new SimpleComboBoxModel(StringConstants.EMPTY, StringConstants.EMPTY),
-                new SimpleComboBoxModel(PaymentStatus.PAID.toString(), t.translate(CommonLabel.LBL_PAID)),
-                new SimpleComboBoxModel(PaymentStatus.UNPAID.toString(), t.translate(CommonLabel.LBL_UNPAID)));
+                new SimpleComboBoxModel(null, StringConstants.EMPTY),
+                new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID, t.translate(CommonLabel.LBL_UNPAID)));
         setSupplierChooser(tfSupplier, this::handleSelectedSupplier, tfTotalProductMin);
     }
 

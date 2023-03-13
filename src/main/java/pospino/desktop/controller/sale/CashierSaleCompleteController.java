@@ -6,8 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-import org.springframework.context.ApplicationContext;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -132,7 +130,7 @@ public class CashierSaleCompleteController extends CommonContentPaneController {
     }
 
     @Override
-    protected void initServices(ApplicationContext ctx) {
+    protected void initServices() {
         configurationService = SpringUtils.getBean(ConfigurationService.class);
         printer = new PrintUtils(configurationService, t, resources);
     }
