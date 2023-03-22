@@ -85,7 +85,7 @@ public class DoctorMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_DOCTOR_ADD, false, we -> {
+        StageUtils.modal(Page.CATALOG_DOCTOR_ADD, false, we -> {
             if (getPageData() != null) {
                 searchDoctors();
             }
@@ -95,7 +95,7 @@ public class DoctorMainController extends BaseController {
     @FXML
     void onActionBtnFilter(ActionEvent event) {
         setPageData(doctorFilter);
-        StageUtils.modal(Page.MASTER_DOCTOR_FILTER, false, we -> {
+        StageUtils.modal(Page.CATALOG_DOCTOR_FILTER, false, we -> {
             DoctorFilterVM result = getPageData();
             if (result == null) {
                 return;
@@ -125,7 +125,7 @@ public class DoctorMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_DOCTORS, btnAdd, btnRemove);
+        disableWriteAction(MenuCodeConstants.CATALOG_DOCTORS, btnAdd, btnRemove);
         TableViewUtils.setColumnValue(colCode, DoctorVM::getCode);
         TableViewUtils.setColumnValue(colName, DoctorVM::getName);
         TableViewUtils.setColumnValue(colRegistrationNumber, DoctorVM::getRegistrationNumber);
@@ -185,7 +185,7 @@ public class DoctorMainController extends BaseController {
     private void handleActionTblDoctors() {
         if (TableViewUtils.hasItemSelected(tblDoctors)) {
             setPageData(TableViewUtils.getSelectedItem(tblDoctors));
-            StageUtils.modal(Page.MASTER_DOCTOR_EDIT, false, event -> {
+            StageUtils.modal(Page.CATALOG_DOCTOR_EDIT, false, event -> {
                 if (getPageData() != null) {
                     searchDoctors();
                 }

@@ -79,7 +79,7 @@ public class SupplierMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_SUPPLIER_ADD, false, we -> {
+        StageUtils.modal(Page.CATALOG_SUPPLIER_ADD, false, we -> {
             if (getPageData() != null) {
                 searchSuppliers();
             }
@@ -89,7 +89,7 @@ public class SupplierMainController extends BaseController {
     @FXML
     void onActionBtnFilter(ActionEvent event) {
         setPageData(supplierFilter);
-        StageUtils.modal(Page.MASTER_SUPPLIER_FILTER, false, we -> {
+        StageUtils.modal(Page.CATALOG_SUPPLIER_FILTER, false, we -> {
             SupplierFilterVM result = getPageData();
             if (result == null) {
                 return;
@@ -119,7 +119,7 @@ public class SupplierMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_SUPPLIERS, btnAdd, btnRemove);
+        disableWriteAction(MenuCodeConstants.CATALOG_SUPPLIERS, btnAdd, btnRemove);
         TableViewUtils.setColumnValue(colCode, SupplierVM::getCode);
         TableViewUtils.setColumnValue(colName, SupplierVM::getName);
         TableViewUtils.setColumnValue(colPhone, SupplierVM::getPhone);
@@ -177,7 +177,7 @@ public class SupplierMainController extends BaseController {
     private void handleActionTableSupplier() {
         if (TableViewUtils.hasItemSelected(tableSupplier)) {
             setPageData(TableViewUtils.getSelectedItem(tableSupplier));
-            StageUtils.modal(Page.MASTER_SUPPLIER_EDIT, false, event -> {
+            StageUtils.modal(Page.CATALOG_SUPPLIER_EDIT, false, event -> {
                 if (getPageData() != null) {
                     searchSuppliers();
                 }

@@ -161,7 +161,7 @@ public class CashierController extends CommonContentPaneController {
             setPageData(keyword);
         }
         setFocused(tfQuantity);
-        StageUtils.modal(Page.MASTER_PRODUCT_CHOOSE, false, we -> {
+        StageUtils.modal(Page.CATALOG_PRODUCT_CHOOSE, false, we -> {
             ChooseResultVM<ProductVM> result = getPageData();
             handleSelectedProduct(result);
         });
@@ -169,7 +169,7 @@ public class CashierController extends CommonContentPaneController {
 
     @FXML
     void onActionBtnCustomer(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_CUSTOMER_CHOOSE, false, we -> {
+        StageUtils.modal(Page.CATALOG_CUSTOMER_CHOOSE, false, we -> {
             ChooseResultVM<CustomerVM> result = getPageData();
             handleSelectedCustomer(result);
         });

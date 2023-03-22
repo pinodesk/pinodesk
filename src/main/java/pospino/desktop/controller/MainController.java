@@ -51,7 +51,7 @@ public class MainController extends BaseController {
     private Label lblUserGroup;
 
     @FXML
-    private Label lblMenuMaster;
+    private Label lblMenuCatalog;
 
     @FXML
     private Button btnMenuProducts;
@@ -131,11 +131,11 @@ public class MainController extends BaseController {
         List<String> userGroupMenuCodes = userGroupMenus.stream()
                 .filter(ugm -> SimpleStatus.YES.toString().equals(ugm.getRead())).map(UserGroupMenuVM::getMenuCode)
                 .toList();
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.MASTER, lblMenuMaster);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.MASTER_PRODUCTS, btnMenuProducts);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.MASTER_CUSTOMERS, btnMenuCustomers);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.MASTER_SUPPLIERS, btnMenuSuppliers);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.MASTER_DOCTORS, btnMenuDoctors);
+        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG, lblMenuCatalog);
+        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_PRODUCTS, btnMenuProducts);
+        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_CUSTOMERS, btnMenuCustomers);
+        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_SUPPLIERS, btnMenuSuppliers);
+        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_DOCTORS, btnMenuDoctors);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION, lblMenuTransaction);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION_PURCHASES, btnMenuPurchases);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION_SALES, btnMenuSales);
@@ -173,22 +173,22 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnMenuProducts(ActionEvent event) {
-        changeContent(Page.MASTER_PRODUCT_MAIN, (Button) event.getSource());
+        changeContent(Page.CATALOG_PRODUCT_MAIN, (Button) event.getSource());
     }
 
     @FXML
     void onActionBtnMenuCustomers(ActionEvent event) {
-        changeContent(Page.MASTER_CUSTOMER_MAIN, (Button) event.getSource());
+        changeContent(Page.CATALOG_CUSTOMER_MAIN, (Button) event.getSource());
     }
 
     @FXML
     void onActionBtnMenuSuppliers(ActionEvent event) {
-        changeContent(Page.MASTER_SUPPLIER_MAIN, (Button) event.getSource());
+        changeContent(Page.CATALOG_SUPPLIER_MAIN, (Button) event.getSource());
     }
 
     @FXML
     void onActionBtnMenuDoctors(ActionEvent event) {
-        changeContent(Page.MASTER_DOCTOR_MAIN, (Button) event.getSource());
+        changeContent(Page.CATALOG_DOCTOR_MAIN, (Button) event.getSource());
     }
 
     @FXML

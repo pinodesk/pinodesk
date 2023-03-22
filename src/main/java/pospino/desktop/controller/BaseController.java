@@ -334,7 +334,7 @@ public abstract class BaseController {
             boolean isFirstInput,
             Consumer<T> outputConsumer,
             Node nextFocusNode) {
-        setChooserOnFocus(tf, isFirstInput, Page.MASTER_PRODUCT_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
+        setChooserOnFocus(tf, isFirstInput, Page.CATALOG_PRODUCT_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setProductCategoryChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
@@ -346,7 +346,7 @@ public abstract class BaseController {
             boolean isFirstInput,
             Consumer<T> outputConsumer,
             Node nextFocusNode) {
-        setChooserOnFocus(tf, isFirstInput, Page.MASTER_PRODUCT_CHOOSE_UNIT, outputConsumer, nextFocusNode);
+        setChooserOnFocus(tf, isFirstInput, Page.CATALOG_PRODUCT_CHOOSE_UNIT, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setUnitChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
@@ -358,7 +358,7 @@ public abstract class BaseController {
             boolean isFirstInput,
             Consumer<T> outputConsumer,
             Node nextFocusNode) {
-        setChooserOnFocus(tf, isFirstInput, Page.MASTER_PRODUCT_CHOOSE, outputConsumer, nextFocusNode);
+        setChooserOnFocus(tf, isFirstInput, Page.CATALOG_PRODUCT_CHOOSE, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setProductChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
@@ -370,7 +370,7 @@ public abstract class BaseController {
             boolean isFirstInput,
             Consumer<T> outputConsumer,
             Node nextFocusNode) {
-        setChooserOnFocus(tf, isFirstInput, Page.MASTER_SUPPLIER_CHOOSE, outputConsumer, nextFocusNode);
+        setChooserOnFocus(tf, isFirstInput, Page.CATALOG_SUPPLIER_CHOOSE, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setSupplierChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
@@ -382,7 +382,7 @@ public abstract class BaseController {
             boolean isFirstInput,
             Consumer<T> outputConsumer,
             Node nextFocusNode) {
-        setChooserOnFocus(tf, isFirstInput, Page.MASTER_CUSTOMER_CHOOSE, outputConsumer, nextFocusNode);
+        setChooserOnFocus(tf, isFirstInput, Page.CATALOG_CUSTOMER_CHOOSE, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setCustomerChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
@@ -394,7 +394,7 @@ public abstract class BaseController {
             boolean isFirstInput,
             Consumer<T> outputConsumer,
             Node nextFocusNode) {
-        setChooserOnFocus(tf, isFirstInput, Page.MASTER_DOCTOR_CHOOSE, outputConsumer, nextFocusNode);
+        setChooserOnFocus(tf, isFirstInput, Page.CATALOG_DOCTOR_CHOOSE, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setDoctorChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
@@ -406,7 +406,7 @@ public abstract class BaseController {
             boolean isFirstInput,
             Consumer<T> outputConsumer,
             Node nextFocusNode) {
-        setChooserOnFocus(tf, isFirstInput, Page.MASTER_DOCTOR_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
+        setChooserOnFocus(tf, isFirstInput, Page.CATALOG_DOCTOR_CHOOSE_CATEGORY, outputConsumer, nextFocusNode);
     }
 
     protected <T> void setDoctorCategoryChooser(TextField tf, Consumer<T> outputConsumer, Node nextFocusNode) {
@@ -421,7 +421,7 @@ public abstract class BaseController {
         setChooserOnFocus(
                 tf,
                 isFirstInput,
-                Page.MASTER_PRODUCT_CHOOSE_DRUG_CLASSIFICATION,
+                Page.CATALOG_PRODUCT_CHOOSE_DRUG_CLASSIFICATION,
                 outputConsumer,
                 nextFocusNode);
     }

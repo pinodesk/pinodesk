@@ -184,7 +184,7 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     @FXML
     void onActionBtnNewProduct(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_PRODUCT_ADD, false, we -> {
+        StageUtils.modal(Page.CATALOG_PRODUCT_ADD, false, we -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 displayInfo(MessageCode.SUCCESS_ADD_PRODUCT);
             }
@@ -193,7 +193,7 @@ public class PurchaseAddController extends CommonDataSaveController {
 
     @FXML
     void onActionBtnNewSupplier(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_SUPPLIER_ADD, false, we -> {
+        StageUtils.modal(Page.CATALOG_SUPPLIER_ADD, false, we -> {
             if (getPageData() != null) {
                 displayInfo(MessageCode.SUCCESS_ADD_SUPPLIER);
             }

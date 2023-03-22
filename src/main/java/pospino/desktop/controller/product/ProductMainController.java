@@ -103,7 +103,7 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_PRODUCT_ADD, we -> {
+        StageUtils.modal(Page.CATALOG_PRODUCT_ADD, we -> {
             if (Boolean.TRUE.equals(getPageData())) {
                 searchProducts();
             }
@@ -113,7 +113,7 @@ public class ProductMainController extends BaseController {
     @FXML
     void onActionBtnFilter(ActionEvent event) {
         setPageData(productFilter);
-        StageUtils.modal(Page.MASTER_PRODUCT_FILTER, false, we -> {
+        StageUtils.modal(Page.CATALOG_PRODUCT_FILTER, false, we -> {
             ProductFilterVM result = getPageData();
             if (result == null) {
                 return;
@@ -138,7 +138,7 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnImport(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_PRODUCT_IMPORT, false, we -> {
+        StageUtils.modal(Page.CATALOG_PRODUCT_IMPORT, false, we -> {
             // Remove the last data from the stack and ignore (if not used) to avoid such
             // this issue https://gitlab.com/pospino/pospino-desktop/-/issues/52
             getPageData();
@@ -148,7 +148,7 @@ public class ProductMainController extends BaseController {
 
     @FXML
     void onActionBtnPackage(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_PRODUCT_ADD_PACKAGE, false, we -> {
+        StageUtils.modal(Page.CATALOG_PRODUCT_ADD_PACKAGE, false, we -> {
             getPageData();
             searchProducts();
         });
@@ -161,7 +161,7 @@ public class ProductMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_PRODUCTS, btnAdd, btnRemove, btnImport, btnPackage);
+        disableWriteAction(MenuCodeConstants.CATALOG_PRODUCTS, btnAdd, btnRemove, btnImport, btnPackage);
         initTableProduct();
         registerKeyListener();
     }
@@ -242,14 +242,14 @@ public class ProductMainController extends BaseController {
             ProductVM product = TableViewUtils.getSelectedItem(tblProduct);
             setPageData(product);
             if (CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE.equals(product.getCategoryCode())) {
-                StageUtils.modal(Page.MASTER_PRODUCT_EDIT_PACKAGE, event -> {
+                StageUtils.modal(Page.CATALOG_PRODUCT_EDIT_PACKAGE, event -> {
                     // Remove the last data from the stack and ignore (if not used) to avoid such
                     // this issue https://gitlab.com/pospino/pospino-desktop/-/issues/52
                     getPageData();
                     searchProducts();
                 });
             } else {
-                StageUtils.modal(Page.MASTER_PRODUCT_EDIT, event -> {
+                StageUtils.modal(Page.CATALOG_PRODUCT_EDIT, event -> {
                     getPageData();
                     searchProducts();
                 });

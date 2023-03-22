@@ -73,7 +73,7 @@ public class DoctorEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_DOCTORS, btnSave, btnRemove);
+        disableWriteAction(MenuCodeConstants.CATALOG_DOCTORS, btnSave, btnRemove);
         setDoctorCategoryChooser(tfCategory, this::handleSelectedDoctorCategory, tfRegistrationNumber);
         TextFieldUtils.setDigitTextFields(tfPhone);
     }

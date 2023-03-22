@@ -86,7 +86,7 @@ public class SupplierEditController extends CommonDataSaveController {
 
     @FXML
     void onActionBtnAddContact(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_SUPPLIER_CONTACT_ADD, false, we -> {
+        StageUtils.modal(Page.CATALOG_SUPPLIER_CONTACT_ADD, false, we -> {
             List<SupplierContactAddVM> contacts = getPageData();
             if (CollectionUtils.isNotEmpty(contacts)) {
                 tblSupplierContact.getItems().addAll(contacts);
@@ -107,7 +107,7 @@ public class SupplierEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_SUPPLIERS, btnSave, btnRemove);
+        disableWriteAction(MenuCodeConstants.CATALOG_SUPPLIERS, btnSave, btnRemove);
         tblSupplierContact.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblSupplierContact.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.setColumnValue(colName, SupplierContactAddVM::getName);

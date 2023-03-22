@@ -77,7 +77,7 @@ public class CustomerMainController extends BaseController {
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_CUSTOMER_ADD, false, we -> {
+        StageUtils.modal(Page.CATALOG_CUSTOMER_ADD, false, we -> {
             if (getPageData() != null) {
                 searchCustomers();
             }
@@ -87,7 +87,7 @@ public class CustomerMainController extends BaseController {
     @FXML
     void onActionBtnFilter(ActionEvent event) {
         setPageData(customerFilter);
-        StageUtils.modal(Page.MASTER_CUSTOMER_FILTER, false, we -> {
+        StageUtils.modal(Page.CATALOG_CUSTOMER_FILTER, false, we -> {
             CustomerFilterVM result = getPageData();
             if (result == null) {
                 return;
@@ -117,7 +117,7 @@ public class CustomerMainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_CUSTOMERS, btnAdd, btnRemove);
+        disableWriteAction(MenuCodeConstants.CATALOG_CUSTOMERS, btnAdd, btnRemove);
         TableViewUtils.setColumnValue(colCode, CustomerVM::getCode);
         TableViewUtils.setColumnValue(colName, CustomerVM::getName);
         TableViewUtils.setColumnValue(colPhone, CustomerVM::getPhone);
@@ -174,7 +174,7 @@ public class CustomerMainController extends BaseController {
     private void handleActionTableCustomer() {
         if (TableViewUtils.hasItemSelected(tableCustomer)) {
             setPageData(TableViewUtils.getSelectedItem(tableCustomer));
-            StageUtils.modal(Page.MASTER_CUSTOMER_EDIT, false, event -> {
+            StageUtils.modal(Page.CATALOG_CUSTOMER_EDIT, false, event -> {
                 if (getPageData() != null) {
                     searchCustomers();
                 }

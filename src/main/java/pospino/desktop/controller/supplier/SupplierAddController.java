@@ -80,7 +80,7 @@ public class SupplierAddController extends CommonDataSaveController {
 
     @FXML
     void onActionBtnAddContact(ActionEvent event) {
-        StageUtils.modal(Page.MASTER_SUPPLIER_CONTACT_ADD, false, we -> {
+        StageUtils.modal(Page.CATALOG_SUPPLIER_CONTACT_ADD, false, we -> {
             List<SupplierContactAddVM> contacts = getPageData();
             if (CollectionUtils.isNotEmpty(contacts)) {
                 tblSupplierContact.getItems().addAll(contacts);

@@ -288,7 +288,7 @@ public class ProductEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_PRODUCTS, btnSave, btnRemove, btnAddExpiry);
+        disableWriteAction(MenuCodeConstants.CATALOG_PRODUCTS, btnSave, btnRemove, btnAddExpiry);
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(
                 tfBarcode,

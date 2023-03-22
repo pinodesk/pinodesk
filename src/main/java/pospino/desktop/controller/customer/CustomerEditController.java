@@ -55,7 +55,7 @@ public class CustomerEditController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        disableWriteAction(MenuCodeConstants.MASTER_CUSTOMERS, btnSave, btnRemove);
+        disableWriteAction(MenuCodeConstants.CATALOG_CUSTOMERS, btnSave, btnRemove);
         TextFieldUtils.setDigitTextFields(tfPhone);
     }
 

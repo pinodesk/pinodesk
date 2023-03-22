@@ -1,13 +1,13 @@
 package pospino.desktop.constant;
 
 public interface MenuCodeConstants {
-    String MASTER = "0001";
+    String CATALOG = "0001";
     String TRANSACTION = "0002";
     String SETTINGS = "0003";
-    String MASTER_PRODUCTS = "0004";
-    String MASTER_CUSTOMERS = "0005";
-    String MASTER_SUPPLIERS = "0006";
-    String MASTER_DOCTORS = "0014";
+    String CATALOG_PRODUCTS = "0004";
+    String CATALOG_CUSTOMERS = "0005";
+    String CATALOG_SUPPLIERS = "0006";
+    String CATALOG_DOCTORS = "0014";
     String TRANSACTION_PURCHASES = "0007";
     String TRANSACTION_SALES = "0008";
     String TRANSACTION_PAYABLES = "0009";
