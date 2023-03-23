@@ -338,9 +338,7 @@ public class SaleEditController extends CommonDataSaveController {
             }
             vboxDueDate.setDisable(isPaid);
         });
-        ComboBoxUtils.onSelectedItemChanged(cbSellingMode, (ov, nv) -> {
-            updateDisplaySellingPrice(nv.getValue());
-        });
+        ComboBoxUtils.onSelectedItemChanged(cbSellingMode, (ov, nv) -> updateDisplaySellingPrice(nv.getValue()));
     }
 
     @Override
@@ -528,7 +526,6 @@ public class SaleEditController extends CommonDataSaveController {
         return TableViewUtils.getItemIndex(productExists, table);
     }
 
-    @SuppressWarnings("null")
     private void calculateSaleSummary() {
         Locale locale = resources.getLocale();
         ObservableList<SaleProductVM> items = tblSaleProduct.getItems();

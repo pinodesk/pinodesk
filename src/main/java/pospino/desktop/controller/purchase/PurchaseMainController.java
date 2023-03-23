@@ -3,6 +3,8 @@ package pospino.desktop.controller.purchase;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
@@ -15,6 +17,8 @@ import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
 import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
 import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
 
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -25,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
@@ -32,6 +37,7 @@ import pospino.desktop.constant.MenuCodeConstants;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.PaymentStatus;
+import pospino.desktop.constant.StringConstants;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.PurchaseService;
@@ -92,8 +98,33 @@ public class PurchaseMainController extends BaseController {
     @FXML
     private Label lblRows;
 
+    @FXML
+    private Label lblPeriod;
+
+    @FXML
+    private Label lblExpense;
+
+    @FXML
+    private Label lblPurchaseCount;
+
+    @FXML
+    private VBox vboxSummary;
+
+    @FXML
+    private Button btnToggleSummary;
+
+    @FXML
+    private FontAwesomeIconView faBtnSummary;
+
     private PurchaseService purchaseService;
     private PurchaseFilterVM purchaseFilter;
+
+    @FXML
+    void onActionBtnToggleSummary(ActionEvent event) {
+        boolean visible = vboxSummary.isVisible();
+        setVisibleInLayout(!visible, vboxSummary);
+        faBtnSummary.setGlyphName(visible ? FontAwesomeIcon.ANGLE_LEFT.name() : FontAwesomeIcon.ANGLE_RIGHT.name());
+    }
 
     @FXML
     void onActionBtnAdd(ActionEvent event) {
@@ -200,7 +231,10 @@ public class PurchaseMainController extends BaseController {
 
     @Override
     protected void initControlValues() {
-        purchaseFilter = new PurchaseFilterVM();
+        purchaseFilter = getPageData();
+        if (purchaseFilter == null) {
+            purchaseFilter = new PurchaseFilterVM();
+        }
         searchPurchases();
     }
 
@@ -220,7 +254,7 @@ public class PurchaseMainController extends BaseController {
                     }
                     tblPurchase.setItems(FXCollections.observableList(purchases));
                     TableViewUtils.sortDescending(tblPurchase, colUpdatedAt);
-                    lblRows.setText(StringNumberUtils.format(purchases.size(), resources.getLocale()));
+                    calculateSummary(purchases);
                 }));
     }
 
@@ -234,6 +268,44 @@ public class PurchaseMainController extends BaseController {
                 searchPurchases();
             });
         }
+    }
+
+    private void calculateSummary(List<PurchaseVM> purchases) {
+        Locale locale = resources.getLocale();
+        LocalDate invoiceDateMin = purchaseFilter.getInvoiceDateMin();
+        LocalDate invoiceDateMax = purchaseFilter.getInvoiceDateMax();
+        int purchaseCount = 0;
+        BigDecimal expense = BigDecimal.ZERO;
+        if (purchases != null) {
+            purchaseCount = purchases.size();
+            expense = purchases.stream().map(PurchaseVM::getTotalPayment).reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+        lblExpense.setText(StringNumberUtils.format(expense, locale));
+        lblPurchaseCount.setText(StringNumberUtils.format(purchaseCount, locale));
+        StringBuilder period = new StringBuilder();
+        if (invoiceDateMin == null && invoiceDateMax == null) {
+            period.append(StringConstants.MINUS);
+        } else if (invoiceDateMin == null) {
+            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMax);
+            period.append(format);
+            period.append(StringConstants.SPACE);
+            period.append(t.translate(CommonLabel.LBL_AND_BEFORE));
+        } else if (invoiceDateMax == null) {
+            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMin);
+            period.append(format);
+            period.append(StringConstants.SPACE);
+            period.append(t.translate(CommonLabel.LBL_AND_AFTER));
+        } else {
+            String formatMin = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMin);
+            String formatMax = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMax);
+            period.append(formatMin);
+            period.append(StringConstants.SPACE);
+            period.append(t.translate(CommonLabel.LBL_UNTIL));
+            period.append(StringConstants.SPACE);
+            period.append(formatMax);
+        }
+        lblPeriod.setText(period.toString());
+        lblRows.setText(StringNumberUtils.format(purchaseCount, locale));
     }
 
 }

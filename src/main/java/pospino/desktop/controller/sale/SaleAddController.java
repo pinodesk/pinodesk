@@ -469,7 +469,6 @@ public class SaleAddController extends CommonDataSaveController {
         return TableViewUtils.getItemIndex(productExists, table);
     }
 
-    @SuppressWarnings("null")
     private void calculateSaleSummary() {
         Locale locale = resources.getLocale();
         ObservableList<SaleProductVM> items = tblSaleProduct.getItems();

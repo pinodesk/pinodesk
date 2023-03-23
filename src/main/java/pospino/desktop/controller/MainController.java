@@ -27,6 +27,7 @@ import pospino.desktop.constant.Page;
 import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.viewmodel.CurrentSessionVM;
+import pospino.desktop.viewmodel.PurchaseFilterVM;
 import pospino.desktop.viewmodel.SaleFilterVM;
 import pospino.desktop.viewmodel.UserGroupMenuVM;
 
@@ -103,12 +104,12 @@ public class MainController extends BaseController {
 
     @Override
     protected void initServices() {
+        // No services to init
     }
 
     @Override
     protected void initControlActions() {
-        // No controls to initialize
-        // print();
+        // No controls to init
     }
 
     @Override
@@ -145,10 +146,8 @@ public class MainController extends BaseController {
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS_CONFIGURATION, btnMenuConfiguration);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS_USERS, btnMenuUsers);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS_USER_GROUPS, btnMenuUserGroups);
-        if (!isPharmacyFeatureEnabled()) {
-            if (btnMenuDoctors.isVisible()) {
-                vboxMenu.getChildren().remove(btnMenuDoctors);
-            }
+        if (!isPharmacyFeatureEnabled() && btnMenuDoctors.isVisible()) {
+            vboxMenu.getChildren().remove(btnMenuDoctors);
         }
     }
 
@@ -193,16 +192,21 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnMenuPurchases(ActionEvent event) {
+        LocalDate today = LocalDate.now();
+        PurchaseFilterVM filter = new PurchaseFilterVM();
+        filter.setInvoiceDateMax(today);
+        filter.setInvoiceDateMin(today.withDayOfMonth(1));
+        setPageData(filter);
         changeContent(Page.TRANSACTION_PURCHASE_MAIN, (Button) event.getSource());
     }
 
     @FXML
     void onActionBtnMenuSales(ActionEvent event) {
         LocalDate today = LocalDate.now();
-        SaleFilterVM saleFilter = new SaleFilterVM();
-        saleFilter.setCreatedDateMax(today);
-        saleFilter.setCreatedDateMin(today.withDayOfMonth(1));
-        setPageData(saleFilter);
+        SaleFilterVM filter = new SaleFilterVM();
+        filter.setCreatedDateMax(today);
+        filter.setCreatedDateMin(today.withDayOfMonth(1));
+        setPageData(filter);
         changeContent(Page.TRANSACTION_SALE_MAIN, (Button) event.getSource());
     }
 
