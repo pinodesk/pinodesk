@@ -52,6 +52,9 @@ public class MainController extends BaseController {
     private Label lblUserGroup;
 
     @FXML
+    private Button btnMenuDashboard;
+
+    @FXML
     private Label lblMenuCatalog;
 
     @FXML
@@ -132,6 +135,7 @@ public class MainController extends BaseController {
         List<String> userGroupMenuCodes = userGroupMenus.stream()
                 .filter(ugm -> SimpleStatus.YES.toString().equals(ugm.getRead())).map(UserGroupMenuVM::getMenuCode)
                 .toList();
+        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.DASHBOARD, btnMenuDashboard);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG, lblMenuCatalog);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_PRODUCTS, btnMenuProducts);
         removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_CUSTOMERS, btnMenuCustomers);
@@ -168,6 +172,11 @@ public class MainController extends BaseController {
             close();
             StageUtils.open(Page.LOGIN, false);
         }
+    }
+
+    @FXML
+    void onActionBtnMenuDashboard(ActionEvent event) {
+        changeContent(Page.DASHBOARD, (Button) event.getSource());
     }
 
     @FXML

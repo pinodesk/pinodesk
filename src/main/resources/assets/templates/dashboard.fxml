@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.DashboardController">
+   <children>
+      <AnchorPane prefWidth="774.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_dashboard" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <padding>
+                  <Insets bottom="4.0" top="4.0" />
+               </padding>
+            </Label>
+         </children>
+      </AnchorPane>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: white;" styleClass="edge-to-edge" vbarPolicy="NEVER">
+         <VBox.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </VBox.margin>
+         <content>
+            <VBox spacing="10.0">
+               <children>
+                  <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                     <children>
+                        <Label text="%lbl_year">
+                           <font>
+                              <Font size="13.0" />
+                           </font>
+                        </Label>
+                        <ComboBox fx:id="cbYear" minWidth="100.0" styleClass="combo-box-primary" />
+                     </children>
+                  </HBox>
+                  <GridPane hgap="10.0" vgap="10.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" percentWidth="25.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="25.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints vgrow="SOMETIMES" />
+                      <RowConstraints vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <VBox style="-fx-background-color: #f9a41a;" GridPane.rowIndex="1">
+                           <children>
+                              <Label text="%lbl_sale_transactions" textFill="WHITE" wrapText="true" />
+                              <AnchorPane VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="lblTotalSaleTrx" text="0" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="%lbl_tooltip_sale_transactions" wrapText="true">
+                                             <font>
+                                                <Font size="12.0" />
+                                             </font>
+                                          </Tooltip>
+                                       </tooltip>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                        <VBox style="-fx-background-color: f9a41a;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <Label text="%lbl_total_revenue" textFill="WHITE" wrapText="true" />
+                              <AnchorPane VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="lblTotalRevenue" text="0" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="%lbl_tooltip_revenue" wrapText="true">
+                                             <font>
+                                                <Font size="12.0" />
+                                             </font>
+                                          </Tooltip>
+                                       </tooltip>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                        <VBox style="-fx-background-color: #f9a41a;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                           <children>
+                              <Label text="%lbl_average_monthly_revenue" textFill="WHITE" wrapText="true" />
+                              <AnchorPane VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="lblAverageMonthlyRevenue" text="0" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="%lbl_tooltip_average_monthly_revenue" wrapText="true">
+                                             <font>
+                                                <Font size="12.0" />
+                                             </font>
+                                          </Tooltip>
+                                       </tooltip>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                        <VBox style="-fx-background-color: #f2612d;">
+                           <children>
+                              <Label text="%lbl_purchase_transactions" textFill="WHITE" wrapText="true" />
+                              <AnchorPane VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="lblTotalPurchaseTrx" text="0" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="%lbl_tooltip_purchase_transactions" wrapText="true">
+                                             <font>
+                                                <Font size="12.0" />
+                                             </font>
+                                          </Tooltip>
+                                       </tooltip>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                        <VBox style="-fx-background-color: #f2612d;" GridPane.columnIndex="1">
+                           <children>
+                              <Label text="%lbl_total_expense" textFill="WHITE" wrapText="true" />
+                              <AnchorPane VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="lblTotalExpense" text="0" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="%lbl_tooltip_expense" wrapText="true">
+                                             <font>
+                                                <Font size="12.0" />
+                                             </font>
+                                          </Tooltip>
+                                       </tooltip>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                        <VBox style="-fx-background-color: #f2612d;" GridPane.columnIndex="2">
+                           <children>
+                              <Label text="%lbl_average_monthly_expense" textFill="WHITE" wrapText="true" />
+                              <AnchorPane VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="lblAverageMonthlyExpense" text="0" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="%lbl_tooltip_average_monthly_expense" wrapText="true">
+                                             <font>
+                                                <Font size="12.0" />
+                                             </font>
+                                          </Tooltip>
+                                       </tooltip>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                        <VBox style="-fx-background-color: #f9a41a;" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                           <children>
+                              <Label text="%lbl_current_month_revenue" textFill="WHITE" wrapText="true" />
+                              <AnchorPane VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="lblCurrentMonthRevenue" text="0" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="%lbl_tooltip_current_month_revenue" wrapText="true">
+                                             <font>
+                                                <Font size="12.0" />
+                                             </font>
+                                          </Tooltip>
+                                       </tooltip>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                        <VBox style="-fx-background-color: #f2612d;" GridPane.columnIndex="3">
+                           <children>
+                              <Label text="%lbl_current_month_expense" textFill="WHITE" wrapText="true" />
+                              <AnchorPane VBox.vgrow="ALWAYS">
+                                 <VBox.margin>
+                                    <Insets bottom="10.0" top="10.0" />
+                                 </VBox.margin>
+                                 <children>
+                                    <Label fx:id="lblCurrentMonthExpense" text="0" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0">
+                                       <font>
+                                          <Font name="System Bold" size="24.0" />
+                                       </font>
+                                       <tooltip>
+                                          <Tooltip text="%lbl_tooltip_current_month_expense" wrapText="true">
+                                             <font>
+                                                <Font size="12.0" />
+                                             </font>
+                                          </Tooltip>
+                                       </tooltip>
+                                    </Label>
+                                 </children>
+                              </AnchorPane>
+                           </children>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                  </GridPane>
+                  <VBox alignment="TOP_CENTER" style="-fx-border-color: #bebebe;">
+                     <children>
+                        <Label text="%lbl_monthly_expense_and_revenue" />
+                        <BarChart fx:id="chartMonthlyExpenseAndRevenue" barGap="0.0" verticalGridLinesVisible="false">
+                           <xAxis>
+                              <CategoryAxis side="BOTTOM" />
+                           </xAxis>
+                           <yAxis>
+                              <NumberAxis side="LEFT" />
+                           </yAxis>
+                        </BarChart>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </VBox>
+                  <GridPane hgap="10.0" vgap="10.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                        <RowConstraints vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <VBox spacing="10.0">
+                           <children>
+                              <Label text="%lbl_best_selling_products" />
+                              <TableView fx:id="tblBestSellingProducts" prefHeight="200.0" prefWidth="200.0">
+                                <columns>
+                                  <TableColumn fx:id="colBestSellingProductName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
+                                  <TableColumn fx:id="colBestSellingProductCategory" minWidth="-Infinity" prefWidth="200.0" text="%lbl_category" />
+                                    <TableColumn fx:id="colBestSellingProductSold" minWidth="-Infinity" prefWidth="100.0" text="%lbl_sold" />
+                                    <TableColumn fx:id="colBestSellingProductUnit" minWidth="-Infinity" prefWidth="100.0" text="%lbl_unit" />
+                                </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                        <VBox spacing="10.0" GridPane.columnIndex="1">
+                           <children>
+                              <Label text="%lbl_lowest_selling_products" />
+                              <TableView fx:id="tblLowestSellingProducts" prefHeight="200.0" prefWidth="200.0">
+                                 <columns>
+                                    <TableColumn fx:id="colLowestSellingProductName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
+                                    <TableColumn fx:id="colLowestSellingProductCategory" minWidth="-Infinity" prefWidth="200.0" text="%lbl_category" />
+                                    <TableColumn fx:id="colLowestSellingProductSold" minWidth="-Infinity" prefWidth="100.0" text="%lbl_sold" />
+                                    <TableColumn fx:id="colLowestSellingProductUnit" minWidth="-Infinity" prefWidth="100.0" text="%lbl_unit" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                        <VBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                           <children>
+                              <Label text="%lbl_products_out_of_stock" />
+                              <TableView fx:id="tblProductOutOfStock" prefHeight="200.0" prefWidth="200.0">
+                                 <columns>
+                                    <TableColumn fx:id="colProductOutOfStockName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
+                                    <TableColumn fx:id="colProductOutOfStockCategory" minWidth="-Infinity" prefWidth="200.0" text="%lbl_category" />
+                                    <TableColumn fx:id="colProductOutOfStockQuantity" minWidth="-Infinity" prefWidth="100.0" text="%lbl_quantity" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                        <VBox spacing="10.0" GridPane.rowIndex="1">
+                           <children>
+                              <Label text="%lbl_product_closest_expiries" />
+                              <TableView fx:id="tblProductClosestExpiry" prefHeight="200.0" prefWidth="200.0">
+                                 <columns>
+                                    <TableColumn fx:id="colProductClosestExpiryName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
+                                    <TableColumn fx:id="colProductClosestExpiryCategory" minWidth="-Infinity" prefWidth="200.0" text="%lbl_category" />
+                                    <TableColumn fx:id="colProductClosestExpiryDate" minWidth="-Infinity" prefWidth="100.0" text="%lbl_expired_date" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                        <VBox spacing="10.0" GridPane.rowIndex="2">
+                           <children>
+                              <Label text="%lbl_payable_closest_due_dates" />
+                              <TableView fx:id="tblPayableClosestDueDate" prefHeight="200.0" prefWidth="200.0">
+                                 <columns>
+                                    <TableColumn fx:id="colPayableClosestDueDateSupplierName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_supplier_name" />
+                                    <TableColumn fx:id="colPayableClosestDueDateInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
+                                    <TableColumn fx:id="colPayableClosestDueDateInvoiceDate" minWidth="-Infinity" prefWidth="100.0" text="%lbl_invoice_date" />
+                                    <TableColumn fx:id="colPayableClosestDueDateDueDate" minWidth="-Infinity" prefWidth="100.0" text="%lbl_due_date" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                        <VBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <children>
+                              <Label text="%lbl_receivable_closest_due_dates" />
+                              <TableView fx:id="tblReceivableClosestDueDate" prefHeight="200.0" prefWidth="200.0">
+                                 <columns>
+                                    <TableColumn fx:id="colReceivableClosestDueDateCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />
+                                    <TableColumn fx:id="colReceivableClosestDueDateInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
+                                    <TableColumn fx:id="colReceivableClosestDueDateInvoiceDate" minWidth="-Infinity" prefWidth="100.0" text="%lbl_invoice_date" />
+                                    <TableColumn fx:id="colReceivableClosestDueDateDueDate" minWidth="-Infinity" prefWidth="100.0" text="%lbl_due_date" />
+                                 </columns>
+                              </TableView>
+                           </children>
+                        </VBox>
+                     </children>
+                  </GridPane>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>

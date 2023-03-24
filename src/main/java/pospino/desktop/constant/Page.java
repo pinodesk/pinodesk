@@ -9,6 +9,7 @@ public enum Page implements IPage {
     LOADING("loading"),
     LOGIN("login"),
     INITIAL_SETUP("initial-setup"),
+    DASHBOARD("dashboard"),
 
     CATALOG_PRODUCT_MAIN("catalog/product/main"),
     CATALOG_PRODUCT_ADD("catalog/product/add"),

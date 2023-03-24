@@ -59,7 +59,9 @@ public enum CommonLabel implements IMessage {
     LBL_COPY_RECEIPT,
     LBL_UNTIL,
     LBL_AND_AFTER,
-    LBL_AND_BEFORE;
+    LBL_AND_BEFORE,
+    LBL_EXPENSE,
+    LBL_REVENUE;
 
     @Override
     public String toString() {

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import pospino.desktop.domain.Product;
+import pospino.desktop.viewmodel.ProductClosestExpiryVM;
+import pospino.desktop.viewmodel.ProductOutOfStockVM;
 import pospino.desktop.viewmodel.ProductVM;
 
 @Repository
@@ -47,5 +49,36 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
             where (a.code = :code or a.barcode = :code) and a.deleted_at is null
             """)
     Optional<ProductVM> findByCode(@Param("code") String code, @Param("language") String language);
+
+    @Query("""
+            select year(created_at) as year_created
+            from product
+            group by year_created
+            order by year_created
+            limit 1
+            """)
+    Optional<Integer> findMinCreatedYear();
+
+    @Query("""
+            select p.name as product_name, pc.name as category_name, p.closest_expired_date as expired_date
+            from product p
+            join product_category pc on pc.code = p.category_code and pc.language = :language
+            where closest_expired_date < :expiredDate
+            order by closest_expired_date
+            """)
+    List<ProductClosestExpiryVM> findByExpiredDateBefore(
+            @Param("expiredDate") LocalDate expiredDate,
+            @Param("language") String language);
+
+    @Query("""
+            select p.name as product_name, pc.name as category_name, p.quantity as quantity
+            from product p
+            join product_category pc on pc.code = p.category_code and pc.language = :language
+            where quantity < :quantity
+            order by quantity
+            """)
+    List<ProductOutOfStockVM> findByQuantityLowerThan(
+            @Param("quantity") Integer quantity,
+            @Param("language") String language);
 
 }

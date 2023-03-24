@@ -2,10 +2,7 @@ package pospino.desktop.controller;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.RoundingMode;
 import java.net.URL;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -298,14 +295,6 @@ public abstract class BaseController {
         return StageUtils.modal(Page.LOADING, StageStyle.UNDECORATED);
     }
 
-    protected String formatNumber(Number number) {
-        DecimalFormat df = new DecimalFormat();
-        df.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(resources.getLocale()));
-        df.setGroupingUsed(true);
-        df.setRoundingMode(RoundingMode.HALF_UP);
-        return df.format(number);
-    }
-
     protected <T> void setChooserOnFocus(
             TextField tf,
             boolean isFirstInput,
@@ -471,8 +460,10 @@ public abstract class BaseController {
      * @param node
      */
     protected void setVisibleInLayout(boolean visible, Node node) {
-        node.setVisible(visible);
-        node.setManaged(visible);
+        Platform.runLater(() -> {
+            node.setVisible(visible);
+            node.setManaged(visible);
+        });
     }
 
     protected boolean isNullOrZero(Number num) {

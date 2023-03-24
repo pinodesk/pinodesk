@@ -7,7 +7,6 @@ public interface MenuCodeConstants {
     String CATALOG_PRODUCTS = "0004";
     String CATALOG_CUSTOMERS = "0005";
     String CATALOG_SUPPLIERS = "0006";
-    String CATALOG_DOCTORS = "0014";
     String TRANSACTION_PURCHASES = "0007";
     String TRANSACTION_SALES = "0008";
     String TRANSACTION_PAYABLES = "0009";
@@ -15,4 +14,6 @@ public interface MenuCodeConstants {
     String SETTINGS_CONFIGURATION = "0011";
     String SETTINGS_USERS = "0012";
     String SETTINGS_USER_GROUPS = "0013";
+    String CATALOG_DOCTORS = "0014";
+    String DASHBOARD = "0015";
 }
