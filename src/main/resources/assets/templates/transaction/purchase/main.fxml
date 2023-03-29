@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/stoready-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stoready.desktop.controller.purchase.PurchaseMainController">
+<VBox prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.purchase.PurchaseMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -59,24 +63,106 @@
             </HBox>
          </children>
       </HBox>
-      <TableView fx:id="tblPurchase" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
-        <columns>
-          <TableColumn fx:id="colOrderNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
-          <TableColumn fx:id="colOrderDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
-            <TableColumn fx:id="colSupplierName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_supplier_name" />
-            <TableColumn fx:id="colTotalProduct" minWidth="-Infinity" prefWidth="150.0" text="%lbl_total_product" />
-            <TableColumn fx:id="colTotalPurchase" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_purchase" />
-            <TableColumn fx:id="colDiscount" minWidth="-Infinity" prefWidth="200.0" text="%lbl_discount" />
-            <TableColumn fx:id="colTax" minWidth="-Infinity" prefWidth="200.0" text="%lbl_tax" />
-            <TableColumn fx:id="colTotalPayment" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_payment" />
-            <TableColumn fx:id="colPaymentStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_status" />
-            <TableColumn fx:id="colDueDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_due_date" />
-            <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
-            <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
-        </columns>
+      <GridPane VBox.vgrow="ALWAYS">
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </VBox.margin>
-      </TableView>
+         <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="ALWAYS" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <TableView fx:id="tblPurchase" style="-fx-font-size: 13px;">
+              <columns>
+                <TableColumn fx:id="colOrderNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
+                <TableColumn fx:id="colOrderDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
+                  <TableColumn fx:id="colSupplierName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_supplier_name" />
+                  <TableColumn fx:id="colTotalProduct" minWidth="-Infinity" prefWidth="150.0" text="%lbl_total_product" />
+                  <TableColumn fx:id="colTotalPurchase" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_purchase" />
+                  <TableColumn fx:id="colDiscount" minWidth="-Infinity" prefWidth="200.0" text="%lbl_discount" />
+                  <TableColumn fx:id="colTax" minWidth="-Infinity" prefWidth="200.0" text="%lbl_tax" />
+                  <TableColumn fx:id="colTotalPayment" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_payment" />
+                  <TableColumn fx:id="colPaymentStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_status" />
+                  <TableColumn fx:id="colDueDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_due_date" />
+                  <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
+                  <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
+              </columns>
+            </TableView>
+            <VBox GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+               <children>
+                  <AnchorPane style="-fx-border-color: #bebebe;">
+                     <children>
+                        <Button fx:id="btnToggleSummary" layoutX="6.0" layoutY="6.0" mnemonicParsing="false" onAction="#onActionBtnToggleSummary" prefHeight="30.0" prefWidth="30.0" styleClass="btn-secondary" textFill="WHITE" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <graphic>
+                              <FontAwesomeIconView fx:id="faBtnSummary" fill="WHITE" glyphName="ANGLE_RIGHT" size="13" />
+                           </graphic>
+                        </Button>
+                        <VBox fx:id="vboxSummary" layoutX="6.0" layoutY="41.0" spacing="5.0" AnchorPane.leftAnchor="0.0">
+                           <children>
+                              <Label text="%lbl_summary" textFill="#009c7c">
+                                 <font>
+                                    <Font size="13.0" />
+                                 </font>
+                              </Label>
+                              <GridPane maxWidth="400.0" minWidth="250.0" vgap="5.0">
+                                 <columnConstraints>
+                                    <ColumnConstraints halignment="LEFT" hgrow="ALWAYS" minWidth="10.0" percentWidth="40.0" />
+                                    <ColumnConstraints halignment="RIGHT" hgrow="ALWAYS" minWidth="10.0" percentWidth="60.0" />
+                                 </columnConstraints>
+                                 <rowConstraints>
+                                    <RowConstraints minHeight="10.0" valignment="TOP" vgrow="ALWAYS" />
+                                    <RowConstraints minHeight="10.0" valignment="TOP" vgrow="ALWAYS" />
+                                    <RowConstraints minHeight="10.0" valignment="TOP" vgrow="ALWAYS" />
+                                 </rowConstraints>
+                                 <children>
+                                    <Label text="%lbl_period">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label text="%lbl_transaction_count" wrapText="true" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label text="%lbl_expense" wrapText="true" GridPane.rowIndex="2">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblPeriod" alignment="CENTER_RIGHT" text="-" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="1" GridPane.vgrow="SOMETIMES">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblPurchaseCount" alignment="CENTER_RIGHT" text="-" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Label fx:id="lblExpense" alignment="CENTER_RIGHT" text="-" textAlignment="RIGHT" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </AnchorPane>
+               </children>
+            </VBox>
+         </children>
+      </GridPane>
    </children>
 </VBox>

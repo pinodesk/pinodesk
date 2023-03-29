@@ -1,0 +1,24 @@
+package pospino.desktop.javafx.converter;
+
+import java.util.Locale;
+
+import com.gitlab.muhammadkholidb.pandora.converter.DefaultStringConverterAdapter;
+
+import javafx.scene.control.ComboBox;
+
+public class LanguageComboBoxConverter extends DefaultStringConverterAdapter<Locale> {
+
+    private String currentLanguage;
+
+    public LanguageComboBoxConverter(ComboBox<Locale> cb, String currentLanguage) {
+        super(cb);
+        this.currentLanguage = currentLanguage;
+    }
+
+    @Override
+    protected String getDisplayText(Locale locale) {
+        Locale currentLocale = new Locale(currentLanguage);
+        return locale.getDisplayLanguage(currentLocale);
+    }
+
+}

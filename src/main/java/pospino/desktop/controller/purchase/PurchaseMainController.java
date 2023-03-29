@@ -1,0 +1,311 @@
+package pospino.desktop.controller.purchase;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
+import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
+import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
+import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
+import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils;
+import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
+
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import pospino.desktop.constant.CommonConstants;
+import pospino.desktop.constant.CommonLabel;
+import pospino.desktop.constant.MenuCodeConstants;
+import pospino.desktop.constant.MessageCode;
+import pospino.desktop.constant.Page;
+import pospino.desktop.constant.PaymentStatus;
+import pospino.desktop.constant.StringConstants;
+import pospino.desktop.constant.StyleConstants;
+import pospino.desktop.controller.BaseController;
+import pospino.desktop.service.PurchaseService;
+import pospino.desktop.util.SpringUtils;
+import pospino.desktop.viewmodel.PurchaseFilterVM;
+import pospino.desktop.viewmodel.PurchaseVM;
+
+public class PurchaseMainController extends BaseController {
+
+    @FXML
+    private Button btnAdd;
+
+    @FXML
+    private Button btnRemove;
+
+    @FXML
+    private Button btnFilter;
+
+    @FXML
+    private TableView<PurchaseVM> tblPurchase;
+
+    @FXML
+    private TableColumn<PurchaseVM, String> colOrderNumber;
+
+    @FXML
+    private TableColumn<PurchaseVM, LocalDate> colOrderDate;
+
+    @FXML
+    private TableColumn<PurchaseVM, String> colSupplierName;
+
+    @FXML
+    private TableColumn<PurchaseVM, Integer> colTotalProduct;
+
+    @FXML
+    private TableColumn<PurchaseVM, BigDecimal> colTotalPayment;
+
+    @FXML
+    private TableColumn<PurchaseVM, BigDecimal> colTotalPurchase;
+
+    @FXML
+    private TableColumn<PurchaseVM, BigDecimal> colTax;
+
+    @FXML
+    private TableColumn<PurchaseVM, BigDecimal> colDiscount;
+
+    @FXML
+    private TableColumn<PurchaseVM, String> colPaymentStatus;
+
+    @FXML
+    private TableColumn<PurchaseVM, LocalDate> colDueDate;
+
+    @FXML
+    private TableColumn<PurchaseVM, LocalDateTime> colCreatedAt;
+
+    @FXML
+    private TableColumn<PurchaseVM, LocalDateTime> colUpdatedAt;
+
+    @FXML
+    private Label lblRows;
+
+    @FXML
+    private Label lblPeriod;
+
+    @FXML
+    private Label lblExpense;
+
+    @FXML
+    private Label lblPurchaseCount;
+
+    @FXML
+    private VBox vboxSummary;
+
+    @FXML
+    private Button btnToggleSummary;
+
+    @FXML
+    private FontAwesomeIconView faBtnSummary;
+
+    private PurchaseService purchaseService;
+    private PurchaseFilterVM purchaseFilter;
+
+    @FXML
+    void onActionBtnToggleSummary(ActionEvent event) {
+        boolean visible = vboxSummary.isVisible();
+        setVisibleInLayout(!visible, vboxSummary);
+        faBtnSummary.setGlyphName(visible ? FontAwesomeIcon.ANGLE_LEFT.name() : FontAwesomeIcon.ANGLE_RIGHT.name());
+    }
+
+    @FXML
+    void onActionBtnAdd(ActionEvent event) {
+        StageUtils.modal(Page.TRANSACTION_PURCHASE_ADD, true, we -> {
+            if (getPageData() != null) {
+                searchPurchases();
+            }
+        });
+    }
+
+    @FXML
+    void onActionBtnFilter(ActionEvent event) {
+        setPageData(purchaseFilter);
+        StageUtils.modal(Page.TRANSACTION_PURCHASE_FILTER, false, we -> {
+            PurchaseFilterVM result = getPageData();
+            if (result == null) {
+                return;
+            }
+            purchaseFilter = result;
+            searchPurchases();
+        });
+    }
+
+    @FXML
+    void onActionBtnRemove(ActionEvent event) {
+        ObservableList<PurchaseVM> items = tblPurchase.getSelectionModel().getSelectedItems();
+        if (!items.isEmpty()) {
+            AlertResult result = displayConfirmation(MessageCode.CONFIRMATION_REMOVE_SELECTED_PURCHASES);
+            if (result.isConfirmed()) {
+                purchaseService.removePurchases(items.stream().map(PurchaseVM::getId).toList());
+                displayInfo(MessageCode.SUCCESS_REMOVE_SELECTED_PURCHASES);
+                searchPurchases();
+            }
+        }
+    }
+
+    @Override
+    protected void initServices() {
+        purchaseService = SpringUtils.getBean(PurchaseService.class);
+    }
+
+    @Override
+    protected void initControlActions() {
+        disableWriteAction(MenuCodeConstants.TRANSACTION_PURCHASES, btnAdd, btnRemove);
+        Locale locale = resources.getLocale();
+        TableViewUtils.setColumnValue(colOrderNumber, PurchaseVM::getInvoiceNumber);
+        TableViewUtils.setColumnValue(colOrderDate, PurchaseVM::getInvoiceDate);
+        TableViewUtils.setColumnValue(colDueDate, PurchaseVM::getPaymentDueDate);
+        TableViewUtils.setColumnValue(colSupplierName, PurchaseVM::getSupplierName);
+        TableViewUtils.setColumnValue(
+                colPaymentStatus,
+                vm -> PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?
+                        t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID));
+        TableViewUtils.initTableColumn(
+                colTotalProduct,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getTotalProduct,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colTotalPayment,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getTotalPayment,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colTax,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getTax,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colDiscount,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getDiscount,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colTotalPurchase,
+                new NumberCellFactory<>(locale),
+                PurchaseVM::getTotalPurchase,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colOrderDate,
+                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
+                PurchaseVM::getInvoiceDate);
+        TableViewUtils.initTableColumn(
+                colCreatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                PurchaseVM::getCreatedAt);
+        TableViewUtils.initTableColumn(
+                colUpdatedAt,
+                new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),
+                PurchaseVM::getUpdatedAt);
+        tblPurchase.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+        tblPurchase.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tblPurchase.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                handleActionTablePurchase();
+            }
+        });
+        tblPurchase.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                handleActionTablePurchase();
+            }
+        });
+    }
+
+    @Override
+    protected void initControlValues() {
+        purchaseFilter = getPageData();
+        if (purchaseFilter == null) {
+            purchaseFilter = new PurchaseFilterVM();
+        }
+        searchPurchases();
+    }
+
+    @Override
+    protected Stage getCurrentStage() {
+        return null;
+    }
+
+    private void searchPurchases() {
+        tblPurchase.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblPurchase.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(() -> purchaseService.searchPurchases(purchaseFilter))
+                .thenAccept(purchases -> Platform.runLater(() -> {
+                    if (purchases.isEmpty()) {
+                        tblPurchase.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                        lblRows.setText("0");
+                    }
+                    tblPurchase.setItems(FXCollections.observableList(purchases));
+                    TableViewUtils.sortDescending(tblPurchase, colUpdatedAt);
+                    calculateSummary(purchases);
+                }));
+    }
+
+    private void handleActionTablePurchase() {
+        if (TableViewUtils.hasItemSelected(tblPurchase)) {
+            setPageData(TableViewUtils.getSelectedItem(tblPurchase));
+            StageUtils.modal(Page.TRANSACTION_PURCHASE_EDIT, event -> {
+                // Remove the last data from the stack and ignore (if not used) to avoid such
+                // this issue https://gitlab.com/pospino/pospino-desktop/-/issues/52
+                getPageData();
+                searchPurchases();
+            });
+        }
+    }
+
+    private void calculateSummary(List<PurchaseVM> purchases) {
+        Locale locale = resources.getLocale();
+        LocalDate invoiceDateMin = purchaseFilter.getInvoiceDateMin();
+        LocalDate invoiceDateMax = purchaseFilter.getInvoiceDateMax();
+        int purchaseCount = 0;
+        BigDecimal expense = BigDecimal.ZERO;
+        if (purchases != null) {
+            purchaseCount = purchases.size();
+            expense = purchases.stream().map(PurchaseVM::getTotalPayment).reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+        lblExpense.setText(StringNumberUtils.format(expense, locale));
+        lblPurchaseCount.setText(StringNumberUtils.format(purchaseCount, locale));
+        StringBuilder period = new StringBuilder();
+        if (invoiceDateMin == null && invoiceDateMax == null) {
+            period.append(StringConstants.MINUS);
+        } else if (invoiceDateMin == null) {
+            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMax);
+            period.append(format);
+            period.append(StringConstants.SPACE);
+            period.append(t.translate(CommonLabel.LBL_AND_BEFORE));
+        } else if (invoiceDateMax == null) {
+            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMin);
+            period.append(format);
+            period.append(StringConstants.SPACE);
+            period.append(t.translate(CommonLabel.LBL_AND_AFTER));
+        } else {
+            String formatMin = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMin);
+            String formatMax = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMax);
+            period.append(formatMin);
+            period.append(StringConstants.SPACE);
+            period.append(t.translate(CommonLabel.LBL_UNTIL));
+            period.append(StringConstants.SPACE);
+            period.append(formatMax);
+        }
+        lblPeriod.setText(period.toString());
+        lblRows.setText(StringNumberUtils.format(purchaseCount, locale));
+    }
+
+}

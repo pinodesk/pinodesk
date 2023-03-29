@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.product.ProductPackageAddController">
+   <children>
+      <VBox AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane prefWidth="774.0" style="-fx-background-color: white;">
+               <children>
+                  <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_add_package" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets bottom="5.0" top="5.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <TabPane fx:id="tabPaneAddPackage" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+              <tabs>
+                <Tab fx:id="tabPackage" text="%tab_package">
+                  <content>
+                    <AnchorPane prefWidth="200.0">
+                           <children>
+                              <HBox layoutX="10.0" layoutY="10.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <children>
+                                    <VBox spacing="10.0" style="-fx-border-color: #bebebe;" HBox.hgrow="ALWAYS">
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                       <children>
+                                          <Label text="%lbl_general" textFill="#009c7c">
+                                             <font>
+                                                <Font name="System Bold" size="13.0" />
+                                             </font>
+                                          </Label>
+                                          <VBox spacing="5.0">
+                                             <children>
+                                                <Label text="%lbl_name">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="tfName" styleClass="input-primary">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </TextField>
+                                             </children>
+                                          </VBox>
+                                          <HBox spacing="10.0">
+                                             <children>
+                                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label text="%lbl_code">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="tfCode" styleClass="input-primary">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                   </children>
+                                                </VBox>
+                                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label text="%lbl_barcode">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="tfBarcode" styleClass="input-primary">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <VBox spacing="5.0">
+                                             <children>
+                                                <Label text="%lbl_description">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </Label>
+                                                <TextField fx:id="tfDescription" styleClass="input-primary">
+                                                   <font>
+                                                      <Font size="13.0" />
+                                                   </font>
+                                                </TextField>
+                                             </children>
+                                          </VBox>
+                                          <HBox spacing="10.0">
+                                             <children>
+                                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label text="%lbl_category">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="tfCategory" editable="false" focusTraversable="false" styleClass="input-primary">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                          <HBox spacing="10.0">
+                                             <children>
+                                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label text="%lbl_unit">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="tfUnit" editable="false" focusTraversable="false" styleClass="input-primary">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                   </children>
+                                                </VBox>
+                                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label text="%lbl_status">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <ComboBox fx:id="cbStatus" maxWidth="1.7976931348623157E308" prefWidth="169.0" styleClass="combo-box-primary" />
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="TOP_RIGHT" spacing="10.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <VBox spacing="10.0" style="-fx-border-color: #bebebe #bebebe;">
+                                             <children>
+                                                <Label text="%lbl_product" textFill="#009c7c" />
+                                                <HBox spacing="10.0">
+                                                   <children>
+                                                      <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <Label text="%lbl_product">
+                                                               <font>
+                                                                  <Font size="13.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <TextField fx:id="tfProduct" editable="false" styleClass="input-primary">
+                                                               <font>
+                                                                  <Font size="13.0" />
+                                                               </font>
+                                                            </TextField>
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox spacing="5.0" HBox.hgrow="NEVER">
+                                                         <children>
+                                                            <Label text="%lbl_quantity_in_package">
+                                                               <font>
+                                                                  <Font size="13.0" />
+                                                               </font>
+                                                            </Label>
+                                                            <TextField fx:id="tfQuantity" maxWidth="150.0" styleClass="input-primary">
+                                                               <font>
+                                                                  <Font size="13.0" />
+                                                               </font>
+                                                            </TextField>
+                                                         </children>
+                                                      </VBox>
+                                                   </children>
+                                                </HBox>
+                                                <HBox alignment="TOP_RIGHT">
+                                                   <children>
+                                                      <Button fx:id="btnAddProduct" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnAddProduct" styleClass="btn-primary" text="%btn_add" textFill="WHITE" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                          <HBox alignment="CENTER_LEFT" spacing="1.0">
+                                             <children>
+                                                <Label text="%lbl_product_in_package" textFill="#009c7c" />
+                                                <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Button fx:id="btnRemoveProduct" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemoveProduct" styleClass="btn-danger" text="%btn_remove" textFill="WHITE" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </HBox>
+                                          <TableView fx:id="tblProducts" prefHeight="150.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                             <columns>
+                                                <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="300.0" text="%lbl_name" />
+                                                <TableColumn fx:id="colQuantityInPackage" minWidth="-Infinity" prefWidth="150.0" text="%lbl_quantity_in_package" />
+                                                <TableColumn fx:id="colCurrentQuantity" minWidth="-Infinity" prefWidth="150.0" text="%lbl_current_quantity" />
+                                                <TableColumn fx:id="colUnit" minWidth="-Infinity" prefWidth="100.0" text="%lbl_unit" />
+                                                <TableColumn fx:id="colGeneralSellingPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_general_selling_price" />
+                                                <TableColumn fx:id="colPrescriptionSellingPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_prescription_selling_price" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </AnchorPane>
+                  </content>
+                </Tab>
+                <Tab fx:id="tabPrice" text="%tab_price">
+                  <content>
+                    <AnchorPane prefWidth="200.0">
+                           <children>
+                              <VBox layoutX="10.0" layoutY="10.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <children>
+                                    <VBox prefWidth="100.0" spacing="10.0" style="-fx-border-color: #bebebe;">
+                                       <padding>
+                                          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                       </padding>
+                                       <children>
+                                          <HBox spacing="10.0" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label text="%lbl_general_selling_price">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="tfGeneralSellPrice" styleClass="input-primary">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                   </children>
+                                                </VBox>
+                                                <VBox fx:id="vboxPresciptionSellPrice" spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label text="%lbl_prescription_selling_price">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="tfPrescriptionSellPrice" styleClass="input-primary">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                   </children>
+                                                </VBox>
+                                                <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                                                   <children>
+                                                      <Label text="%lbl_remarks">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <TextField fx:id="tfPriceRemarks" styleClass="input-primary">
+                                                         <font>
+                                                            <Font size="13.0" />
+                                                         </font>
+                                                      </TextField>
+                                                   </children>
+                                                </VBox>
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </VBox>
+                           </children></AnchorPane>
+                  </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+         </children>
+      </VBox>
+      <AnchorPane style="-fx-background-color: #ececec;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <children>
+                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
+                  <Button fx:id="btnSaveAndAdd" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSaveAndAdd" styleClass="btn-primary" text="%btn_save_and_add" textFill="WHITE" />
+                  <Button fx:id="btnSave" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSave" styleClass="btn-primary" text="%btn_save" textFill="WHITE" />
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
