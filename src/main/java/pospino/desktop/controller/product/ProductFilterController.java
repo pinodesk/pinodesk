@@ -1,16 +1,16 @@
 package pospino.desktop.controller.product;
 
-import static com.gitlab.muhammadkholidb.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
-import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.toStringOrNull;
+import static com.gitlab.mudiasoft.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
+import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toStringOrNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField;
-import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
-import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
+import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
+import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
+import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
+import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;

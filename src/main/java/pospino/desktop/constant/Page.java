@@ -1,6 +1,6 @@
 package pospino.desktop.constant;
 
-import com.gitlab.muhammadkholidb.pandora.utility.IPage;
+import com.gitlab.mudiasoft.pandora.utility.IPage;
 
 public enum Page implements IPage {
 

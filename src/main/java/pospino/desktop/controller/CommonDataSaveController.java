@@ -2,9 +2,9 @@ package pospino.desktop.controller;
 
 import org.apache.commons.lang3.ObjectUtils;
 
-import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
-import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
-import com.gitlab.muhammadkholidb.pandora.utility.ValidationResult;
+import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
+import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
+import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

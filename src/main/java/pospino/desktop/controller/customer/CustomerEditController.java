@@ -2,9 +2,9 @@ package pospino.desktop.controller.customer;
 
 import java.util.Arrays;
 
-import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
-import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
-import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
+import com.gitlab.mudiasoft.pandora.utility.AlertResult;
+import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
+import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

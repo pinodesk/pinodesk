@@ -5,9 +5,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
-import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
-import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
+import com.gitlab.mudiasoft.pandora.utility.AlertResult;
+import com.gitlab.mudiasoft.pandora.utility.PageLoader;
+import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;

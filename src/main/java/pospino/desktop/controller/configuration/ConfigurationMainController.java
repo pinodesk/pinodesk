@@ -12,11 +12,11 @@ import java.util.concurrent.CompletionException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
-import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
-import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
-import com.gitlab.muhammadkholidb.toolbox.data.ListBuilder;
+import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
+import com.gitlab.mudiasoft.pandora.utility.AlertResult;
+import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
+import com.gitlab.mudiasoft.pandora.utility.StageUtils;
+import com.gitlab.mudiasoft.toolbox.data.ListBuilder;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

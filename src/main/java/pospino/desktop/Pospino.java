@@ -1,7 +1,7 @@
 package pospino.desktop;
 
-import com.gitlab.muhammadkholidb.pandora.utility.PageLoader;
-import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
+import com.gitlab.mudiasoft.pandora.utility.PageLoader;
+import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

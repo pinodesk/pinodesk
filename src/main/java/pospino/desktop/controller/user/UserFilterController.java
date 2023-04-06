@@ -1,8 +1,8 @@
 package pospino.desktop.controller.user;
 
-import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
-import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
+import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
+import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
+import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;

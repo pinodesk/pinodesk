@@ -2,7 +2,7 @@ package pospino.desktop.repository;
 
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
+import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
 
 import pospino.desktop.domain.SaleDetail;
 import pospino.desktop.viewmodel.SaleProductVM;

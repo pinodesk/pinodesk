@@ -2,9 +2,9 @@ package pospino.desktop.repository;
 
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.sequel.sql.Order;
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
+import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
+import com.gitlab.mudiasoft.sequel.sql.Order;
+import com.gitlab.mudiasoft.sequel.sql.Where;
 
 import pospino.desktop.domain.DrugClassification;
 

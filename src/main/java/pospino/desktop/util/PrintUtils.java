@@ -1,6 +1,6 @@
 package pospino.desktop.util;
 
-import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.formatOrDefault;
+import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.formatOrDefault;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.muhammadkholidb.pandora.utility.Translator;
+import com.gitlab.mudiasoft.pandora.utility.Translator;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

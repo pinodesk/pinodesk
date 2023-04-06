@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.gitlab.muhammadkholidb.pandora.control.MaskedTextField?>
+<?import com.gitlab.mudiasoft.pandora.control.MaskedTextField?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>

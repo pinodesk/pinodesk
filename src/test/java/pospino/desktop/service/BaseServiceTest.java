@@ -2,7 +2,7 @@ package pospino.desktop.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
+import com.gitlab.mudiasoft.toolbox.jackson.ObjectConverter;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;

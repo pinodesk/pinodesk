@@ -1,6 +1,6 @@
 package pospino.desktop.controller;
 
-import static com.gitlab.muhammadkholidb.toolbox.data.StringNumberUtils.formatOrDefault;
+import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.formatOrDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,11 +13,11 @@ import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import com.gitlab.muhammadkholidb.pandora.factory.LocalDateCellFactory;
-import com.gitlab.muhammadkholidb.pandora.factory.NumberCellFactory;
-import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
-import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
+import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
+import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
+import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
+import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
+import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

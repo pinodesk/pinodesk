@@ -3,9 +3,9 @@ package pospino.desktop.controller.supplier;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
-import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
-import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
+import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
+import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
+import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.lang3.StringUtils;
 

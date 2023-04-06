@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
-import com.gitlab.muhammadkholidb.pandora.utility.ControlValidator;
-import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.TextFieldUtils;
+import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
+import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
+import com.gitlab.mudiasoft.pandora.utility.StageUtils;
+import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
+import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
