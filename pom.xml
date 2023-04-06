@@ -38,7 +38,7 @@
     </dependencyManagement>
     <repositories>
         <repository>
-            <id>mudia</id>
+            <id>mudiasoft</id>
             <url>https://gitlab.com/api/v4/groups/64413151/-/packages/maven</url>
         </repository>
     </repositories>
