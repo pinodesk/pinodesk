@@ -17,6 +17,7 @@ import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
 import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
 import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
 import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
+import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 
 import javafx.application.Platform;
@@ -28,6 +29,7 @@ import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
@@ -49,6 +51,9 @@ import pospino.desktop.viewmodel.TotalPurchaseTransactionVM;
 import pospino.desktop.viewmodel.TotalSaleTransactionVM;
 
 public class DashboardController extends BaseController {
+
+    @FXML
+    private ScrollPane dashboardScrollPane;
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbYear;
@@ -251,6 +256,9 @@ public class DashboardController extends BaseController {
     protected void initControlValues() {
         ComboBoxUtils.selectIndex(cbYear, 0);
         loadDashboard();
+        Platform.runLater(() -> {
+            ScrollPaneUtils.fixBlur(dashboardScrollPane);
+        });
     }
 
     @Override

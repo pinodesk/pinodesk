@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.gitlab.mudiasoft.pandora.utility.AlertResult;
 import com.gitlab.mudiasoft.pandora.utility.PageLoader;
+import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
@@ -16,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -105,6 +107,9 @@ public class MainController extends BaseController {
     @FXML
     private Label lblHelloName;
 
+    @FXML
+    private ScrollPane menuScrollPane;
+
     @Override
     protected void initServices() {
         // No services to init
@@ -153,6 +158,9 @@ public class MainController extends BaseController {
         if (!isPharmacyFeatureEnabled() && btnMenuDoctors.isVisible()) {
             vboxMenu.getChildren().remove(btnMenuDoctors);
         }
+        Platform.runLater(() -> {
+            ScrollPaneUtils.fixBlur(menuScrollPane);
+        });
     }
 
     @Override
