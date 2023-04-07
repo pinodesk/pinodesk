@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
-import com.gitlab.muhammadkholidb.sequel.utility.SQLUtils;
-import com.gitlab.muhammadkholidb.toolbox.data.ListBuilder;
+import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
+import com.gitlab.mudiasoft.sequel.sql.Where;
+import com.gitlab.mudiasoft.sequel.utility.SQLUtils;
+import com.gitlab.mudiasoft.toolbox.data.ListBuilder;
 
 import lombok.RequiredArgsConstructor;
 import pospino.desktop.domain.Doctor;

@@ -3,7 +3,7 @@ package pospino.desktop.domain;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.gitlab.muhammadkholidb.sequel.model.DataModel;
+import com.gitlab.mudiasoft.sequel.model.DataModel;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

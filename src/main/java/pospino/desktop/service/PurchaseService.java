@@ -1,6 +1,7 @@
 package pospino.desktop.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -297,7 +298,8 @@ public class PurchaseService extends BaseService {
                     .findByProductIdAndDeletedAtIsNull(productId);
             BigDecimal averageBuyingPrice = purchaseDetails.stream()
                     .filter(pd1 -> Objects.equals(pd1.getPurchaseId(), purchaseId)).map(PurchaseDetail::getBuyingPrice)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add).divide(BigDecimal.valueOf(purchaseDetails.size()));
+                    .reduce(BigDecimal.ZERO, BigDecimal::add)
+                    .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_UP);
             product.setAverageBuyingPrice(averageBuyingPrice);
             productRepository.save(product);
         });
@@ -340,7 +342,7 @@ public class PurchaseService extends BaseService {
     private BigDecimal calculateProductAverageBuyingPrice(Long productId) {
         List<PurchaseDetail> purchaseDetails = purchaseDetailRepository.findByProductIdAndDeletedAtIsNull(productId);
         return purchaseDetails.stream().map(PurchaseDetail::getBuyingPrice).reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(purchaseDetails.size()));
+                .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_UP);
     }
 
     private void createProductExpiry(

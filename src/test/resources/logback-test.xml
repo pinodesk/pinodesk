@@ -26,7 +26,7 @@
         </if>
     </root>
     <logger name="pospino.desktop" level="TRACE" />
-    <logger name="com.gitlab.muhammadkholidb.sequel" level="TRACE" />
+    <logger name="com.gitlab.mudiasoft.sequel" level="TRACE" />
     <logger name="org.springframework.jdbc" level="TRACE" />
 
 </configuration>

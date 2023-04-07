@@ -2,7 +2,7 @@ package pospino.desktop.domain;
 
 import java.time.LocalDateTime;
 
-import com.gitlab.muhammadkholidb.sequel.model.DataModel;
+import com.gitlab.mudiasoft.sequel.model.DataModel;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

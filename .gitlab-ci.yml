@@ -98,7 +98,7 @@ hotfix-finish:
     - *git_setup
     # Manually fix the git refs. gitflow plugin uses the heads ref, but we do not have it set up locally, however we have the remote ref
     - git symbolic-ref refs/heads/$CI_COMMIT_BRANCH refs/remotes/origin/$CI_COMMIT_BRANCH
-    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DhotfixBranch=$CI_COMMIT_BRANCH -DargLine=$MAVEN_CLI_OPTS
+    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DskipMergeDevBranch -DhotfixBranch=$CI_COMMIT_BRANCH -DargLine=$MAVEN_CLI_OPTS
   only:
     - /^hotfix\/.*$/
   when: manual

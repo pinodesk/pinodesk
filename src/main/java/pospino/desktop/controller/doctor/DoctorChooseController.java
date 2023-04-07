@@ -2,10 +2,10 @@ package pospino.desktop.controller.doctor;
 
 import java.time.LocalDateTime;
 
-import com.gitlab.muhammadkholidb.pandora.factory.LocalDateTimeCellFactory;
-import com.gitlab.muhammadkholidb.pandora.utility.EventUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.TableViewUtils;
-import com.gitlab.muhammadkholidb.toolbox.future.AsyncUtils;
+import com.gitlab.mudiasoft.pandora.factory.LocalDateTimeCellFactory;
+import com.gitlab.mudiasoft.pandora.utility.EventUtils;
+import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
+import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

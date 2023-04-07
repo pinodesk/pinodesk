@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
+import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
+import com.gitlab.mudiasoft.sequel.sql.Where;
 
 import pospino.desktop.domain.User;
 import pospino.desktop.viewmodel.UserFilterVM;

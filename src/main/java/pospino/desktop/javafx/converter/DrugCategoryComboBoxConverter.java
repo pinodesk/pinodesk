@@ -1,6 +1,6 @@
 package pospino.desktop.javafx.converter;
 
-import com.gitlab.muhammadkholidb.pandora.converter.DefaultStringConverterAdapter;
+import com.gitlab.mudiasoft.pandora.converter.DefaultStringConverterAdapter;
 
 import javafx.scene.control.ComboBox;
 import pospino.desktop.viewmodel.DrugCategoryVM;

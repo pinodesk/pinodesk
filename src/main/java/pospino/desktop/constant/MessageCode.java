@@ -1,6 +1,6 @@
 package pospino.desktop.constant;
 
-import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
+import com.gitlab.mudiasoft.pandora.utility.IMessage;
 
 public enum MessageCode implements IMessage {
 

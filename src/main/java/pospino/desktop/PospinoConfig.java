@@ -33,8 +33,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gitlab.muhammadkholidb.sequel.config.SequelConfig;
-import com.gitlab.muhammadkholidb.toolbox.jackson.ObjectConverter;
+import com.gitlab.mudiasoft.sequel.config.SequelConfig;
+import com.gitlab.mudiasoft.toolbox.jackson.ObjectConverter;
 
 @Configuration
 @Import(SequelConfig.class)

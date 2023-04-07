@@ -1,6 +1,6 @@
 package pospino.desktop.controller;
 
-import com.gitlab.muhammadkholidb.pandora.constant.KeyConstants;
+import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

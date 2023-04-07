@@ -1,7 +1,7 @@
 package pospino.desktop.repository;
 
-import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.sequel.sql.Where;
+import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
+import com.gitlab.mudiasoft.sequel.sql.Where;
 import lombok.RequiredArgsConstructor;
 import pospino.desktop.domain.DoctorCategory;
 

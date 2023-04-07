@@ -2,7 +2,7 @@ package pospino.desktop.javafx.converter;
 
 import java.util.Locale;
 
-import com.gitlab.muhammadkholidb.pandora.converter.DefaultStringConverterAdapter;
+import com.gitlab.mudiasoft.pandora.converter.DefaultStringConverterAdapter;
 
 import javafx.scene.control.ComboBox;
 

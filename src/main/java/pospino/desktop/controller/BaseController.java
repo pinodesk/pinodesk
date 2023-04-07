@@ -13,11 +13,11 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
-import com.gitlab.muhammadkholidb.pandora.utility.IMessage;
-import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.Translator;
-import com.gitlab.muhammadkholidb.toolbox.data.SingletonStack;
+import com.gitlab.mudiasoft.pandora.utility.AlertResult;
+import com.gitlab.mudiasoft.pandora.utility.IMessage;
+import com.gitlab.mudiasoft.pandora.utility.StageUtils;
+import com.gitlab.mudiasoft.pandora.utility.Translator;
+import com.gitlab.mudiasoft.toolbox.data.SingletonStack;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;

@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
+import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;

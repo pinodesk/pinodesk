@@ -1,6 +1,6 @@
 package pospino.desktop.domain;
 
-import com.gitlab.muhammadkholidb.sequel.model.DataModel;
+import com.gitlab.mudiasoft.sequel.model.DataModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

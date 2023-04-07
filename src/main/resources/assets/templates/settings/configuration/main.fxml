@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.configuration.ConfigurationMainController">
+<VBox fx:id="contentPane" prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.configuration.ConfigurationMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -28,7 +28,7 @@
             </Label>
          </children>
       </AnchorPane>
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #fff;" styleClass="edge-to-edge" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+      <ScrollPane fx:id="configurationScrollPane" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: #fff;" styleClass="edge-to-edge" vbarPolicy="NEVER" VBox.vgrow="ALWAYS">
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </VBox.margin>

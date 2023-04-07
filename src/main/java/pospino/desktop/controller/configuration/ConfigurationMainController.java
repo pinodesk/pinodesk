@@ -12,11 +12,12 @@ import java.util.concurrent.CompletionException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.muhammadkholidb.pandora.model.SimpleComboBoxModel;
-import com.gitlab.muhammadkholidb.pandora.utility.AlertResult;
-import com.gitlab.muhammadkholidb.pandora.utility.ComboBoxUtils;
-import com.gitlab.muhammadkholidb.pandora.utility.StageUtils;
-import com.gitlab.muhammadkholidb.toolbox.data.ListBuilder;
+import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
+import com.gitlab.mudiasoft.pandora.utility.AlertResult;
+import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
+import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
+import com.gitlab.mudiasoft.pandora.utility.StageUtils;
+import com.gitlab.mudiasoft.toolbox.data.ListBuilder;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -26,6 +27,7 @@ import javafx.fxml.FXML;
 import javafx.print.Printer;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -83,6 +85,9 @@ public class ConfigurationMainController extends CommonContentPaneController {
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbPharmacyFeatures;
+
+    @FXML
+    private ScrollPane configurationScrollPane;
 
     private FileChooser fileChooser = new FileChooser();
 
@@ -262,6 +267,9 @@ public class ConfigurationMainController extends CommonContentPaneController {
             String val = configurationMap.get(ConfigurationConstants.PHARMACY_FEATURES_ENABLED);
             return val.equals(model.getValue().toString());
         }).findAny().get());
+        Platform.runLater(() -> {
+            ScrollPaneUtils.fixBlur(configurationScrollPane);
+        });
     }
 
     @Override

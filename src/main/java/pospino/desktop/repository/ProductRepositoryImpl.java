@@ -1,15 +1,15 @@
 package pospino.desktop.repository;
 
-import static com.gitlab.muhammadkholidb.sequel.utility.SQLUtils.likeValueContains;
+import static com.gitlab.mudiasoft.sequel.utility.SQLUtils.likeValueContains;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.gitlab.muhammadkholidb.sequel.repository.AbstractRepository;
-import com.gitlab.muhammadkholidb.sequel.utility.SQLUtils;
-import com.gitlab.muhammadkholidb.sequel.utility.WhereParamsHelper;
-import com.gitlab.muhammadkholidb.toolbox.data.ListBuilder;
+import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
+import com.gitlab.mudiasoft.sequel.utility.SQLUtils;
+import com.gitlab.mudiasoft.sequel.utility.WhereParamsHelper;
+import com.gitlab.mudiasoft.toolbox.data.ListBuilder;
 
 import pospino.desktop.constant.ProductStatus;
 import pospino.desktop.domain.Product;

@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.DashboardController">
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.DashboardController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -32,7 +32,7 @@
             </Label>
          </children>
       </AnchorPane>
-      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: white;" styleClass="edge-to-edge" vbarPolicy="NEVER">
+      <ScrollPane fx:id="dashboardScrollPane" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background: white;" styleClass="edge-to-edge" vbarPolicy="NEVER">
          <VBox.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </VBox.margin>
