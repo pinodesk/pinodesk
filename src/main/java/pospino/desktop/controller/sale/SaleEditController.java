@@ -22,12 +22,14 @@ import com.gitlab.mudiasoft.pandora.utility.AlertResult;
 import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
 import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
 import com.gitlab.mudiasoft.pandora.utility.EventUtils;
+import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
 import com.gitlab.mudiasoft.toolbox.data.DateTimeUtils;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -35,6 +37,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -64,6 +67,9 @@ import pospino.desktop.viewmodel.SaleProductVM;
 import pospino.desktop.viewmodel.SaleVM;
 
 public class SaleEditController extends CommonDataSaveController {
+
+    @FXML
+    private ScrollPane scrollPaneSaleEdit;
 
     @FXML
     private Button btnRemove;
@@ -384,6 +390,9 @@ public class SaleEditController extends CommonDataSaveController {
             setVisibleInLayout(false, hboxDoctor);
             cbSellingMode.getItems().remove(1);
         }
+        Platform.runLater(() -> {
+            ScrollPaneUtils.fixBlur(scrollPaneSaleEdit);
+        });
     }
 
     @Override
