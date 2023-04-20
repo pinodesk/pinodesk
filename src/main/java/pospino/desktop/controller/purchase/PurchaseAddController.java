@@ -22,18 +22,21 @@ import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
 import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
 import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
 import com.gitlab.mudiasoft.pandora.utility.EventUtils;
+import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
 import com.gitlab.mudiasoft.toolbox.data.DateTimeUtils;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -56,6 +59,9 @@ import pospino.desktop.viewmodel.PurchaseProductVM;
 import pospino.desktop.viewmodel.SupplierVM;
 
 public class PurchaseAddController extends CommonDataSaveController {
+
+    @FXML
+    private ScrollPane scrollPanePurchaseAdd;
 
     @FXML
     private TextField tfSupplier;
@@ -343,6 +349,9 @@ public class PurchaseAddController extends CommonDataSaveController {
             vboxPrescriptionSellingPrice.setVisible(false);
             tblPurchaseProduct.getColumns().remove(colPrescriptionSellingPrice);
         }
+        Platform.runLater(() -> {
+            ScrollPaneUtils.fixBlur(scrollPanePurchaseAdd);
+        });
     }
 
     @Override

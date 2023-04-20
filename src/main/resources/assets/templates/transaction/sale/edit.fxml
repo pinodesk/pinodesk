@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.sale.SaleEditController">
+<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.sale.SaleEditController">
    <children>
       <VBox AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -41,7 +41,7 @@
                                  <children>
                                     <VBox spacing="10.0" style="-fx-border-color: #bebebe #bebebe #bebebe #bebebe;" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label text="%lbl_invoice" textFill="#009c7c">
+                                          <Label fx:id="lblSectionInvoice" text="%lbl_invoice" textFill="#009c7c">
                                              <font>
                                                 <Font size="13.0" />
                                              </font>
@@ -111,7 +111,7 @@
                                                             <Font size="13.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfInvoiceNumber" styleClass="input-primary">
+                                                      <TextField fx:id="tfInvoiceNumber" editable="false" styleClass="input-primary">
                                                          <font>
                                                             <Font size="13.0" />
                                                          </font>
@@ -179,7 +179,7 @@
                                  <children>
                                     <VBox spacing="10.0" style="-fx-border-color: #bebebe #bebebe #bebebe #bebebe;" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label text="%lbl_product" textFill="#009c7c">
+                                          <Label fx:id="lblSectionProduct" text="%lbl_product" textFill="#009c7c">
                                              <font>
                                                 <Font size="13.0" />
                                              </font>
@@ -344,7 +344,7 @@
                                           </HBox>
                                        </children>
                                     </HBox>
-                                    <TableView fx:id="tblSaleProduct" prefHeight="250.0" VBox.vgrow="ALWAYS">
+                                    <TableView fx:id="tblSaleProduct" minHeight="-Infinity" prefHeight="250.0" VBox.vgrow="ALWAYS">
                                        <columns>
                                           <TableColumn fx:id="colProductName" minWidth="-Infinity" prefWidth="300.0" text="%lbl_product_name" />
                                           <TableColumn fx:id="colProductCategory" minWidth="-Infinity" prefWidth="200.0" text="%lbl_product_category" />
@@ -366,7 +366,7 @@
                                        <children>
                                           <AnchorPane>
                                              <children>
-                                                <Label text="%lbl_sale_summary" textFill="#009c7c" AnchorPane.leftAnchor="0.0">
+                                                <Label fx:id="lblSectionSaleSummary" text="%lbl_sale_summary" textFill="#009c7c" AnchorPane.leftAnchor="0.0">
                                                    <font>
                                                       <Font size="13.0" />
                                                    </font>
