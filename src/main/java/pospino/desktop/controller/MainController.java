@@ -111,6 +111,15 @@ public class MainController extends BaseController {
     @FXML
     private ScrollPane menuScrollPane;
 
+    @FXML
+    private Label lblMenuReports;
+
+    @FXML
+    private Button btnMenuSalesReport;
+
+    @FXML
+    private Button btnMenuPurchasesReport;
+
     @Override
     protected void initServices() {
         // No services to init
@@ -293,6 +302,16 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnMenuUsers(ActionEvent event) {
+        changeContent(Page.SETTINGS_USER_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
+    void onActionBtnMenuSalesReport(ActionEvent event) {
+        changeContent(Page.REPORT_SALE_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
+    void onActionBtnMenuPurchasesReport(ActionEvent event) {
         changeContent(Page.SETTINGS_USER_MAIN, (Button) event.getSource());
     }
 

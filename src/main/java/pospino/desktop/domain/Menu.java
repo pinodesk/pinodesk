@@ -18,4 +18,5 @@ public class Menu extends DataModel {
     private String name;
     private String language;
     private Long parentMenuId;
+    private Integer seqNum;
 }

@@ -40,6 +40,8 @@ import pospino.desktop.viewmodel.SaleAddVM;
 import pospino.desktop.viewmodel.SaleEditVM;
 import pospino.desktop.viewmodel.SaleFilterVM;
 import pospino.desktop.viewmodel.SaleProductVM;
+import pospino.desktop.viewmodel.SaleReportFilterVM;
+import pospino.desktop.viewmodel.SaleReportVM;
 import pospino.desktop.viewmodel.SaleVM;
 
 @Service
@@ -517,6 +519,11 @@ public class SaleService extends BaseService {
     @Transactional
     public void createSaleCashier(SaleAddVM saleAdd) {
         createSale(saleAdd, Activity.ADD_SALE_CASHIER);
+    }
+
+    @ForActivity(Activity.GET_SALE_REPORT)
+    public List<SaleReportVM> searchSalesReport(SaleReportFilterVM filter, String language) {
+        return saleDetailRepository.findByFilter(filter, language);
     }
 
 }

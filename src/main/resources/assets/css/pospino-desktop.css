@@ -197,9 +197,10 @@
 }
 
 .date-picker {
-    /*    -fx-border-insets: 0;
+    -fx-border-insets: 0;
     -fx-background-insets: 0;
-    -fx-padding: 0;*/
+    -fx-padding: 0;
+    -fx-min-height: 20px;
 }
 
 .date-picker:contains-focus {
@@ -214,22 +215,18 @@
     -fx-border-color: transparent;
     border-color: transparent;
     -fx-border-insets: 0;
-    /*-fx-background-insets: 0;*/
+    -fx-background-insets: 0;
     -fx-border-radius: 0 0 0 0;
     border-radius: 0 0 0 0;
     -fx-background-radius: 0 0 0 0;
-    -fx-font-size: 13px;
-    font-size: 13px;
 }
 
 .date-picker>.arrow-button {
-    -fx-background-color: black;
-    background-color: #dddddd;
-    -fx-border-radius: 0 0 0 0;
-    border-radius: 0 0 0 0;
-    -fx-background-radius: 0 0 0 0;
-    -fx-border-insets: 0;
-    /*-fx-background-insets: 0;*/
+    -fx-padding: 0px;
+}
+
+.date-picker>.arrow-button>.arrow {
+    -fx-padding: 0px;
 }
 
 .pagination {

@@ -61,7 +61,18 @@ public enum CommonLabel implements IMessage {
     LBL_AND_AFTER,
     LBL_AND_BEFORE,
     LBL_EXPENSE,
-    LBL_REVENUE;
+    LBL_REVENUE,
+    LBL_CREATED_AT,
+    LBL_INVOICE_DATE,
+    LBL_SELLING_MODE,
+    LBL_CUSTOMER_NAME,
+    LBL_PRODUCT_NAME,
+    LBL_SELLING_PRICE,
+    LBL_SUBTOTAL,
+    LBL_PAYMENT_STATUS,
+    LBL_SALE_REPORT,
+    LBL_PERIOD,
+    LBL_TRANSACTION_COUNT;
 
     @Override
     public String toString() {

@@ -201,7 +201,8 @@ public enum MessageCode implements IMessage {
     // Other SQL errors
     RESTORE_DATABASE_ERROR,
     BACKUP_DATABASE_ERROR,
-    CONFIRMATION_RESTORE_DATA;
+    CONFIRMATION_RESTORE_DATA,
+    SUCCESS_EXPORT_SALE_REPORT;
 
     @Override
     public String toString() {
