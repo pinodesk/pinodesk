@@ -3,8 +3,6 @@ package pospino.desktop.controller.sale;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 
 import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
@@ -14,7 +12,6 @@ import com.gitlab.mudiasoft.pandora.utility.AlertResult;
 import com.gitlab.mudiasoft.pandora.utility.EventUtils;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
-import com.gitlab.mudiasoft.toolbox.data.StringNumberUtils;
 import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -38,7 +35,6 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.PaymentStatus;
 import pospino.desktop.constant.SellingMode;
-import pospino.desktop.constant.StringConstants;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.SaleService;
@@ -259,7 +255,6 @@ public class SaleMainController extends BaseController {
             }
             tblSales.setItems(FXCollections.observableList(sales));
             TableViewUtils.sortDescending(tblSales, colUpdatedAt);
-            calculateSummary(sales);
         }));
     }
 
@@ -273,44 +268,6 @@ public class SaleMainController extends BaseController {
                 searchSales();
             });
         }
-    }
-
-    private void calculateSummary(List<SaleVM> sales) {
-        Locale locale = resources.getLocale();
-        LocalDate createdAtMin = saleFilter.getCreatedDateMin();
-        LocalDate createdAtMax = saleFilter.getCreatedDateMax();
-        int totalSales = 0;
-        BigDecimal revenue = BigDecimal.ZERO;
-        if (sales != null) {
-            totalSales = sales.size();
-            revenue = sales.stream().map(SaleVM::getTotalPayment).reduce(BigDecimal.ZERO, BigDecimal::add);
-        }
-        lblRevenue.setText(StringNumberUtils.format(revenue, locale));
-        lblTotalSales.setText(StringNumberUtils.format(totalSales, locale));
-        StringBuilder period = new StringBuilder();
-        if (createdAtMin == null && createdAtMax == null) {
-            period.append(StringConstants.MINUS);
-        } else if (createdAtMin == null) {
-            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(createdAtMax);
-            period.append(format);
-            period.append(StringConstants.SPACE);
-            period.append(t.translate(CommonLabel.LBL_AND_BEFORE));
-        } else if (createdAtMax == null) {
-            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(createdAtMin);
-            period.append(format);
-            period.append(StringConstants.SPACE);
-            period.append(t.translate(CommonLabel.LBL_AND_AFTER));
-        } else {
-            String formatMin = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(createdAtMin);
-            String formatMax = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(createdAtMax);
-            period.append(formatMin);
-            period.append(StringConstants.SPACE);
-            period.append(t.translate(CommonLabel.LBL_UNTIL));
-            period.append(StringConstants.SPACE);
-            period.append(formatMax);
-        }
-        lblPeriod.setText(period.toString());
-        lblRows.setText(StringNumberUtils.format(totalSales, locale));
     }
 
 }

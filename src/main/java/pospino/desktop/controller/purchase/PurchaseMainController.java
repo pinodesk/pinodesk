@@ -3,8 +3,6 @@ package pospino.desktop.controller.purchase;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Locale;
 
 import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
@@ -14,7 +12,6 @@ import com.gitlab.mudiasoft.pandora.utility.AlertResult;
 import com.gitlab.mudiasoft.pandora.utility.EventUtils;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
-import com.gitlab.mudiasoft.toolbox.data.StringNumberUtils;
 import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -37,7 +34,6 @@ import pospino.desktop.constant.MenuCodeConstants;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.PaymentStatus;
-import pospino.desktop.constant.StringConstants;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.PurchaseService;
@@ -254,7 +250,6 @@ public class PurchaseMainController extends BaseController {
                     }
                     tblPurchase.setItems(FXCollections.observableList(purchases));
                     TableViewUtils.sortDescending(tblPurchase, colUpdatedAt);
-                    calculateSummary(purchases);
                 }));
     }
 
@@ -268,44 +263,6 @@ public class PurchaseMainController extends BaseController {
                 searchPurchases();
             });
         }
-    }
-
-    private void calculateSummary(List<PurchaseVM> purchases) {
-        Locale locale = resources.getLocale();
-        LocalDate invoiceDateMin = purchaseFilter.getInvoiceDateMin();
-        LocalDate invoiceDateMax = purchaseFilter.getInvoiceDateMax();
-        int purchaseCount = 0;
-        BigDecimal expense = BigDecimal.ZERO;
-        if (purchases != null) {
-            purchaseCount = purchases.size();
-            expense = purchases.stream().map(PurchaseVM::getTotalPayment).reduce(BigDecimal.ZERO, BigDecimal::add);
-        }
-        lblExpense.setText(StringNumberUtils.format(expense, locale));
-        lblPurchaseCount.setText(StringNumberUtils.format(purchaseCount, locale));
-        StringBuilder period = new StringBuilder();
-        if (invoiceDateMin == null && invoiceDateMax == null) {
-            period.append(StringConstants.MINUS);
-        } else if (invoiceDateMin == null) {
-            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMax);
-            period.append(format);
-            period.append(StringConstants.SPACE);
-            period.append(t.translate(CommonLabel.LBL_AND_BEFORE));
-        } else if (invoiceDateMax == null) {
-            String format = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMin);
-            period.append(format);
-            period.append(StringConstants.SPACE);
-            period.append(t.translate(CommonLabel.LBL_AND_AFTER));
-        } else {
-            String formatMin = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMin);
-            String formatMax = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN).format(invoiceDateMax);
-            period.append(formatMin);
-            period.append(StringConstants.SPACE);
-            period.append(t.translate(CommonLabel.LBL_UNTIL));
-            period.append(StringConstants.SPACE);
-            period.append(formatMax);
-        }
-        lblPeriod.setText(period.toString());
-        lblRows.setText(StringNumberUtils.format(purchaseCount, locale));
     }
 
 }
