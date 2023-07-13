@@ -8,7 +8,6 @@ import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toStringOrEmpt
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -16,7 +15,6 @@ import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
 import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
 import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
 import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
@@ -29,7 +27,6 @@ import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
-import com.gitlab.mudiasoft.toolbox.data.DateTimeUtils;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -37,6 +34,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
@@ -80,7 +78,7 @@ public class PurchaseEditController extends CommonDataSaveController {
     private TextField tfInvoiceNumber;
 
     @FXML
-    private MaskedTextField tfInvoiceDate;
+    private DatePicker dpInvoiceDate;
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
@@ -89,7 +87,7 @@ public class PurchaseEditController extends CommonDataSaveController {
     private VBox vboxDueDate;
 
     @FXML
-    private MaskedTextField tfDueDate;
+    private DatePicker dpDueDate;
 
     @FXML
     private TextField tfDiscount;
@@ -131,7 +129,7 @@ public class PurchaseEditController extends CommonDataSaveController {
     private TextField tfBatchNumber;
 
     @FXML
-    private MaskedTextField tfExpiredDate;
+    private DatePicker dpExpiredDate;
 
     @FXML
     private Button btnAddProduct;
@@ -239,8 +237,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         boolean isProductSelected = selectedProduct != null;
         boolean isProductCategoryDrugs = isProductSelected
                 && ProductUtils.isProductCategoryDrugs(selectedProduct.getCategoryCode());
-        LocalDate expiredDate = DateTimeUtils
-                .parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        LocalDate expiredDate = dpExpiredDate.getValue();
         ValidationResult validationResult = validateAddProduct(isProductSelected, isProductCategoryDrugs, expiredDate);
         if (!validationResult.isValid()) {
             displayError(validationResult.getMessages());
@@ -280,7 +277,7 @@ public class PurchaseEditController extends CommonDataSaveController {
                 tfGeneralSellingPrice,
                 tfPrescriptionSellingPrice,
                 tfBatchNumber);
-        tfExpiredDate.setPlainText("");
+        dpExpiredDate.setValue(null);
         calculatePurchaseSummary();
     }
 
@@ -296,6 +293,7 @@ public class PurchaseEditController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlActions() {
         disableWriteAction(MenuCodeConstants.TRANSACTION_PURCHASES, btnSave, btnRemove, btnNewProduct, btnNewSupplier);
+        initCustomDatePicker(dpInvoiceDate, dpDueDate, dpExpiredDate);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
@@ -354,7 +352,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
             boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
             if (isPaid) {
-                tfDueDate.setPlainText("");
+                dpDueDate.setValue(null);
             }
             vboxDueDate.setDisable(isPaid);
         });
@@ -378,13 +376,13 @@ public class PurchaseEditController extends CommonDataSaveController {
         totalPayment = currentPurchase.getTotalPayment();
         tfSupplier.setText(currentPurchase.getSupplierName());
         tfInvoiceNumber.setText(currentPurchase.getInvoiceNumber());
-        tfInvoiceDate.setText(invoiceDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        dpInvoiceDate.setValue(invoiceDate);
         ComboBoxUtils.select(cbPaymentStatus, () -> cbPaymentStatus.getItems().stream().filter(vm -> {
             PaymentStatus paymentStatus = vm.getValue();
             return paymentStatus.toString().equals(currentPurchase.getPaymentStatus());
         }).findAny().orElseThrow());
         if (paymentDueDate != null) {
-            tfDueDate.setText(paymentDueDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+            dpDueDate.setValue(paymentDueDate);
         }
         lblDiscount.setText(formatOrDefault(discount, locale, "0"));
         lblTax.setText(formatOrDefault(tax, locale, "0"));
@@ -407,13 +405,11 @@ public class PurchaseEditController extends CommonDataSaveController {
         PurchaseEditVM purchase = new PurchaseEditVM();
         purchase.setSupplierId(selectedSupplier.getId());
         purchase.setInvoiceNumber(tfInvoiceNumber.getText().trim());
-        purchase.setInvoiceDate(
-                DateTimeUtils.parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        purchase.setInvoiceDate(dpInvoiceDate.getValue());
         PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         purchase.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
-            purchase.setPaymentDueDate(
-                    DateTimeUtils.parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+            purchase.setPaymentDueDate(dpDueDate.getValue());
         }
         purchase.setDiscount(toBigDecimalOrNull(tfDiscount.getText()));
         purchase.setTax(toBigDecimalOrNull(tfTax.getText()));
@@ -427,10 +423,8 @@ public class PurchaseEditController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
-        LocalDate invoiceDate = DateTimeUtils
-                .parseLocalDateQuietly(tfInvoiceDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-        LocalDate dueDate = DateTimeUtils
-                .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        LocalDate invoiceDate = dpInvoiceDate.getValue();
+        LocalDate dueDate = dpDueDate.getValue();
         PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
         validator.validateBlank(tfSupplier, MessageCode.ERROR_EMPTY_SUPPLIER);
@@ -525,10 +519,9 @@ public class PurchaseEditController extends CommonDataSaveController {
             tfProductQuantity.setText(toStringOrEmpty(selected.getQuantity()));
             tfBuyingPrice.setText(toStringOrEmpty(selected.getBuyingPrice()));
             tfBatchNumber.setText(selected.getBatchNumber());
-            tfExpiredDate.setPlainText("");
+            dpExpiredDate.setValue(null);
             if (selected.getExpiredDate() != null) {
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
-                tfExpiredDate.setText(formatter.format(selected.getExpiredDate()));
+                dpExpiredDate.setValue(selected.getExpiredDate());
             }
         }
     }
@@ -547,9 +540,6 @@ public class PurchaseEditController extends CommonDataSaveController {
         if (StringUtils.isNotBlank(tfPrescriptionSellingPrice.getText()) && isProductCategoryDrugs) {
             cv.validatePositive(tfPrescriptionSellingPrice, MessageCode.ERROR_INVALID_PRESCRIPTION_SELLING_PRICE);
         }
-        cv.validateCustom(
-                () -> StringUtils.isNotBlank(tfExpiredDate.getPlainText()) && expiredDate == null,
-                MessageCode.ERROR_INVALID_EXPIRED_DATE);
         cv.validateCustom(
                 () -> isProductSelected && CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE
                         .equals(selectedProduct.getCategoryCode()),

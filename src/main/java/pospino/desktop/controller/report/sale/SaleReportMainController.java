@@ -27,10 +27,12 @@ import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
@@ -91,7 +93,7 @@ public class SaleReportMainController extends BaseController {
     private TableView<SaleReportVM> tblSaleReport;
 
     @FXML
-    private Label lblPeriod;
+    private Label lblRows;
 
     @FXML
     private Label lblRevenue;
@@ -100,7 +102,7 @@ public class SaleReportMainController extends BaseController {
     private Label lblPaid;
 
     @FXML
-    private Label lblTotalSales;
+    private Label lblTransactionCount;
 
     @FXML
     private Label lblUnpaid;
@@ -139,7 +141,10 @@ public class SaleReportMainController extends BaseController {
 
     @FXML
     void onActionBtnExport(ActionEvent event) {
-        Locale locale = resources.getLocale();
+        ObservableList<SaleReportVM> report = tblSaleReport.getItems();
+        if (report.isEmpty()) {
+            return;
+        }
         File file = fileChooser.showSaveDialog(getCurrentStage());
         if (file == null) {
             return;
@@ -147,39 +152,29 @@ public class SaleReportMainController extends BaseController {
         Stage loading = displayLoading();
         CompletableFuture.runAsync(() -> {
             try {
-                List<SaleReportVM> report = saleService.searchSalesReport(saleReportFilter, locale.getLanguage());
                 SaleGroup sg = getSaleReportSummary(report);
-                LocalDate filterInvoiceDateMax = saleReportFilter.getInvoiceDateMax();
-                LocalDate filterInvoiceDateMin = saleReportFilter.getInvoiceDateMin();
-                LocalDate periodStart = filterInvoiceDateMin == null ? sg.minInvoiceDate : filterInvoiceDateMin;
-                LocalDate periodEnd = filterInvoiceDateMax == null ? sg.maxInvoiceDate : filterInvoiceDateMax;
                 XSSFWorkbook workbook = new XSSFWorkbook();
                 XSSFSheet sheet = workbook.createSheet(t.translate(CommonLabel.LBL_SALE_REPORT));
                 XSSFRow row = sheet.createRow(0);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_SALE_REPORT));
                 row = sheet.createRow(2);
-                row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_PERIOD));
-                row.createCell(1).setCellValue(
-                        String.format("%s - %s", dateFormatter.format(periodStart), dateFormatter.format(periodEnd)));
-                row = sheet.createRow(3);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_TRANSACTION_COUNT));
-                row.createCell(1).setCellValue(sg.totalSales);
-                row = sheet.createRow(4);
+                row.createCell(1).setCellValue(sg.transactionCount);
+                row = sheet.createRow(3);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_REVENUE));
                 row.createCell(1).setCellValue(sg.totalPayment.doubleValue());
-                row = sheet.createRow(5);
+                row = sheet.createRow(4);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_PAID));
                 row.createCell(1).setCellValue(sg.totalPaid.doubleValue());
-                row = sheet.createRow(6);
+                row = sheet.createRow(5);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_UNPAID));
                 row.createCell(1).setCellValue(sg.totalUnpaid.doubleValue());
-                row = sheet.createRow(8);
+                row = sheet.createRow(7);
                 for (int i = 0; i < SALE_REPORT_FILE_COLUMNS.length; i++) {
                     IMessage lbl = SALE_REPORT_FILE_COLUMNS[i];
                     row.createCell(i).setCellValue(t.translate(lbl));
-                    sheet.autoSizeColumn(i);
                 }
-                int rowNum = 9;
+                int rowNum = 8;
                 for (SaleReportVM vm : report) {
                     row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(datetimeFormatter.format(vm.getCreatedAt()));
@@ -270,13 +265,17 @@ public class SaleReportMainController extends BaseController {
                 SaleReportVM::getSubtotal,
                 StyleConstants.ALIGN_RIGHT);
         tblSaleReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+        tblSaleReport.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileChooser.setInitialDirectory(new File(SystemConstants.USER_HOME_DIR));
         fileChooser.setInitialFileName("pospino-sale-report.xlsx");
     }
 
     @Override
     protected void initControlValues() {
-        saleReportFilter = new SaleReportFilterVM();
+        saleReportFilter = getPageData();
+        if (saleReportFilter == null) {
+            saleReportFilter = new SaleReportFilterVM();
+        }
         searchSaleReport();
     }
 
@@ -289,19 +288,20 @@ public class SaleReportMainController extends BaseController {
         tblSaleReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblSaleReport.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> saleService.searchSalesReport(saleReportFilter, resources.getLocale().getLanguage()))
-                .thenAccept(salesReport -> Platform.runLater(() -> {
-                    if (salesReport.isEmpty()) {
+                .thenAccept(saleReport -> Platform.runLater(() -> {
+                    if (saleReport.isEmpty()) {
                         tblSaleReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                        lblRows.setText("0");
                     }
-                    tblSaleReport.setItems(FXCollections.observableList(salesReport));
+                    tblSaleReport.setItems(FXCollections.observableList(saleReport));
                     TableViewUtils.sortAscending(tblSaleReport, colCreatedAt);
-                    calculateSummary(salesReport);
+                    lblRows.setText(StringNumberUtils.format(saleReport.size(), resources.getLocale()));
+                    calculateSummary(saleReport);
                 }));
     }
 
     private void calculateSummary(List<SaleReportVM> report) {
-        lblPeriod.setText("-");
-        lblTotalSales.setText("-");
+        lblTransactionCount.setText("-");
         lblRevenue.setText("-");
         lblPaid.setText("-");
         lblUnpaid.setText("-");
@@ -310,12 +310,7 @@ public class SaleReportMainController extends BaseController {
         }
         SaleGroup sg = getSaleReportSummary(report);
         Locale locale = resources.getLocale();
-        LocalDate filterInvoiceDateMin = saleReportFilter.getInvoiceDateMin();
-        LocalDate filterInvoiceDateMax = saleReportFilter.getInvoiceDateMax();
-        LocalDate periodStart = filterInvoiceDateMin == null ? sg.minInvoiceDate : filterInvoiceDateMin;
-        LocalDate periodEnd = filterInvoiceDateMax == null ? sg.maxInvoiceDate : filterInvoiceDateMax;
-        lblPeriod.setText(String.format("%s - %s", dateFormatter.format(periodStart), dateFormatter.format(periodEnd)));
-        lblTotalSales.setText(StringNumberUtils.format(sg.totalSales, locale));
+        lblTransactionCount.setText(StringNumberUtils.format(sg.transactionCount, locale));
         lblRevenue.setText(StringNumberUtils.format(sg.totalPayment, locale));
         lblPaid.setText(StringNumberUtils.format(sg.totalPaid, locale));
         lblUnpaid.setText(StringNumberUtils.format(sg.totalUnpaid, locale));
@@ -325,12 +320,6 @@ public class SaleReportMainController extends BaseController {
         Set<String> invoices = new HashSet<>();
         SaleGroup sg = new SaleGroup();
         for (SaleReportVM vm : report) {
-            if (sg.maxInvoiceDate == null || vm.getInvoiceDate().isAfter(sg.maxInvoiceDate)) {
-                sg.maxInvoiceDate = vm.getInvoiceDate();
-            }
-            if (sg.minInvoiceDate == null || vm.getInvoiceDate().isBefore(sg.minInvoiceDate)) {
-                sg.minInvoiceDate = vm.getInvoiceDate();
-            }
             BigDecimal totalPayment = vm.getTotalPayment();
             String invoice = vm.getInvoiceNumber();
             if (!invoices.contains(invoice)) {
@@ -343,14 +332,12 @@ public class SaleReportMainController extends BaseController {
                 invoices.add(invoice);
             }
         }
-        sg.totalSales = invoices.size();
+        sg.transactionCount = invoices.size();
         return sg;
     }
 
     private class SaleGroup {
-        private LocalDate maxInvoiceDate;
-        private LocalDate minInvoiceDate;
-        private Integer totalSales = 0;
+        private Integer transactionCount = 0;
         private BigDecimal totalPayment = BigDecimal.ZERO;
         private BigDecimal totalPaid = BigDecimal.ZERO;
         private BigDecimal totalUnpaid = BigDecimal.ZERO;

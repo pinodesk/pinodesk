@@ -12,6 +12,7 @@ import com.gitlab.mudiasoft.pandora.utility.AlertResult;
 import com.gitlab.mudiasoft.pandora.utility.EventUtils;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
+import com.gitlab.mudiasoft.toolbox.data.StringNumberUtils;
 import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
@@ -255,6 +256,7 @@ public class SaleMainController extends BaseController {
             }
             tblSales.setItems(FXCollections.observableList(sales));
             TableViewUtils.sortDescending(tblSales, colUpdatedAt);
+            lblRows.setText(StringNumberUtils.format(sales.size(), resources.getLocale()));
         }));
     }
 

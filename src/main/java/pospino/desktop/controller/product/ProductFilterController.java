@@ -1,25 +1,22 @@
 package pospino.desktop.controller.product;
 
-import static com.gitlab.mudiasoft.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
 import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toStringOrNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
-import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
-import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
-import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
-import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
+import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
+import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
+import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.ProductStatus;
 import pospino.desktop.constant.StringConstants;
@@ -65,10 +62,10 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
     private TextField tfPrescriptionSellingPriceMax;
 
     @FXML
-    private MaskedTextField tfExpiredDateMin;
+    private DatePicker dpExpiredDateMin;
 
     @FXML
-    private MaskedTextField tfExpiredDateMax;
+    private DatePicker dpExpiredDateMax;
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbStatus;
@@ -111,9 +108,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
             tfPrescriptionSellingPriceMin.setText(toStringOrNull(prescriptionSellingPriceMin));
             tfGeneralSellingPriceMax.setText(toStringOrNull(generalSellingPriceMax));
             tfGeneralSellingPriceMin.setText(toStringOrNull(generalSellingPriceMin));
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
-            tfExpiredDateMax.setPlainText(expiredDateMax == null ? "" : expiredDateMax.format(dateFormatter));
-            tfExpiredDateMin.setPlainText(expiredDateMin == null ? "" : expiredDateMin.format(dateFormatter));
+            dpExpiredDateMax.setValue(expiredDateMax);
+            dpExpiredDateMin.setValue(expiredDateMin);
             tfBatchNumber.setText(currentFilter.getBatchNumber());
             if (status != null) {
                 ComboBoxUtils.select(
@@ -143,8 +139,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         String prescriptionSellingPriceMin = tfPrescriptionSellingPriceMin.getText();
         String stockQuantityMax = tfStockQuantityMax.getText();
         String stockQuantityMin = tfStockQuantityMin.getText();
-        String expiredDateMin = tfExpiredDateMin.getTextMasked();
-        String expiredDateMax = tfExpiredDateMax.getTextMasked();
+        LocalDate expiredDateMin = dpExpiredDateMin.getValue();
+        LocalDate expiredDateMax = dpExpiredDateMax.getValue();
         ProductStatus status = ComboBoxUtils.getSelectedItem(cbStatus).getValue();
         ProductFilterVM filter = new ProductFilterVM();
         filter.setName(tfName.getText());
@@ -152,6 +148,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         filter.setCode(tfCode.getText());
         filter.setBarcode(tfBarcode.getText());
         filter.setBatchNumber(tfBatchNumber.getText());
+        filter.setExpiredDateMin(expiredDateMin);
+        filter.setExpiredDateMax(expiredDateMax);
         if (StringUtils.isNotBlank(generalSellingPriceMax)) {
             filter.setGeneralSellingPriceMax(NumberUtils.toScaledBigDecimal(generalSellingPriceMax));
         }
@@ -169,12 +167,6 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         }
         if (StringUtils.isNotBlank(stockQuantityMin)) {
             filter.setStockQuantityMin(NumberUtils.toInt(stockQuantityMin));
-        }
-        if (StringUtils.isNotBlank(expiredDateMin)) {
-            filter.setExpiredDateMin(parseLocalDateQuietly(expiredDateMin, CommonConstants.DATE_DISPLAY_PATTERN));
-        }
-        if (StringUtils.isNotBlank(expiredDateMax)) {
-            filter.setExpiredDateMax(parseLocalDateQuietly(expiredDateMax, CommonConstants.DATE_DISPLAY_PATTERN));
         }
         filter.setStatus(status);
         filter.setUnit(selectedUnit);
@@ -198,8 +190,8 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
                 tfStockQuantityMax,
                 tfStockQuantityMin,
                 tfBatchNumber);
-        tfExpiredDateMax.setPlainText("");
-        tfExpiredDateMin.setPlainText("");
+        dpExpiredDateMax.setValue(null);
+        dpExpiredDateMin.setValue(null);
         ComboBoxUtils.selectIndex(cbStatus, 0);
         selectedUnit = null;
         selectedProductCategory = null;
@@ -212,6 +204,7 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
 
     @Override
     protected void initDataFilterControlActions() {
+        initCustomDatePicker(dpExpiredDateMax, dpExpiredDateMin);
         TextFieldUtils.setDigitTextFields(
                 tfBarcode,
                 tfPrescriptionSellingPriceMin,

@@ -1,22 +1,18 @@
 package pospino.desktop.controller.sale;
 
-import static com.gitlab.mudiasoft.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
 import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toStringOrNull;
 
-import java.time.format.DateTimeFormatter;
-
-import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
 import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
 import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.PaymentStatus;
 import pospino.desktop.constant.StringConstants;
@@ -32,16 +28,16 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
     private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
 
     @FXML
-    private MaskedTextField tfDueDateMax;
+    private DatePicker dpDueDateMax;
 
     @FXML
-    private MaskedTextField tfDueDateMin;
+    private DatePicker dpDueDateMin;
 
     @FXML
-    private MaskedTextField tfCreatedDateMax;
+    private DatePicker dpCreatedDateMax;
 
     @FXML
-    private MaskedTextField tfCreatedDateMin;
+    private DatePicker dpCreatedDateMin;
 
     @FXML
     private TextField tfInvoiceNumber;
@@ -74,7 +70,6 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
     protected void initDataFilterControlValues() {
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         if (currentFilter != null) {
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
             tfCustomer.setText(currentFilter.getCustomerName());
             tfDoctor.setText(currentFilter.getDoctorName());
@@ -83,16 +78,16 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
             tfTotalProductMax.setText(toStringOrNull(currentFilter.getTotalProductMax()));
             tfTotalProductMin.setText(toStringOrNull(currentFilter.getTotalProductMin()));
             if (currentFilter.getCreatedDateMin() != null) {
-                tfCreatedDateMin.setText(currentFilter.getCreatedDateMin().format(dateFormatter));
+                dpCreatedDateMin.setValue(currentFilter.getCreatedDateMin());
             }
             if (currentFilter.getCreatedDateMax() != null) {
-                tfCreatedDateMax.setText(currentFilter.getCreatedDateMax().format(dateFormatter));
+                dpCreatedDateMax.setValue(currentFilter.getCreatedDateMax());
             }
             if (currentFilter.getDueDateMax() != null) {
-                tfDueDateMax.setText(currentFilter.getDueDateMax().format(dateFormatter));
+                dpDueDateMax.setValue(currentFilter.getDueDateMax());
             }
             if (currentFilter.getDueDateMin() != null) {
-                tfDueDateMin.setText(currentFilter.getDueDateMin().format(dateFormatter));
+                dpDueDateMin.setValue(currentFilter.getDueDateMin());
             }
             if (currentFilter.getPaymentStatus() != null) {
                 ComboBoxUtils.select(
@@ -109,6 +104,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
 
     @Override
     protected void initDataFilterControlActions() {
+        initCustomDatePicker(dpCreatedDateMax, dpCreatedDateMin, dpDueDateMax, dpDueDateMin);
         TextFieldUtils.setDigitTextFields(tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax, tfTotalProductMin);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
@@ -123,12 +119,10 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
     protected SaleFilterVM getFreshFilterValues() {
         SaleFilterVM filter = new SaleFilterVM();
         filter.setInvoiceNumber(tfInvoiceNumber.getText());
-        filter.setCreatedDateMax(
-                parseLocalDateQuietly(tfCreatedDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setCreatedDateMin(
-                parseLocalDateQuietly(tfCreatedDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setDueDateMax(parseLocalDateQuietly(tfDueDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setDueDateMin(parseLocalDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setCreatedDateMax(dpCreatedDateMax.getValue());
+        filter.setCreatedDateMin(dpCreatedDateMin.getValue());
+        filter.setDueDateMax(dpDueDateMax.getValue());
+        filter.setDueDateMin(dpDueDateMin.getValue());
         PaymentStatus selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         filter.setPaymentStatus(selectedPaymentStatus);
         if (selectedCustomer != null) {
@@ -156,10 +150,10 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
                 tfTotalPaymentMin,
                 tfTotalProductMax,
                 tfTotalProductMin);
-        tfCreatedDateMax.setPlainText("");
-        tfCreatedDateMin.setPlainText("");
-        tfDueDateMax.setPlainText("");
-        tfDueDateMin.setPlainText("");
+        dpCreatedDateMax.setValue(null);
+        dpCreatedDateMin.setValue(null);
+        dpDueDateMax.setValue(null);
+        dpDueDateMin.setValue(null);
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         selectedCustomer = null;
         selectedDoctor = null;

@@ -9,16 +9,15 @@ import java.time.LocalDate;
 import org.apache.commons.lang3.StringUtils;
 
 import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
-import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
 import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
 import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
 import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
-import com.gitlab.mudiasoft.toolbox.data.DateTimeUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.Tab;
@@ -101,7 +100,7 @@ public class ProductAddController extends CommonDataSaveController {
     private TextField tfBatchNumber;
 
     @FXML
-    private MaskedTextField tfExpiredDate;
+    private DatePicker dpExpiredDate;
 
     @FXML
     private TextField tfExpiryQuantity;
@@ -135,6 +134,7 @@ public class ProductAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        initCustomDatePicker(dpExpiredDate);
         TextFieldUtils.setDigitTextFields(
                 tfBarcode,
                 tfGeneralSellPrice,
@@ -189,9 +189,7 @@ public class ProductAddController extends CommonDataSaveController {
         productAdd.setPriceRemarks(tfPriceRemarks.getText());
         productAdd.setStockQuantity(toIntegerOrNull(tfStockQuantity.getText()));
         productAdd.setStockRemarks(tfStockRemarks.getText());
-        String expiredDate = tfExpiredDate.getTextMasked();
-        productAdd
-                .setExpiredDate(DateTimeUtils.parseLocalDateQuietly(expiredDate, CommonConstants.DATE_DISPLAY_PATTERN));
+        productAdd.setExpiredDate(dpExpiredDate.getValue());
         productAdd.setBatchNumber(tfBatchNumber.getText());
         productAdd.setExpiryQuantity(toIntegerOrNull(tfExpiryQuantity.getText()));
         productAdd.setExpiryRemarks(tfExpiryRemarks.getText());
@@ -205,21 +203,17 @@ public class ProductAddController extends CommonDataSaveController {
         validator.validateBlank(tfCode, MessageCode.ERROR_EMPTY_CODE);
         validator.validateBlank(tfCategory, MessageCode.ERROR_EMPTY_CATEGORY);
         validator.validateBlank(tfUnit, MessageCode.ERROR_EMPTY_UNIT);
-        validator.validateCustom(this::isInvalidExpiredDate, MessageCode.ERROR_INVALID_DATE_FORMAT);
+        validator.validateCustom(this::isExpiredDateRequired, MessageCode.ERROR_INVALID_DATE_FORMAT);
         validator.validateCustom(this::isExpiryQuantityRequired, MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
         validator.validateCustom(
                 this::isExpiryQuantityExceedStockQuantity,
                 MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
     }
 
-    private boolean isInvalidExpiredDate() {
+    private boolean isExpiredDateRequired() {
         Integer expiryQty = toIntegerOrZero(tfExpiryQuantity.getText());
-        LocalDate expiredDate = DateTimeUtils
-                .parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-        boolean isExpiredDateRequired = expiryQty > 0 && expiredDate == null;
-        boolean isExpiredDateInvalid = StringUtils.isNotBlank(tfExpiredDate.getPlainText())
-                && (expiredDate == null || expiredDate.isBefore(LocalDate.now()));
-        return isExpiredDateRequired || isExpiredDateInvalid;
+        LocalDate expiredDate = dpExpiredDate.getValue();
+        return expiryQty > 0 && expiredDate == null;
     }
 
     private boolean isExpiryQuantityExceedStockQuantity() {
@@ -229,7 +223,7 @@ public class ProductAddController extends CommonDataSaveController {
     }
 
     private boolean isExpiryQuantityRequired() {
-        return StringUtils.isNotBlank(tfExpiredDate.getPlainText()) && StringUtils.isBlank(tfExpiryQuantity.getText());
+        return dpExpiredDate.getValue() != null && StringUtils.isBlank(tfExpiryQuantity.getText());
     }
 
     private boolean isProductCategoryDrugSelected() {
@@ -261,7 +255,7 @@ public class ProductAddController extends CommonDataSaveController {
                 tfBatchNumber,
                 tfExpiryQuantity,
                 tfExpiryRemarks);
-        tfExpiredDate.setPlainText("");
+        dpExpiredDate.setValue(null);
         ComboBoxUtils.selectIndex(cbStatus, 0);
     }
 

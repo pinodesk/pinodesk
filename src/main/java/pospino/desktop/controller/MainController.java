@@ -30,8 +30,7 @@ import pospino.desktop.constant.Page;
 import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.viewmodel.CurrentSessionVM;
-import pospino.desktop.viewmodel.PurchaseFilterVM;
-import pospino.desktop.viewmodel.SaleFilterVM;
+import pospino.desktop.viewmodel.SaleReportFilterVM;
 import pospino.desktop.viewmodel.UserGroupMenuVM;
 
 public class MainController extends BaseController {
@@ -262,21 +261,11 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnMenuPurchases(ActionEvent event) {
-        LocalDate today = LocalDate.now();
-        PurchaseFilterVM filter = new PurchaseFilterVM();
-        filter.setInvoiceDateMax(today);
-        filter.setInvoiceDateMin(today.withDayOfMonth(1));
-        setPageData(filter);
         changeContent(Page.TRANSACTION_PURCHASE_MAIN, (Button) event.getSource());
     }
 
     @FXML
     void onActionBtnMenuSales(ActionEvent event) {
-        LocalDate today = LocalDate.now();
-        SaleFilterVM filter = new SaleFilterVM();
-        filter.setCreatedDateMax(today);
-        filter.setCreatedDateMin(today.withDayOfMonth(1));
-        setPageData(filter);
         changeContent(Page.TRANSACTION_SALE_MAIN, (Button) event.getSource());
     }
 
@@ -307,6 +296,11 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnMenuSalesReport(ActionEvent event) {
+        LocalDate today = LocalDate.now();
+        SaleReportFilterVM filter = new SaleReportFilterVM();
+        filter.setInvoiceDateMax(today);
+        filter.setInvoiceDateMin(today);
+        setPageData(filter);
         changeContent(Page.REPORT_SALE_MAIN, (Button) event.getSource());
     }
 

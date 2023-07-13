@@ -1,21 +1,17 @@
 package pospino.desktop.controller.purchase;
 
-import static com.gitlab.mudiasoft.toolbox.data.DateTimeUtils.parseLocalDateQuietly;
 import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toStringOrNull;
 
-import java.time.format.DateTimeFormatter;
-
-import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
 import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
 import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
-import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.PaymentStatus;
 import pospino.desktop.constant.StringConstants;
@@ -30,10 +26,10 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     private TextField tfInvoiceNumber;
 
     @FXML
-    private MaskedTextField tfInvoiceDateMin;
+    private DatePicker dpInvoiceDateMin;
 
     @FXML
-    private MaskedTextField tfInvoiceDateMax;
+    private DatePicker dpInvoiceDateMax;
 
     @FXML
     private TextField tfSupplier;
@@ -42,10 +38,10 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
 
     @FXML
-    private MaskedTextField tfDueDateMin;
+    private DatePicker dpDueDateMin;
 
     @FXML
-    private MaskedTextField tfDueDateMax;
+    private DatePicker dpDueDateMax;
 
     @FXML
     private TextField tfTotalPaymentMin;
@@ -65,7 +61,6 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     protected void initDataFilterControlValues() {
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         if (currentFilter != null) {
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
             tfSupplier.setText(currentFilter.getSupplierName());
             tfTotalPaymentMax.setText(toStringOrNull(currentFilter.getTotalPaymentMax()));
@@ -73,16 +68,16 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
             tfTotalProductMax.setText(toStringOrNull(currentFilter.getTotalProductMax()));
             tfTotalProductMin.setText(toStringOrNull(currentFilter.getTotalProductMin()));
             if (currentFilter.getInvoiceDateMin() != null) {
-                tfInvoiceDateMin.setText(currentFilter.getInvoiceDateMin().format(dateFormatter));
+                dpInvoiceDateMin.setValue(currentFilter.getInvoiceDateMin());
             }
             if (currentFilter.getInvoiceDateMax() != null) {
-                tfInvoiceDateMax.setText(currentFilter.getInvoiceDateMax().format(dateFormatter));
+                dpInvoiceDateMax.setValue(currentFilter.getInvoiceDateMax());
             }
             if (currentFilter.getDueDateMax() != null) {
-                tfDueDateMax.setText(currentFilter.getDueDateMax().format(dateFormatter));
+                dpDueDateMax.setValue(currentFilter.getDueDateMax());
             }
             if (currentFilter.getDueDateMin() != null) {
-                tfDueDateMin.setText(currentFilter.getDueDateMin().format(dateFormatter));
+                dpDueDateMin.setValue(currentFilter.getDueDateMin());
             }
             if (currentFilter.getPaymentStatus() != null) {
                 ComboBoxUtils.select(
@@ -98,12 +93,10 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     protected PurchaseFilterVM getFreshFilterValues() {
         PurchaseFilterVM filter = new PurchaseFilterVM();
         filter.setInvoiceNumber(tfInvoiceNumber.getText());
-        filter.setInvoiceDateMax(
-                parseLocalDateQuietly(tfInvoiceDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setInvoiceDateMin(
-                parseLocalDateQuietly(tfInvoiceDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setDueDateMax(parseLocalDateQuietly(tfDueDateMax.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
-        filter.setDueDateMin(parseLocalDateQuietly(tfDueDateMin.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        filter.setInvoiceDateMax(dpInvoiceDateMax.getValue());
+        filter.setInvoiceDateMin(dpInvoiceDateMin.getValue());
+        filter.setDueDateMax(dpDueDateMax.getValue());
+        filter.setDueDateMin(dpDueDateMin.getValue());
         PaymentStatus selectedPaymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         filter.setPaymentStatus(selectedPaymentStatus);
         if (selectedSupplier != null) {
@@ -126,10 +119,10 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
                 tfTotalPaymentMin,
                 tfTotalProductMax,
                 tfTotalProductMin);
-        tfInvoiceDateMax.setPlainText("");
-        tfInvoiceDateMin.setPlainText("");
-        tfDueDateMax.setPlainText("");
-        tfDueDateMin.setPlainText("");
+        dpInvoiceDateMax.setValue(null);
+        dpInvoiceDateMin.setValue(null);
+        dpDueDateMax.setValue(null);
+        dpDueDateMin.setValue(null);
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         selectedSupplier = null;
     }
@@ -142,6 +135,7 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
     @Override
     protected void initDataFilterControlActions() {
         TextFieldUtils.setDigitTextFields(tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax, tfTotalProductMin);
+        initCustomDatePicker(dpDueDateMax, dpDueDateMin, dpInvoiceDateMax, dpInvoiceDateMin);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(null, StringConstants.EMPTY),
