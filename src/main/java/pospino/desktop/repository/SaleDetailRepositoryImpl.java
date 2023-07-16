@@ -85,6 +85,7 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
             where.andEquals("s.selling_mode", filter.getSellingMode().toString());
         }
         sb.append(where.getClause());
+        sb.append(" order by s.created_at, sd.id ");
         return performSelect(sb.toString(), where.getValues(), SaleReportVM.class);
     }
 }

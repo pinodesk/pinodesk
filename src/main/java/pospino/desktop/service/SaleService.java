@@ -521,7 +521,7 @@ public class SaleService extends BaseService {
         createSale(saleAdd, Activity.ADD_SALE_CASHIER);
     }
 
-    @ForActivity(Activity.GET_SALE_REPORT)
+    @ForActivity(Activity.SEARCH_SALE_REPORT)
     public List<SaleReportVM> searchSalesReport(SaleReportFilterVM filter, String language) {
         return saleDetailRepository.findByFilter(filter, language);
     }

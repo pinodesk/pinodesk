@@ -1,4 +1,4 @@
-package pospino.desktop.controller.report.sale;
+package pospino.desktop.controller.report.purchase;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,52 +40,48 @@ import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.PaymentStatus;
-import pospino.desktop.constant.SellingMode;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.constant.SystemConstants;
 import pospino.desktop.controller.BaseController;
-import pospino.desktop.service.SaleService;
+import pospino.desktop.service.PurchaseService;
 import pospino.desktop.util.SpringUtils;
-import pospino.desktop.viewmodel.SaleReportFilterVM;
-import pospino.desktop.viewmodel.SaleReportVM;
+import pospino.desktop.viewmodel.PurchaseReportFilterVM;
+import pospino.desktop.viewmodel.PurchaseReportVM;
 
-public class SaleReportMainController extends BaseController {
+public class PurchaseReportMainController extends BaseController {
 
     @FXML
     private Button btnFilter;
 
     @FXML
-    private TableColumn<SaleReportVM, String> colCustomerName;
+    private TableColumn<PurchaseReportVM, String> colSupplierName;
 
     @FXML
-    private TableColumn<SaleReportVM, LocalDate> colInvoiceDate;
+    private TableColumn<PurchaseReportVM, LocalDate> colInvoiceDate;
 
     @FXML
-    private TableColumn<SaleReportVM, String> colInvoiceNumber;
+    private TableColumn<PurchaseReportVM, String> colInvoiceNumber;
 
     @FXML
-    private TableColumn<SaleReportVM, String> colPaymentStatus;
+    private TableColumn<PurchaseReportVM, String> colPaymentStatus;
 
     @FXML
-    private TableColumn<SaleReportVM, String> colProductName;
+    private TableColumn<PurchaseReportVM, String> colProductName;
 
     @FXML
-    private TableColumn<SaleReportVM, Integer> colQuantity;
+    private TableColumn<PurchaseReportVM, Integer> colQuantity;
 
     @FXML
-    private TableColumn<SaleReportVM, String> colSellingMode;
+    private TableColumn<PurchaseReportVM, BigDecimal> colSellingPrice;
 
     @FXML
-    private TableColumn<SaleReportVM, BigDecimal> colSellingPrice;
+    private TableColumn<PurchaseReportVM, BigDecimal> colSubtotal;
 
     @FXML
-    private TableColumn<SaleReportVM, BigDecimal> colSubtotal;
+    private TableColumn<PurchaseReportVM, String> colUnit;
 
     @FXML
-    private TableColumn<SaleReportVM, String> colUnit;
-
-    @FXML
-    private TableView<SaleReportVM> tblSaleReport;
+    private TableView<PurchaseReportVM> tblPurchaseReport;
 
     @FXML
     private Label lblRows;
@@ -104,38 +100,37 @@ public class SaleReportMainController extends BaseController {
 
     private FileChooser fileChooser = new FileChooser();
 
-    private SaleService saleService;
+    private PurchaseService purchaseService;
 
-    private SaleReportFilterVM saleReportFilter;
+    private PurchaseReportFilterVM purchaseReportFilter;
 
-    private static final IMessage[] SALE_REPORT_FILE_COLUMNS = new IMessage[] {
+    private static final IMessage[] PURCHASE_REPORT_FILE_COLUMNS = new IMessage[] {
             CommonLabel.LBL_INVOICE_DATE,
             CommonLabel.LBL_INVOICE_NUMBER,
-            CommonLabel.LBL_SELLING_MODE,
-            CommonLabel.LBL_CUSTOMER_NAME,
+            CommonLabel.LBL_SUPPLIER_NAME,
             CommonLabel.LBL_PRODUCT_NAME,
             CommonLabel.LBL_QUANTITY,
             CommonLabel.LBL_UNIT,
-            CommonLabel.LBL_SELLING_PRICE,
+            CommonLabel.LBL_BUYING_PRICE,
             CommonLabel.LBL_SUBTOTAL,
             CommonLabel.LBL_PAYMENT_STATUS };
 
     @FXML
     void onActionBtnFilter(ActionEvent event) {
-        setPageData(saleReportFilter);
-        StageUtils.modal(Page.REPORT_SALE_FILTER, false, we -> {
-            SaleReportFilterVM result = getPageData();
+        setPageData(purchaseReportFilter);
+        StageUtils.modal(Page.REPORT_PURCHASE_FILTER, false, we -> {
+            PurchaseReportFilterVM result = getPageData();
             if (result == null) {
                 return;
             }
-            saleReportFilter = result;
-            searchSaleReport();
+            purchaseReportFilter = result;
+            searchPurchaseReport();
         });
     }
 
     @FXML
     void onActionBtnExport(ActionEvent event) {
-        ObservableList<SaleReportVM> report = tblSaleReport.getItems();
+        ObservableList<PurchaseReportVM> report = tblPurchaseReport.getItems();
         if (report.isEmpty()) {
             return;
         }
@@ -146,16 +141,16 @@ public class SaleReportMainController extends BaseController {
         Stage loading = displayLoading();
         CompletableFuture.runAsync(() -> {
             try {
-                SaleGroup sg = getSaleReportSummary(report);
+                PurchaseGroup sg = getPurchaseReportSummary(report);
                 XSSFWorkbook workbook = new XSSFWorkbook();
-                XSSFSheet sheet = workbook.createSheet(t.translate(CommonLabel.LBL_SALE_REPORT));
+                XSSFSheet sheet = workbook.createSheet(t.translate(CommonLabel.LBL_PURCHASE_REPORT));
                 XSSFRow row = sheet.createRow(0);
-                row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_SALE_REPORT));
+                row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_PURCHASE_REPORT));
                 row = sheet.createRow(2);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_TRANSACTION_COUNT));
                 row.createCell(1).setCellValue(sg.transactionCount);
                 row = sheet.createRow(3);
-                row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_REVENUE));
+                row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_EXPENSE));
                 row.createCell(1).setCellValue(sg.totalPayment.doubleValue());
                 row = sheet.createRow(4);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_PAID));
@@ -164,25 +159,22 @@ public class SaleReportMainController extends BaseController {
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_UNPAID));
                 row.createCell(1).setCellValue(sg.totalUnpaid.doubleValue());
                 row = sheet.createRow(7);
-                for (int i = 0; i < SALE_REPORT_FILE_COLUMNS.length; i++) {
-                    IMessage lbl = SALE_REPORT_FILE_COLUMNS[i];
+                for (int i = 0; i < PURCHASE_REPORT_FILE_COLUMNS.length; i++) {
+                    IMessage lbl = PURCHASE_REPORT_FILE_COLUMNS[i];
                     row.createCell(i).setCellValue(t.translate(lbl));
                 }
                 int rowNum = 8;
-                for (SaleReportVM vm : report) {
+                for (PurchaseReportVM vm : report) {
                     row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(dateFormatter.format(vm.getCreatedAt()));
                     row.createCell(1).setCellValue(vm.getInvoiceNumber());
-                    row.createCell(2).setCellValue(
-                            SellingMode.GENERAL.toString().equals(vm.getSellingMode()) ?
-                                    t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION));
-                    row.createCell(3).setCellValue(vm.getCustomerName());
-                    row.createCell(4).setCellValue(vm.getProductName());
-                    row.createCell(5).setCellValue(vm.getQuantity());
-                    row.createCell(6).setCellValue(vm.getUnit());
-                    row.createCell(7).setCellValue(vm.getSellingPrice().doubleValue());
-                    row.createCell(8).setCellValue(vm.getSubtotal().doubleValue());
-                    row.createCell(9).setCellValue(
+                    row.createCell(2).setCellValue(vm.getSupplierName());
+                    row.createCell(3).setCellValue(vm.getProductName());
+                    row.createCell(4).setCellValue(vm.getQuantity());
+                    row.createCell(5).setCellValue(vm.getUnit());
+                    row.createCell(6).setCellValue(vm.getBuyingPrice().doubleValue());
+                    row.createCell(7).setCellValue(vm.getSubtotal().doubleValue());
+                    row.createCell(8).setCellValue(
                             PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?
                                     t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID));
                 }
@@ -195,7 +187,6 @@ public class SaleReportMainController extends BaseController {
                 sheet.autoSizeColumn(6);
                 sheet.autoSizeColumn(7);
                 sheet.autoSizeColumn(8);
-                sheet.autoSizeColumn(9);
                 FileOutputStream fos = new FileOutputStream(file);
                 workbook.write(fos);
                 workbook.close();
@@ -215,56 +206,52 @@ public class SaleReportMainController extends BaseController {
 
     @Override
     protected void initServices() {
-        saleService = SpringUtils.getBean(SaleService.class);
+        purchaseService = SpringUtils.getBean(PurchaseService.class);
     }
 
     @Override
     protected void initControlActions() {
         Locale locale = resources.getLocale();
-        TableViewUtils.setColumnValue(colCustomerName, SaleReportVM::getCustomerName);
-        TableViewUtils.setColumnValue(colProductName, SaleReportVM::getProductName);
-        TableViewUtils.setColumnValue(colUnit, SaleReportVM::getUnit);
-        TableViewUtils.setColumnValue(colInvoiceNumber, SaleReportVM::getInvoiceNumber);
+        TableViewUtils.setColumnValue(colSupplierName, PurchaseReportVM::getSupplierName);
+        TableViewUtils.setColumnValue(colProductName, PurchaseReportVM::getProductName);
+        TableViewUtils.setColumnValue(colUnit, PurchaseReportVM::getUnit);
+        TableViewUtils.setColumnValue(colInvoiceNumber, PurchaseReportVM::getInvoiceNumber);
         TableViewUtils.setColumnValue(
                 colPaymentStatus,
                 vm -> PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?
                         t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID));
-        TableViewUtils.setColumnValue(
-                colSellingMode,
-                vm -> SellingMode.GENERAL.toString().equals(vm.getSellingMode()) ?
-                        t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION));
         TableViewUtils.initTableColumn(
                 colQuantity,
                 new NumberCellFactory<>(locale),
-                SaleReportVM::getQuantity,
+                PurchaseReportVM::getQuantity,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colInvoiceDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                SaleReportVM::getInvoiceDate);
+                PurchaseReportVM::getInvoiceDate);
         TableViewUtils.initTableColumn(
                 colSellingPrice,
                 new NumberCellFactory<>(locale),
-                SaleReportVM::getSellingPrice,
+                PurchaseReportVM::getBuyingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colSubtotal,
                 new NumberCellFactory<>(locale),
-                SaleReportVM::getSubtotal,
+                PurchaseReportVM::getSubtotal,
                 StyleConstants.ALIGN_RIGHT);
-        tblSaleReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-        tblSaleReport.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        tblPurchaseReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+        tblPurchaseReport.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         fileChooser.setInitialDirectory(new File(SystemConstants.USER_HOME_DIR));
-        fileChooser.setInitialFileName("pospino-sale-report.xlsx");
+        fileChooser.setInitialFileName("pospino-purchase-report.xlsx");
     }
 
     @Override
     protected void initControlValues() {
-        saleReportFilter = getPageData();
-        if (saleReportFilter == null) {
-            saleReportFilter = new SaleReportFilterVM();
+        purchaseReportFilter = getPageData();
+        if (purchaseReportFilter == null) {
+            purchaseReportFilter = new PurchaseReportFilterVM();
         }
-        searchSaleReport();
+        searchPurchaseReport();
     }
 
     @Override
@@ -272,23 +259,24 @@ public class SaleReportMainController extends BaseController {
         return null;
     }
 
-    private void searchSaleReport() {
-        tblSaleReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
-        tblSaleReport.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> saleService.searchSalesReport(saleReportFilter, resources.getLocale().getLanguage()))
-                .thenAccept(saleReport -> Platform.runLater(() -> {
-                    if (saleReport.isEmpty()) {
-                        tblSaleReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+    private void searchPurchaseReport() {
+        tblPurchaseReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblPurchaseReport.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(
+                () -> purchaseService.searchPurchaseReport(purchaseReportFilter, resources.getLocale().getLanguage()))
+                .thenAccept(purchaseReport -> Platform.runLater(() -> {
+                    if (purchaseReport.isEmpty()) {
+                        tblPurchaseReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                         lblRows.setText("0");
                     }
-                    tblSaleReport.setItems(FXCollections.observableList(saleReport));
-                    TableViewUtils.enableSort(false, tblSaleReport);
-                    lblRows.setText(StringNumberUtils.format(saleReport.size(), resources.getLocale()));
-                    calculateSummary(saleReport);
+                    tblPurchaseReport.setItems(FXCollections.observableList(purchaseReport));
+                    TableViewUtils.enableSort(false, tblPurchaseReport);
+                    lblRows.setText(StringNumberUtils.format(purchaseReport.size(), resources.getLocale()));
+                    calculateSummary(purchaseReport);
                 }));
     }
 
-    private void calculateSummary(List<SaleReportVM> report) {
+    private void calculateSummary(List<PurchaseReportVM> report) {
         lblTransactionCount.setText("-");
         lblRevenue.setText("-");
         lblPaid.setText("-");
@@ -296,7 +284,7 @@ public class SaleReportMainController extends BaseController {
         if (report.isEmpty()) {
             return;
         }
-        SaleGroup sg = getSaleReportSummary(report);
+        PurchaseGroup sg = getPurchaseReportSummary(report);
         Locale locale = resources.getLocale();
         lblTransactionCount.setText(StringNumberUtils.format(sg.transactionCount, locale));
         lblRevenue.setText(StringNumberUtils.format(sg.totalPayment, locale));
@@ -304,10 +292,10 @@ public class SaleReportMainController extends BaseController {
         lblUnpaid.setText(StringNumberUtils.format(sg.totalUnpaid, locale));
     }
 
-    private SaleGroup getSaleReportSummary(List<SaleReportVM> report) {
+    private PurchaseGroup getPurchaseReportSummary(List<PurchaseReportVM> report) {
         Set<String> invoices = new HashSet<>();
-        SaleGroup sg = new SaleGroup();
-        for (SaleReportVM vm : report) {
+        PurchaseGroup sg = new PurchaseGroup();
+        for (PurchaseReportVM vm : report) {
             BigDecimal totalPayment = vm.getTotalPayment();
             String invoice = vm.getInvoiceNumber();
             if (!invoices.contains(invoice)) {
@@ -324,7 +312,7 @@ public class SaleReportMainController extends BaseController {
         return sg;
     }
 
-    private class SaleGroup {
+    private class PurchaseGroup {
         private Integer transactionCount = 0;
         private BigDecimal totalPayment = BigDecimal.ZERO;
         private BigDecimal totalPaid = BigDecimal.ZERO;

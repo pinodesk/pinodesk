@@ -13,11 +13,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.report.sale.SaleReportMainController">
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.report.purchase.PurchaseReportMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_sale_report" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
+            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_purchase_report" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
                <font>
                   <Font size="24.0" />
                </font>
@@ -93,7 +93,7 @@
                         </VBox>
                         <VBox styleClass="bg-secondary" GridPane.rowIndex="1">
                            <children>
-                              <Label text="%lbl_revenue" wrapText="true">
+                              <Label text="%lbl_expense" wrapText="true">
                                  <font>
                                     <Font size="13.0" />
                                  </font>
@@ -163,16 +163,15 @@
                   </GridPane>
                </children>
             </VBox>
-            <TableView fx:id="tblSaleReport" maxHeight="1.7976931348623157E308" style="-fx-font-size: 13px;">
+            <TableView fx:id="tblPurchaseReport" maxHeight="1.7976931348623157E308" style="-fx-font-size: 13px;">
               <columns>
                   <TableColumn fx:id="colInvoiceDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
                 <TableColumn fx:id="colInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
-                  <TableColumn fx:id="colSellingMode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_selling_mode" />
-                <TableColumn fx:id="colCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />
+                <TableColumn fx:id="colSupplierName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_supplier_name" />
                   <TableColumn fx:id="colProductName" minWidth="-Infinity" prefWidth="300.0" text="%lbl_product_name" />
                   <TableColumn fx:id="colQuantity" minWidth="-Infinity" prefWidth="100.0" text="%lbl_quantity" />
                   <TableColumn fx:id="colUnit" minWidth="-Infinity" prefWidth="100.0" text="%lbl_unit" />
-                  <TableColumn fx:id="colSellingPrice" minWidth="-Infinity" prefWidth="100.0" text="%lbl_selling_price" />
+                  <TableColumn fx:id="colSellingPrice" minWidth="-Infinity" prefWidth="100.0" text="%lbl_buying_price" />
                   <TableColumn fx:id="colSubtotal" minWidth="-Infinity" prefWidth="100.0" text="%lbl_subtotal" />
                   <TableColumn fx:id="colPaymentStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_status" />
               </columns>

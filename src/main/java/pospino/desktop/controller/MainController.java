@@ -30,6 +30,7 @@ import pospino.desktop.constant.Page;
 import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.viewmodel.CurrentSessionVM;
+import pospino.desktop.viewmodel.PurchaseReportFilterVM;
 import pospino.desktop.viewmodel.SaleReportFilterVM;
 import pospino.desktop.viewmodel.UserGroupMenuVM;
 
@@ -306,7 +307,12 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnMenuPurchasesReport(ActionEvent event) {
-        changeContent(Page.SETTINGS_USER_MAIN, (Button) event.getSource());
+        LocalDate today = LocalDate.now();
+        PurchaseReportFilterVM filter = new PurchaseReportFilterVM();
+        filter.setInvoiceDateMax(today);
+        filter.setInvoiceDateMin(today);
+        setPageData(filter);
+        changeContent(Page.REPORT_PURCHASE_MAIN, (Button) event.getSource());
     }
 
     private void changeContent(Page page, Button btn) {

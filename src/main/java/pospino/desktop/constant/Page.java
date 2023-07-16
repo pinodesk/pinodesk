@@ -81,7 +81,10 @@ public enum Page implements IPage {
     TRANSACTION_RECEIVABLE_EDIT("transaction/receivable/edit"),
 
     REPORT_SALE_MAIN("report/sale/main"),
-    REPORT_SALE_FILTER("report/sale/filter");
+    REPORT_SALE_FILTER("report/sale/filter"),
+
+    REPORT_PURCHASE_MAIN("report/purchase/main"),
+    REPORT_PURCHASE_FILTER("report/purchase/filter");
 
     private final String templateName;
 

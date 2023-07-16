@@ -39,6 +39,8 @@ import pospino.desktop.viewmodel.PurchaseAddVM;
 import pospino.desktop.viewmodel.PurchaseEditVM;
 import pospino.desktop.viewmodel.PurchaseFilterVM;
 import pospino.desktop.viewmodel.PurchaseProductVM;
+import pospino.desktop.viewmodel.PurchaseReportFilterVM;
+import pospino.desktop.viewmodel.PurchaseReportVM;
 import pospino.desktop.viewmodel.PurchaseVM;
 
 @Service
@@ -423,6 +425,11 @@ public class PurchaseService extends BaseService {
     public List<PurchaseProductVM> getPurchaseProducts(Long purchaseId) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return purchaseDetailRepository.findByPurchaseIdJoinProducts(purchaseId, language);
+    }
+
+    @ForActivity(Activity.SEARCH_PURCHASE_REPORT)
+    public List<PurchaseReportVM> searchPurchaseReport(PurchaseReportFilterVM filter, String language) {
+        return purchaseDetailRepository.findByFilter(filter, language);
     }
 
 }

@@ -80,7 +80,8 @@ public enum Activity {
     GET_DOCTOR_CATEGORY_BY_ID,
     EDIT_DOCTOR,
     LOGIN,
-    GET_SALE_REPORT;
+    SEARCH_SALE_REPORT,
+    SEARCH_PURCHASE_REPORT;
 
     @Override
     public String toString() {
