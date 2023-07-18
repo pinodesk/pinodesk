@@ -87,6 +87,9 @@ public class PurchaseMainController extends BaseController {
     private TableColumn<PurchaseVM, LocalDate> colDueDate;
 
     @FXML
+    private TableColumn<PurchaseVM, String> colUser;
+
+    @FXML
     private TableColumn<PurchaseVM, LocalDateTime> colCreatedAt;
 
     @FXML
@@ -171,6 +174,7 @@ public class PurchaseMainController extends BaseController {
         TableViewUtils.setColumnValue(colOrderDate, PurchaseVM::getInvoiceDate);
         TableViewUtils.setColumnValue(colDueDate, PurchaseVM::getPaymentDueDate);
         TableViewUtils.setColumnValue(colSupplierName, PurchaseVM::getSupplierName);
+        TableViewUtils.setColumnValue(colUser, PurchaseVM::getUserFullName);
         TableViewUtils.setColumnValue(
                 colPaymentStatus,
                 vm -> PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?

@@ -22,6 +22,7 @@ public class Purchase extends DataModel {
     public static final String C_PAYMENT_STATUS = "payment_status";
     public static final String C_DISCOUNT = "discount";
     public static final String C_TAX = "tax";
+    public static final String C_USER_ID = "user_id";
 
     private Long supplierId;
     private String invoiceNumber;
@@ -33,4 +34,5 @@ public class Purchase extends DataModel {
     private String paymentStatus;
     private BigDecimal discount;
     private BigDecimal tax;
+    private Long userId;
 }

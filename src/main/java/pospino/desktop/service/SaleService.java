@@ -151,6 +151,7 @@ public class SaleService extends BaseService {
         sale.setTotalPayment(saleAdd.getTotalPayment());
         sale.setTotalProduct(saleAdd.getTotalProduct());
         sale.setTotalSale(saleAdd.getTotalSale());
+        sale.setUserId(currentUserId);
         Sale created = saleRepository.save(sale);
         Long saleId = created.getId();
         saleAdd.getSaleProducts().forEach(saleProduct -> {

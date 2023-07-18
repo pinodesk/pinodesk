@@ -71,6 +71,7 @@
             <TableColumn fx:id="colTotalPayment" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_payment" />
             <TableColumn fx:id="colPaymentStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_status" />
             <TableColumn fx:id="colDueDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_due_date" />
+            <TableColumn fx:id="colUser" minWidth="-Infinity" prefWidth="200.0" text="%lbl_user" />
             <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
             <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />
         </columns>

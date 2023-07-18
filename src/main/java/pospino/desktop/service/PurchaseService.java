@@ -109,6 +109,7 @@ public class PurchaseService extends BaseService {
         purchase.setTotalPayment(purchaseAdd.getTotalPayment());
         purchase.setTotalProduct(purchaseAdd.getTotalProduct());
         purchase.setTotalPurchase(purchaseAdd.getTotalPurchase());
+        purchase.setUserId(sessionService.getCurrentSession().getUser().getId());
         Purchase created = purchaseRepository.save(purchase);
         Long purchaseId = created.getId();
         purchaseAdd.getPurchaseProducts().stream().forEach(purchaseProduct -> {

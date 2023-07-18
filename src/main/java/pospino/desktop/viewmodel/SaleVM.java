@@ -21,6 +21,8 @@ public class SaleVM {
     private BigDecimal totalPayment;
     private BigDecimal totalSale;
     private LocalDate paymentDueDate;
+    private Long userId;
+    private String userFullName;
     private String paymentStatus;
     private String sellingMode;
 }
