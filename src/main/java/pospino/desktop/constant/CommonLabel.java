@@ -75,7 +75,11 @@ public enum CommonLabel implements IMessage {
     LBL_TRANSACTION_COUNT,
     LBL_SUPPLIER_NAME,
     LBL_BUYING_PRICE,
-    LBL_PURCHASE_REPORT;
+    LBL_PURCHASE_REPORT,
+    LBL_STATUS,
+    LBL_UPDATED_AT,
+    LBL_AVERAGE_BUYING_PRICE,
+    LBL_PRODUCTS;
 
     @Override
     public String toString() {

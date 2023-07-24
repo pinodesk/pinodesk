@@ -10,10 +10,15 @@ import com.gitlab.mudiasoft.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
 import com.gitlab.mudiasoft.pandora.utility.AlertResult;
 import com.gitlab.mudiasoft.pandora.utility.EventUtils;
+import com.gitlab.mudiasoft.pandora.utility.IMessage;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 import com.gitlab.mudiasoft.toolbox.data.StringNumberUtils;
 import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -25,13 +30,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.MenuCodeConstants;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
+import pospino.desktop.constant.ProductStatus;
 import pospino.desktop.constant.StyleConstants;
+import pospino.desktop.constant.SystemConstants;
 import pospino.desktop.controller.BaseController;
 import pospino.desktop.service.ProductService;
 import pospino.desktop.util.SpringUtils;
@@ -97,6 +108,26 @@ public class ProductMainController extends BaseController {
     @FXML
     private Button btnRemove;
 
+    @FXML
+    private Button btnExport;
+
+    private static final IMessage[] PRODUCT_COLUMN_LABELS = new IMessage[] {
+            CommonLabel.LBL_NAME,
+            CommonLabel.LBL_QUANTITY,
+            CommonLabel.LBL_UNIT,
+            CommonLabel.LBL_CATEGORY,
+            CommonLabel.LBL_GENERAL_SELLING_PRICE,
+            CommonLabel.LBL_PRESCRIPTION_SELLING_PRICE,
+            CommonLabel.LBL_AVERAGE_BUYING_PRICE,
+            CommonLabel.LBL_CODE,
+            CommonLabel.LBL_BARCODE,
+            CommonLabel.LBL_EXPIRED_DATE,
+            CommonLabel.LBL_STATUS,
+            CommonLabel.LBL_CREATED_AT,
+            CommonLabel.LBL_UPDATED_AT };
+
+    private FileChooser fileChooser = new FileChooser();
+
     private ProductFilterVM productFilter;
 
     private ProductService productService;
@@ -154,6 +185,87 @@ public class ProductMainController extends BaseController {
         });
     }
 
+    @FXML
+    void onActionBtnExport(ActionEvent event) {
+        ObservableList<ProductVM> products = tblProduct.getItems();
+        if (products.isEmpty()) {
+            return;
+        }
+        File file = fileChooser.showSaveDialog(getCurrentStage());
+        if (file == null) {
+            return;
+        }
+        Stage loading = displayLoading();
+        CompletableFuture.runAsync(() -> {
+            try {
+                XSSFWorkbook workbook = new XSSFWorkbook();
+                XSSFSheet sheet = workbook.createSheet(t.translate(CommonLabel.LBL_PRODUCTS));
+                XSSFRow row = sheet.createRow(0);
+                row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_PRODUCTS));
+                row = sheet.createRow(2);
+                for (int i = 0; i < PRODUCT_COLUMN_LABELS.length; i++) {
+                    IMessage lbl = PRODUCT_COLUMN_LABELS[i];
+                    row.createCell(i).setCellValue(t.translate(lbl));
+                }
+                int rowNum = 3;
+                for (ProductVM vm : products) {
+                    row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(vm.getName());
+                    if (vm.getQuantity() != null) {
+                        row.createCell(1).setCellValue(vm.getQuantity());
+                    }
+                    row.createCell(2).setCellValue(vm.getUnitLabel());
+                    row.createCell(3).setCellValue(vm.getCategoryName());
+                    if (vm.getGeneralSellingPrice() != null) {
+                        row.createCell(4).setCellValue(vm.getGeneralSellingPrice().intValue());
+                    }
+                    if (vm.getPrescriptionSellingPrice() != null) {
+                        row.createCell(5).setCellValue(vm.getPrescriptionSellingPrice().intValue());
+                    }
+                    if (vm.getAverageBuyingPrice() != null) {
+                        row.createCell(6).setCellValue(vm.getAverageBuyingPrice().intValue());
+                    }
+                    row.createCell(7).setCellValue(vm.getCode());
+                    row.createCell(8).setCellValue(vm.getBarcode());
+                    if (vm.getClosestExpiredDate() != null) {
+                        row.createCell(9).setCellValue(dateFormatter.format(vm.getClosestExpiredDate()));
+                    }
+                    row.createCell(10).setCellValue(
+                            ProductStatus.ACTIVE.toString().equals(vm.getStatus()) ?
+                                    t.translate(CommonLabel.LBL_ACTIVE) : t.translate(CommonLabel.LBL_INACTIVE));
+                    row.createCell(11).setCellValue(dateFormatter.format(vm.getCreatedAt()));
+                    row.createCell(12).setCellValue(dateFormatter.format(vm.getUpdatedAt()));
+                }
+                sheet.autoSizeColumn(0);
+                sheet.autoSizeColumn(1);
+                sheet.autoSizeColumn(2);
+                sheet.autoSizeColumn(3);
+                sheet.autoSizeColumn(4);
+                sheet.autoSizeColumn(5);
+                sheet.autoSizeColumn(6);
+                sheet.autoSizeColumn(7);
+                sheet.autoSizeColumn(8);
+                sheet.autoSizeColumn(9);
+                sheet.autoSizeColumn(10);
+                sheet.autoSizeColumn(11);
+                sheet.autoSizeColumn(12);
+                FileOutputStream fos = new FileOutputStream(file);
+                workbook.write(fos);
+                workbook.close();
+            } catch (Exception e) {
+                throw new CompletionException(e);
+            }
+        }).whenComplete((result, ex) -> Platform.runLater(() -> {
+            loading.hide();
+            if (ex != null) {
+                ex.printStackTrace();
+                handleException(ex);
+                return;
+            }
+            displayInfo(String.format(t.translate(MessageCode.SUCCESS_EXPORT_PRODUCTS), file.getAbsolutePath()));
+        }));
+    }
+
     @Override
     protected void initServices() {
         productService = SpringUtils.getBean(ProductService.class);
@@ -163,6 +275,8 @@ public class ProductMainController extends BaseController {
     protected void initControlActions() {
         disableWriteAction(MenuCodeConstants.CATALOG_PRODUCTS, btnAdd, btnRemove, btnImport, btnPackage);
         initTableProduct();
+        fileChooser.setInitialDirectory(new File(SystemConstants.USER_HOME_DIR));
+        fileChooser.setInitialFileName("pospino-products.xlsx");
         registerKeyListener();
     }
 

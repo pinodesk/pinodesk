@@ -302,7 +302,7 @@ public class PurchaseService extends BaseService {
             BigDecimal averageBuyingPrice = purchaseDetails.stream()
                     .filter(pd1 -> Objects.equals(pd1.getPurchaseId(), purchaseId)).map(PurchaseDetail::getBuyingPrice)
                     .reduce(BigDecimal.ZERO, BigDecimal::add)
-                    .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_UP);
+                    .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_EVEN);
             product.setAverageBuyingPrice(averageBuyingPrice);
             productRepository.save(product);
         });
@@ -345,7 +345,7 @@ public class PurchaseService extends BaseService {
     private BigDecimal calculateProductAverageBuyingPrice(Long productId) {
         List<PurchaseDetail> purchaseDetails = purchaseDetailRepository.findByProductIdAndDeletedAtIsNull(productId);
         return purchaseDetails.stream().map(PurchaseDetail::getBuyingPrice).reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_EVEN);
     }
 
     private void createProductExpiry(

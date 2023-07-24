@@ -200,7 +200,7 @@ public class PurchaseReportMainController extends BaseController {
                 handleException(ex);
                 return;
             }
-            displayInfo(String.format(t.translate(MessageCode.SUCCESS_EXPORT_SALE_REPORT), file.getAbsolutePath()));
+            displayInfo(String.format(t.translate(MessageCode.SUCCESS_EXPORT_PURCHASE_REPORT), file.getAbsolutePath()));
         }));
     }
 
