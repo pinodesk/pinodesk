@@ -72,7 +72,7 @@ release:
     - test
   script:
     - *git_setup
-    - ./mvnw $MAVEN_CLI_OPTS gitflow:release -DversionDigitToIncrement=$RELEASE_DIGIT -DargLine=$MAVEN_CLI_OPTS
+    - ./mvnw $MAVEN_CLI_OPTS gitflow:release -DallowSnapshots -DversionDigitToIncrement=$RELEASE_DIGIT -DargLine=$MAVEN_CLI_OPTS
   only:
     - develop
   when: manual

@@ -89,7 +89,7 @@ public class UserGroupService extends BaseService {
 
     @ForActivity(Activity.GET_USER_GROUP_MENUS_BY_USER_GROUP_ID)
     public List<UserGroupMenuVM> getUserGroupMenusByUserGroupId(Long userGroupId, String language) {
-        List<Menu> menus = menuRepository.findByLanguageAndDeletedAtIsNull(language);
+        List<Menu> menus = menuRepository.findByLanguageAndDeletedAtIsNullOrderBySeqNum(language);
         List<UserGroupMenuVM> userGroupMenus = userGroupMenuRepository.findByUserGroupId(userGroupId, language);
         List<UserGroupMenuVM> ordered = new ArrayList<>();
         menus.forEach(menu -> {
@@ -111,7 +111,7 @@ public class UserGroupService extends BaseService {
 
     @ForActivity(Activity.GET_USER_GROUP_MENUS)
     public List<UserGroupMenuVM> getUserGroupMenus(String language) {
-        List<Menu> menus = menuRepository.findByLanguageAndDeletedAtIsNull(language);
+        List<Menu> menus = menuRepository.findByLanguageAndDeletedAtIsNullOrderBySeqNum(language);
         List<UserGroupMenuVM> ordered = new ArrayList<>();
         menus.forEach(menu -> {
             if (menu.getParentMenuId() == null) {

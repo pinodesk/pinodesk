@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.configuration.ConfigurationMainController">
+<VBox fx:id="contentPane" prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.configuration.ConfigurationMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -45,7 +45,7 @@
                <children>
                   <VBox spacing="10.0" style="-fx-border-color: #bebebe; -fx-border-width: 1px;">
                      <children>
-                        <Label text="%lbl_general" textFill="#009c7c">
+                        <Label fx:id="lblGeneral" text="%lbl_general" textFill="#009c7c">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -117,7 +117,7 @@
                   </VBox>
                   <VBox spacing="10.0" style="-fx-border-color: #bebebe; -fx-border-width: 1px;" GridPane.columnIndex="1">
                      <children>
-                        <Label text="%lbl_printer" textFill="#009c7c">
+                        <Label fx:id="lblPrinter" text="%lbl_printer" textFill="#009c7c">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -172,7 +172,7 @@
                   </VBox>
                   <VBox spacing="10.0" style="-fx-border-color: #bebebe; -fx-border-width: 1px;" GridPane.rowIndex="1">
                      <children>
-                        <Label text="%lbl_backup_and_restore" textFill="#009c7c">
+                        <Label fx:id="lblBackupAndRestore" text="%lbl_backup_and_restore" textFill="#009c7c">
                            <font>
                               <Font size="13.0" />
                            </font>

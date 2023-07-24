@@ -2,8 +2,10 @@ package pospino.desktop.controller;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.gitlab.mudiasoft.pandora.utility.AlertResult;
 import com.gitlab.mudiasoft.pandora.utility.PageLoader;
@@ -11,7 +13,6 @@ import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -29,8 +30,8 @@ import pospino.desktop.constant.Page;
 import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.viewmodel.CurrentSessionVM;
-import pospino.desktop.viewmodel.PurchaseFilterVM;
-import pospino.desktop.viewmodel.SaleFilterVM;
+import pospino.desktop.viewmodel.PurchaseReportFilterVM;
+import pospino.desktop.viewmodel.SaleReportFilterVM;
 import pospino.desktop.viewmodel.UserGroupMenuVM;
 
 public class MainController extends BaseController {
@@ -110,6 +111,15 @@ public class MainController extends BaseController {
     @FXML
     private ScrollPane menuScrollPane;
 
+    @FXML
+    private Label lblMenuReports;
+
+    @FXML
+    private Button btnMenuSalesReport;
+
+    @FXML
+    private Button btnMenuPurchasesReport;
+
     @Override
     protected void initServices() {
         // No services to init
@@ -123,10 +133,7 @@ public class MainController extends BaseController {
     @Override
     protected void initControlValues() {
         if (!sessionService.isCurrentSessionActive()) {
-            ObservableList<Node> children = vboxMenu.getChildren();
-            for (Node node : children) {
-                vboxMenu.getChildren().remove(node);
-            }
+            vboxMenu.getChildren().removeAll(vboxMenu.getChildren());
             return;
         }
         lblVersion.setText(String.format("%s %s", CommonConstants.APP_TITLE, applicationProperties.getVersion()));
@@ -140,24 +147,70 @@ public class MainController extends BaseController {
         List<String> userGroupMenuCodes = userGroupMenus.stream()
                 .filter(ugm -> SimpleStatus.YES.toString().equals(ugm.getRead())).map(UserGroupMenuVM::getMenuCode)
                 .toList();
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.DASHBOARD, btnMenuDashboard);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG, lblMenuCatalog);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_PRODUCTS, btnMenuProducts);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_CUSTOMERS, btnMenuCustomers);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_SUPPLIERS, btnMenuSuppliers);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.CATALOG_DOCTORS, btnMenuDoctors);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION, lblMenuTransaction);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION_PURCHASES, btnMenuPurchases);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION_SALES, btnMenuSales);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION_PAYABLES, btnMenuPayables);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.TRANSACTION_RECEIVABLES, btnMenuReceivables);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS, lblMenuSettings);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS_CONFIGURATION, btnMenuConfiguration);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS_USERS, btnMenuUsers);
-        removeInaccessibleMenu(userGroupMenuCodes, MenuCodeConstants.SETTINGS_USER_GROUPS, btnMenuUserGroups);
+        Set<Node> inaccessibleMenus = new HashSet<>();
+        appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.DASHBOARD, btnMenuDashboard);
+        appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.CATALOG, lblMenuCatalog);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.CATALOG_PRODUCTS,
+                btnMenuProducts);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.CATALOG_CUSTOMERS,
+                btnMenuCustomers);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.CATALOG_SUPPLIERS,
+                btnMenuSuppliers);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.CATALOG_DOCTORS,
+                btnMenuDoctors);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.TRANSACTION,
+                lblMenuTransaction);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.TRANSACTION_PURCHASES,
+                btnMenuPurchases);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.TRANSACTION_SALES,
+                btnMenuSales);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.TRANSACTION_PAYABLES,
+                btnMenuPayables);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.TRANSACTION_RECEIVABLES,
+                btnMenuReceivables);
+        appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.SETTINGS, lblMenuSettings);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.SETTINGS_CONFIGURATION,
+                btnMenuConfiguration);
+        appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.SETTINGS_USERS, btnMenuUsers);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.SETTINGS_USER_GROUPS,
+                btnMenuUserGroups);
         if (!isPharmacyFeatureEnabled() && btnMenuDoctors.isVisible()) {
-            vboxMenu.getChildren().remove(btnMenuDoctors);
+            inaccessibleMenus.add(btnMenuDoctors);
         }
+        vboxMenu.getChildren().removeAll(inaccessibleMenus);
         Platform.runLater(() -> {
             ScrollPaneUtils.fixBlur(menuScrollPane);
         });
@@ -209,21 +262,11 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnMenuPurchases(ActionEvent event) {
-        LocalDate today = LocalDate.now();
-        PurchaseFilterVM filter = new PurchaseFilterVM();
-        filter.setInvoiceDateMax(today);
-        filter.setInvoiceDateMin(today.withDayOfMonth(1));
-        setPageData(filter);
         changeContent(Page.TRANSACTION_PURCHASE_MAIN, (Button) event.getSource());
     }
 
     @FXML
     void onActionBtnMenuSales(ActionEvent event) {
-        LocalDate today = LocalDate.now();
-        SaleFilterVM filter = new SaleFilterVM();
-        filter.setCreatedDateMax(today);
-        filter.setCreatedDateMin(today.withDayOfMonth(1));
-        setPageData(filter);
         changeContent(Page.TRANSACTION_SALE_MAIN, (Button) event.getSource());
     }
 
@@ -250,6 +293,26 @@ public class MainController extends BaseController {
     @FXML
     void onActionBtnMenuUsers(ActionEvent event) {
         changeContent(Page.SETTINGS_USER_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
+    void onActionBtnMenuSalesReport(ActionEvent event) {
+        LocalDate today = LocalDate.now();
+        SaleReportFilterVM filter = new SaleReportFilterVM();
+        filter.setInvoiceDateMax(today);
+        filter.setInvoiceDateMin(today);
+        setPageData(filter);
+        changeContent(Page.REPORT_SALE_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
+    void onActionBtnMenuPurchasesReport(ActionEvent event) {
+        LocalDate today = LocalDate.now();
+        PurchaseReportFilterVM filter = new PurchaseReportFilterVM();
+        filter.setInvoiceDateMax(today);
+        filter.setInvoiceDateMin(today);
+        setPageData(filter);
+        changeContent(Page.REPORT_PURCHASE_MAIN, (Button) event.getSource());
     }
 
     private void changeContent(Page page, Button btn) {
@@ -282,9 +345,13 @@ public class MainController extends BaseController {
         contentPane.getChildren().add(content);
     }
 
-    private void removeInaccessibleMenu(List<String> userGroupMenuCodes, String menuCode, Node node) {
+    private void appendInaccessibleMenus(
+            Set<Node> inaccessibleNodes,
+            List<String> userGroupMenuCodes,
+            String menuCode,
+            Node node) {
         if (!userGroupMenuCodes.contains(menuCode)) {
-            vboxMenu.getChildren().remove(node);
+            inaccessibleNodes.add(node);
         }
     }
 

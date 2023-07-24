@@ -12,7 +12,6 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
 import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
 import com.gitlab.mudiasoft.pandora.factory.LocalDateTimeCellFactory;
 import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
@@ -23,7 +22,6 @@ import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
-import com.gitlab.mudiasoft.toolbox.data.DateTimeUtils;
 import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
@@ -32,6 +30,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
@@ -124,7 +123,7 @@ public class ProductEditController extends CommonDataSaveController {
     private TextField tfBatchNumber;
 
     @FXML
-    private MaskedTextField tfExpiredDate;
+    private DatePicker dpExpiredDate;
 
     @FXML
     private TextField tfExpiryQuantity;
@@ -262,11 +261,11 @@ public class ProductEditController extends CommonDataSaveController {
 
     @FXML
     void onActionBtnAddExpiry(ActionEvent event) {
-        if (StringUtils.isAllBlank(tfExpiredDate.getPlainText(), tfExpiryQuantity.getText())) {
+        if (dpExpiredDate.getValue() == null && StringUtils.isBlank(tfExpiryQuantity.getText())) {
             return;
         }
         ControlValidator cv = new ControlValidator(resources);
-        cv.validateCustom(this::isInvalidExpiredDate, MessageCode.ERROR_INVALID_DATE_FORMAT);
+        cv.validateCustom(this::isExpiredDateRequired, MessageCode.ERROR_INVALID_DATE_FORMAT);
         cv.validateCustom(this::isExpiryQuantityRequired, MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
         ValidationResult result = cv.getResult();
         if (!result.isValid()) {
@@ -276,19 +275,19 @@ public class ProductEditController extends CommonDataSaveController {
         ProductExpiryAddVM vm = new ProductExpiryAddVM();
         vm.setProductId(currentProduct.getId());
         vm.setBatchNumber(tfBatchNumber.getText());
-        vm.setExpiredDate(
-                DateTimeUtils.parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+        vm.setExpiredDate(dpExpiredDate.getValue());
         vm.setQuantity(toIntegerOrNull(tfExpiryQuantity.getText()));
         vm.setRemarks(tfExpiryRemarks.getText());
         productService.addProductExpiry(vm, Activity.EDIT_PRODUCT);
         loadProductExpiry(currentProduct.getId());
         TextFieldUtils.setTextEmpty(tfBatchNumber, tfExpiryQuantity, tfExpiryRemarks);
-        tfExpiredDate.setPlainText("");
+        dpExpiredDate.setValue(null);
     }
 
     @Override
     protected void initDataSaveControlActions() {
         disableWriteAction(MenuCodeConstants.CATALOG_PRODUCTS, btnSave, btnRemove, btnAddExpiry);
+        initCustomDatePicker(dpExpiredDate);
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(
                 tfBarcode,
@@ -438,9 +437,7 @@ public class ProductEditController extends CommonDataSaveController {
         productEdit.setPriceRemarks(tfPriceRemarks.getText());
         productEdit.setStockQuantity(toIntegerOrNull(tfStockQuantity.getText()));
         productEdit.setStockRemarks(tfStockRemarks.getText());
-        String expiredDate = tfExpiredDate.getTextMasked();
-        productEdit
-                .setExpiredDate(DateTimeUtils.parseLocalDateQuietly(expiredDate, CommonConstants.DATE_DISPLAY_PATTERN));
+        productEdit.setExpiredDate(dpExpiredDate.getValue());
         productEdit.setBatchNumber(tfBatchNumber.getText());
         productEdit.setExpiryQuantity(toIntegerOrNull(tfExpiryQuantity.getText()));
         productEdit.setExpiryRemarks(tfExpiryRemarks.getText());
@@ -454,21 +451,17 @@ public class ProductEditController extends CommonDataSaveController {
         validator.validateBlank(tfCode, MessageCode.ERROR_EMPTY_CODE);
         validator.validateBlank(tfCategory, MessageCode.ERROR_EMPTY_CATEGORY);
         validator.validateBlank(tfUnit, MessageCode.ERROR_EMPTY_UNIT);
-        validator.validateCustom(this::isInvalidExpiredDate, MessageCode.ERROR_INVALID_DATE_FORMAT);
+        validator.validateCustom(this::isExpiredDateRequired, MessageCode.ERROR_INVALID_DATE_FORMAT);
         validator.validateCustom(this::isExpiryQuantityRequired, MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
         validator.validateCustom(
                 this::isExpiryQuantityExceedStockQuantity,
                 MessageCode.ERROR_INCORRECT_PRODUCT_EXPIRY_QUANTITY);
     }
 
-    private boolean isInvalidExpiredDate() {
+    private boolean isExpiredDateRequired() {
         Integer expiryQty = toIntegerOrZero(tfExpiryQuantity.getText());
-        LocalDate expiredDate = DateTimeUtils
-                .parseLocalDateQuietly(tfExpiredDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-        boolean isExpiredDateRequired = expiryQty > 0 && expiredDate == null;
-        boolean isExpiredDateInvalid = StringUtils.isNotBlank(tfExpiredDate.getPlainText())
-                && (expiredDate == null || expiredDate.isBefore(LocalDate.now()));
-        return isExpiredDateRequired || isExpiredDateInvalid;
+        LocalDate expiredDate = dpExpiredDate.getValue();
+        return expiryQty > 0 && expiredDate == null;
     }
 
     private boolean isExpiryQuantityExceedStockQuantity() {
@@ -478,7 +471,7 @@ public class ProductEditController extends CommonDataSaveController {
     }
 
     private boolean isExpiryQuantityRequired() {
-        return StringUtils.isNotBlank(tfExpiredDate.getPlainText()) && StringUtils.isBlank(tfExpiryQuantity.getText());
+        return dpExpiredDate.getValue() != null && StringUtils.isBlank(tfExpiryQuantity.getText());
     }
 
     private boolean isProductCategoryDrugSelected() {

@@ -22,10 +22,12 @@ public class SaleRepositoryImpl extends AbstractRepository<Sale> implements Sale
                     b.id as customer_id,
                     b.name as customer_name,
                     c.id as doctor_id,
-                    c.name as doctor_name
+                    c.name as doctor_name,
+                    d.full_name as user_full_name
                 from sale a
                 left join customer b on b.id = a.customer_id
                 left join doctor c on c.id = a.doctor_id
+                inner join `user` d on d.id = a.user_id
                 """);
         Where where = new Where().isNull("a.deleted_at");
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {

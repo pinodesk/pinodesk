@@ -8,13 +8,11 @@ import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toStringOrEmpt
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
 import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
 import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
 import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
@@ -22,19 +20,22 @@ import com.gitlab.mudiasoft.pandora.utility.AlertResult;
 import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
 import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
 import com.gitlab.mudiasoft.pandora.utility.EventUtils;
+import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
-import com.gitlab.mudiasoft.toolbox.data.DateTimeUtils;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -64,6 +65,9 @@ import pospino.desktop.viewmodel.SaleProductVM;
 import pospino.desktop.viewmodel.SaleVM;
 
 public class SaleEditController extends CommonDataSaveController {
+
+    @FXML
+    private ScrollPane scrollPaneSaleEdit;
 
     @FXML
     private Button btnRemove;
@@ -96,7 +100,7 @@ public class SaleEditController extends CommonDataSaveController {
     private VBox vboxDueDate;
 
     @FXML
-    private MaskedTextField tfDueDate;
+    private DatePicker dpDueDate;
 
     @FXML
     private TextField tfProduct;
@@ -289,6 +293,7 @@ public class SaleEditController extends CommonDataSaveController {
                 btnNewCustomer,
                 btnNewProduct,
                 btnNewDoctor);
+        initCustomDatePicker(dpDueDate);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
@@ -334,7 +339,7 @@ public class SaleEditController extends CommonDataSaveController {
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
             boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
             if (isPaid) {
-                tfDueDate.setPlainText("");
+                dpDueDate.setValue(null);
             }
             vboxDueDate.setDisable(isPaid);
         });
@@ -375,7 +380,7 @@ public class SaleEditController extends CommonDataSaveController {
                         .filter(vm -> vm.getValue().toString().equals(currentSale.getPaymentStatus())).findAny()
                         .orElseThrow());
         if (paymentDueDate != null) {
-            tfDueDate.setText(paymentDueDate.format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+            dpDueDate.setValue(paymentDueDate);
         }
         lblTotalPayment.setText(formatOrDefault(totalPayment, locale, "0"));
         lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
@@ -384,6 +389,9 @@ public class SaleEditController extends CommonDataSaveController {
             setVisibleInLayout(false, hboxDoctor);
             cbSellingMode.getItems().remove(1);
         }
+        Platform.runLater(() -> {
+            ScrollPaneUtils.fixBlur(scrollPaneSaleEdit);
+        });
     }
 
     @Override
@@ -395,8 +403,7 @@ public class SaleEditController extends CommonDataSaveController {
         PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         saleEdit.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
-            saleEdit.setPaymentDueDate(
-                    DateTimeUtils.parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN));
+            saleEdit.setPaymentDueDate(dpDueDate.getValue());
         }
         saleEdit.setSellingMode(ComboBoxUtils.getSelectedItem(cbSellingMode).getValue());
         saleEdit.setTotalPayment(totalPayment);
@@ -409,8 +416,7 @@ public class SaleEditController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
-        LocalDate dueDate = DateTimeUtils
-                .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        LocalDate dueDate = dpDueDate.getValue();
         PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);

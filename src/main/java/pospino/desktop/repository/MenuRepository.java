@@ -10,5 +10,5 @@ import pospino.desktop.domain.Menu;
 @Repository
 public interface MenuRepository extends PagingAndSortingRepository<Menu, Long> {
 
-    List<Menu> findByLanguageAndDeletedAtIsNull(String language);
+    List<Menu> findByLanguageAndDeletedAtIsNullOrderBySeqNum(String language);
 }

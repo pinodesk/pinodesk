@@ -10,20 +10,18 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
 import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
 import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
 import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
-import com.gitlab.mudiasoft.toolbox.data.DateTimeUtils;
 import com.gitlab.mudiasoft.toolbox.data.StringNumberUtils;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.PaymentStatus;
@@ -61,7 +59,7 @@ public class CashierPayController extends CommonDataSaveController {
     private VBox vboxDueDate;
 
     @FXML
-    private MaskedTextField tfDueDate;
+    private DatePicker dpDueDate;
 
     @FXML
     private Label lblChange;
@@ -74,6 +72,7 @@ public class CashierPayController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
+        initCustomDatePicker(dpDueDate);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
@@ -89,7 +88,7 @@ public class CashierPayController extends CommonDataSaveController {
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
             boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
             if (isPaid) {
-                tfDueDate.setPlainText("");
+                dpDueDate.setValue(null);
             }
             vboxDueDate.setDisable(isPaid);
         });
@@ -119,9 +118,7 @@ public class CashierPayController extends CommonDataSaveController {
         saleAdd.setPaymentStatus(paymentStatus);
         LocalDate paymentDueDate = null;
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
-            paymentDueDate = DateTimeUtils
-                    .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
-            saleAdd.setPaymentDueDate(paymentDueDate);
+            saleAdd.setPaymentDueDate(dpDueDate.getValue());
         }
         saleAdd.setSellingMode(saleData.getSellingMode());
         saleAdd.setTotalPayment(saleData.getTotalSale());
@@ -144,8 +141,7 @@ public class CashierPayController extends CommonDataSaveController {
             BigDecimal paymentAmount = toBigDecimalOrZero(tfPaymentAmount.getText());
             return paymentAmount.compareTo(saleData.getTotalSale()) < 0;
         }, MessageCode.ERROR_PAYMENT_AMOUNT_LOWER_THAN_SALE_AMOUNT);
-        LocalDate dueDate = DateTimeUtils
-                .parseLocalDateQuietly(tfDueDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        LocalDate dueDate = dpDueDate.getValue();
         PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
         validator.validateCustom(

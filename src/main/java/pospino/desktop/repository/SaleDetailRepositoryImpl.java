@@ -2,10 +2,15 @@ package pospino.desktop.repository;
 
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
+import com.gitlab.mudiasoft.sequel.sql.Where;
 
 import pospino.desktop.domain.SaleDetail;
 import pospino.desktop.viewmodel.SaleProductVM;
+import pospino.desktop.viewmodel.SaleReportFilterVM;
+import pospino.desktop.viewmodel.SaleReportVM;
 
 public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> implements SaleDetailRepositoryCustom {
 
@@ -33,4 +38,54 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
         return performSelect(sql, List.of(language, saleId), SaleProductVM.class);
     }
 
+    @Override
+    public List<SaleReportVM> findByFilter(SaleReportFilterVM filter, String language) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("""
+                    select
+                    sd.sale_id,
+                    s.invoice_number,
+                    s.created_at as invoice_date,
+                    s.selling_mode,
+                    c.name as customer_name,
+                    p.name as product_name,
+                    sd.quantity,
+                    p.unit_label as unit,
+                    sd.selling_price,
+                    sd.subtotal,
+                    s.total_product,
+                    s.total_payment,
+                    s.payment_status,
+                    s.created_at
+                from sale_detail sd
+                inner join sale s on s.id = sd.sale_id
+                left join customer c on c.id = s.customer_id
+                inner join product p on p.id = sd.product_id
+                """);
+        Where where = new Where().isNull("sd.deleted_at").andIsNull("s.deleted_at");
+        if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
+            where.andContainsIgnoreCase("s.invoice_number", filter.getInvoiceNumber().trim());
+        }
+        if (StringUtils.isNotBlank(filter.getCustomerName())) {
+            where.andContainsIgnoreCase("c.name", filter.getCustomerName().trim());
+        }
+        if (StringUtils.isNotBlank(filter.getProductName())) {
+            where.andContainsIgnoreCase("p.name", filter.getProductName().trim());
+        }
+        if (filter.getInvoiceDateMin() != null) {
+            where.andGreaterThanOrEqual("s.created_at", filter.getInvoiceDateMin());
+        }
+        if (filter.getInvoiceDateMax() != null) {
+            where.andLowerThan("s.created_at", filter.getInvoiceDateMax().plusDays(1));
+        }
+        if (filter.getPaymentStatus() != null) {
+            where.andEquals("s.payment_status", filter.getPaymentStatus().toString());
+        }
+        if (filter.getSellingMode() != null) {
+            where.andEquals("s.selling_mode", filter.getSellingMode().toString());
+        }
+        sb.append(where.getClause());
+        sb.append(" order by s.created_at, sd.id ");
+        return performSelect(sb.toString(), where.getValues(), SaleReportVM.class);
+    }
 }

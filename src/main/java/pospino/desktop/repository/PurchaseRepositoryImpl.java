@@ -17,9 +17,13 @@ public class PurchaseRepositoryImpl extends AbstractRepository<Purchase> impleme
     public List<PurchaseVM> findByFilter(PurchaseFilterVM filter) {
         StringBuilder sb = new StringBuilder();
         sb.append("""
-                select a.*, b.id as supplier_id, b.name as supplier_name
+                select a.*,
+                    b.id as supplier_id,
+                    b.name as supplier_name,
+                    c.full_name as user_full_name
                 from purchase a
                 inner join supplier b on b.id = a.supplier_id
+                inner join `user` c on c.id = a.user_id
                 """);
         Where where = new Where().isNull("a.deleted_at");
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {

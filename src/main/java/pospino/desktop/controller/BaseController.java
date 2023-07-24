@@ -3,6 +3,7 @@ package pospino.desktop.controller;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +14,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import com.gitlab.mudiasoft.pandora.converter.DefaultDatePickerConverter;
 import com.gitlab.mudiasoft.pandora.utility.AlertResult;
 import com.gitlab.mudiasoft.pandora.utility.IMessage;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
@@ -29,6 +31,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -65,6 +68,10 @@ public abstract class BaseController {
     protected SessionService sessionService;
 
     protected ConfigurationService configurationService;
+
+    protected DateTimeFormatter datetimeFormatter = DateTimeFormatter
+            .ofPattern(CommonConstants.DATETIME_DISPLAY_PATTERN);
+    protected DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN);
 
     @FXML
     protected ResourceBundle resources;
@@ -473,6 +480,30 @@ public abstract class BaseController {
     protected boolean isPharmacyFeatureEnabled() {
         String enabled = configurationService.getConfiguration(ConfigurationConstants.PHARMACY_FEATURES_ENABLED);
         return SimpleStatus.YES.toString().equals(enabled);
+    }
+
+    protected void initCustomDatePicker(DatePicker... datePickers) {
+        if (ArrayUtils.isEmpty(datePickers)) {
+            return;
+        }
+        for (DatePicker dp : datePickers) {
+            dp.getEditor().focusedProperty().addListener((o, ov, nv) -> {
+                if (!nv) {
+                    dp.hide();
+                    return;
+                }
+                dp.show();
+            });
+            dp.setOnHidden(event -> {
+                setFocused(dp.getParent());
+            });
+            dp.setConverter(new DefaultDatePickerConverter(CommonConstants.DATE_DISPLAY_PATTERN));
+            AnchorPane parent = (AnchorPane) dp.getParent();
+            Button btnClear = (Button) parent.lookup(".date-picker-clear-btn");
+            btnClear.setOnAction(event -> {
+                dp.setValue(null);
+            });
+        }
     }
 
 }

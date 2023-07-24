@@ -2,23 +2,21 @@ package pospino.desktop.controller.payable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.gitlab.mudiasoft.pandora.control.MaskedTextField;
 import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
 import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
 import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
-import com.gitlab.mudiasoft.toolbox.data.DateTimeUtils;
 import com.gitlab.mudiasoft.toolbox.data.StringNumberUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -45,16 +43,16 @@ public class PayableEditController extends CommonDataSaveController {
     private TextField tfInvoiceNumber;
 
     @FXML
-    private MaskedTextField tfInvoiceDate;
+    private DatePicker dpInvoiceDate;
 
     @FXML
     private TextField tfPayableAmount;
 
     @FXML
-    private MaskedTextField tfDueDate;
+    private DatePicker dpDueDate;
 
     @FXML
-    private MaskedTextField tfPaymentDate;
+    private DatePicker dpPaymentDate;
 
     @FXML
     private TextField tfPaymentAmount;
@@ -79,8 +77,7 @@ public class PayableEditController extends CommonDataSaveController {
 
     @FXML
     void onActionBtnAddPayment(ActionEvent event) {
-        LocalDate paymentDate = DateTimeUtils
-                .parseLocalDateQuietly(tfPaymentDate.getText(), CommonConstants.DATE_DISPLAY_PATTERN);
+        LocalDate paymentDate = dpPaymentDate.getValue();
         ValidationResult validationResult = validateAddPayment(paymentDate);
         if (!validationResult.isValid()) {
             displayError(validationResult.getMessages());
@@ -96,7 +93,7 @@ public class PayableEditController extends CommonDataSaveController {
         vm.setPaymentDate(paymentDate);
         tblPayments.getItems().add(vm);
         tfPaymentAmount.setText("");
-        tfPaymentDate.setPlainText("");
+        dpPaymentDate.setValue(null);
     }
 
     @FXML
@@ -112,6 +109,7 @@ public class PayableEditController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlActions() {
         disableWriteAction(MenuCodeConstants.TRANSACTION_PAYABLES, btnSave, btnAddPayment, btnRemovePayment);
+        initCustomDatePicker(dpInvoiceDate, dpDueDate, dpPaymentDate);
         tblPayments.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblPayments.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.initTableColumn(
@@ -124,7 +122,7 @@ public class PayableEditController extends CommonDataSaveController {
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PayablePaymentVM::getPaymentDate);
         TextFieldUtils.setDigitTextFields(tfPayableAmount);
-        setFocused(tfPaymentDate);
+        setFocused(dpPaymentDate);
     }
 
     @Override
@@ -132,12 +130,9 @@ public class PayableEditController extends CommonDataSaveController {
         currentPayable = getPageData();
         tfSupplier.setText(currentPayable.getSupplierName());
         tfInvoiceNumber.setText(currentPayable.getInvoiceNumber());
-        tfInvoiceDate.setText(
-                currentPayable.getInvoiceDate()
-                        .format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        dpInvoiceDate.setValue(currentPayable.getInvoiceDate());
         tfPayableAmount.setText(StringNumberUtils.toStringOrEmpty(currentPayable.getAmount()));
-        tfDueDate.setText(
-                currentPayable.getDueDate().format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN)));
+        dpDueDate.setValue(currentPayable.getDueDate());
         List<PayablePaymentVM> payments = payableService.getPayablePayments(currentPayable.getId());
         tblPayments.getItems().addAll(payments);
     }

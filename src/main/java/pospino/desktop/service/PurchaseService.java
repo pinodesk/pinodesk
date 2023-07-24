@@ -39,6 +39,8 @@ import pospino.desktop.viewmodel.PurchaseAddVM;
 import pospino.desktop.viewmodel.PurchaseEditVM;
 import pospino.desktop.viewmodel.PurchaseFilterVM;
 import pospino.desktop.viewmodel.PurchaseProductVM;
+import pospino.desktop.viewmodel.PurchaseReportFilterVM;
+import pospino.desktop.viewmodel.PurchaseReportVM;
 import pospino.desktop.viewmodel.PurchaseVM;
 
 @Service
@@ -107,6 +109,7 @@ public class PurchaseService extends BaseService {
         purchase.setTotalPayment(purchaseAdd.getTotalPayment());
         purchase.setTotalProduct(purchaseAdd.getTotalProduct());
         purchase.setTotalPurchase(purchaseAdd.getTotalPurchase());
+        purchase.setUserId(sessionService.getCurrentSession().getUser().getId());
         Purchase created = purchaseRepository.save(purchase);
         Long purchaseId = created.getId();
         purchaseAdd.getPurchaseProducts().stream().forEach(purchaseProduct -> {
@@ -299,7 +302,7 @@ public class PurchaseService extends BaseService {
             BigDecimal averageBuyingPrice = purchaseDetails.stream()
                     .filter(pd1 -> Objects.equals(pd1.getPurchaseId(), purchaseId)).map(PurchaseDetail::getBuyingPrice)
                     .reduce(BigDecimal.ZERO, BigDecimal::add)
-                    .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_UP);
+                    .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_EVEN);
             product.setAverageBuyingPrice(averageBuyingPrice);
             productRepository.save(product);
         });
@@ -342,7 +345,7 @@ public class PurchaseService extends BaseService {
     private BigDecimal calculateProductAverageBuyingPrice(Long productId) {
         List<PurchaseDetail> purchaseDetails = purchaseDetailRepository.findByProductIdAndDeletedAtIsNull(productId);
         return purchaseDetails.stream().map(PurchaseDetail::getBuyingPrice).reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_UP);
+                .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_EVEN);
     }
 
     private void createProductExpiry(
@@ -423,6 +426,11 @@ public class PurchaseService extends BaseService {
     public List<PurchaseProductVM> getPurchaseProducts(Long purchaseId) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return purchaseDetailRepository.findByPurchaseIdJoinProducts(purchaseId, language);
+    }
+
+    @ForActivity(Activity.SEARCH_PURCHASE_REPORT)
+    public List<PurchaseReportVM> searchPurchaseReport(PurchaseReportFilterVM filter, String language) {
+        return purchaseDetailRepository.findByFilter(filter, language);
     }
 
 }

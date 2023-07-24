@@ -23,4 +23,6 @@ public class PurchaseVM {
     private BigDecimal discount;
     private BigDecimal tax;
     private BigDecimal totalPurchase;
+    private Long userId;
+    private String userFullName;
 }
