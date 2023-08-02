@@ -316,9 +316,10 @@ public class ProductService extends BaseService {
 
         if (CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS.equals(categoryCode)) {
             DrugClassificationVM drugClassification = productAdd.getDrugClassification();
+            String classificationCode = drugClassification == null ? null : drugClassification.getCode();
             Drug drug = new Drug();
             drug.setProductId(productId);
-            drug.setClassificationCode(StringUtils.trimToNull(drugClassification.getCode()));
+            drug.setClassificationCode(classificationCode);
             drug.setIndication(productAdd.getIndication());
             drug.setContraindication(productAdd.getContraindication());
             drugRepository.save(drug);
