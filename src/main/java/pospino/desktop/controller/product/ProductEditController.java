@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,10 +23,10 @@ import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
 import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
 import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
 import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
-import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -37,6 +38,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import lombok.extern.slf4j.Slf4j;
 import pospino.desktop.constant.Activity;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
@@ -63,6 +65,7 @@ import pospino.desktop.viewmodel.ProductStockVM;
 import pospino.desktop.viewmodel.ProductVM;
 import pospino.desktop.viewmodel.UnitVM;
 
+@Slf4j
 public class ProductEditController extends CommonDataSaveController {
 
     @FXML
@@ -543,37 +546,82 @@ public class ProductEditController extends CommonDataSaveController {
     private void loadProductExpiry(Long productId) {
         tblExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblExpiry.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> productService.getProductExpiryByProductId(productId))
-                .thenAccept(list -> Platform.runLater(() -> {
+        Task<Void> task = new Task<Void>() {
+
+            @Override
+            protected Void call() throws Exception {
+                List<ProductExpiryVM> list = productService.getProductExpiryByProductId(productId);
+                Platform.runLater(() -> {
                     if (list.isEmpty()) {
                         tblExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblExpiry.setItems(FXCollections.observableList(list));
-                }));
+                });
+                return null;
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                log.error("Load product expiry error", getException());
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     private void loadProductStock(Long productId) {
         tblStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblStock.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> productService.getProductStockByProductId(productId))
-                .thenAccept(list -> Platform.runLater(() -> {
+        Task<Void> task = new Task<Void>() {
+
+            @Override
+            protected Void call() throws Exception {
+                List<ProductStockVM> list = productService.getProductStockByProductId(productId);
+                Platform.runLater(() -> {
                     if (list.isEmpty()) {
                         tblStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblStock.setItems(FXCollections.observableList(list));
-                }));
+                });
+                return null;
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                log.error("Load product stock error", getException());
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
     private void loadProductPrice(Long productId) {
         tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblPrice.setItems(FXCollections.observableArrayList());
-        AsyncUtils.supply(() -> productService.getProductPriceByProductId(productId))
-                .thenAccept(list -> Platform.runLater(() -> {
+        Task<Void> task = new Task<Void>() {
+
+            @Override
+            protected Void call() throws Exception {
+                List<ProductPriceVM> list = productService.getProductPriceByProductId(productId);
+                Platform.runLater(() -> {
                     if (list.isEmpty()) {
                         tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                     }
                     tblPrice.setItems(FXCollections.observableList(list));
-                }));
+                });
+                return null;
+            }
+
+            @Override
+            protected void failed() {
+                super.failed();
+                log.error("Load product price error", getException());
+            }
+        };
+        Thread thread = new Thread(task);
+        thread.start();
     }
 
 }
