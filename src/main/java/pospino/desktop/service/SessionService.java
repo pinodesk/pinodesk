@@ -96,7 +96,7 @@ public class SessionService extends BaseService {
     }
 
     @Transactional
-    public void updateLastActivity(Activity activity) {
+    public synchronized void updateLastActivity(Activity activity) {
         Session session = objectConverter.convertObject(currentSession.getSession(), Session.class);
         session.setLastActivity(activity.toString());
         session.setLastActivityAt(LocalDateTime.now());

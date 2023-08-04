@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 import pospino.desktop.annotation.ForActivity;
 import pospino.desktop.service.SessionService;
-import pospino.desktop.util.AsyncQueueProcessor;
 
 @Slf4j
 @Aspect
@@ -18,9 +17,6 @@ public class ServiceAspect {
 
     @Autowired
     private SessionService sessionService;
-
-    @Autowired
-    private AsyncQueueProcessor asyncQueueProcessor;
 
     @Around("""
             execution(public * pospino.desktop.service.*.*(..))
@@ -32,7 +28,8 @@ public class ServiceAspect {
         try {
             result = call.proceed();
             if (sessionService.isCurrentSessionActive()) {
-                asyncQueueProcessor.process(() -> sessionService.updateLastActivity(forActivity.value()));
+                Thread t = new Thread(() -> sessionService.updateLastActivity(forActivity.value()));
+                t.start();
             }
         } catch (Exception e) {
             if (log.isDebugEnabled()) {
