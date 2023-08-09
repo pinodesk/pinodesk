@@ -1,5 +1,7 @@
 package pospino.desktop.controller.purchase;
 
+import static pospino.desktop.constant.CommonConstants.DECIMAL_SCALE;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -72,13 +74,13 @@ public class PurchaseMainController extends BaseController {
     private TableColumn<PurchaseVM, BigDecimal> colTotalPayment;
 
     @FXML
-    private TableColumn<PurchaseVM, BigDecimal> colTotalPurchase;
+    private TableColumn<PurchaseVM, BigDecimal> colTotalPrice;
 
     @FXML
     private TableColumn<PurchaseVM, BigDecimal> colTax;
 
     @FXML
-    private TableColumn<PurchaseVM, BigDecimal> colDiscount;
+    private TableColumn<PurchaseVM, BigDecimal> colTotalDiscount;
 
     @FXML
     private TableColumn<PurchaseVM, String> colPaymentStatus;
@@ -186,23 +188,23 @@ public class PurchaseMainController extends BaseController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colTotalPayment,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PurchaseVM::getTotalPayment,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colTax,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PurchaseVM::getTax,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colDiscount,
-                new NumberCellFactory<>(locale),
-                PurchaseVM::getDiscount,
+                colTotalDiscount,
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
+                PurchaseVM::getTotalDiscount,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colTotalPurchase,
-                new NumberCellFactory<>(locale),
-                PurchaseVM::getTotalPurchase,
+                colTotalPrice,
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
+                PurchaseVM::getTotalPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colOrderDate,

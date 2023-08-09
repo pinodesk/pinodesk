@@ -16,7 +16,11 @@ public class PurchaseReportVM {
     private Integer quantity;
     private String unit;
     private BigDecimal buyingPrice;
-    private BigDecimal subtotal;
+    private String discountType;
+    private BigDecimal discountAmount;
+    private BigDecimal buyingPriceDiscount;
+    private BigDecimal subtotalPrice;
+    private BigDecimal subtotalDiscount;
     private LocalDateTime createdAt;
     private String paymentStatus;
     private Integer totalProduct;

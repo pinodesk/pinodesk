@@ -114,9 +114,9 @@ create table if not exists product (
 	unit_id bigint not null,
 	unit_label varchar(32) not null,
 	category_code varchar(64) not null,
-	general_selling_price decimal(12,2) null,
-	prescription_selling_price decimal(12,2) null,
-    average_buying_price decimal(12,2) null,
+	general_selling_price decimal(16,4) null,
+	prescription_selling_price decimal(16,4) null,
+    average_buying_price decimal(16,4) null,
 	closest_expired_date date null,
 	status varchar(8) not null, -- ACTIVE, INACTIVE
 	primary key (id),

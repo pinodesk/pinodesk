@@ -16,8 +16,9 @@ public class PurchaseAddVM {
     private BigDecimal totalPayment;
     private LocalDate paymentDueDate;
     private PaymentStatus paymentStatus;
-    private BigDecimal discount;
+    private BigDecimal additionalDiscount;
+    private BigDecimal totalDiscount;
     private BigDecimal tax;
-    private BigDecimal totalPurchase;
+    private BigDecimal totalPrice;
     private List<PurchaseProductVM> purchaseProducts;
 }

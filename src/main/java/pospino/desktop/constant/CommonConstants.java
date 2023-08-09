@@ -22,5 +22,6 @@ public interface CommonConstants {
             "/assets/images/pospino-icon-circle-64.png",
             "/assets/images/pospino-icon-circle-128.png",
             "/assets/images/pospino-icon-circle-256.png" };
+    int DECIMAL_SCALE = 4;
 
 }

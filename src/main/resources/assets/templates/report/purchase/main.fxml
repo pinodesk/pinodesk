@@ -171,8 +171,11 @@
                   <TableColumn fx:id="colProductName" minWidth="-Infinity" prefWidth="300.0" text="%lbl_product_name" />
                   <TableColumn fx:id="colQuantity" minWidth="-Infinity" prefWidth="100.0" text="%lbl_quantity" />
                   <TableColumn fx:id="colUnit" minWidth="-Infinity" prefWidth="100.0" text="%lbl_unit" />
-                  <TableColumn fx:id="colSellingPrice" minWidth="-Infinity" prefWidth="100.0" text="%lbl_buying_price" />
-                  <TableColumn fx:id="colSubtotal" minWidth="-Infinity" prefWidth="100.0" text="%lbl_subtotal" />
+                  <TableColumn fx:id="colBuyingPrice" minWidth="-Infinity" prefWidth="100.0" text="%lbl_buying_price" />
+                  <TableColumn fx:id="colDiscount" minWidth="-Infinity" prefWidth="150.0" text="%lbl_discount" />
+                  <TableColumn fx:id="colBuyingPriceDiscount" minWidth="-Infinity" prefWidth="150.0" text="%lbl_buying_price_discount" />
+                  <TableColumn fx:id="colSubtotalDiscount" minWidth="-Infinity" prefWidth="150.0" text="%lbl_subtotal_discount" />
+                  <TableColumn fx:id="colSubtotalPrice" minWidth="-Infinity" prefWidth="100.0" text="%lbl_subtotal_price" />
                   <TableColumn fx:id="colPaymentStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_status" />
               </columns>
             </TableView>
