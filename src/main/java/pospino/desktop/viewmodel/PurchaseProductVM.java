@@ -14,7 +14,11 @@ public class PurchaseProductVM {
     private String productUnitLabel;
     private Integer quantity;
     private BigDecimal buyingPrice;
-    private BigDecimal subtotal;
+    private String discountType;
+    private BigDecimal discountAmount;
+    private BigDecimal buyingPriceDiscount;
+    private BigDecimal subtotalDiscount;
+    private BigDecimal subtotalPrice;
     private BigDecimal generalSellingPrice;
     private BigDecimal prescriptionSellingPrice;
     private String batchNumber;

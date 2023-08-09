@@ -254,7 +254,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         purchaseProduct.setProductUnitLabel(selectedProduct.getUnitLabel());
         purchaseProduct.setQuantity(quantity);
         purchaseProduct.setBuyingPrice(buyingPrice);
-        purchaseProduct.setSubtotal(buyingPrice.multiply(BigDecimal.valueOf(quantity)));
+        purchaseProduct.setSubtotalPrice(buyingPrice.multiply(BigDecimal.valueOf(quantity)));
         purchaseProduct.setGeneralSellingPrice(generalSellingPrice);
         if (isProductCategoryDrugs) {
             BigDecimal prescriptionSellingPrice = toBigDecimalOrNull(tfPrescriptionSellingPrice.getText());
@@ -323,7 +323,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         TableViewUtils.initTableColumn(
                 colSubtotal,
                 new NumberCellFactory<>(locale),
-                PurchaseProductVM::getSubtotal,
+                PurchaseProductVM::getSubtotalPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colGeneralSellingPrice,
@@ -369,10 +369,10 @@ public class PurchaseEditController extends CommonDataSaveController {
         selectedSupplier.setName(currentPurchase.getSupplierName());
         LocalDate invoiceDate = currentPurchase.getInvoiceDate();
         LocalDate paymentDueDate = currentPurchase.getPaymentDueDate();
-        BigDecimal discount = currentPurchase.getDiscount();
+        BigDecimal discount = currentPurchase.getTotalDiscount();
         BigDecimal tax = currentPurchase.getTax();
         totalProduct = currentPurchase.getTotalProduct();
-        totalPurchase = currentPurchase.getTotalPurchase();
+        totalPurchase = currentPurchase.getTotalPrice();
         totalPayment = currentPurchase.getTotalPayment();
         tfSupplier.setText(currentPurchase.getSupplierName());
         tfInvoiceNumber.setText(currentPurchase.getInvoiceNumber());
@@ -493,7 +493,8 @@ public class PurchaseEditController extends CommonDataSaveController {
         Locale locale = resources.getLocale();
         ObservableList<PurchaseProductVM> items = tblPurchaseProduct.getItems();
         totalProduct = items.stream().map(PurchaseProductVM::getQuantity).reduce(0, Integer::sum);
-        totalPurchase = items.stream().map(PurchaseProductVM::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
+        totalPurchase = items.stream().map(PurchaseProductVM::getSubtotalPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
         BigDecimal discount = toBigDecimalOrZero(tfDiscount.getText());
         BigDecimal tax = toBigDecimalOrZero(tfTax.getText());
         totalPayment = totalPurchase.add(tax).subtract(discount);

@@ -16,11 +16,11 @@ public class Purchase extends DataModel {
     public static final String C_INVOICE_NUMBER = "invoice_number";
     public static final String C_INVOICE_DATE = "invoice_date";
     public static final String C_TOTAL_PAYMENT = "total_payment";
-    public static final String C_TOTAL_PURCHASE = "total_purchase";
+    public static final String C_TOTAL_PRICE = "total_price";
     public static final String C_TOTAL_PRODUCT = "total_product";
     public static final String C_PAYMENT_DUE_DATE = "payment_due_date";
     public static final String C_PAYMENT_STATUS = "payment_status";
-    public static final String C_DISCOUNT = "discount";
+    public static final String C_TOTAL_DISCOUNT = "total_discount";
     public static final String C_TAX = "tax";
     public static final String C_USER_ID = "user_id";
 
@@ -29,10 +29,10 @@ public class Purchase extends DataModel {
     private LocalDate invoiceDate;
     private Integer totalProduct;
     private BigDecimal totalPayment;
-    private BigDecimal totalPurchase;
+    private BigDecimal totalPrice;
     private LocalDate paymentDueDate;
     private String paymentStatus;
-    private BigDecimal discount;
+    private BigDecimal totalDiscount;
     private BigDecimal tax;
     private Long userId;
 }

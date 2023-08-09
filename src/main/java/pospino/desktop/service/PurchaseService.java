@@ -99,7 +99,7 @@ public class PurchaseService extends BaseService {
             throw new DomainException(DomainError.PURCHASE_EXISTS_BY_INVOICE_NUMBER_AND_SUPPLIER_ID);
         }
         Purchase purchase = new Purchase();
-        purchase.setDiscount(purchaseAdd.getDiscount());
+        purchase.setTotalDiscount(purchaseAdd.getTotalDiscount());
         purchase.setInvoiceDate(purchaseAdd.getInvoiceDate());
         purchase.setInvoiceNumber(invoiceNumber);
         purchase.setPaymentDueDate(purchaseAdd.getPaymentDueDate());
@@ -108,7 +108,7 @@ public class PurchaseService extends BaseService {
         purchase.setTax(purchaseAdd.getTax());
         purchase.setTotalPayment(purchaseAdd.getTotalPayment());
         purchase.setTotalProduct(purchaseAdd.getTotalProduct());
-        purchase.setTotalPurchase(purchaseAdd.getTotalPurchase());
+        purchase.setTotalPrice(purchaseAdd.getTotalPrice());
         purchase.setUserId(sessionService.getCurrentSession().getUser().getId());
         Purchase created = purchaseRepository.save(purchase);
         Long purchaseId = created.getId();
@@ -207,7 +207,7 @@ public class PurchaseService extends BaseService {
                 .existsByInvoiceNumberIgnoreCaseAndSupplierIdAndDeletedAtIsNull(invoiceNumber, supplierId)) {
             throw new DomainException(DomainError.PURCHASE_OTHER_EXISTS_BY_INVOICE_NUMBER_AND_SUPPLIER_ID);
         }
-        purchase.setDiscount(purchaseEdit.getDiscount());
+        purchase.setTotalDiscount(purchaseEdit.getDiscount());
         purchase.setInvoiceDate(purchaseEdit.getInvoiceDate());
         purchase.setInvoiceNumber(invoiceNumber);
         purchase.setPaymentDueDate(purchaseEdit.getPaymentDueDate());
@@ -216,7 +216,7 @@ public class PurchaseService extends BaseService {
         purchase.setTax(purchaseEdit.getTax());
         purchase.setTotalPayment(purchaseEdit.getTotalPayment());
         purchase.setTotalProduct(purchaseEdit.getTotalProduct());
-        purchase.setTotalPurchase(purchaseEdit.getTotalPurchase());
+        purchase.setTotalPrice(purchaseEdit.getTotalPurchase());
         purchaseRepository.save(purchase);
         revertLastPurchasedProducts(purchaseId, activityName);
         purchaseDetailRepository.deleteByPurchaseId(purchaseId);
@@ -323,7 +323,11 @@ public class PurchaseService extends BaseService {
         pd.setProductId(productId);
         pd.setPurchaseId(purchaseId);
         pd.setQuantity(purchaseQuantity);
-        pd.setSubtotal(purchaseProduct.getSubtotal());
+        pd.setSubtotalPrice(purchaseProduct.getSubtotalPrice());
+        pd.setDiscountType(Objects.toString(purchaseProduct.getDiscountType(), null));
+        pd.setDiscountAmount(purchaseProduct.getDiscountAmount());
+        pd.setSubtotalDiscount(purchaseProduct.getSubtotalDiscount());
+        pd.setBuyingPriceDiscount(purchaseProduct.getBuyingPriceDiscount());
         purchaseDetailRepository.save(pd);
     }
 
