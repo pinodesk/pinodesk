@@ -38,6 +38,19 @@ stages:
   - test
   - release
 
+.shared_windows_runners:
+  tags:
+  - shared-windows
+
+build-windows:
+  extends:
+  - .shared_windows_runners
+  stage: build
+  script:
+  - echo "running scripts in the build job"
+  only:
+    - windows
+
 build:
   stage: build
   script:
