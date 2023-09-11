@@ -42,12 +42,16 @@ stages:
   tags:
   - shared-windows
 
-build-windows:
+.shared_macos_runners:
+  tags:
+  - saas-macos-medium-m1
+
+build-macos:
   extends:
-  - .shared_windows_runners
+  - .shared_macos_runners
   stage: build
   script:
-  - echo "running scripts in the build job"
+  - echo "running scripts with macos runners"
   only:
     - windows
 
