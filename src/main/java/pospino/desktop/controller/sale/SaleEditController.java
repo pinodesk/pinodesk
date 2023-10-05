@@ -462,9 +462,6 @@ public class SaleEditController extends CommonDataSaveController {
             if (product.getQuantity() == null) {
                 tfCurrentQuantity.setEditable(true);
             }
-            if (product.getGeneralSellingPrice() == null && product.getPrescriptionSellingPrice() == null) {
-                tfSellingPrice.setEditable(true);
-            }
         }, () -> {
             selectedProduct = null;
             TextFieldUtils.setTextEmpty(
@@ -476,7 +473,6 @@ public class SaleEditController extends CommonDataSaveController {
                     tfCurrentQuantity);
             cbExpiredDate.setItems(FXCollections.observableArrayList());
             tfCurrentQuantity.setEditable(false);
-            tfSellingPrice.setEditable(false);
         });
     }
 

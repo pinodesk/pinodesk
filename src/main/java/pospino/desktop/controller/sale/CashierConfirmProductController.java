@@ -211,9 +211,6 @@ public class CashierConfirmProductController extends CommonDataSaveController {
         if (SellingMode.PRESCRIPTION.equals(sellingMode) && prescriptionSellingPrice != null) {
             tfSellingPrice.setText(toStringOrEmpty(prescriptionSellingPrice));
         }
-        if (generalSellingPrice == null && prescriptionSellingPrice == null) {
-            tfSellingPrice.setEditable(true);
-        }
         confirmProduct.getCurrentSaleProducts().stream().filter(sp -> sp.getProductId().equals(currentProduct.getId()))
                 .findAny().ifPresent(sp -> {
                     tfCurrentQuantity.setText(toStringOrEmpty(sp.getCurrentQuantity()));

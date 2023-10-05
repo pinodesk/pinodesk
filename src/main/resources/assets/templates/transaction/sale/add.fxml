@@ -277,7 +277,7 @@
                                                             <Font size="13.0" />
                                                          </font>
                                                       </Label>
-                                                      <TextField fx:id="tfSellingPrice" editable="false" styleClass="input-primary">
+                                                      <TextField fx:id="tfSellingPrice" styleClass="input-primary">
                                                          <font>
                                                             <Font size="13.0" />
                                                          </font>
