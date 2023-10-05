@@ -249,6 +249,9 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>pospino/desktop/misc/*</exclude>
+                </excludes>
             </resource>
         </resources>
         <plugins>
