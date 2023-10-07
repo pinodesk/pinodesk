@@ -16,4 +16,7 @@ public interface MenuCodeConstants {
     String SETTINGS_USER_GROUPS = "0013";
     String CATALOG_DOCTORS = "0014";
     String DASHBOARD = "0015";
+    String REPORT = "0016";
+    String REPORT_SALES = "0017";
+    String REPORT_PURCHASES = "0018";
 }

@@ -112,7 +112,7 @@ public class MainController extends BaseController {
     private ScrollPane menuScrollPane;
 
     @FXML
-    private Label lblMenuReports;
+    private Label lblMenuReport;
 
     @FXML
     private Button btnMenuSalesReport;
@@ -207,6 +207,17 @@ public class MainController extends BaseController {
                 userGroupMenuCodes,
                 MenuCodeConstants.SETTINGS_USER_GROUPS,
                 btnMenuUserGroups);
+        appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.REPORT, lblMenuReport);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.REPORT_PURCHASES,
+                btnMenuPurchasesReport);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.REPORT_SALES,
+                btnMenuSalesReport);
         if (!isPharmacyFeatureEnabled() && btnMenuDoctors.isVisible()) {
             inaccessibleMenus.add(btnMenuDoctors);
         }
