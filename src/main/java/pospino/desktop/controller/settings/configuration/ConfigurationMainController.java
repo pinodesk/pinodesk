@@ -131,6 +131,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
     void onActionBtnBackup(ActionEvent event) {
         String location = tfBackup.getText();
         if (StringUtils.isBlank(location)) {
+            tfBackup.requestFocus();
             return;
         }
         Stage stage = displayLoading();
@@ -156,6 +157,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
     void onActionBtnRestore(ActionEvent event) {
         String location = tfRestore.getText();
         if (StringUtils.isBlank(location)) {
+            tfRestore.requestFocus();
             return;
         }
         AlertResult confirmation = displayConfirmation(MessageCode.CONFIRMATION_RESTORE_DATA);

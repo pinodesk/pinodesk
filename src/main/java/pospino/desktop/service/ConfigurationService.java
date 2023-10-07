@@ -1,15 +1,18 @@
 package pospino.desktop.service;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -18,9 +21,11 @@ import java.util.zip.ZipOutputStream;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -67,8 +72,15 @@ public class ConfigurationService extends BaseService {
     @Autowired
     private UserRepository userRepository;
 
+    @Value("${app.name}")
+    private String appName;
+
+    @Value("${app.version}")
+    private String appVersion;
+
     private static final String BACKUP_FILENAME = "backup.zip";
     private static final String BACKUP_FILENAME_ENCRYPTED = "backup.dat";
+    private static final String BACKUP_PROPERTIES = "backup.properties";
 
     @ForActivity(Activity.GET_CONFIGURATION_BY_CODE)
     @Cacheable(CacheNameConstants.CONFIGURATION_BY_CODE)
@@ -117,13 +129,31 @@ public class ConfigurationService extends BaseService {
             zos.putNextEntry(entry);
             zos.write(encrypted);
             zos.closeEntry();
+            File backupProperties = createBackupProperties(SystemConstants.USER_HOME_DIR + "/" + BACKUP_PROPERTIES);
+            ZipEntry propEntry = new ZipEntry(BACKUP_PROPERTIES);
+            zos.putNextEntry(propEntry);
+            Files.copy(backupProperties.toPath(), zos);
+            zos.closeEntry();
             zos.close();
             File result = new File(location);
             log.debug("Output file created: {}: {}", result.getAbsolutePath(), result.exists());
             Files.delete(backupFile.toPath());
+            Files.delete(backupProperties.toPath());
         } catch (IOException e) {
             throw new DomainException(DomainError.BACKUP_DATABASE_ERROR, e.toString());
         }
+    }
+
+    private File createBackupProperties(String filename) throws IOException {
+        File f = new File(filename);
+        FileWriter fw = new FileWriter(f);
+        Properties prop = new Properties();
+        prop.put("app.name", appName);
+        prop.put("app.version", appVersion);
+        prop.put("timestamp", String.format("%d", System.currentTimeMillis()));
+        prop.store(fw, "DO NOT EDIT!!!");
+        fw.close();
+        return f;
     }
 
     public void restoreDatabase(String location) {
@@ -182,17 +212,41 @@ public class ConfigurationService extends BaseService {
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(location))) {
             ZipEntry entry = zis.getNextEntry();
             while (entry != null) {
-                if (BACKUP_FILENAME_ENCRYPTED.equals(entry.getName()) && !entry.isDirectory()) {
+                if (BACKUP_PROPERTIES.equals(entry.getName())) {
+                    Properties prop = new Properties();
+                    prop.load(new ByteArrayInputStream(zis.readAllBytes()));
+                    String backupAppVersion = prop.getProperty("app.version");
+                    int intCurrentAppVersion = parseVersionToInt(appVersion);
+                    log.info("intCurrentAppVersion: {}", intCurrentAppVersion);
+                    int intBackupAppVersion = parseVersionToInt(backupAppVersion);
+                    log.info("intBackupAppVersion: {}", intBackupAppVersion);
+                    // If the app version in the backup file is newer than the current app version,
+                    // it will break the app since the database will have the new structure which is
+                    // not covered in the previous (current) version
+                    if (intBackupAppVersion > intCurrentAppVersion) {
+                        throw new DomainException(
+                                DomainError.DIFFERENT_BACKUP_APP_VERSION,
+                                appVersion,
+                                backupAppVersion);
+                    }
+                }
+                if (BACKUP_FILENAME_ENCRYPTED.equals(entry.getName())) {
                     byte[] decrypted = byteEncryptor.decrypt(zis.readAllBytes());
                     String backup = SystemConstants.USER_HOME_DIR + "/" + BACKUP_FILENAME;
                     backupFile = new File(backup);
                     FileCopyUtils.copy(decrypted, backupFile);
-                    zis.closeEntry();
-                    entry = null;
                 }
+                zis.closeEntry();
+                entry = zis.getNextEntry();
             }
         }
         return backupFile;
+    }
+
+    private int parseVersionToInt(String version) {
+        String sub = StringUtils.substringBefore(version, "-");
+        String rep = sub.replace(".", "");
+        return Integer.valueOf(rep);
     }
 
     private void extractRealBackupFile(File backupFile, String dbDir) throws IOException {

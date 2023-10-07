@@ -52,6 +52,7 @@ public enum MessageCode implements IMessage {
     SUCCESS_EDIT_CONFIGURATION,
     SUCCESS_BACKUP,
     SUCCESS_RESTORE,
+    ERROR_DIFFERENT_BACKUP_APP_VERSION,
 
     // Product
     SUCCESS_ADD_PRODUCT,
