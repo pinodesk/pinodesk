@@ -6,6 +6,7 @@ import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
 import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
 import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -54,7 +55,7 @@ public abstract class CommonDataSaveController extends CommonContentPaneControll
         validate(validator);
         ValidationResult result = validator.getResult();
         if (!result.isValid()) {
-            displayError(result.getMessages());
+            Platform.runLater(() -> displayError(result.getMessages()));
             return;
         }
         lastDataSaved = save();

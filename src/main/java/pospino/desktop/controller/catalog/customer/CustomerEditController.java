@@ -72,6 +72,7 @@ public class CustomerEditController extends CommonDataSaveController {
     @Override
     protected void validate(ControlValidator validator) {
         validator.validateBlank(tfName, MessageCode.ERROR_EMPTY_NAME);
+        validator.validateEmail(tfEmail, MessageCode.ERROR_INVALID_EMAIL_FORMAT);
     }
 
     @Override

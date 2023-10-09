@@ -21,7 +21,7 @@ public class PurchaseDetailRepositoryImpl extends AbstractRepository<PurchaseDet
                     select
                     a.*,
                     b.name as product_name ,
-                    b.unit_label as product_unit_label,
+                    f.label as product_unit_label,
                     c.code as product_category_code,
                     c.name as product_category_name,
                     d.general_selling_price,
@@ -31,13 +31,14 @@ public class PurchaseDetailRepositoryImpl extends AbstractRepository<PurchaseDet
                 from purchase_detail a
                 inner join product b on b.id = a.product_id
                 inner join product_category c on c.code = b.category_code and c.language = ?
+                inner join unit f on f.code = b.unit_code and f.language = ?
                 inner join product_price d on d.id = (
                     select f.id from product_price f where f.purchase_id = a.purchase_id and f.product_id = a.product_id order by f.id desc limit 1)
                 left join product_expiry e on e.id = (
                     select g.id from product_expiry g where g.purchase_id = a.purchase_id and g.product_id = a.product_id order by g.id desc limit 1)
                 where a.purchase_id = ?
                 """;
-        return performSelect(sql, List.of(language, purchaseId), PurchaseProductVM.class);
+        return performSelect(sql, List.of(language, language, purchaseId), PurchaseProductVM.class);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class PurchaseDetailRepositoryImpl extends AbstractRepository<PurchaseDet
                     c.name as supplier_name,
                     d.name as product_name,
                     a.quantity,
-                    d.unit_label as unit,
+                    e.label as unit,
                     a.buying_price,
                     a.buying_price_discount,
                     a.discount_type,
@@ -64,8 +65,9 @@ public class PurchaseDetailRepositoryImpl extends AbstractRepository<PurchaseDet
                     b.created_at
                 from purchase_detail a
                 inner join purchase b on b.id = a.purchase_id
-                left join supplier c on c.id = b.supplier_id
+                inner join supplier c on c.id = b.supplier_id
                 inner join product d on d.id = a.product_id
+                inner join unit e on e.code = d.unit_code and e.language = ?
                 """);
         Where where = new Where().isNull("a.deleted_at").andIsNull("b.deleted_at");
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
@@ -88,6 +90,8 @@ public class PurchaseDetailRepositoryImpl extends AbstractRepository<PurchaseDet
         }
         sb.append(where.getClause());
         sb.append(" order by b.invoice_date, a.id ");
-        return performSelect(sb.toString(), where.getValues(), PurchaseReportVM.class);
+        List<Object> values = where.getValues();
+        values.add(0, language);
+        return performSelect(sb.toString(), values, PurchaseReportVM.class);
     }
 }

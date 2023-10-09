@@ -71,7 +71,7 @@ public enum MessageCode implements IMessage {
     ERROR_INSUFFICIENT_PACKAGE_QUANTITY,
 
     // Drug category
-    ERROR_DRUG_CATEGORY_NOT_FOUND_BY_ID,
+    ERROR_DRUG_CATEGORY_NOT_FOUND_BY_CODE,
 
     // Product category
     ERROR_PRODUCT_CATEGORY_NOT_FOUND_BY_ID,
@@ -79,7 +79,7 @@ public enum MessageCode implements IMessage {
 
     // Unit
     ERROR_UNIT_NOT_FOUND_BY_ID,
-    ERROR_UNIT_NOT_FOUND_BY_LABEL,
+    ERROR_UNIT_NOT_FOUND_BY_CODE,
 
     // Rack
     ERROR_RACK_NOT_FOUND_BY_ID,

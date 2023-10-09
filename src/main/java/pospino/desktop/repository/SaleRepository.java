@@ -98,7 +98,7 @@ public interface SaleRepository extends PagingAndSortingRepository<Sale, Long>, 
     @Query("""
             select
             p.name as product_name,
-            p.unit_label,
+            u.label as unit_label,
             pc.name as category_name,
             coalesce (sd.sum_qty,0) as sold_quantity
             from product p
@@ -109,6 +109,7 @@ public interface SaleRepository extends PagingAndSortingRepository<Sale, Long>, 
                     where s.created_at between :start and :end
                     group by sd.product_id) as sd on sd.product_id = p.id
             join product_category pc on pc.code = p.category_code and pc.language = :language
+            join unit u on u.code = p.unit_code and u.language = :language
             where p.deleted_at is null and sd.sum_qty > 10
             order by sold_quantity desc
             limit 100
@@ -121,7 +122,7 @@ public interface SaleRepository extends PagingAndSortingRepository<Sale, Long>, 
     @Query("""
             select
             p.name as product_name,
-            p.unit_label,
+            u.label as unit_label,
             pc.name as category_name,
             coalesce (sd.sum_qty,0) as sold_quantity
             from product p
@@ -132,6 +133,7 @@ public interface SaleRepository extends PagingAndSortingRepository<Sale, Long>, 
                     where s.created_at between :start and :end
                     group by sd.product_id) as sd on sd.product_id = p.id
             join product_category pc on pc.code = p.category_code and pc.language = :language
+            join unit u on u.code = p.unit_code and u.language = :language
             where p.deleted_at is null and coalesce (sd.sum_qty,0) < 10
             order by sold_quantity
                 """)

@@ -33,6 +33,7 @@ public enum CommonLabel implements IMessage {
     LBL_BARCODE,
     LBL_DESCRIPTION,
     LBL_UNIT_ID,
+    LBL_UNIT_CODE,
     LBL_PRODUCT_CATEGORY_CODE,
     LBL_DRUG_CATEGORY_ID,
     LBL_INDICATION,

@@ -2,7 +2,6 @@ package pospino.desktop.controller;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -21,9 +20,9 @@ import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.UserStatus;
-import pospino.desktop.exception.DefaultRuntimeException;
 import pospino.desktop.service.ConfigurationService;
 import pospino.desktop.util.SpringUtils;
+import pospino.desktop.util.TaskUtils;
 import pospino.desktop.viewmodel.UserAddVM;
 
 @Slf4j
@@ -58,10 +57,8 @@ public class InitialSetupController extends CommonDataSaveController {
 
     @Override
     protected void onActionBtnSave(ActionEvent event) {
-        CompletableFuture.runAsync(this::processDataSave).whenComplete((result, ex) -> {
-            if (ex != null) {
-                throw new DefaultRuntimeException(ex);
-            }
+        TaskUtils.runTask("Save initial setup", () -> {
+            processDataSave();
             if (isLastDataSaved()) {
                 Platform.runLater(() -> {
                     close();

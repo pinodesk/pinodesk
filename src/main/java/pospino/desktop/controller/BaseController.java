@@ -51,6 +51,7 @@ import pospino.desktop.constant.DomainError;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.StringConstants;
+import pospino.desktop.exception.DefaultRuntimeException;
 import pospino.desktop.exception.DomainException;
 import pospino.desktop.exception.PrinterException;
 import pospino.desktop.properties.ApplicationProperties;
@@ -180,42 +181,46 @@ public abstract class BaseController {
     }
 
     protected AlertResult displayAlert(AlertType type, String message) {
-        ButtonType btnTypeOk = new ButtonType(t.translate(CommonLabel.BTN_OK), ButtonData.OK_DONE);
-        ButtonType btnTypeYes = new ButtonType(t.translate(CommonLabel.BTN_YES), ButtonData.YES);
-        ButtonType btnTypeNo = new ButtonType(t.translate(CommonLabel.BTN_NO), ButtonData.NO);
-        Alert alert = new Alert(type);
-        alert.setTitle(CommonConstants.APP_TITLE);
-        alert.setHeaderText(t.translate(getAlertHeaderMessageCode(type)));
-        DialogPane dialogPane = alert.getDialogPane();
-        StageUtils.setIcons((Stage) dialogPane.getScene().getWindow(), CommonConstants.APP_ICON_PATHS);
-        Text text = new Text(message);
-        text.setWrappingWidth(dialogPane.getWidth());
-        text.setStyle("-fx-font-size: 13px");
-        AnchorPane.setLeftAnchor(text, 2d);
-        AnchorPane.setTopAnchor(text, 2d);
-        AnchorPane contentPane = new AnchorPane(text);
-        dialogPane.setContent(contentPane);
-        dialogPane.getButtonTypes().clear();
-        dialogPane.getStylesheets().add(getClass().getResource("/assets/css/pospino-desktop.css").toExternalForm());
-        switch (type) {
-            case INFORMATION:
-            case ERROR:
-                dialogPane.getButtonTypes().add(btnTypeOk);
-                dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
-                break;
-            case CONFIRMATION:
-                dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
-                dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
-                dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
-                break;
-            default:
-                break;
+        try {
+            ButtonType btnTypeOk = new ButtonType(t.translate(CommonLabel.BTN_OK), ButtonData.OK_DONE);
+            ButtonType btnTypeYes = new ButtonType(t.translate(CommonLabel.BTN_YES), ButtonData.YES);
+            ButtonType btnTypeNo = new ButtonType(t.translate(CommonLabel.BTN_NO), ButtonData.NO);
+            Alert alert = new Alert(type);
+            alert.setTitle(CommonConstants.APP_TITLE);
+            alert.setHeaderText(t.translate(getAlertHeaderMessageCode(type)));
+            DialogPane dialogPane = alert.getDialogPane();
+            StageUtils.setIcons((Stage) dialogPane.getScene().getWindow(), CommonConstants.APP_ICON_PATHS);
+            Text text = new Text(message);
+            text.setWrappingWidth(dialogPane.getWidth());
+            text.setStyle("-fx-font-size: 13px");
+            AnchorPane.setLeftAnchor(text, 2d);
+            AnchorPane.setTopAnchor(text, 2d);
+            AnchorPane contentPane = new AnchorPane(text);
+            dialogPane.setContent(contentPane);
+            dialogPane.getButtonTypes().clear();
+            dialogPane.getStylesheets().add(getClass().getResource("/assets/css/pospino-desktop.css").toExternalForm());
+            switch (type) {
+                case INFORMATION:
+                case ERROR:
+                    dialogPane.getButtonTypes().add(btnTypeOk);
+                    dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
+                    break;
+                case CONFIRMATION:
+                    dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
+                    dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
+                    dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
+                    break;
+                default:
+                    break;
+            }
+            dialogPane.applyCss();
+            HBox buttonContainer = (HBox) dialogPane.lookup(".container");
+            buttonContainer.setSpacing(1);
+            buttonContainer.requestFocus();
+            return new AlertResult(alert.showAndWait());
+        } catch (Exception e) {
+            throw new DefaultRuntimeException(e);
         }
-        dialogPane.applyCss();
-        HBox buttonContainer = (HBox) dialogPane.lookup(".container");
-        buttonContainer.setSpacing(1);
-        buttonContainer.requestFocus();
-        return new AlertResult(alert.showAndWait());
     }
 
     protected AlertResult displayError(String message) {

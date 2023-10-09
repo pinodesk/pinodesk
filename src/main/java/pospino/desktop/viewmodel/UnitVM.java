@@ -12,4 +12,5 @@ public class UnitVM {
     private LocalDateTime deletedAt;
     private String label;
     private String name;
+    private String code;
 }

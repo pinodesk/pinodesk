@@ -225,7 +225,7 @@ public class ProductPackageAddController extends CommonDataSaveController {
         Locale locale = resources.getLocale();
         selectedProductCategory = productCategoryService
                 .getProductCategoryByCode(CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE, locale.getLanguage());
-        selectedUnit = unitService.getUnitByLabel(CommonConstants.UNIT_LABEL_BUNDLE);
+        selectedUnit = unitService.getUnitByCode(CommonConstants.UNIT_CODE_BUNDLE, locale.getLanguage());
         tfCategory.setText(selectedProductCategory.getName());
         tfUnit.setText(selectedUnit.getLabel());
         tfQuantity.setText("1");

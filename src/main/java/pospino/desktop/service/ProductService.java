@@ -30,7 +30,6 @@ import pospino.desktop.domain.Product;
 import pospino.desktop.domain.ProductExpiry;
 import pospino.desktop.domain.ProductPrice;
 import pospino.desktop.domain.ProductStock;
-import pospino.desktop.domain.Unit;
 import pospino.desktop.exception.DomainException;
 import pospino.desktop.repository.DrugClassificationRepository;
 import pospino.desktop.repository.DrugRepository;
@@ -54,6 +53,7 @@ import pospino.desktop.viewmodel.ProductImportVM;
 import pospino.desktop.viewmodel.ProductPriceVM;
 import pospino.desktop.viewmodel.ProductStockVM;
 import pospino.desktop.viewmodel.ProductVM;
+import pospino.desktop.viewmodel.UnitVM;
 
 @Service
 public class ProductService extends BaseService {
@@ -131,12 +131,12 @@ public class ProductService extends BaseService {
         String code = productEdit.getCode();
         String barcode = productEdit.getBarcode();
         String categoryCode = productEdit.getProductCategory().getCode();
-        Long unitId = productEdit.getUnit().getId();
+        UnitVM unit = productEdit.getUnit();
 
         Product product = validateProductId(productId);
         validateProductCode(code, product);
         validateProductBarcode(barcode, product);
-        validateProductNameAndUnit(name, unitId, product);
+        validateProductNameAndUnit(name, unit.getCode(), product);
 
         if (CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS.equals(categoryCode)) {
             DrugClassificationVM drugClassification = productEdit.getDrugClassification();
@@ -224,8 +224,7 @@ public class ProductService extends BaseService {
         product.setBarcode(barcode);
         product.setName(name);
         product.setDescription(productEdit.getDescription());
-        product.setUnitId(unitId);
-        product.setUnitLabel(productEdit.getUnit().getLabel());
+        product.setUnitCode(unit.getCode());
         product.setCategoryCode(categoryCode);
         product.setStatus(productEdit.getStatus().toString());
         productRepository.save(product);
@@ -236,9 +235,9 @@ public class ProductService extends BaseService {
                 .orElseThrow(() -> new DomainException(DomainError.PRODUCT_NOT_FOUND_BY_ID));
     }
 
-    private void validateProductNameAndUnit(String name, Long unitId, Product product) {
-        if (ObjectUtils.notEqual(product.getUnitId(), unitId)
-                && productRepository.existsByNameIgnoreCaseAndUnitIdAndDeletedAtIsNull(name, unitId)) {
+    private void validateProductNameAndUnit(String name, String unitCode, Product product) {
+        if (ObjectUtils.notEqual(product.getUnitCode(), unitCode)
+                && productRepository.existsByNameIgnoreCaseAndUnitCodeAndDeletedAtIsNull(name, unitCode)) {
             throw new DomainException(DomainError.PRODUCT_OTHER_EXISTS_BY_NAME_AND_UNIT);
         }
     }
@@ -282,6 +281,7 @@ public class ProductService extends BaseService {
         String code = productAdd.getCode();
         String barcode = productAdd.getBarcode();
         String categoryCode = productAdd.getProductCategory().getCode();
+        UnitVM unit = productAdd.getUnit();
 
         if (productRepository.existsByCodeAndDeletedAtIsNull(code)) {
             throw new DomainException(DomainError.PRODUCT_EXISTS_BY_CODE);
@@ -291,9 +291,8 @@ public class ProductService extends BaseService {
             throw new DomainException(DomainError.PRODUCT_EXISTS_BY_BARCODE);
         }
 
-        if (productRepository.existsByNameIgnoreCaseAndUnitIdAndDeletedAtIsNull(
-                productAdd.getName(),
-                productAdd.getUnit().getId())) {
+        if (productRepository
+                .existsByNameIgnoreCaseAndUnitCodeAndDeletedAtIsNull(productAdd.getName(), unit.getCode())) {
             throw new DomainException(DomainError.PRODUCT_EXISTS_BY_NAME_AND_UNIT);
         }
 
@@ -303,8 +302,7 @@ public class ProductService extends BaseService {
         product.setName(productAdd.getName());
         product.setDescription(productAdd.getDescription());
         product.setQuantity(productAdd.getStockQuantity());
-        product.setUnitId(productAdd.getUnit().getId());
-        product.setUnitLabel(productAdd.getUnit().getLabel());
+        product.setUnitCode(unit.getCode());
         product.setCategoryCode(categoryCode);
         product.setGeneralSellingPrice(productAdd.getGeneralSellingPrice());
         product.setPrescriptionSellingPrice(productAdd.getPrescriptionSellingPrice());
@@ -416,10 +414,10 @@ public class ProductService extends BaseService {
         return productExpiryRepository.findGroupedByProductId(productId);
     }
 
-    private boolean containsProductNameAndUnitId(List<ProductImportMapping> mappings, String name, Long unitId) {
+    private boolean containsProductNameAndUnitCode(List<ProductImportMapping> mappings, String name, String unitCode) {
         return mappings.stream().anyMatch(mapping -> {
             Product p = mapping.getProduct();
-            return p.getName().equalsIgnoreCase(name) && p.getUnitId().equals(unitId);
+            return p.getName().equalsIgnoreCase(name) && p.getUnitCode().equals(unitCode);
         });
     }
 
@@ -435,25 +433,25 @@ public class ProductService extends BaseService {
         String activityName = Activity.IMPORT_PRODUCTS.toString();
         List<ProductImportMapping> mappings = new ArrayList<>();
         Set<String> checkedCategoryCodes = new HashSet<>();
-        Set<Unit> checkedUnits = new HashSet<>();
+        Set<String> checkedUnits = new HashSet<>();
         Set<String> checkedDrugCategoryCodes = new HashSet<>();
         productImports.forEach(pi -> {
 
             String productName = pi.getName();
             String productCategoryCode = pi.getProductCategoryCode();
-            Long unitId = pi.getUnitId();
+            String unitCode = pi.getUnitCode();
             BigDecimal generalSellingPrice = pi.getGeneralSellingPrice();
             BigDecimal prescriptionSellingPrice = pi.getPrescriptionSellingPrice();
             Integer quantity = pi.getQuantity();
             LocalDate expiredDate = pi.getExpiredDate();
 
-            if (containsProductNameAndUnitId(mappings, productName, unitId)) {
+            if (containsProductNameAndUnitCode(mappings, productName, unitCode)) {
                 return;
             }
 
             validateConstraints(pi);
             validateProductCategoryCode(checkedCategoryCodes, productCategoryCode);
-            Unit unit = validateUnitId(checkedUnits, unitId);
+            validateUnitCode(checkedUnits, unitCode);
 
             ProductImportMapping mapping = new ProductImportMapping();
 
@@ -477,8 +475,7 @@ public class ProductService extends BaseService {
             product.setPrescriptionSellingPrice(prescriptionSellingPrice);
             product.setQuantity(quantity);
             product.setStatus(pi.getStatus().toString());
-            product.setUnitId(unit.getId());
-            product.setUnitLabel(unit.getLabel());
+            product.setUnitCode(unitCode);
             mapping.setProduct(product);
             if (prescriptionSellingPrice != null || generalSellingPrice != null) {
                 ProductPrice pp = new ProductPrice();
@@ -571,17 +568,16 @@ public class ProductService extends BaseService {
     private void validateDrugClassificationCode(Set<String> checkedDrugCategoryCodes, String drugClassificationCode) {
         if (StringUtils.isNotBlank(drugClassificationCode) && !checkedDrugCategoryCodes.contains(drugClassificationCode)
                 && !drugClassificationRepository.existsByCodeAndDeletedAtIsNull(drugClassificationCode)) {
-            throw new DomainException(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_ID);
+            throw new DomainException(DomainError.DRUG_CATEGORY_NOT_FOUND_BY_CODE);
         }
         checkedDrugCategoryCodes.add(drugClassificationCode);
     }
 
-    private Unit validateUnitId(Set<Unit> checkedUnits, Long unitId) {
-        Unit unit = checkedUnits.stream().filter(u -> u.getId().equals(unitId)).findAny()
-                .or(() -> unitRepository.findByIdAndDeletedAtIsNull(unitId))
-                .orElseThrow(() -> new DomainException(DomainError.UNIT_NOT_FOUND_BY_ID));
-        checkedUnits.add(unit);
-        return unit;
+    private void validateUnitCode(Set<String> checkedUnits, String unitCode) {
+        if (!checkedUnits.contains(unitCode) && !unitRepository.existsByCodeAndDeletedAtIsNull(unitCode)) {
+            throw new DomainException(DomainError.UNIT_NOT_FOUND_BY_CODE);
+        }
+        checkedUnits.add(unitCode);
     }
 
     private void validateProductCategoryCode(Set<String> checkedCategoryCodes, String productCategoryCode) {

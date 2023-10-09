@@ -26,7 +26,6 @@ import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -53,6 +52,7 @@ import pospino.desktop.service.ProductCategoryService;
 import pospino.desktop.service.ProductService;
 import pospino.desktop.service.UnitService;
 import pospino.desktop.util.SpringUtils;
+import pospino.desktop.util.TaskUtils;
 import pospino.desktop.viewmodel.ChooseResultVM;
 import pospino.desktop.viewmodel.DrugClassificationVM;
 import pospino.desktop.viewmodel.DrugVM;
@@ -546,82 +546,43 @@ public class ProductEditController extends CommonDataSaveController {
     private void loadProductExpiry(Long productId) {
         tblExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblExpiry.setItems(FXCollections.observableArrayList());
-        Task<Void> task = new Task<Void>() {
-
-            @Override
-            protected Void call() throws Exception {
-                List<ProductExpiryVM> list = productService.getProductExpiryByProductId(productId);
-                Platform.runLater(() -> {
-                    if (list.isEmpty()) {
-                        tblExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                    }
-                    tblExpiry.setItems(FXCollections.observableList(list));
-                });
-                return null;
-            }
-
-            @Override
-            protected void failed() {
-                super.failed();
-                log.error("Load product expiry error", getException());
-            }
-        };
-        Thread thread = new Thread(task);
-        thread.start();
+        TaskUtils.runTask("Load product expiry", () -> {
+            List<ProductExpiryVM> list = productService.getProductExpiryByProductId(productId);
+            Platform.runLater(() -> {
+                if (list.isEmpty()) {
+                    tblExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                }
+                tblExpiry.setItems(FXCollections.observableList(list));
+            });
+        });
     }
 
     private void loadProductStock(Long productId) {
         tblStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblStock.setItems(FXCollections.observableArrayList());
-        Task<Void> task = new Task<Void>() {
-
-            @Override
-            protected Void call() throws Exception {
-                List<ProductStockVM> list = productService.getProductStockByProductId(productId);
-                Platform.runLater(() -> {
-                    if (list.isEmpty()) {
-                        tblStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                    }
-                    tblStock.setItems(FXCollections.observableList(list));
-                });
-                return null;
-            }
-
-            @Override
-            protected void failed() {
-                super.failed();
-                log.error("Load product stock error", getException());
-            }
-        };
-        Thread thread = new Thread(task);
-        thread.start();
+        TaskUtils.runTask("Load product stock", () -> {
+            List<ProductStockVM> list = productService.getProductStockByProductId(productId);
+            Platform.runLater(() -> {
+                if (list.isEmpty()) {
+                    tblStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                }
+                tblStock.setItems(FXCollections.observableList(list));
+            });
+        });
     }
 
     private void loadProductPrice(Long productId) {
         tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblPrice.setItems(FXCollections.observableArrayList());
-        Task<Void> task = new Task<Void>() {
-
-            @Override
-            protected Void call() throws Exception {
-                List<ProductPriceVM> list = productService.getProductPriceByProductId(productId);
-                Platform.runLater(() -> {
-                    if (list.isEmpty()) {
-                        tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                    }
-                    tblPrice.setItems(FXCollections.observableList(list));
-                });
-                return null;
-            }
-
-            @Override
-            protected void failed() {
-                super.failed();
-                log.error("Load product price error", getException());
-            }
-        };
-        Thread thread = new Thread(task);
-        thread.start();
+        TaskUtils.runTask("Load product price", () -> {
+            List<ProductPriceVM> list = productService.getProductPriceByProductId(productId);
+            Platform.runLater(() -> {
+                if (list.isEmpty()) {
+                    tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                }
+                tblPrice.setItems(FXCollections.observableList(list));
+            });
+        });
     }
 
 }

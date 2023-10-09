@@ -23,7 +23,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.gitlab.mudiasoft.pandora.utility.IMessage;
 import com.gitlab.mudiasoft.toolbox.data.DateTimeUtils;
-import com.gitlab.mudiasoft.toolbox.data.StringNumberUtils;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -77,7 +76,7 @@ public class ProductImportController extends CommonContentPaneController {
             CommonLabel.LBL_BARCODE,
             CommonLabel.LBL_DESCRIPTION,
             CommonLabel.LBL_PRODUCT_CATEGORY_CODE,
-            CommonLabel.LBL_UNIT_ID,
+            CommonLabel.LBL_UNIT_CODE,
             CommonLabel.LBL_GENERAL_SELLING_PRICE,
             CommonLabel.LBL_PRESCRIPTION_SELLING_PRICE,
             CommonLabel.LBL_QUANTITY,
@@ -91,9 +90,9 @@ public class ProductImportController extends CommonContentPaneController {
             CommonLabel.LBL_NAME };
 
     private static final IMessage[] UNIT_SHEET_COLUMN_LABELS = new IMessage[] {
-            CommonLabel.LBL_ID,
-            CommonLabel.LBL_NAME,
-            CommonLabel.LBL_LABEL, };
+            CommonLabel.LBL_CODE,
+            CommonLabel.LBL_LABEL,
+            CommonLabel.LBL_NAME, };
 
     private static final IMessage[] DRUG_CLASSIFICATION_SHEET_COLUMN_LABELS = new IMessage[] {
             CommonLabel.LBL_CODE,
@@ -215,7 +214,7 @@ public class ProductImportController extends CommonContentPaneController {
                 productImport.setBarcode(getCellValue(row, 2));
                 productImport.setDescription(getCellValue(row, 3));
                 productImport.setProductCategoryCode(getCellValue(row, 4));
-                productImport.setUnitId(StringNumberUtils.toLongOrNull(getCellValue(row, 5)));
+                productImport.setUnitCode(getCellValue(row, 5));
                 productImport.setGeneralSellingPrice(toBigDecimalOrNull(getCellValue(row, 6)));
                 productImport.setPrescriptionSellingPrice(toBigDecimalOrNull(getCellValue(row, 7)));
                 productImport.setQuantity(toIntegerOrNull(getCellValue(row, 8)));
@@ -260,7 +259,7 @@ public class ProductImportController extends CommonContentPaneController {
         row.createCell(2).setCellValue("111122223333");
         row.createCell(3).setCellValue("");
         row.createCell(4).setCellValue(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
-        row.createCell(5).setCellValue(1);
+        row.createCell(5).setCellValue("0001");
         row.createCell(6).setCellValue(10000);
         row.createCell(7).setCellValue(11000);
         row.createCell(8).setCellValue(10);
@@ -297,12 +296,12 @@ public class ProductImportController extends CommonContentPaneController {
             row.createCell(i).setCellValue(t.translate(UNIT_SHEET_COLUMN_LABELS[i]));
         }
         int rowNum = 1;
-        List<UnitVM> units = unitService.getAllUnits();
+        List<UnitVM> units = unitService.searchUnitByKeyword("");
         for (UnitVM unit : units) {
             row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(unit.getId());
-            row.createCell(1).setCellValue(unit.getName());
-            row.createCell(2).setCellValue(unit.getLabel());
+            row.createCell(0).setCellValue(unit.getCode());
+            row.createCell(1).setCellValue(unit.getLabel());
+            row.createCell(2).setCellValue(unit.getName());
         }
         sheet.autoSizeColumn(0);
         sheet.autoSizeColumn(1);

@@ -23,7 +23,7 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
 
     boolean existsByBarcodeAndDeletedAtIsNull(String barcode);
 
-    boolean existsByNameIgnoreCaseAndUnitIdAndDeletedAtIsNull(String name, Long unitId);
+    boolean existsByNameIgnoreCaseAndUnitCodeAndDeletedAtIsNull(String name, String unitCode);
 
     Optional<Product> findByIdAndDeletedAtIsNull(Long id);
 

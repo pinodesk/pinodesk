@@ -362,13 +362,6 @@ public class SaleEditController extends CommonDataSaveController {
             selectedCustomer.setName(currentSale.getCustomerName());
             tfCustomer.setText(selectedCustomer.getName());
         }
-        List<SaleProductVM> products = saleService.getSaleProducts(currentSale.getId());
-        tblSaleProduct.getItems().addAll(products);
-        LocalDate paymentDueDate = currentSale.getPaymentDueDate();
-        totalProduct = currentSale.getTotalProduct();
-        totalSale = currentSale.getTotalSale();
-        totalPayment = currentSale.getTotalPayment();
-        tfInvoiceNumber.setText(currentSale.getInvoiceNumber());
         ComboBoxUtils.select(
                 cbSellingMode,
                 () -> cbSellingMode.getItems().stream()
@@ -379,6 +372,13 @@ public class SaleEditController extends CommonDataSaveController {
                 () -> cbPaymentStatus.getItems().stream()
                         .filter(vm -> vm.getValue().toString().equals(currentSale.getPaymentStatus())).findAny()
                         .orElseThrow());
+        List<SaleProductVM> products = saleService.getSaleProducts(currentSale.getId());
+        tblSaleProduct.getItems().addAll(products);
+        LocalDate paymentDueDate = currentSale.getPaymentDueDate();
+        totalProduct = currentSale.getTotalProduct();
+        totalSale = currentSale.getTotalSale();
+        totalPayment = currentSale.getTotalPayment();
+        tfInvoiceNumber.setText(currentSale.getInvoiceNumber());
         if (paymentDueDate != null) {
             dpDueDate.setValue(paymentDueDate);
         }
