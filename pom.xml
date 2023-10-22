@@ -441,7 +441,8 @@
                                     https://github.com/traccar/traccar/issues/4126 -->
                                     <linuxConfig>
                                         <generateAppImage>false</generateAppImage>
-                                        <generateRpm>false</generateRpm>
+                                        <generateRpm>true</generateRpm>
+                                        <generateDeb>true</generateDeb>
                                     </linuxConfig>
                                     <winConfig>
                                         <generateMsi>false</generateMsi>
