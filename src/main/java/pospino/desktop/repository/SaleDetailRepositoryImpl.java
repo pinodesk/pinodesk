@@ -22,7 +22,7 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
                     a.quantity as sale_quantity,
                     b.quantity as current_quantity,
                     b.name as product_name ,
-                    b.unit_label as product_unit_label,
+                    f.label as product_unit_label,
                     b.general_selling_price,
                     b.prescription_selling_price,
                     c.code as product_category_code,
@@ -32,10 +32,11 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
                 from sale_detail a
                 inner join product b on b.id = a.product_id
                 inner join product_category c on c.code = b.category_code and c.language = ?
+                inner join unit f on f.code = b.unit_code and f.language = ?
                 left join product_expiry e on e.sale_detail_id = a.id
                 where a.sale_id = ?
                 """;
-        return performSelect(sql, List.of(language, saleId), SaleProductVM.class);
+        return performSelect(sql, List.of(language, language, saleId), SaleProductVM.class);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
                     c.name as customer_name,
                     p.name as product_name,
                     sd.quantity,
-                    p.unit_label as unit,
+                    u.label as unit,
                     sd.selling_price,
                     sd.subtotal,
                     s.total_product,
@@ -61,6 +62,7 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
                 inner join sale s on s.id = sd.sale_id
                 left join customer c on c.id = s.customer_id
                 inner join product p on p.id = sd.product_id
+                inner join unit u on u.code = p.unit_code and u.language = ?
                 """);
         Where where = new Where().isNull("sd.deleted_at").andIsNull("s.deleted_at");
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
@@ -86,6 +88,8 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
         }
         sb.append(where.getClause());
         sb.append(" order by s.created_at, sd.id ");
-        return performSelect(sb.toString(), where.getValues(), SaleReportVM.class);
+        List<Object> values = where.getValues();
+        values.add(0, language);
+        return performSelect(sb.toString(), values, SaleReportVM.class);
     }
 }

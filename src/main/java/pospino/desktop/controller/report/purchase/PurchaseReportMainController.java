@@ -11,10 +11,14 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import com.gitlab.mudiasoft.pandora.factory.DefaultCellFactory;
 import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
 import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
 import com.gitlab.mudiasoft.pandora.utility.IMessage;
@@ -37,6 +41,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
+import pospino.desktop.constant.DiscountType;
 import pospino.desktop.constant.MessageCode;
 import pospino.desktop.constant.Page;
 import pospino.desktop.constant.PaymentStatus;
@@ -72,10 +77,19 @@ public class PurchaseReportMainController extends BaseController {
     private TableColumn<PurchaseReportVM, Integer> colQuantity;
 
     @FXML
-    private TableColumn<PurchaseReportVM, BigDecimal> colSellingPrice;
+    private TableColumn<PurchaseReportVM, BigDecimal> colBuyingPrice;
 
     @FXML
-    private TableColumn<PurchaseReportVM, BigDecimal> colSubtotal;
+    private TableColumn<PurchaseReportVM, String> colDiscount;
+
+    @FXML
+    private TableColumn<PurchaseReportVM, BigDecimal> colBuyingPriceDiscount;
+
+    @FXML
+    private TableColumn<PurchaseReportVM, BigDecimal> colSubtotalDiscount;
+
+    @FXML
+    private TableColumn<PurchaseReportVM, BigDecimal> colSubtotalPrice;
 
     @FXML
     private TableColumn<PurchaseReportVM, String> colUnit;
@@ -112,7 +126,10 @@ public class PurchaseReportMainController extends BaseController {
             CommonLabel.LBL_QUANTITY,
             CommonLabel.LBL_UNIT,
             CommonLabel.LBL_BUYING_PRICE,
-            CommonLabel.LBL_SUBTOTAL,
+            CommonLabel.LBL_DISCOUNT,
+            CommonLabel.LBL_BUYING_PRICE_DISCOUNT,
+            CommonLabel.LBL_SUBTOTAL_DISCOUNT,
+            CommonLabel.LBL_SUBTOTAL_PRICE,
             CommonLabel.LBL_PAYMENT_STATUS };
 
     @FXML
@@ -130,6 +147,7 @@ public class PurchaseReportMainController extends BaseController {
 
     @FXML
     void onActionBtnExport(ActionEvent event) {
+        Locale locale = resources.getLocale();
         ObservableList<PurchaseReportVM> report = tblPurchaseReport.getItems();
         if (report.isEmpty()) {
             return;
@@ -141,23 +159,23 @@ public class PurchaseReportMainController extends BaseController {
         Stage loading = displayLoading();
         CompletableFuture.runAsync(() -> {
             try {
-                PurchaseGroup sg = getPurchaseReportSummary(report);
+                PurchaseGroup pg = getPurchaseReportSummary(report);
                 XSSFWorkbook workbook = new XSSFWorkbook();
                 XSSFSheet sheet = workbook.createSheet(t.translate(CommonLabel.LBL_PURCHASE_REPORT));
                 XSSFRow row = sheet.createRow(0);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_PURCHASE_REPORT));
                 row = sheet.createRow(2);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_TRANSACTION_COUNT));
-                row.createCell(1).setCellValue(sg.transactionCount);
+                row.createCell(1).setCellValue(pg.transactionCount);
                 row = sheet.createRow(3);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_EXPENSE));
-                row.createCell(1).setCellValue(sg.totalPayment.doubleValue());
+                row.createCell(1).setCellValue(pg.totalPayment.doubleValue());
                 row = sheet.createRow(4);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_PAID));
-                row.createCell(1).setCellValue(sg.totalPaid.doubleValue());
+                row.createCell(1).setCellValue(pg.totalPaid.doubleValue());
                 row = sheet.createRow(5);
                 row.createCell(0).setCellValue(t.translate(CommonLabel.LBL_UNPAID));
-                row.createCell(1).setCellValue(sg.totalUnpaid.doubleValue());
+                row.createCell(1).setCellValue(pg.totalUnpaid.doubleValue());
                 row = sheet.createRow(7);
                 for (int i = 0; i < PURCHASE_REPORT_FILE_COLUMNS.length; i++) {
                     IMessage lbl = PURCHASE_REPORT_FILE_COLUMNS[i];
@@ -173,8 +191,19 @@ public class PurchaseReportMainController extends BaseController {
                     row.createCell(4).setCellValue(vm.getQuantity());
                     row.createCell(5).setCellValue(vm.getUnit());
                     row.createCell(6).setCellValue(vm.getBuyingPrice().doubleValue());
-                    row.createCell(7).setCellValue(vm.getSubtotal().doubleValue());
-                    row.createCell(8).setCellValue(
+
+                    XSSFCell discountCell = row.createCell(7);
+                    discountCell.setCellValue(toDiscountString(vm, locale, true));
+                    discountCell.setCellStyle(createRightAlignment(workbook));
+
+                    if (vm.getBuyingPriceDiscount() != null) {
+                        row.createCell(8).setCellValue(vm.getBuyingPriceDiscount().doubleValue());
+                    }
+                    if (vm.getSubtotalDiscount() != null) {
+                        row.createCell(9).setCellValue(vm.getSubtotalDiscount().doubleValue());
+                    }
+                    row.createCell(10).setCellValue(vm.getSubtotalPrice().doubleValue());
+                    row.createCell(11).setCellValue(
                             PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?
                                     t.translate(CommonLabel.LBL_PAID) : t.translate(CommonLabel.LBL_UNPAID));
                 }
@@ -187,6 +216,9 @@ public class PurchaseReportMainController extends BaseController {
                 sheet.autoSizeColumn(6);
                 sheet.autoSizeColumn(7);
                 sheet.autoSizeColumn(8);
+                sheet.autoSizeColumn(9);
+                sheet.autoSizeColumn(10);
+                sheet.autoSizeColumn(11);
                 FileOutputStream fos = new FileOutputStream(file);
                 workbook.write(fos);
                 workbook.close();
@@ -230,14 +262,29 @@ public class PurchaseReportMainController extends BaseController {
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PurchaseReportVM::getInvoiceDate);
         TableViewUtils.initTableColumn(
-                colSellingPrice,
+                colBuyingPrice,
                 new NumberCellFactory<>(locale),
                 PurchaseReportVM::getBuyingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
-                colSubtotal,
-                new NumberCellFactory<>(locale),
-                PurchaseReportVM::getSubtotal,
+                colDiscount,
+                new DefaultCellFactory<>(),
+                (vm) -> toDiscountString(vm, locale),
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colBuyingPriceDiscount,
+                new NumberCellFactory<>(CommonConstants.DECIMAL_SCALE, locale),
+                PurchaseReportVM::getBuyingPriceDiscount,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colSubtotalDiscount,
+                new NumberCellFactory<>(CommonConstants.DECIMAL_SCALE, locale),
+                (vm) -> vm.getDiscountType() == null ? null : vm.getSubtotalDiscount(),
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colSubtotalPrice,
+                new NumberCellFactory<>(CommonConstants.DECIMAL_SCALE, locale),
+                PurchaseReportVM::getSubtotalPrice,
                 StyleConstants.ALIGN_RIGHT);
         tblPurchaseReport.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
         tblPurchaseReport.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -284,12 +331,13 @@ public class PurchaseReportMainController extends BaseController {
         if (report.isEmpty()) {
             return;
         }
-        PurchaseGroup sg = getPurchaseReportSummary(report);
+        PurchaseGroup pg = getPurchaseReportSummary(report);
         Locale locale = resources.getLocale();
-        lblTransactionCount.setText(StringNumberUtils.format(sg.transactionCount, locale));
-        lblRevenue.setText(StringNumberUtils.format(sg.totalPayment, locale));
-        lblPaid.setText(StringNumberUtils.format(sg.totalPaid, locale));
-        lblUnpaid.setText(StringNumberUtils.format(sg.totalUnpaid, locale));
+        lblTransactionCount
+                .setText(StringNumberUtils.format(pg.transactionCount, locale, CommonConstants.DECIMAL_SCALE));
+        lblRevenue.setText(StringNumberUtils.format(pg.totalPayment, locale, CommonConstants.DECIMAL_SCALE));
+        lblPaid.setText(StringNumberUtils.format(pg.totalPaid, locale, CommonConstants.DECIMAL_SCALE));
+        lblUnpaid.setText(StringNumberUtils.format(pg.totalUnpaid, locale, CommonConstants.DECIMAL_SCALE));
     }
 
     private PurchaseGroup getPurchaseReportSummary(List<PurchaseReportVM> report) {
@@ -317,6 +365,31 @@ public class PurchaseReportMainController extends BaseController {
         private BigDecimal totalPayment = BigDecimal.ZERO;
         private BigDecimal totalPaid = BigDecimal.ZERO;
         private BigDecimal totalUnpaid = BigDecimal.ZERO;
+    }
+
+    private String toDiscountString(PurchaseReportVM vm, Locale locale) {
+        return toDiscountString(vm, locale, false);
+    }
+
+    private String toDiscountString(PurchaseReportVM vm, Locale locale, boolean asFloat) {
+        BigDecimal discountAmount = vm.getDiscountAmount();
+        if (discountAmount == null) {
+            return null;
+        }
+        String strDiscount = StringNumberUtils.format(discountAmount, locale);
+        if (DiscountType.PERCENTAGE.toString().equals(vm.getDiscountType())) {
+            BigDecimal realAmount = vm.getBuyingPrice().subtract(vm.getBuyingPriceDiscount());
+            String strRealAmount = asFloat ?
+                    String.valueOf(realAmount.doubleValue()) : StringNumberUtils.format(realAmount, locale);
+            strDiscount = String.format("%s%% = %s", strDiscount, strRealAmount);
+        }
+        return strDiscount;
+    }
+
+    private XSSFCellStyle createRightAlignment(XSSFWorkbook workbook) {
+        XSSFCellStyle cellStyle = workbook.createCellStyle();
+        cellStyle.setAlignment(HorizontalAlignment.RIGHT);
+        return cellStyle;
     }
 
 }

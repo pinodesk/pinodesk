@@ -15,6 +15,12 @@ public interface UnitRepository extends PagingAndSortingRepository<Unit, Long>, 
 
     Optional<Unit> findByIdAndDeletedAtIsNull(Long id);
 
+    boolean existsByCodeAndDeletedAtIsNull(String code);
+
     Optional<Unit> findByLabelAndDeletedAtIsNull(String label);
+
+    List<Unit> findByLanguageAndDeletedAtIsNullOrderByName(String language);
+
+    Optional<Unit> findByLanguageAndCodeAndDeletedAtIsNull(String language, String code);
 
 }

@@ -32,7 +32,7 @@ public class ProductImportVM {
     private String productCategoryCode;
 
     @NotNull
-    private Long unitId;
+    private String unitCode;
 
     @NotNull
     private ProductStatus status;

@@ -6,6 +6,6 @@ import pospino.desktop.domain.Unit;
 
 public interface UnitRepositoryCustom {
 
-    List<Unit> findByKeyword(String keyword, int limit);
+    List<Unit> findByKeyword(String keyword, String language);
 
 }

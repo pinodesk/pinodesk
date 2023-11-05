@@ -34,11 +34,13 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import pospino.desktop.constant.CommonConstants;
 import pospino.desktop.constant.CommonLabel;
 import pospino.desktop.constant.StyleConstants;
 import pospino.desktop.service.DashboardService;
 import pospino.desktop.util.SpringUtils;
+import pospino.desktop.util.TaskUtils;
 import pospino.desktop.viewmodel.BestSellingProductVM;
 import pospino.desktop.viewmodel.LowestSellingProductVM;
 import pospino.desktop.viewmodel.MonthlyPurchaseTransactionVM;
@@ -50,6 +52,7 @@ import pospino.desktop.viewmodel.ReceivableClosestDueDateVM;
 import pospino.desktop.viewmodel.TotalPurchaseTransactionVM;
 import pospino.desktop.viewmodel.TotalSaleTransactionVM;
 
+@Slf4j
 public class DashboardController extends BaseController {
 
     @FXML
@@ -387,79 +390,92 @@ public class DashboardController extends BaseController {
     private void loadBestSellingProducts(Locale locale, LocalDate start, LocalDate end) {
         tblBestSellingProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblBestSellingProducts.setItems(FXCollections.observableArrayList());
-        CompletableFuture.supplyAsync(() -> dashboardService.getBestSellingProducts(start, end, locale.getLanguage()))
-                .thenAccept(list -> Platform.runLater(() -> {
-                    if (list.isEmpty()) {
-                        tblBestSellingProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                        return;
-                    }
-                    tblBestSellingProducts.setItems(FXCollections.observableList(list));
-                }));
+        TaskUtils.runTask("Load best selling products", () -> {
+            List<BestSellingProductVM> list = dashboardService.getBestSellingProducts(start, end, locale.getLanguage());
+            Platform.runLater(() -> {
+                if (list.isEmpty()) {
+                    tblBestSellingProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                    return;
+                }
+                tblBestSellingProducts.setItems(FXCollections.observableList(list));
+            });
+        });
     }
 
     private void loadLowestSellingProducts(Locale locale, LocalDate start, LocalDate end) {
         tblLowestSellingProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblLowestSellingProducts.setItems(FXCollections.observableArrayList());
-        CompletableFuture.supplyAsync(() -> dashboardService.getLowestSellingProducts(start, end, locale.getLanguage()))
-                .thenAccept(list -> Platform.runLater(() -> {
-                    if (list.isEmpty()) {
-                        tblLowestSellingProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                        return;
-                    }
-                    tblLowestSellingProducts.setItems(FXCollections.observableList(list));
-                }));
+        TaskUtils.runTask("Load lowest selling products", () -> {
+            List<LowestSellingProductVM> list = dashboardService
+                    .getLowestSellingProducts(start, end, locale.getLanguage());
+            Platform.runLater(() -> {
+                if (list.isEmpty()) {
+                    tblLowestSellingProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                    return;
+                }
+                tblLowestSellingProducts.setItems(FXCollections.observableList(list));
+            });
+        });
     }
 
     private void loadProductClosestExpiries(Locale locale) {
         tblProductClosestExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblProductClosestExpiry.setItems(FXCollections.observableArrayList());
-        CompletableFuture.supplyAsync(() -> dashboardService.getProductClosestExpiries(locale.getLanguage()))
-                .thenAccept(list -> Platform.runLater(() -> {
-                    if (list.isEmpty()) {
-                        tblProductClosestExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                        return;
-                    }
-                    tblProductClosestExpiry.setItems(FXCollections.observableList(list));
-                }));
+        TaskUtils.runTask("Load product closests expiries", () -> {
+            List<ProductClosestExpiryVM> list = dashboardService.getProductClosestExpiries(locale.getLanguage());
+            Platform.runLater(() -> {
+                if (list.isEmpty()) {
+                    tblProductClosestExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                    return;
+                }
+                tblProductClosestExpiry.setItems(FXCollections.observableList(list));
+            });
+        });
     }
 
     private void loadProductsOutOfStock(Locale locale) {
         tblProductOutOfStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblProductOutOfStock.setItems(FXCollections.observableArrayList());
-        CompletableFuture.supplyAsync(() -> dashboardService.getProductsOutOfStock(locale.getLanguage()))
-                .thenAccept(list -> Platform.runLater(() -> {
-                    if (list.isEmpty()) {
-                        tblProductOutOfStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                        return;
-                    }
-                    tblProductOutOfStock.setItems(FXCollections.observableList(list));
-                }));
+        TaskUtils.runTask("Load products out of stock", () -> {
+            List<ProductOutOfStockVM> list = dashboardService.getProductsOutOfStock(locale.getLanguage());
+            Platform.runLater(() -> {
+                if (list.isEmpty()) {
+                    tblProductOutOfStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                    return;
+                }
+                tblProductOutOfStock.setItems(FXCollections.observableList(list));
+            });
+        });
     }
 
     private void loadPayableClosestDueDates(Locale locale) {
         tblPayableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblPayableClosestDueDate.setItems(FXCollections.observableArrayList());
-        CompletableFuture.supplyAsync(() -> dashboardService.getPayableClosestDueDates(locale.getLanguage()))
-                .thenAccept(list -> Platform.runLater(() -> {
-                    if (list.isEmpty()) {
-                        tblPayableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                        return;
-                    }
-                    tblPayableClosestDueDate.setItems(FXCollections.observableList(list));
-                }));
+        TaskUtils.runTask("Load payable closest due dates", () -> {
+            List<PayableClosestDueDateVM> list = dashboardService.getPayableClosestDueDates(locale.getLanguage());
+            Platform.runLater(() -> {
+                if (list.isEmpty()) {
+                    tblPayableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                    return;
+                }
+                tblPayableClosestDueDate.setItems(FXCollections.observableList(list));
+            });
+        });
     }
 
     private void loadReceivableClosestDueDates(Locale locale) {
         tblReceivableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblReceivableClosestDueDate.setItems(FXCollections.observableArrayList());
-        CompletableFuture.supplyAsync(() -> dashboardService.getReceivableClosestDueDates(locale.getLanguage()))
-                .thenAccept(list -> Platform.runLater(() -> {
-                    if (list.isEmpty()) {
-                        tblReceivableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-                        return;
-                    }
-                    tblReceivableClosestDueDate.setItems(FXCollections.observableList(list));
-                }));
+        TaskUtils.runTask("Load receivable closest due dates", () -> {
+            List<ReceivableClosestDueDateVM> list = dashboardService.getReceivableClosestDueDates(locale.getLanguage());
+            Platform.runLater(() -> {
+                if (list.isEmpty()) {
+                    tblReceivableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                    return;
+                }
+                tblReceivableClosestDueDate.setItems(FXCollections.observableList(list));
+            });
+        });
     }
 
 }

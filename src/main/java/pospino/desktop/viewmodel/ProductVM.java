@@ -14,6 +14,7 @@ public class ProductVM {
     private String name;
     private String description;
     private Long unitId;
+    private String unitCode;
     private String unitLabel;
     private Long categoryId;
     private String categoryName;

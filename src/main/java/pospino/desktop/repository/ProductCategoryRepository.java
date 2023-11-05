@@ -18,6 +18,6 @@ public interface ProductCategoryRepository
 
     List<ProductCategory> findByLanguageAndDeletedAtIsNullOrderByName(String language);
 
-    Optional<ProductCategory> findByCodeAndLanguageAndDeletedAtIsNull(String code, String language);
+    Optional<ProductCategory> findByLanguageAndCodeAndDeletedAtIsNull(String language, String code);
 
 }

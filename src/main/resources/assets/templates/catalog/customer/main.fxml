@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.customer.CustomerMainController">
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.catalog.customer.CustomerMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -61,8 +61,8 @@
       </HBox>
       <TableView fx:id="tableCustomer" maxHeight="1.7976931348623157E308" prefWidth="754.0" style="-fx-font-size: 13px;" VBox.vgrow="ALWAYS">
         <columns>
-          <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_code" />
           <TableColumn fx:id="colName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
+          <TableColumn fx:id="colCode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_code" />
             <TableColumn fx:id="colPhone" minWidth="-Infinity" prefWidth="200.0" text="%lbl_phone" />
             <TableColumn fx:id="colEmail" minWidth="-Infinity" prefWidth="200.0" text="%lbl_email" />
             <TableColumn fx:id="colAddress" minWidth="-Infinity" prefWidth="300.0" text="%lbl_address" />

@@ -3,7 +3,6 @@ package pospino.desktop.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -31,6 +30,9 @@ class UnitServiceTest extends BaseServiceTest {
     @Mock
     private UnitRepository unitRepository;
 
+    @Mock
+    private ConfigurationService configurationService;
+
     @InjectMocks
     private UnitService unitService;
 
@@ -41,7 +43,7 @@ class UnitServiceTest extends BaseServiceTest {
 
     @AfterEach
     void tearDown() {
-        verifyNoMoreInteractions(unitRepository);
+        verifyNoMoreInteractions(unitRepository, configurationService);
     }
 
     @Test
@@ -55,11 +57,13 @@ class UnitServiceTest extends BaseServiceTest {
 
     @Test
     void testSearchUnitByKeyword_shouldSucceed() {
-        when(unitRepository.findByKeyword(anyString(), anyInt())).thenReturn(new ArrayList<>());
+        when(configurationService.getConfiguration(anyString())).thenReturn("en");
+        when(unitRepository.findByKeyword(anyString(), anyString())).thenReturn(new ArrayList<>());
         List<UnitVM> units = unitService.searchUnitByKeyword("keyword");
         assertNotNull(units);
         assertEquals(0, units.size());
-        verify(unitRepository).findByKeyword(anyString(), anyInt());
+        verify(configurationService).getConfiguration(anyString());
+        verify(unitRepository).findByKeyword(anyString(), anyString());
     }
 
     @Test

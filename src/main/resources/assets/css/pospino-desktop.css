@@ -19,6 +19,7 @@
     font-size: 13px;
     -fx-text-fill: white;
     -fx-background-insets: 0;
+    -fx-min-height: 28px;
 }
 
 .btn-primary:hover,
@@ -33,6 +34,17 @@
     font-size: 13px;
     -fx-text-fill: white;
     -fx-background-insets: 0;
+    -fx-min-height: 28px;
+}
+
+.btn-menu {
+    -fx-min-height: 37px; 
+}
+
+.btn-menu:hover,
+.btn-menu:focus,
+.btn-menu.btn-primary-active {
+    -fx-min-height: 37px; 
 }
 
 .btn-secondary {
@@ -45,6 +57,7 @@
     font-size: 13px;
     -fx-text-fill: white;
     -fx-background-insets: 0;
+    -fx-min-height: 28px;
 }
 
 .btn-secondary:hover,
@@ -58,6 +71,7 @@
     font-size: 13px;
     -fx-text-fill: white;
     -fx-background-insets: 0;
+    -fx-min-height: 28px;
 }
 
 .btn-danger {
@@ -70,6 +84,7 @@
     font-size: 13px;
     -fx-text-fill: white;
     -fx-background-insets: 0;
+    -fx-min-height: 28px;
 }
 
 .btn-danger:hover {
@@ -82,6 +97,7 @@
     font-size: 13px;
     -fx-text-fill: white;
     -fx-background-insets: 0;
+    -fx-min-height: 28px;
 }
 
 .label-primary {
@@ -194,6 +210,17 @@
     -fx-background-radius: 0 0 0 0;
     -fx-font-size: 13px;
     font-size: 13px;
+}
+
+.date-picker-clear-btn {
+    -fx-min-height: 23px;
+    -fx-max-height: 23px;
+}
+
+.date-picker-clear-btn:hover,
+.date-picker-clear-btn:focused {
+    -fx-min-height: 23px;
+    -fx-max-height: 23px;
 }
 
 .date-picker {

@@ -2,7 +2,7 @@
 # https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Maven.gitlab-ci.yml
 # https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 
-image: bellsoft/liberica-openjdk-alpine:17
+image: amazoncorretto:17-alpine
 
 variables:
   MAVEN_OPTS: "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
@@ -22,27 +22,29 @@ variables:
   RELEASE_DIGIT: 1
   HOTFIX_DIGIT: 2
 
+default:
+  before_script:
+    - apk add --update --no-cache maven git
+    - mvn -v
+    - git --version
+    - git remote set-url --push origin "https://${GITLAB_USER_LOGIN}:${READ_WRITE_REPOSITORY_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+    - git config user.name "${GITLAB_USER_NAME}"
+    - git config user.email "${GITLAB_USER_EMAIL}"
+
 cache:
   paths:
     - .m2/repository/
 
-.git_setup_template: &git_setup
-  - apk add --update --no-cache git
-  - git --version
-  - git remote set-url --push origin "https://${GITLAB_USER_LOGIN}:${READ_WRITE_REPOSITORY_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
-  - git config user.name "${GITLAB_USER_NAME}"
-  - git config user.email "${GITLAB_USER_EMAIL}"
-
 stages:
-  - build
+  - validate
   - test
   - release
+  - distribute
 
-build:
-  stage: build
+validate:
+  stage: validate
   script:
-    - *git_setup
-    - ./mvnw $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U
+    - mvn $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U
   allow_failure: false
   except:
     - master
@@ -53,8 +55,7 @@ test:
     JACOCO_REPORT_HTML: $CI_PROJECT_DIR/target/site/jacoco/index.html
   stage: test
   script:
-    - *git_setup
-    - ./mvnw $MAVEN_CLI_OPTS verify -U
+    - mvn $MAVEN_CLI_OPTS verify -U
     - if [ -f $JACOCO_REPORT_HTML ]; then cat $JACOCO_REPORT_HTML | grep -o "Total[^%]*%"; fi
   allow_failure: false
   coverage: "/Total.*?([0-9]{1,3})%/"
@@ -66,15 +67,92 @@ test:
     - master
     - tags
 
+distribute-snapshots:
+  stage: distribute
+  dependencies:
+    - test
+  script:
+    - apk add --no-cache binutils lftp curl # Install binutils to fix: Error: java.io.IOException: Cannot run program "objcopy": error=2, No such file or directory
+    - PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+    - echo $PROJECT_VERSION
+    - mvn $MAVEN_CLI_OPTS clean package -P dist -DskipTests
+    - cd target && FILENAME_RPM=$(ls *.rpm | head -n 1) && FILENAME_DEB=$(ls *.deb | head -n 1)
+    - echo $FILENAME_RPM
+    - echo $FILENAME_DEB
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_RPM --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-rpm/"
+    - |
+      curl -v --location 'https://api-staging.pospino.com/v1/releases' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: Bearer '"$POSPINO_API_KEY_STAGING" \
+      --data '{
+          "name": "Pospino Desktop for Linux RPM v'"$PROJECT_VERSION"'",
+          "platform": "linux-rpm",
+          "version": "'"$PROJECT_VERSION"'",
+          "download_url": "https://download.pospino.com/snapshots/linux-rpm/'"$FILENAME_RPM"'"
+      }'
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-deb/"
+    - |
+      curl -v --location 'https://api-staging.pospino.com/v1/releases' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: Bearer '"$POSPINO_API_KEY_STAGING" \
+      --data '{
+          "name": "Pospino Desktop for Linux DEB v'"$PROJECT_VERSION"'",
+          "platform": "linux-deb",
+          "version": "'"$PROJECT_VERSION"'",
+          "download_url": "https://download.pospino.com/snapshots/linux-deb/'"$FILENAME_DEB"'"
+      }'
+  allow_failure: false
+  only:
+    - develop
+  when: manual
+
 release:
   stage: release
   dependencies:
     - test
   script:
-    - *git_setup
-    - ./mvnw $MAVEN_CLI_OPTS gitflow:release -DallowSnapshots -DversionDigitToIncrement=$RELEASE_DIGIT -DargLine=$MAVEN_CLI_OPTS
+    - mvn $MAVEN_CLI_OPTS gitflow:release -DallowSnapshots -DversionDigitToIncrement=$RELEASE_DIGIT -DargLine=$MAVEN_CLI_OPTS
   only:
     - develop
+  when: manual
+
+distribute-releases:
+  stage: distribute
+  dependencies:
+    - release
+  script:
+    - apk add --no-cache binutils lftp curl
+    - PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+    - echo $PROJECT_VERSION
+    - mvn $MAVEN_CLI_OPTS clean package -P dist -DskipTests
+    - cd target && FILENAME_RPM=$(ls *.rpm | head -n 1) && FILENAME_DEB=$(ls *.deb | head -n 1)
+    - echo $FILENAME_RPM
+    - echo $FILENAME_DEB
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_RPM --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-rpm/"
+    - |
+      curl -v --location 'https://api.pospino.com/v1/releases' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: Bearer '"$POSPINO_API_KEY_PRODUCTION" \
+      --data '{
+          "name": "Pospino Desktop for Linux RPM v'"$PROJECT_VERSION"'",
+          "platform": "linux-rpm",
+          "version": "'"$PROJECT_VERSION"'",
+          "download_url": "https://download.pospino.com/releases/linux-rpm/'"$FILENAME_RPM"'"
+      }'
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-deb/"
+    - |
+      curl -v --location 'https://api.pospino.com/v1/releases' \
+      --header 'Content-Type: application/json' \
+      --header 'Authorization: Bearer '"$POSPINO_API_KEY_PRODUCTION" \
+      --data '{
+          "name": "Pospino Desktop for Linux DEB v'"$PROJECT_VERSION"'",
+          "platform": "linux-deb",
+          "version": "'"$PROJECT_VERSION"'",
+          "download_url": "https://download.pospino.com/releases/linux-deb/'"$FILENAME_DEB"'"
+      }'
+  allow_failure: false
+  only:
+    - master
   when: manual
 
 hotfix-start:
@@ -82,8 +160,7 @@ hotfix-start:
   dependencies:
     - release
   script:
-    - *git_setup
-    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-start -DhotfixVersionDigitToIncrement=$HOTFIX_DIGIT -DargLine=$MAVEN_CLI_OPTS
+    - mvn $MAVEN_CLI_OPTS gitflow:hotfix-start -DhotfixVersionDigitToIncrement=$HOTFIX_DIGIT -DargLine=$MAVEN_CLI_OPTS
     - git push origin HEAD
   only:
     - master
@@ -95,10 +172,9 @@ hotfix-finish:
   dependencies:
     - hotfix-start
   script:
-    - *git_setup
     # Manually fix the git refs. gitflow plugin uses the heads ref, but we do not have it set up locally, however we have the remote ref
     - git symbolic-ref refs/heads/$CI_COMMIT_BRANCH refs/remotes/origin/$CI_COMMIT_BRANCH
-    - ./mvnw $MAVEN_CLI_OPTS gitflow:hotfix-finish -DskipMergeDevBranch -DhotfixBranch=$CI_COMMIT_BRANCH -DargLine=$MAVEN_CLI_OPTS
+    - mvn $MAVEN_CLI_OPTS gitflow:hotfix-finish -DskipMergeDevBranch -DhotfixBranch=$CI_COMMIT_BRANCH -DargLine=$MAVEN_CLI_OPTS
   only:
     - /^hotfix\/.*$/
   when: manual

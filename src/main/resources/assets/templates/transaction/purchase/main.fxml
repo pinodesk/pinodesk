@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.purchase.PurchaseMainController">
+<VBox prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.transaction.purchase.PurchaseMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -65,8 +65,8 @@
           <TableColumn fx:id="colOrderDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
             <TableColumn fx:id="colSupplierName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_supplier_name" />
             <TableColumn fx:id="colTotalProduct" minWidth="-Infinity" prefWidth="150.0" text="%lbl_total_product" />
-            <TableColumn fx:id="colTotalPurchase" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_purchase" />
-            <TableColumn fx:id="colDiscount" minWidth="-Infinity" prefWidth="200.0" text="%lbl_discount" />
+            <TableColumn fx:id="colTotalPrice" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_price" />
+            <TableColumn fx:id="colTotalDiscount" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_discount" />
             <TableColumn fx:id="colTax" minWidth="-Infinity" prefWidth="200.0" text="%lbl_tax" />
             <TableColumn fx:id="colTotalPayment" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_payment" />
             <TableColumn fx:id="colPaymentStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_status" />

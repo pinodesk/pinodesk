@@ -65,6 +65,7 @@
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -79,33 +80,37 @@
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuCustomers" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuCustomers" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_customers" textFill="WHITE">
+                        <Button fx:id="btnMenuCustomers" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuCustomers" text="%btn_menu_customers" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuSuppliers" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuSuppliers" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_suppliers" textFill="WHITE">
+                        <Button fx:id="btnMenuSuppliers" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuSuppliers" text="%btn_menu_suppliers" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuDoctors" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuDoctors" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_doctors" textFill="WHITE">
+                        <Button fx:id="btnMenuDoctors" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuDoctors" text="%btn_menu_doctors" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -116,60 +121,66 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Label>
-                        <Button fx:id="btnMenuPurchases" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuPurchases" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_purchases" textFill="WHITE">
+                        <Button fx:id="btnMenuPurchases" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuPurchases" text="%btn_menu_purchases" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuSales" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuSales" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_sales" textFill="WHITE">
+                        <Button fx:id="btnMenuSales" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuSales" text="%btn_menu_sales" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuPayables" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuPayables" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_payables" textFill="WHITE">
+                        <Button fx:id="btnMenuPayables" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuPayables" text="%btn_menu_payables" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuReceivables" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuReceivables" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_receivables" textFill="WHITE">
+                        <Button fx:id="btnMenuReceivables" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuReceivables" text="%btn_menu_receivables" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Label fx:id="lblMenuSettings1" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167;" styleClass="bg-secondary" text="%lbl_menu_reports" textFill="WHITE">
+                        <Label fx:id="lblMenuReport" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167;" styleClass="bg-secondary" text="%lbl_menu_report" textFill="WHITE">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Label>
-                        <Button fx:id="btnMenuPurchasesReport" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuPurchasesReport" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_purchase_report" textFill="WHITE">
+                        <Button fx:id="btnMenuPurchasesReport" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuPurchasesReport" text="%btn_menu_purchase_report" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuSalesReport" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuSalesReport" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_sale_report" textFill="WHITE">
+                        <Button fx:id="btnMenuSalesReport" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuSalesReport" text="%btn_menu_sale_report" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -180,28 +191,31 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Label>
-                        <Button fx:id="btnMenuConfiguration" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuConfiguration" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_configuration" textFill="WHITE">
+                        <Button fx:id="btnMenuConfiguration" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuConfiguration" text="%btn_menu_configuration" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuUsers" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuUsers" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_users" textFill="WHITE">
+                        <Button fx:id="btnMenuUsers" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuUsers" text="%btn_menu_users" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Button fx:id="btnMenuUserGroups" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuUserGroups" style="-fx-background-radius: 0; -fx-border-radius: 0;" text="%btn_menu_user_groups" textFill="WHITE">
+                        <Button fx:id="btnMenuUserGroups" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuUserGroups" text="%btn_menu_user_groups" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />
                               <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
                            </styleClass>
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

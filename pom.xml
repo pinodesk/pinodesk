@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pospino</groupId>
     <artifactId>pospino-desktop</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
     <packaging>jar</packaging>
     <name>Pospino</name>
     <description>Pospino Desktop</description>
@@ -249,6 +249,9 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
+                <excludes>
+                    <exclude>pospino/desktop/misc/*</exclude>
+                </excludes>
             </resource>
         </resources>
         <plugins>
@@ -438,7 +441,8 @@
                                     https://github.com/traccar/traccar/issues/4126 -->
                                     <linuxConfig>
                                         <generateAppImage>false</generateAppImage>
-                                        <generateRpm>false</generateRpm>
+                                        <generateRpm>true</generateRpm>
+                                        <generateDeb>true</generateDeb>
                                     </linuxConfig>
                                     <winConfig>
                                         <generateMsi>false</generateMsi>

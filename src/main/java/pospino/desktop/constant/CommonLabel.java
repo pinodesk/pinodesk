@@ -33,6 +33,7 @@ public enum CommonLabel implements IMessage {
     LBL_BARCODE,
     LBL_DESCRIPTION,
     LBL_UNIT_ID,
+    LBL_UNIT_CODE,
     LBL_PRODUCT_CATEGORY_CODE,
     LBL_DRUG_CATEGORY_ID,
     LBL_INDICATION,
@@ -79,7 +80,14 @@ public enum CommonLabel implements IMessage {
     LBL_STATUS,
     LBL_UPDATED_AT,
     LBL_AVERAGE_BUYING_PRICE,
-    LBL_PRODUCTS;
+    LBL_PRODUCTS,
+    LBL_NO_DISCOUNT,
+    LBL_PERCENTAGE,
+    LBL_FIXED_AMOUNT,
+    LBL_DISCOUNT,
+    LBL_BUYING_PRICE_DISCOUNT,
+    LBL_SUBTOTAL_DISCOUNT,
+    LBL_SUBTOTAL_PRICE;
 
     @Override
     public String toString() {

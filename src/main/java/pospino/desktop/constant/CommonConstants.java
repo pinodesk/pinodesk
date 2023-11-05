@@ -8,7 +8,7 @@ public interface CommonConstants {
     String DATE_DISPLAY_PATTERN = "yyyy-MM-dd";
     String PRODUCT_CATEGORY_CODE_DRUGS = "000000518";
     String PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE = "000505834";
-    String UNIT_LABEL_BUNDLE = "BUNDLE";
+    String UNIT_CODE_BUNDLE = "0010";
     String CONTACT_MASK_SUPPLIER = "S-UUUU-UUUU";
     String CONTACT_MASK_CUSTOMER = "C-UUUU-UUUU";
     String CODE_PREFIX_DATE_PATTERN = "yyyyMMdd";
@@ -22,5 +22,6 @@ public interface CommonConstants {
             "/assets/images/pospino-icon-circle-64.png",
             "/assets/images/pospino-icon-circle-128.png",
             "/assets/images/pospino-icon-circle-256.png" };
+    int DECIMAL_SCALE = 4;
 
 }

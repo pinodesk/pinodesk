@@ -15,7 +15,11 @@ public class Unit extends DataModel {
 
     public static final String C_NAME = "name";
     public static final String C_LABEL = "label";
+    public static final String C_CODE = "code";
+    public static final String C_LANGUAGE = "language";
 
     private String name;
     private String label;
+    private String code;
+    private String language;
 }

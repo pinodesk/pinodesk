@@ -29,14 +29,18 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
                 select
                     a.*,
                     b.id as category_id,
-                    b.name as category_name
+                    b.name as category_name,
+                    c.id as unit_id,
+                    c.label as unit_label
                 from product a
                 inner join product_category b on b.code = a.category_code and b.language = ?
+                inner join unit c on c.code = a.unit_code and c.language = ?
                 where a.deleted_at is null
                 """;
         WhereParamsHelper whereParamsHelper = where(filter);
         sql = sql + whereParamsHelper.getQueryAppend().toString();
         whereParamsHelper.getParams().add(0, language);
+        whereParamsHelper.getParams().add(1, language);
         return performSelect(sql, whereParamsHelper.getParams(), ProductVM.class);
     }
 
@@ -76,8 +80,8 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
             helper.getParams().add(category.getCode());
         }
         if (unit != null) {
-            helper.getQueryAppend().append(" AND a.unit_id = ? ");
-            helper.getParams().add(unit.getId());
+            helper.getQueryAppend().append(" AND a.unit_code = ? ");
+            helper.getParams().add(unit.getCode());
         }
         if (quantityMin != null) {
             helper.getQueryAppend().append(" AND a.quantity >= ? ");
@@ -140,12 +144,15 @@ public class ProductRepositoryImpl extends AbstractRepository<Product> implement
                 select
                     a.*,
                     b.id as category_id,
-                    b.name as category_name
+                    b.name as category_name,
+                    c.id as unit_id,
+                    c.label as unit_label
                 from product a
                 inner join product_category b on b.code = a.category_code and b.language = ?
+                inner join unit c on c.code = a.unit_code and c.language = ?
                 where a.deleted_at is null
                 """);
-        ListBuilder<Object> lb = new ListBuilder<>().add(language);
+        ListBuilder<Object> lb = new ListBuilder<>().add(language).add(language);
         if (StringUtils.isNotBlank(keyword)) {
             String likeValue = SQLUtils.likeValueContains(keyword.trim().toLowerCase());
             sb.append("""
