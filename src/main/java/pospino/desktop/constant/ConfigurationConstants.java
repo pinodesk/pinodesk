@@ -6,6 +6,7 @@ public interface ConfigurationConstants {
     String STORE_ADDRESS = "store_address";
     String PHARMACY_FEATURES_ENABLED = "pharmacy_features_enabled";
     String INITIAL_SETUP_DONE = "initial_setup_done";
+    String ACTIVATION_DATA = "activation_data";
     String SESSION_MAX_DURATION_HOUR = "session_max_duration_hour";
     String PRINTER_NAME = "printer_name";
     String PRINTER_FOOTER = "printer_footer";

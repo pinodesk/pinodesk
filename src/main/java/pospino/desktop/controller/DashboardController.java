@@ -343,7 +343,7 @@ public class DashboardController extends BaseController {
             for (XYChart.Series<String, Number> series : chartMonthlyExpenseAndRevenue.getData()) {
                 for (XYChart.Data<String, Number> data : series.getData()) {
                     String text = String.format(
-                            "%s\n%s: %s",
+                            "%s%n%s: %s",
                             data.getXValue(),
                             series.getName(),
                             formatOrDefault(data.getYValue().doubleValue() * 1000, locale, 0, "0"));

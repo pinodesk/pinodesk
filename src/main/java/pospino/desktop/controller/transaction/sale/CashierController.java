@@ -278,7 +278,7 @@ public class CashierController extends CommonContentPaneController {
 
     @Override
     protected void initControlValues() {
-        lblVersion.setText(String.format("%s %s", CommonConstants.APP_TITLE, applicationProperties.getVersion()));
+        lblVersion.setText(String.format("%s %s", CommonConstants.APP_TITLE, applicationProperties.getAppVersion()));
         CurrentSessionVM currentSession = sessionService.getCurrentSession();
         String storeName = configurationService.getConfiguration(ConfigurationConstants.STORE_NAME);
         lblStoreName.setText(storeName);

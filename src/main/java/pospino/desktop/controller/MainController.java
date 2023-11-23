@@ -136,7 +136,7 @@ public class MainController extends BaseController {
             vboxMenu.getChildren().removeAll(vboxMenu.getChildren());
             return;
         }
-        lblVersion.setText(String.format("%s %s", CommonConstants.APP_TITLE, applicationProperties.getVersion()));
+        lblVersion.setText(String.format("%s %s", CommonConstants.APP_TITLE, applicationProperties.getAppVersion()));
         CurrentSessionVM currentSession = sessionService.getCurrentSession();
         Map<String, String> configurationMap = configurationService.getConfigurationMap();
         lblStoreName.setText(configurationMap.get(ConfigurationConstants.STORE_NAME));

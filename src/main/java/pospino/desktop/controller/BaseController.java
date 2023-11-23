@@ -53,6 +53,7 @@ import pospino.desktop.constant.SimpleStatus;
 import pospino.desktop.constant.StringConstants;
 import pospino.desktop.exception.DefaultRuntimeException;
 import pospino.desktop.exception.DomainException;
+import pospino.desktop.exception.PospinoApiException;
 import pospino.desktop.exception.PrinterException;
 import pospino.desktop.properties.ApplicationProperties;
 import pospino.desktop.service.ConfigurationService;
@@ -151,6 +152,10 @@ public abstract class BaseController {
             handlePrinterException(printerException);
             return;
         }
+        if (rootCause instanceof PospinoApiException pospinoApiException) {
+            handlePospinoApiException(pospinoApiException);
+            return;
+        }
         if (log.isErrorEnabled()) {
             log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
         }
@@ -165,6 +170,11 @@ public abstract class BaseController {
 
     protected void handlePrinterException(PrinterException e) {
         displayError(t.translate(e.getMessageCode()));
+    }
+
+    protected void handlePospinoApiException(PospinoApiException e) {
+        String code = e.getCode();
+        displayError(String.format("%s. %s", e.getMessage(), code == null ? "" : "(" + code + ")"));
     }
 
     private IMessage getAlertHeaderMessageCode(AlertType type) {

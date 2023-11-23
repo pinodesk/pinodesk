@@ -17,6 +17,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <java.version>17</java.version>
         <dollar>$</dollar>
+        <javapackager.version>1.7.5</javapackager.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -33,6 +34,13 @@
                 <version>2021.2.10</version>
                 <scope>import</scope>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>com.konghq</groupId>
+                <artifactId>unirest-java-bom</artifactId>
+                <version>4.0.12</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -148,9 +156,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.7</version>
+        </dependency>
+        <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.3</version>
+            <version>1.4.8</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
@@ -203,6 +216,24 @@
             <artifactId>jasypt-spring4</artifactId>
             <version>1.9.3</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-objectmapper-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sitture</groupId>
+            <artifactId>unirest-curl</artifactId>
+            <version>0.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.oshi</groupId>
+            <artifactId>oshi-core-java11</artifactId>
+            <version>6.4.4</version>
         </dependency>
         <dependency>
             <groupId>javax.el</groupId>
@@ -414,16 +445,16 @@
             </properties>
         </profile>
         <profile>
-            <id>dist</id>
+            <id>exe</id>
             <properties>
-                <currentProfile>dist</currentProfile>
+                <currentProfile>exe</currentProfile>
             </properties>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>io.github.fvarrui</groupId>
                         <artifactId>javapackager</artifactId>
-                        <version>1.6.7</version>
+                        <version>${javapackager.version}</version>
                         <executions>
                             <execution>
                                 <phase>package</phase>
@@ -436,14 +467,9 @@
                                     <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
-                                    <additionalModules>jdk.charsets</additionalModules> <!-- Required
-                                    by apache poi, related issue
-                                    https://github.com/traccar/traccar/issues/4126 -->
-                                    <linuxConfig>
-                                        <generateAppImage>false</generateAppImage>
-                                        <generateRpm>true</generateRpm>
-                                        <generateDeb>true</generateDeb>
-                                    </linuxConfig>
+                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <platform>windows</platform>
                                     <winConfig>
                                         <generateMsi>false</generateMsi>
                                         <setupMode>installForAllUsers</setupMode>
@@ -457,6 +483,119 @@
                                             <english>compiler:Default.isl</english>
                                         </setupLanguages>
                                     </winConfig>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>deb</id>
+            <properties>
+                <currentProfile>deb</currentProfile>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.github.fvarrui</groupId>
+                        <artifactId>javapackager</artifactId>
+                        <version>${javapackager.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                                <configuration>
+                                    <name>${project.name}</name>
+                                    <displayName>${project.name}</displayName>
+                                    <organizationName>${project.name}</organizationName>
+                                    <mainClass>${project.mainClass}</mainClass>
+                                    <bundleJre>true</bundleJre>
+                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <platform>linux</platform>
+                                    <linuxConfig>
+                                        <generateAppImage>false</generateAppImage>
+                                        <generateRpm>false</generateRpm>
+                                        <generateDeb>true</generateDeb>
+                                    </linuxConfig>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>rpm</id>
+            <properties>
+                <currentProfile>rpm</currentProfile>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.github.fvarrui</groupId>
+                        <artifactId>javapackager</artifactId>
+                        <version>${javapackager.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                                <configuration>
+                                    <name>${project.name}</name>
+                                    <displayName>${project.name}</displayName>
+                                    <organizationName>${project.name}</organizationName>
+                                    <mainClass>${project.mainClass}</mainClass>
+                                    <bundleJre>true</bundleJre>
+                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <platform>linux</platform>
+                                    <linuxConfig>
+                                        <generateAppImage>false</generateAppImage>
+                                        <generateRpm>true</generateRpm>
+                                        <generateDeb>false</generateDeb>
+                                    </linuxConfig>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>pkg</id>
+            <properties>
+                <currentProfile>pkg</currentProfile>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.github.fvarrui</groupId>
+                        <artifactId>javapackager</artifactId>
+                        <version>${javapackager.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                                <configuration>
+                                    <name>${project.name}</name>
+                                    <displayName>${project.name}</displayName>
+                                    <organizationName>${project.name}</organizationName>
+                                    <mainClass>${project.mainClass}</mainClass>
+                                    <bundleJre>true</bundleJre>
+                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <platform>mac</platform>
+                                    <macConfig>
+                                        <generateDmg>false</generateDmg>
+                                        <generatePkg>true</generatePkg>
+                                    </macConfig>
                                 </configuration>
                             </execution>
                         </executions>

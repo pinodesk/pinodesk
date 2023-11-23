@@ -10,8 +10,11 @@ import lombok.Data;
 public class ApplicationProperties {
 
     @Value("${app.name}")
-    private String name;
+    private String appName;
 
     @Value("${app.version}")
-    private String version;
+    private String appVersion;
+
+    @Value("${release.platform}")
+    private String releasePlatform;
 }

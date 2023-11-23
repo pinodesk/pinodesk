@@ -4,6 +4,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
@@ -29,6 +31,14 @@ public class SplashController {
     void initialize() {
         CompletableFuture.runAsync(() -> SpringUtils.init(PospinoConfig.class)).thenRun(() -> {
             ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
+            String activationData = configurationService.getConfiguration(ConfigurationConstants.ACTIVATION_DATA);
+            if (StringUtils.isBlank(activationData)) {
+                Platform.runLater(() -> {
+                    contentPane.getScene().getWindow().hide();
+                    StageUtils.open(Page.ACTIVATION, false);
+                });
+                return;
+            }
             String initialSetupDone = configurationService.getConfiguration(ConfigurationConstants.INITIAL_SETUP_DONE);
             boolean isInitialSetupDone = SimpleStatus.YES.toString().equals(initialSetupDone);
             if (!isInitialSetupDone) {

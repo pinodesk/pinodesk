@@ -46,8 +46,6 @@ public class InitialSetupController extends CommonDataSaveController {
     @FXML
     private PasswordField pfPasswordConfirmation;
 
-    private ConfigurationService configurationService;
-
     @Override
     protected void onActionBtnCancel(ActionEvent event) {
         super.onActionBtnCancel(event);

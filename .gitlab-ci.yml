@@ -75,10 +75,9 @@ distribute-snapshots:
     - apk add --no-cache binutils lftp curl # Install binutils to fix: Error: java.io.IOException: Cannot run program "objcopy": error=2, No such file or directory
     - PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
     - echo $PROJECT_VERSION
-    - mvn $MAVEN_CLI_OPTS clean package -P dist -DskipTests
-    - cd target && FILENAME_RPM=$(ls *.rpm | head -n 1) && FILENAME_DEB=$(ls *.deb | head -n 1)
+    - mvn $MAVEN_CLI_OPTS clean package -P rpm -DskipTests
+    - cd target && FILENAME_RPM=$(ls *.rpm | head -n 1) 
     - echo $FILENAME_RPM
-    - echo $FILENAME_DEB
     - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_RPM --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-rpm/"
     - |
       curl -v --location 'https://api-staging.pospino.com/v1/releases' \
@@ -90,6 +89,10 @@ distribute-snapshots:
           "version": "'"$PROJECT_VERSION"'",
           "download_url": "https://download.pospino.com/snapshots/linux-rpm/'"$FILENAME_RPM"'"
       }'
+    - cd ..
+    - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
+    - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
+    - echo $FILENAME_DEB
     - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-deb/"
     - |
       curl -v --location 'https://api-staging.pospino.com/v1/releases' \
@@ -124,10 +127,9 @@ distribute-releases:
     - apk add --no-cache binutils lftp curl
     - PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
     - echo $PROJECT_VERSION
-    - mvn $MAVEN_CLI_OPTS clean package -P dist -DskipTests
-    - cd target && FILENAME_RPM=$(ls *.rpm | head -n 1) && FILENAME_DEB=$(ls *.deb | head -n 1)
+    - mvn $MAVEN_CLI_OPTS clean package -P rpm -DskipTests
+    - cd target && FILENAME_RPM=$(ls *.rpm | head -n 1)
     - echo $FILENAME_RPM
-    - echo $FILENAME_DEB
     - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_RPM --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-rpm/"
     - |
       curl -v --location 'https://api.pospino.com/v1/releases' \
@@ -139,6 +141,10 @@ distribute-releases:
           "version": "'"$PROJECT_VERSION"'",
           "download_url": "https://download.pospino.com/releases/linux-rpm/'"$FILENAME_RPM"'"
       }'
+    - cd ..
+    - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
+    - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
+    - echo $FILENAME_DEB
     - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-deb/"
     - |
       curl -v --location 'https://api.pospino.com/v1/releases' \

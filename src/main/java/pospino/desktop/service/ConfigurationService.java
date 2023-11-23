@@ -1,25 +1,6 @@
 package pospino.desktop.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import javax.sql.DataSource;
-
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
@@ -35,8 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
-
-import lombok.extern.slf4j.Slf4j;
 import pospino.desktop.annotation.ForActivity;
 import pospino.desktop.constant.Activity;
 import pospino.desktop.constant.CacheNameConstants;
@@ -49,6 +28,26 @@ import pospino.desktop.repository.ConfigurationRepository;
 import pospino.desktop.repository.UserRepository;
 import pospino.desktop.util.PasswordUtils;
 import pospino.desktop.viewmodel.UserAddVM;
+
+import javax.sql.DataSource;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 @Slf4j
 @Service
@@ -71,6 +70,9 @@ public class ConfigurationService extends BaseService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ConfigurationService configurationService;
 
     @Value("${app.name}")
     private String appName;
@@ -98,7 +100,7 @@ public class ConfigurationService extends BaseService {
     @CacheEvict(value = { CacheNameConstants.CONFIGURATION_BY_CODE }, allEntries = true)
     @Transactional
     public void saveIntialSetup(Map<String, String> configurationMap, UserAddVM userAdd) {
-        updateConfiguration(configurationMap);
+        configurationService.updateConfiguration(configurationMap);
         User user = new User();
         user.setFullName(userAdd.getFullName());
         user.setUsername(userAdd.getUsername());
@@ -243,10 +245,32 @@ public class ConfigurationService extends BaseService {
         return backupFile;
     }
 
+    /**
+     * Parses the version to an integer so that it can be used for comparison.
+     * Previously, this function only remove the dots and return the number as
+     * integer, which will break in this example: <br/>
+     * <br/>
+     * 1.20.1 = 1201 <br/>
+     * 2.1.1 = 211 <br/>
+     * 1202 > 211 (incorrect) <br/>
+     * <br/>
+     * The new logic will remove the dots in the version, and the numbers will be
+     * padded with 0 in the left so that the string will have the same length. For
+     * example: <br/>
+     * <br/>
+     * 1.20.1 = 001020001 = 1020001 <br/>
+     * 2.1.1 = 002001001 = 2001001 <br/>
+     * 2001001 > 1020001 (correct) <br/>
+     * 
+     * @param version the version to parse to integer
+     * 
+     * @return the integer version
+     */
     private int parseVersionToInt(String version) {
         String sub = StringUtils.substringBefore(version, "-");
-        String rep = sub.replace(".", "");
-        return Integer.valueOf(rep);
+        String num = Arrays.stream(sub.split("\\.")).map(s -> StringUtils.leftPad(s, 3, "0"))
+                .reduce("", String::concat);
+        return Integer.valueOf(num);
     }
 
     private void extractRealBackupFile(File backupFile, String dbDir) throws IOException {

@@ -46,6 +46,7 @@ public enum MessageCode implements IMessage {
     ERROR_EMPTY_STORE_NAME,
     ERROR_PRINTER_NOT_FOUND,
     ERROR_PRINTER_UNAVAILABLE,
+    ERROR_EMPTY_ACTIVATION_CODE,
 
     // Configuration
     SUCCESS_EDIT_CONFIGURATION_WITH_LOGOUT,
@@ -53,6 +54,7 @@ public enum MessageCode implements IMessage {
     SUCCESS_BACKUP,
     SUCCESS_RESTORE,
     ERROR_DIFFERENT_BACKUP_APP_VERSION,
+    SUCCESS_ACTIVATION,
 
     // Product
     SUCCESS_ADD_PRODUCT,
