@@ -1,14 +1,7 @@
 package pospino.desktop.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import pospino.desktop.repository.PayableRepository;
 import pospino.desktop.repository.ProductRepository;
 import pospino.desktop.repository.PurchaseRepository;
@@ -25,6 +18,12 @@ import pospino.desktop.viewmodel.ProductOutOfStockVM;
 import pospino.desktop.viewmodel.ReceivableClosestDueDateVM;
 import pospino.desktop.viewmodel.TotalPurchaseTransactionVM;
 import pospino.desktop.viewmodel.TotalSaleTransactionVM;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DashboardService extends BaseService {
@@ -123,13 +122,13 @@ public class DashboardService extends BaseService {
 
     public List<PayableClosestDueDateVM> getPayableClosestDueDates(String language) {
         LocalDate now = LocalDate.now();
-        LocalDate next1month = LocalDate.of(now.getYear(), now.getMonthValue() + 2, 1);
+        LocalDate next1month = now.plusMonths(2).withDayOfMonth(1);
         return payableRepository.findByDueDateBefore(next1month);
     }
 
     public List<ReceivableClosestDueDateVM> getReceivableClosestDueDates(String language) {
         LocalDate now = LocalDate.now();
-        LocalDate next1month = LocalDate.of(now.getYear(), now.getMonthValue() + 2, 1);
+        LocalDate next1month = now.plusMonths(2).withDayOfMonth(1);
         return receivableRepository.findByDueDateBefore(next1month);
     }
 
