@@ -1,10 +1,10 @@
 package pospino.desktop.viewmodel;
 
+import lombok.Data;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import lombok.Data;
 
 @Data
 public class PackageProductVM {
@@ -14,6 +14,7 @@ public class PackageProductVM {
     private String name;
     private String description;
     private Long unitId;
+    private String unitCode;
     private String unitLabel;
     private Long categoryId;
     private String categoryName;

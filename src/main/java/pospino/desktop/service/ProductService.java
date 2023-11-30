@@ -1,13 +1,7 @@
 package pospino.desktop.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +9,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.Getter;
-import lombok.Setter;
 import pospino.desktop.annotation.ForActivity;
 import pospino.desktop.constant.Activity;
 import pospino.desktop.constant.CacheNameConstants;
@@ -54,6 +45,14 @@ import pospino.desktop.viewmodel.ProductPriceVM;
 import pospino.desktop.viewmodel.ProductStockVM;
 import pospino.desktop.viewmodel.ProductVM;
 import pospino.desktop.viewmodel.UnitVM;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class ProductService extends BaseService {
@@ -527,7 +526,8 @@ public class ProductService extends BaseService {
 
     @ForActivity(Activity.GET_PACKAGE_PRODUCTS_BY_PRODUCT_ID)
     public List<PackageProductVM> getPackageProductsByProductId(Long productId) {
-        return packageDetailRepository.findByProductId(productId);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return packageDetailRepository.findByProductId(productId, language);
     }
 
     @ForActivity(Activity.EDIT_PACKAGE)
@@ -553,7 +553,8 @@ public class ProductService extends BaseService {
      */
     @ForActivity(Activity.GET_PACKAGE_QUANTITY)
     public PackageProductVM getLowestQuantityPackageProduct(Long productId) {
-        List<PackageProductVM> products = packageDetailRepository.findByProductId(productId);
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        List<PackageProductVM> products = packageDetailRepository.findByProductId(productId, language);
         return products.stream().min((p1, p2) -> {
             int q1 = p1.getQuantity() == null ? 0 : p1.getQuantity().intValue();
             int q2 = p2.getQuantity() == null ? 0 : p2.getQuantity().intValue();

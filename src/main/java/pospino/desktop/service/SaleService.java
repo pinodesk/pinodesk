@@ -1,16 +1,10 @@
 package pospino.desktop.service;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import pospino.desktop.annotation.ForActivity;
 import pospino.desktop.constant.Activity;
 import pospino.desktop.constant.CacheNameConstants;
@@ -43,6 +37,11 @@ import pospino.desktop.viewmodel.SaleProductVM;
 import pospino.desktop.viewmodel.SaleReportFilterVM;
 import pospino.desktop.viewmodel.SaleReportVM;
 import pospino.desktop.viewmodel.SaleVM;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class SaleService extends BaseService {
@@ -104,7 +103,8 @@ public class SaleService extends BaseService {
             SaleProductVM saleProduct,
             Long saleId,
             String invoiceNumber) {
-        packageDetailRepository.findByProductId(saleProduct.getProductId()).forEach(pp -> {
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        packageDetailRepository.findByProductId(saleProduct.getProductId(), language).forEach(pp -> {
             Product product = productRepository.findByIdAndDeletedAtIsNull(pp.getId()).orElseThrow();
             Integer finalQuantity = createProductStock(
                     activityName,
@@ -428,13 +428,14 @@ public class SaleService extends BaseService {
     }
 
     private void revertLastSaleProducts(Long saleId, String activityName) {
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         Long currentUserId = sessionService.getCurrentSession().getUser().getId();
         saleDetailRepository.findBySaleId(saleId).forEach(pd -> {
             Long productId = pd.getProductId();
             Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
             List<Product> products = List.of(product);
             if (ProductUtils.isProductCategoryCustomPackage(product.getCategoryCode())) {
-                products = packageDetailRepository.findByProductId(productId).stream()
+                products = packageDetailRepository.findByProductId(productId, language).stream()
                         .map(pp -> objectConverter.convertObject(pp, Product.class)).toList();
             }
             products.forEach(p -> {
