@@ -130,13 +130,11 @@ public class SaleMainController extends BaseController {
 
     @FXML
     void onActionBtnCashier(ActionEvent event) {
-        btnCashier.setDisable(true);
-        StageUtils.modal(Page.TRANSACTION_SALE_CASHIER_MAIN, true, we -> {
+        StageUtils.open(Page.TRANSACTION_SALE_CASHIER_MAIN, true, we -> {
             // Remove the last data from the stack and ignore (if not used) to avoid such
             // this issue https://gitlab.com/pospino/pospino-desktop/-/issues/52
             getPageData();
             searchSales();
-            btnCashier.setDisable(false);
         });
     }
 
