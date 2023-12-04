@@ -94,10 +94,10 @@ public class PrintUtils {
         Label lblFooter = new Label(config.get(ConfigurationConstants.PRINTER_FOOTER));
         lblFooter.setTextAlignment(TextAlignment.CENTER);
 
-        Label lblPowered = new Label(t.translate(CommonLabel.LBL_POWERED_BY_STOREADY));
+        Label lblPowered = new Label(t.translate(CommonLabel.LBL_POWERED_BY_POSPINO));
         lblPowered.setTextAlignment(TextAlignment.CENTER);
 
-        Label lblWww = new Label(t.translate(CommonLabel.LBL_WWW_STOREADY));
+        Label lblWww = new Label(t.translate(CommonLabel.LBL_WWW_POSPINO));
         lblWww.setTextAlignment(TextAlignment.CENTER);
 
         VBox vbox = new VBox();
