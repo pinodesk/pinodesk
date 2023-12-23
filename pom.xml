@@ -3,16 +3,16 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>pospino</groupId>
-    <artifactId>pospino-desktop</artifactId>
+    <groupId>pinodesk</groupId>
+    <artifactId>pinodesk</artifactId>
     <version>0.6.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>Pospino</name>
-    <description>Pospino Desktop</description>
+    <name>Pinodesk</name>
+    <description>Pinodesk</description>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.mainClass>pospino.desktop.Main</project.mainClass>
+        <project.mainClass>pinodesk.Main</project.mainClass>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <java.version>17</java.version>
@@ -281,7 +281,7 @@
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>
                 <excludes>
-                    <exclude>pospino/desktop/misc/*</exclude>
+                    <exclude>pinodesk/misc/*</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -313,10 +313,10 @@
                 <version>0.8.8</version>
                 <configuration>
                     <excludes>
-                        <exclude>pospino/desktop/domain/*</exclude>
-                        <exclude>pospino/desktop/constant/*</exclude>
-                        <exclude>pospino/desktop/misc/*</exclude>
-                        <exclude>pospino/desktop/viewmodel/*</exclude>
+                        <exclude>pinodesk/desktop/domain/*</exclude>
+                        <exclude>pinodesk/desktop/constant/*</exclude>
+                        <exclude>pinodesk/desktop/misc/*</exclude>
+                        <exclude>pinodesk/desktop/viewmodel/*</exclude>
                     </excludes>
                 </configuration>
                 <executions>

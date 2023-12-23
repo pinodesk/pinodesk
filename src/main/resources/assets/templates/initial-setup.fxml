@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" style="-fx-background-color: white;" stylesheets="@../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.InitialSetupController">
+<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="600.0" style="-fx-background-color: white;" stylesheets="@../css/pinodesk.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinodesk.controller.InitialSetupController">
    <children>
       <VBox AnchorPane.bottomAnchor="47.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

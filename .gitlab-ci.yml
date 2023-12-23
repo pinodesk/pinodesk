@@ -78,31 +78,31 @@ distribute-snapshots:
     - mvn $MAVEN_CLI_OPTS clean package -P rpm -DskipTests
     - cd target && FILENAME_RPM=$(ls *.rpm | head -n 1) 
     - echo $FILENAME_RPM
-    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_RPM --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-rpm/"
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_RPM --target-directory=./domains/download.pinodesk.com/public_html/snapshots/linux-rpm/"
     - |
-      curl -v --location 'https://api-staging.pospino.com/v1/releases' \
+      curl -v --location 'https://api-staging.pinodesk.com/v1/releases' \
       --header 'Content-Type: application/json' \
-      --header 'Authorization: Bearer '"$POSPINO_API_KEY_STAGING" \
+      --header 'Authorization: Bearer '"$PINODESK_API_KEY_STAGING" \
       --data '{
-          "name": "Pospino Desktop for Linux RPM v'"$PROJECT_VERSION"'",
+          "name": "Pinodesk for Linux RPM v'"$PROJECT_VERSION"'",
           "platform": "linux-rpm",
           "version": "'"$PROJECT_VERSION"'",
-          "download_url": "https://download.pospino.com/snapshots/linux-rpm/'"$FILENAME_RPM"'"
+          "download_url": "https://download.pinodesk.com/snapshots/linux-rpm/'"$FILENAME_RPM"'"
       }'
     - cd ..
     - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
     - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
     - echo $FILENAME_DEB
-    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-deb/"
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pinodesk.com/public_html/snapshots/linux-deb/"
     - |
-      curl -v --location 'https://api-staging.pospino.com/v1/releases' \
+      curl -v --location 'https://api-staging.pinodesk.com/v1/releases' \
       --header 'Content-Type: application/json' \
-      --header 'Authorization: Bearer '"$POSPINO_API_KEY_STAGING" \
+      --header 'Authorization: Bearer '"$PINODESK_API_KEY_STAGING" \
       --data '{
-          "name": "Pospino Desktop for Linux DEB v'"$PROJECT_VERSION"'",
+          "name": "Pinodesk for Linux DEB v'"$PROJECT_VERSION"'",
           "platform": "linux-deb",
           "version": "'"$PROJECT_VERSION"'",
-          "download_url": "https://download.pospino.com/snapshots/linux-deb/'"$FILENAME_DEB"'"
+          "download_url": "https://download.pinodesk.com/snapshots/linux-deb/'"$FILENAME_DEB"'"
       }'
   allow_failure: false
   only:
@@ -130,31 +130,31 @@ distribute-releases:
     - mvn $MAVEN_CLI_OPTS clean package -P rpm -DskipTests
     - cd target && FILENAME_RPM=$(ls *.rpm | head -n 1)
     - echo $FILENAME_RPM
-    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_RPM --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-rpm/"
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_RPM --target-directory=./domains/download.pinodesk.com/public_html/snapshots/linux-rpm/"
     - |
-      curl -v --location 'https://api.pospino.com/v1/releases' \
+      curl -v --location 'https://api.pinodesk.com/v1/releases' \
       --header 'Content-Type: application/json' \
-      --header 'Authorization: Bearer '"$POSPINO_API_KEY_PRODUCTION" \
+      --header 'Authorization: Bearer '"$PINODESK_API_KEY_PRODUCTION" \
       --data '{
-          "name": "Pospino Desktop for Linux RPM v'"$PROJECT_VERSION"'",
+          "name": "Pinodesk for Linux RPM v'"$PROJECT_VERSION"'",
           "platform": "linux-rpm",
           "version": "'"$PROJECT_VERSION"'",
-          "download_url": "https://download.pospino.com/releases/linux-rpm/'"$FILENAME_RPM"'"
+          "download_url": "https://download.pinodesk.com/releases/linux-rpm/'"$FILENAME_RPM"'"
       }'
     - cd ..
     - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
     - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
     - echo $FILENAME_DEB
-    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pospino.com/public_html/snapshots/linux-deb/"
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pinodesk.com/public_html/snapshots/linux-deb/"
     - |
-      curl -v --location 'https://api.pospino.com/v1/releases' \
+      curl -v --location 'https://api.pinodesk.com/v1/releases' \
       --header 'Content-Type: application/json' \
-      --header 'Authorization: Bearer '"$POSPINO_API_KEY_PRODUCTION" \
+      --header 'Authorization: Bearer '"$PINODESK_API_KEY_PRODUCTION" \
       --data '{
-          "name": "Pospino Desktop for Linux DEB v'"$PROJECT_VERSION"'",
+          "name": "Pinodesk for Linux DEB v'"$PROJECT_VERSION"'",
           "platform": "linux-deb",
           "version": "'"$PROJECT_VERSION"'",
-          "download_url": "https://download.pospino.com/releases/linux-deb/'"$FILENAME_DEB"'"
+          "download_url": "https://download.pinodesk.com/releases/linux-deb/'"$FILENAME_DEB"'"
       }'
   allow_failure: false
   only:

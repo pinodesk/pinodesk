@@ -1,0 +1,11 @@
+package pinodesk.viewmodel;
+
+import lombok.Data;
+
+@Data
+public class BestSellingProductVM {
+    private Integer soldQuantity;
+    private String categoryName;
+    private String productName;
+    private String unitLabel;
+}

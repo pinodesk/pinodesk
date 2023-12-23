@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/pospino-desktop.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pospino.desktop.controller.catalog.customer.CustomerEditController">
+<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinodesk.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinodesk.controller.catalog.customer.CustomerEditController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>

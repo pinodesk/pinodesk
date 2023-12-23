@@ -1,0 +1,24 @@
+package pinodesk.viewmodel;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import lombok.Data;
+import pinodesk.constant.PaymentStatus;
+
+@Data
+public class ReceivableFilterVM {
+    private Long customerId;
+    private String customerName;
+    private String invoiceNumber;
+    private LocalDate invoiceDateMin;
+    private LocalDate invoiceDateMax;
+    private BigDecimal amountMin;
+    private BigDecimal amountMax;
+    private LocalDate dueDateMin;
+    private LocalDate dueDateMax;
+    private LocalDate completionDateMin;
+    private LocalDate completionDateMax;
+    private String remarks;
+    private PaymentStatus paymentStatus;
+}

@@ -25,7 +25,7 @@
             </else>
         </if>
     </root>
-    <logger name="pospino.desktop" level="TRACE" />
+    <logger name="pinodesk" level="TRACE" />
     <logger name="com.gitlab.mudiasoft.sequel" level="TRACE" />
     <logger name="org.springframework.jdbc" level="TRACE" />
 
