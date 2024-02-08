@@ -20,10 +20,12 @@ import com.gitlab.mudiasoft.pandora.utility.IMessage;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.pandora.utility.Translator;
 import com.gitlab.mudiasoft.toolbox.data.SingletonStack;
+import com.gitlab.mudiasoft.toolbox.jackson.JSON;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -33,9 +35,9 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -44,21 +46,27 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import lombok.extern.slf4j.Slf4j;
-import pinodesk.properties.ApplicationProperties;
+import oshi.util.Constants;
+import pinodesk.apimodel.ActivateReleaseResponse;
+import pinodesk.apimodel.CreateIssueRequest;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
 import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.DomainError;
+import pinodesk.constant.MessageCode;
 import pinodesk.constant.Page;
 import pinodesk.constant.SimpleStatus;
-import pinodesk.constant.StringConstants;
 import pinodesk.exception.DefaultRuntimeException;
 import pinodesk.exception.DomainException;
 import pinodesk.exception.PinodeskApiException;
 import pinodesk.exception.PrinterException;
+import pinodesk.properties.ApplicationProperties;
 import pinodesk.service.ConfigurationService;
 import pinodesk.service.SessionService;
+import pinodesk.service.api.PinodeskApiService;
+import pinodesk.util.DeviceUtils;
 import pinodesk.util.SpringUtils;
+import pinodesk.util.TaskUtils;
 
 @Slf4j
 public abstract class BaseController {
@@ -70,6 +78,8 @@ public abstract class BaseController {
     protected SessionService sessionService;
 
     protected ConfigurationService configurationService;
+
+    protected PinodeskApiService pinodeskApiService;
 
     protected DateTimeFormatter datetimeFormatter = DateTimeFormatter
             .ofPattern(CommonConstants.DATETIME_DISPLAY_PATTERN);
@@ -87,6 +97,7 @@ public abstract class BaseController {
         applicationProperties = SpringUtils.getBean(ApplicationProperties.class);
         sessionService = SpringUtils.getBean(SessionService.class);
         configurationService = SpringUtils.getBean(ConfigurationService.class);
+        pinodeskApiService = SpringUtils.getBean(PinodeskApiService.class);
         setDefaultUncaughtExceptionHandler();
         initServices();
         initControlActions();
@@ -156,9 +167,8 @@ public abstract class BaseController {
             handlePinodeskApiException(pinodeskApiException);
             return;
         }
-        if (log.isErrorEnabled()) {
-            log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
-        }
+        log.error("Uncaught exception detected in thread: " + t.getName(), rootCause);
+
         displayException(rootCause);
     }
 
@@ -174,7 +184,11 @@ public abstract class BaseController {
 
     protected void handlePinodeskApiException(PinodeskApiException e) {
         String code = e.getCode();
-        displayError(String.format("%s. %s", e.getMessage(), code == null ? "" : "(" + code + ")"));
+        String message = e.getMessage();
+        if (e.getMessageCode() != null) {
+            message = t.translate(e.getMessageCode());
+        }
+        displayError(String.format("%s %s", message, code == null ? "" : "(" + code + ")"));
     }
 
     private IMessage getAlertHeaderMessageCode(AlertType type) {
@@ -209,13 +223,20 @@ public abstract class BaseController {
             dialogPane.setContent(contentPane);
             dialogPane.getButtonTypes().clear();
             dialogPane.getStylesheets().add(getClass().getResource("/assets/css/pinodesk.css").toExternalForm());
+            ImageView headerIcon = null;
             switch (type) {
                 case INFORMATION:
+                    headerIcon = new ImageView("/assets/images/dialog-icon-info.png");
+                    dialogPane.getButtonTypes().add(btnTypeOk);
+                    dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
+                    break;
                 case ERROR:
+                    headerIcon = new ImageView("/assets/images/dialog-icon-error.png");
                     dialogPane.getButtonTypes().add(btnTypeOk);
                     dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
                     break;
                 case CONFIRMATION:
+                    headerIcon = new ImageView("/assets/images/dialog-icon-confirmation.png");
                     dialogPane.getButtonTypes().addAll(btnTypeYes, btnTypeNo);
                     dialogPane.lookupButton(btnTypeYes).getStyleClass().add("btn-primary");
                     dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
@@ -223,6 +244,9 @@ public abstract class BaseController {
                 default:
                     break;
             }
+            headerIcon.setFitHeight(48); // Set size to API recommendation.
+            headerIcon.setFitWidth(48);
+            dialogPane.setGraphic(headerIcon);
             dialogPane.applyCss();
             HBox buttonContainer = (HBox) dialogPane.lookup(".container");
             buttonContainer.setSpacing(1);
@@ -288,12 +312,17 @@ public abstract class BaseController {
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setMinWidth(600);
         dialogPane.setPrefWidth(600);
+        dialogPane.setContentText(t.translate(CommonLabel.LBL_SYSTEM_ERROR_DESCRIPTION));
+
+        ImageView headerIcon = new ImageView("/assets/images/dialog-icon-error.png");
+        headerIcon.setFitHeight(48); // Set size to API recommendation.
+        headerIcon.setFitWidth(48);
+        dialogPane.setGraphic(headerIcon);
+
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
         ex.printStackTrace(pw);
         String exceptionText = sw.toString();
-
-        Label label = new Label(t.translate(CommonLabel.LBL_DETAILS) + StringConstants.COLON);
 
         TextArea textArea = new TextArea(exceptionText);
         textArea.setEditable(false);
@@ -304,13 +333,84 @@ public abstract class BaseController {
 
         GridPane expContent = new GridPane();
         expContent.setMaxWidth(Double.MAX_VALUE);
-        expContent.add(label, 0, 0);
         expContent.add(textArea, 0, 1);
 
         // Set expandable Exception into the dialog pane.
         dialogPane.setExpandableContent(expContent);
+        dialogPane.setExpanded(true);
+
+        dialogPane.getButtonTypes().clear();
+        dialogPane.getStylesheets().add(getClass().getResource("/assets/css/pinodesk.css").toExternalForm());
+
+        ButtonType btnTypeOk = new ButtonType(t.translate(CommonLabel.BTN_OK));
+        ButtonType btnTypeSendReport = new ButtonType(t.translate(CommonLabel.BTN_SEND_REPORT));
+
+        dialogPane.getButtonTypes().addAll(btnTypeSendReport, btnTypeOk);
+        dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
+
+        Button btnSendReport = (Button) dialogPane.lookupButton(btnTypeSendReport);
+        btnSendReport.getStyleClass().add("btn-secondary");
+        btnSendReport.addEventFilter(ActionEvent.ACTION, event -> {
+            AlertResult confirmation = displayConfirmation(MessageCode.CONFIRMATION_SEND_ERROR_REPORT);
+            if (confirmation.isNo()) {
+                event.consume();
+                return;
+            }
+            Stage loading = displayLoading();
+            TaskUtils.runTask("Send error report", () -> {
+                sendErrorReport(ex, exceptionText);
+                Platform.runLater(() -> {
+                    loading.hide();
+                    displayInfo(MessageCode.SUCCESS_SEND_ERROR_REPORT);
+                    alert.close();
+                });
+            }, throwable -> Platform.runLater(() -> {
+                loading.hide();
+                handleException(throwable);
+            }));
+        });
+
+        dialogPane.applyCss();
+
+        HBox buttonContainer = (HBox) dialogPane.lookup(".container");
+        buttonContainer.setSpacing(1);
+        buttonContainer.requestFocus();
 
         alert.showAndWait();
+    }
+
+    private void sendErrorReport(Throwable ex, String stacktrace) {
+        String strActivationData = configurationService.getConfiguration(ConfigurationConstants.ACTIVATION_DATA);
+        ActivateReleaseResponse activationData = JSON.parse(strActivationData, ActivateReleaseResponse.class);
+        CreateIssueRequest req = new CreateIssueRequest();
+        req.setCategory("bug_report");
+        req.setSource("app");
+        req.setTitle(ex.toString());
+        req.setDescription("Please help to check the following error stacktrace from the user report:");
+        req.setErrorStacktrace(stacktrace);
+        req.setActivationDeviceId(activationData.getActivationDeviceId());
+        req.setReleasePlatform(applicationProperties.getReleasePlatform());
+        req.setReleaseVersion(applicationProperties.getAppVersion());
+        req.setDeviceSignature(DeviceUtils.getDeviceSignature());
+        req.setDeviceManufacturer(defaultNullUnknown(DeviceUtils.getDeviceManufacturer()));
+        req.setDeviceModel(defaultNullUnknown(DeviceUtils.getDeviceModel()));
+        req.setOsName(defaultNullUnknown(DeviceUtils.getOsName()));
+        req.setOsVersion(defaultNullUnknown(DeviceUtils.getOsVersion()));
+        req.setOsFamily(defaultNullUnknown(DeviceUtils.getOsFamily()));
+        req.setOsArch(defaultNullUnknown(DeviceUtils.getOsArch()));
+        req.setOsBitness(DeviceUtils.getOsBitness());
+        req.setCpuName(defaultNullUnknown(DeviceUtils.getCpuName()));
+        req.setCpuVendor(defaultNullUnknown(DeviceUtils.getCpuVendor()));
+        req.setCpuFamily(defaultNullUnknown(DeviceUtils.getCpuFamily()));
+        req.setRamSize(DeviceUtils.getRamSize());
+        req.setRamSizeAvailable(DeviceUtils.getRamSizeAvailable());
+        req.setStorageSize(DeviceUtils.getStorageSize());
+        req.setStorageSizeAvailable(DeviceUtils.getStorageSizeAvailable());
+        pinodeskApiService.createIssue(req);
+    }
+
+    protected String defaultNullUnknown(String val) {
+        return Constants.UNKNOWN.equals(val) ? null : val;
     }
 
     protected Stage displayLoading() {

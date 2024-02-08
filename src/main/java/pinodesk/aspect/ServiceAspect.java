@@ -32,9 +32,8 @@ public class ServiceAspect {
                 t.start();
             }
         } catch (Exception e) {
-            if (log.isDebugEnabled()) {
-                log.debug("Service method throws exception: {}", e.toString());
-            }
+            log.debug("Service method throws exception: {}", e.toString());
+
             throw e;
         }
         return result;

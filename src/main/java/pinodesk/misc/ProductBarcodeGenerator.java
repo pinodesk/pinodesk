@@ -39,9 +39,8 @@ public class ProductBarcodeGenerator {
             }
             writer.flush();
         } catch (Exception e) {
-            if (log.isErrorEnabled()) {
-                log.error("Failed to parse product categories: " + e.getMessage(), e);
-            }
+            log.error("Failed to parse product categories: " + e.getMessage(), e);
+
         }
     }
 

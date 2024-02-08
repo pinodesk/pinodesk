@@ -37,7 +37,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import lombok.extern.slf4j.Slf4j;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
@@ -65,7 +64,6 @@ import pinodesk.viewmodel.ProductStockVM;
 import pinodesk.viewmodel.ProductVM;
 import pinodesk.viewmodel.UnitVM;
 
-@Slf4j
 public class ProductEditController extends CommonDataSaveController {
 
     @FXML

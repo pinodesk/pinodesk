@@ -13,14 +13,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
-import oshi.util.Constants;
-import pinodesk.properties.ApplicationProperties;
 import pinodesk.apimodel.ActivateReleaseRequest;
 import pinodesk.apimodel.ActivateReleaseResponse;
 import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.MessageCode;
 import pinodesk.constant.Page;
 import pinodesk.constant.SimpleStatus;
+import pinodesk.properties.ApplicationProperties;
 import pinodesk.service.api.PinodeskApiService;
 import pinodesk.util.DeviceUtils;
 import pinodesk.util.SpringUtils;
@@ -121,7 +120,4 @@ public class ActivationController extends CommonDataSaveController {
         applicationProperties = SpringUtils.getBean(ApplicationProperties.class);
     }
 
-    private String defaultNullUnknown(String val) {
-        return Constants.UNKNOWN.equals(val) ? null : val;
-    }
 }

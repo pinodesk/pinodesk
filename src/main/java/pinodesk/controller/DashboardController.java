@@ -34,7 +34,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
 import pinodesk.constant.StyleConstants;
@@ -52,7 +51,6 @@ import pinodesk.viewmodel.ReceivableClosestDueDateVM;
 import pinodesk.viewmodel.TotalPurchaseTransactionVM;
 import pinodesk.viewmodel.TotalSaleTransactionVM;
 
-@Slf4j
 public class DashboardController extends BaseController {
 
     @FXML

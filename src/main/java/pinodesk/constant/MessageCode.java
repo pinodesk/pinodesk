@@ -55,6 +55,9 @@ public enum MessageCode implements IMessage {
     SUCCESS_RESTORE,
     ERROR_DIFFERENT_BACKUP_APP_VERSION,
     SUCCESS_ACTIVATION,
+    RESTORE_DATABASE_ERROR,
+    BACKUP_DATABASE_ERROR,
+    CONFIRMATION_RESTORE_DATA,
 
     // Product
     SUCCESS_ADD_PRODUCT,
@@ -210,10 +213,11 @@ public enum MessageCode implements IMessage {
     // Purchase Report
     SUCCESS_EXPORT_PURCHASE_REPORT,
 
-    // Other SQL errors
-    RESTORE_DATABASE_ERROR,
-    BACKUP_DATABASE_ERROR,
-    CONFIRMATION_RESTORE_DATA;
+    // Other
+    CONFIRMATION_SEND_ERROR_REPORT,
+    SUCCESS_SEND_ERROR_REPORT,
+    ERROR_SEND_ERROR_REPORT,
+    ERROR_REQUEST_PINODESK;
 
     @Override
     public String toString() {

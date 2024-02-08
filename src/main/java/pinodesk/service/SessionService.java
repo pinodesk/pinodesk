@@ -109,18 +109,15 @@ public class SessionService extends BaseService {
             return;
         }
         Session session = lastSession.get();
-        if (log.isDebugEnabled()) {
-            log.debug("Session id: {}", session.getId());
-        }
+        log.debug("Session id: {}", session.getId());
+
         LocalDateTime lastActivityAt = session.getLastActivityAt();
         if (lastActivityAt == null) {
             return;
         }
         String strMaxDuration = configurationService.getConfiguration(ConfigurationConstants.SESSION_MAX_DURATION_HOUR);
         long actualDuration = lastActivityAt.until(LocalDateTime.now(), ChronoUnit.HOURS);
-        if (log.isDebugEnabled()) {
-            log.debug("Actual duration: {}", actualDuration);
-        }
+        log.debug("Actual duration: {}", actualDuration);
         if (actualDuration >= Long.valueOf(strMaxDuration)) {
             return;
         }
