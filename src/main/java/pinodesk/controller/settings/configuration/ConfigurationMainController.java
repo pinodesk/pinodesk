@@ -18,6 +18,7 @@ import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
 import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
 import com.gitlab.mudiasoft.pandora.utility.StageUtils;
 import com.gitlab.mudiasoft.toolbox.data.ListBuilder;
+import com.gitlab.mudiasoft.toolbox.jackson.JSON;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -31,6 +32,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import pinodesk.apimodel.ActivateReleaseResponse;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
 import pinodesk.constant.ConfigurationConstants;
@@ -88,6 +90,12 @@ public class ConfigurationMainController extends CommonContentPaneController {
 
     @FXML
     private ScrollPane configurationScrollPane;
+
+    @FXML
+    private TextField tfActivationEmail;
+
+    @FXML
+    private TextField tfActivationCode;
 
     private FileChooser fileChooser = new FileChooser();
 
@@ -272,6 +280,10 @@ public class ConfigurationMainController extends CommonContentPaneController {
         Platform.runLater(() -> {
             ScrollPaneUtils.fixBlur(configurationScrollPane);
         });
+        String activationData = configurationMap.get(ConfigurationConstants.ACTIVATION_DATA);
+        ActivateReleaseResponse response = JSON.parse(activationData, ActivateReleaseResponse.class);
+        tfActivationEmail.setText(response.getEmail());
+        tfActivationCode.setText(response.getCode());
     }
 
     @Override
