@@ -4,10 +4,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import pinodesk.domain.Receivable;
 import pinodesk.viewmodel.ReceivableClosestDueDateVM;
@@ -26,5 +28,10 @@ public interface ReceivableRepository extends PagingAndSortingRepository<Receiva
             order by r.due_date
             """)
     List<ReceivableClosestDueDateVM> findByDueDateBefore(@Param("dueDate") LocalDate dueDate);
+
+    @Transactional
+    @Modifying
+    @Query("delete from receivable where sale_id in (:saleIds)")
+    Long deleteBySaleIdIn(@Param("saleIds") List<Long> saleIds);
 
 }

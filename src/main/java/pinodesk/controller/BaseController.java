@@ -337,7 +337,6 @@ public abstract class BaseController {
 
         // Set expandable Exception into the dialog pane.
         dialogPane.setExpandableContent(expContent);
-        dialogPane.setExpanded(true);
 
         dialogPane.getButtonTypes().clear();
         dialogPane.getStylesheets().add(getClass().getResource("/assets/css/pinodesk.css").toExternalForm());

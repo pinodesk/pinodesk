@@ -89,13 +89,14 @@ public class SaleService extends BaseService {
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
-            CacheNameConstants.PRODUCTS_BY_KEYWORD },
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.RECEIVABLES_BY_FILTER },
         allEntries = true)
     @Transactional
     public void removeSales(List<Long> ids) {
         ids.forEach(id -> revertLastSaleProducts(id, Activity.REMOVE_SALES.toString()));
-        saleDetailRepository.deleteUpdateBySaleIdIn(ids);
-        saleRepository.deleteUpdateByIdIn(ids);
+        receivableRepository.deleteBySaleIdIn(ids); // Cascade delete to receivable_payment
+        saleRepository.deleteByIdIn(ids); // Cascade delete to sale_detail
     }
 
     private void handleSalePackageProduct(

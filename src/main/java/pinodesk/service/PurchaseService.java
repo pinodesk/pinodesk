@@ -419,13 +419,14 @@ public class PurchaseService extends BaseService {
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
-            CacheNameConstants.PRODUCTS_BY_KEYWORD },
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.PAYABLES_BY_FILTER },
         allEntries = true)
     @Transactional
     public void removePurchases(List<Long> ids) {
         ids.forEach(id -> revertLastPurchasedProducts(id, Activity.REMOVE_PURCHASES.toString()));
-        purchaseDetailRepository.deleteUpdateByPurchaseIdIn(ids);
-        purchaseRepository.deleteUpdateByIdIn(ids);
+        payableRepository.deleteByPurchaseIdIn(ids); // Cascade delete to payable_payment
+        purchaseRepository.deleteByIdIn(ids); // Cascade delete to purchase_detail
     }
 
     @ForActivity(Activity.GET_PURCHASE_PRODUCTS)

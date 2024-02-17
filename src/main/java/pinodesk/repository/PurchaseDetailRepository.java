@@ -29,4 +29,9 @@ public interface PurchaseDetailRepository
     @Query("update purchase_detail set updated_at=now(), deleted_at=now() where purchase_id in (:purchaseIds)")
     Long deleteUpdateByPurchaseIdIn(@Param("purchaseIds") List<Long> purchaseIds);
 
+    @Transactional
+    @Modifying
+    @Query("delete from purchase_detail where purchase_id in (:purchaseIds)")
+    Long deleteByPurchaseIdIn(@Param("purchaseIds") List<Long> purchaseIds);
+
 }

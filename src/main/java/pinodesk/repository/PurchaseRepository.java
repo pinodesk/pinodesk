@@ -26,6 +26,11 @@ public interface PurchaseRepository extends PagingAndSortingRepository<Purchase,
     @Query("update purchase set updated_at=now(), deleted_at=now() where id in (:ids)")
     Long deleteUpdateByIdIn(@Param("ids") List<Long> ids);
 
+    @Transactional
+    @Modifying
+    @Query("delete from purchase where id in (:ids)")
+    Long deleteByIdIn(@Param("ids") List<Long> ids);
+
     Optional<Purchase> findByIdAndDeletedAtIsNull(Long purchaseId);
 
     @Query("""

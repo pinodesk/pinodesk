@@ -24,5 +24,10 @@ public interface SaleDetailRepository extends PagingAndSortingRepository<SaleDet
     @Query("delete from sale_detail where sale_id = :saleId")
     Long deleteBySaleId(@Param("saleId") Long saleId);
 
+    @Transactional
+    @Modifying
+    @Query("delete from sale_detail where sale_id in (:saleIds)")
+    Long deleteBySaleIdIn(@Param("saleIds") List<Long> saleIds);
+
     List<SaleDetail> findBySaleId(Long saleId);
 }
