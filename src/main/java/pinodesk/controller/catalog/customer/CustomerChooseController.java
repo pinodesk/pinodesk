@@ -80,7 +80,7 @@ public class CustomerChooseController extends CommonDataChooseController<Custome
         });
         tfSearch.setOnKeyPressed(event -> {
             if (EventUtils.isEnter(event)) {
-                searchSuppliers();
+                searchCustomers();
             }
         });
         setFocused(contentPane);
@@ -101,7 +101,7 @@ public class CustomerChooseController extends CommonDataChooseController<Custome
         customerService = SpringUtils.getBean(CustomerService.class);
     }
 
-    private void searchSuppliers() {
+    private void searchCustomers() {
         tblCustomer.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblCustomer.setItems(FXCollections.observableArrayList());
         AsyncUtils.supply(() -> customerService.searchCustomersByKeyword(tfSearch.getText()))

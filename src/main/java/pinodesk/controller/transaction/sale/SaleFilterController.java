@@ -111,7 +111,10 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
                 new SimpleComboBoxModel(null, StringConstants.EMPTY),
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
                 new SimpleComboBoxModel(PaymentStatus.UNPAID, t.translate(CommonLabel.LBL_UNPAID)));
-        setCustomerChooser(tfCustomer, this::handleSelectedCustomer, tfDoctor.getParent());
+        setCustomerChooser(
+                tfCustomer,
+                this::handleSelectedCustomer,
+                isPharmacyFeatureEnabled() ? tfDoctor.getParent() : cbPaymentStatus.getParent());
         setDoctorChooser(tfDoctor, this::handleSelectedDoctor, cbPaymentStatus.getParent());
     }
 

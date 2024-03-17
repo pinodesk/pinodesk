@@ -310,7 +310,11 @@ public class SaleAddController extends CommonDataSaveController {
                 handleActionTableSaleProduct();
             }
         });
-        setCustomerChooser(tfCustomer, true, this::handleSelectedCustomer, tfDoctor.getParent());
+        setCustomerChooser(
+                tfCustomer,
+                true,
+                this::handleSelectedCustomer,
+                isPharmacyFeatureEnabled() ? tfDoctor.getParent() : tfInvoiceNumber);
         setDoctorChooser(tfDoctor, this::handleSelectedDoctor, tfInvoiceNumber);
         setProductChooser(tfProduct, this::handleSelectedProduct, tfSaleQuantity);
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
