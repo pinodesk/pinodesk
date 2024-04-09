@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.gitlab.mudiasoft.pandora.utility.AlertResult;
-import com.gitlab.mudiasoft.pandora.utility.PageLoader;
-import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
-import com.gitlab.mudiasoft.pandora.utility.StageUtils;
+import com.mudiatech.pandora.utility.AlertResult;
+import com.mudiatech.pandora.utility.PageLoader;
+import com.mudiatech.pandora.utility.ScrollPaneUtils;
+import com.mudiatech.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

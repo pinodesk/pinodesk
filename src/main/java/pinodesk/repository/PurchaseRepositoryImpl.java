@@ -2,8 +2,8 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
-import com.gitlab.mudiasoft.sequel.sql.Where;
+import com.mudiatech.sequel.repository.AbstractRepository;
+import com.mudiatech.sequel.sql.Where;
 
 import pinodesk.domain.Purchase;
 import pinodesk.viewmodel.PurchaseFilterVM;

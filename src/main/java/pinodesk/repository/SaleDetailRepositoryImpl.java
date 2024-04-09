@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
-import com.gitlab.mudiasoft.sequel.sql.Where;
+import com.mudiatech.sequel.repository.AbstractRepository;
+import com.mudiatech.sequel.sql.Where;
 
 import pinodesk.domain.SaleDetail;
 import pinodesk.viewmodel.SaleProductVM;

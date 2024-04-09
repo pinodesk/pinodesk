@@ -1,8 +1,8 @@
 package pinodesk.controller.settings.usergroup;
 
-import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
-import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
-import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
+import com.mudiatech.pandora.model.SimpleComboBoxModel;
+import com.mudiatech.pandora.utility.ComboBoxUtils;
+import com.mudiatech.pandora.utility.TextFieldUtils;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;

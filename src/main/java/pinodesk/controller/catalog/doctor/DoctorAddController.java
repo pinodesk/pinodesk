@@ -1,8 +1,8 @@
 package pinodesk.controller.catalog.doctor;
 
-import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
-import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
-import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
+import com.mudiatech.pandora.constant.KeyConstants;
+import com.mudiatech.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.utility.TextFieldUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

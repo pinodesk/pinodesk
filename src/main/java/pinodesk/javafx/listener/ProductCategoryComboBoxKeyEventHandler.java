@@ -1,6 +1,6 @@
 package pinodesk.javafx.listener;
 
-import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
+import com.mudiatech.toolbox.future.AsyncUtils;
 
 import org.apache.commons.lang3.StringUtils;
 

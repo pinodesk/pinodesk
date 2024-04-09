@@ -30,7 +30,7 @@
         </else>
     </if>
 
-    <logger name="com.gitlab.mudiasoft.sequel" level="TRACE"/>
+    <logger name="com.mudiatech.sequel" level="TRACE"/>
     <logger name="org.springframework" level="DEBUG"/>
     <logger name="org.springframework.jdbc.core.JdbcTemplate" level="TRACE"/>
     <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE"/>

@@ -4,10 +4,10 @@ import java.util.Arrays;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
-import com.gitlab.mudiasoft.pandora.utility.AlertResult;
-import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
-import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.model.SimpleComboBoxModel;
+import com.mudiatech.pandora.utility.AlertResult;
+import com.mudiatech.pandora.utility.ComboBoxUtils;
+import com.mudiatech.pandora.utility.ControlValidator;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

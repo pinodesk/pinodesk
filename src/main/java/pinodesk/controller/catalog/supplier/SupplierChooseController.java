@@ -2,10 +2,10 @@ package pinodesk.controller.catalog.supplier;
 
 import java.time.LocalDateTime;
 
-import com.gitlab.mudiasoft.pandora.factory.LocalDateTimeCellFactory;
-import com.gitlab.mudiasoft.pandora.utility.EventUtils;
-import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
-import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
+import com.mudiatech.pandora.factory.LocalDateTimeCellFactory;
+import com.mudiatech.pandora.utility.EventUtils;
+import com.mudiatech.pandora.utility.TableViewUtils;
+import com.mudiatech.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

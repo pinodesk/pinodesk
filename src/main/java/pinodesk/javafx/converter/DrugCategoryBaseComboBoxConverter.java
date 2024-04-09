@@ -1,6 +1,6 @@
 package pinodesk.javafx.converter;
 
-import com.gitlab.mudiasoft.pandora.converter.DefaultStringConverterAdapter;
+import com.mudiatech.pandora.converter.DefaultStringConverterAdapter;
 
 import javafx.scene.control.ComboBox;
 import pinodesk.viewmodel.DrugCategoryBaseVM;

@@ -1,6 +1,6 @@
 package pinodesk.domain;
 
-import com.gitlab.mudiasoft.sequel.model.DataModel;
+import com.mudiatech.sequel.model.DataModel;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

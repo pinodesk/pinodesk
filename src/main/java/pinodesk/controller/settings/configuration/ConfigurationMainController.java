@@ -12,13 +12,13 @@ import java.util.concurrent.CompletionException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
-import com.gitlab.mudiasoft.pandora.utility.AlertResult;
-import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
-import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
-import com.gitlab.mudiasoft.pandora.utility.StageUtils;
-import com.gitlab.mudiasoft.toolbox.data.ListBuilder;
-import com.gitlab.mudiasoft.toolbox.jackson.JSON;
+import com.mudiatech.pandora.model.SimpleComboBoxModel;
+import com.mudiatech.pandora.utility.AlertResult;
+import com.mudiatech.pandora.utility.ComboBoxUtils;
+import com.mudiatech.pandora.utility.ScrollPaneUtils;
+import com.mudiatech.pandora.utility.StageUtils;
+import com.mudiatech.toolbox.data.ListBuilder;
+import com.mudiatech.toolbox.jackson.JSON;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

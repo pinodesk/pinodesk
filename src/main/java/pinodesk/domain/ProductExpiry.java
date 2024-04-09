@@ -2,7 +2,7 @@ package pinodesk.domain;
 
 import java.time.LocalDate;
 
-import com.gitlab.mudiasoft.sequel.model.DataModel;
+import com.mudiatech.sequel.model.DataModel;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

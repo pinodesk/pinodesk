@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.mudiasoft.pandora.utility.StageUtils;
+import com.mudiatech.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;

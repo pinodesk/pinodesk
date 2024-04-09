@@ -1,6 +1,6 @@
 package pinodesk.controller;
 
-import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.formatOrDefault;
+import static com.mudiatech.toolbox.data.StringNumberUtils.formatOrDefault;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,12 +13,12 @@ import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
-import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
-import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
-import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
-import com.gitlab.mudiasoft.pandora.utility.ScrollPaneUtils;
-import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
+import com.mudiatech.pandora.factory.LocalDateCellFactory;
+import com.mudiatech.pandora.factory.NumberCellFactory;
+import com.mudiatech.pandora.model.SimpleComboBoxModel;
+import com.mudiatech.pandora.utility.ComboBoxUtils;
+import com.mudiatech.pandora.utility.ScrollPaneUtils;
+import com.mudiatech.pandora.utility.TableViewUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

@@ -5,12 +5,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
-import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
-import com.gitlab.mudiasoft.pandora.factory.LocalDateTimeCellFactory;
-import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
-import com.gitlab.mudiasoft.pandora.utility.EventUtils;
-import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
-import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
+import com.mudiatech.pandora.factory.LocalDateCellFactory;
+import com.mudiatech.pandora.factory.LocalDateTimeCellFactory;
+import com.mudiatech.pandora.factory.NumberCellFactory;
+import com.mudiatech.pandora.utility.EventUtils;
+import com.mudiatech.pandora.utility.TableViewUtils;
+import com.mudiatech.toolbox.future.AsyncUtils;
 
 import org.apache.commons.lang3.StringUtils;
 

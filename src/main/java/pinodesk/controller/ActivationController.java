@@ -3,9 +3,9 @@ package pinodesk.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
-import com.gitlab.mudiasoft.pandora.utility.StageUtils;
-import com.gitlab.mudiasoft.toolbox.jackson.JSON;
+import com.mudiatech.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.utility.StageUtils;
+import com.mudiatech.toolbox.jackson.JSON;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

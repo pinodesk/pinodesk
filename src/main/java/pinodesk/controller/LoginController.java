@@ -1,7 +1,7 @@
 package pinodesk.controller;
 
-import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
-import com.gitlab.mudiasoft.pandora.utility.StageUtils;
+import com.mudiatech.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

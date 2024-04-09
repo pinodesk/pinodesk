@@ -1,6 +1,6 @@
 package pinodesk.controller.transaction.sale;
 
-import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.formatOrDefault;
+import static com.mudiatech.toolbox.data.StringNumberUtils.formatOrDefault;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;

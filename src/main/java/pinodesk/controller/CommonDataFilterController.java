@@ -1,6 +1,6 @@
 package pinodesk.controller;
 
-import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
+import com.mudiatech.pandora.constant.KeyConstants;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

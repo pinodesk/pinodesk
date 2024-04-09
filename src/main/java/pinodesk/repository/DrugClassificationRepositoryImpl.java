@@ -2,9 +2,9 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import com.gitlab.mudiasoft.sequel.repository.AbstractRepository;
-import com.gitlab.mudiasoft.sequel.sql.Order;
-import com.gitlab.mudiasoft.sequel.sql.Where;
+import com.mudiatech.sequel.repository.AbstractRepository;
+import com.mudiatech.sequel.sql.Order;
+import com.mudiatech.sequel.sql.Where;
 
 import pinodesk.domain.DrugClassification;
 

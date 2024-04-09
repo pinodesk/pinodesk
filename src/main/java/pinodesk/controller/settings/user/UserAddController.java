@@ -2,11 +2,11 @@ package pinodesk.controller.settings.user;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
-import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
-import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
-import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
-import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
+import com.mudiatech.pandora.constant.KeyConstants;
+import com.mudiatech.pandora.model.SimpleComboBoxModel;
+import com.mudiatech.pandora.utility.ComboBoxUtils;
+import com.mudiatech.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.utility.TextFieldUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

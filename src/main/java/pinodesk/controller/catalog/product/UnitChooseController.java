@@ -1,8 +1,8 @@
 package pinodesk.controller.catalog.product;
 
-import com.gitlab.mudiasoft.pandora.utility.EventUtils;
-import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
-import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
+import com.mudiatech.pandora.utility.EventUtils;
+import com.mudiatech.pandora.utility.TableViewUtils;
+import com.mudiatech.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

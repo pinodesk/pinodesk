@@ -3,9 +3,9 @@ package pinodesk.controller.catalog.supplier;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gitlab.mudiasoft.pandora.constant.KeyConstants;
-import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
-import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
+import com.mudiatech.pandora.constant.KeyConstants;
+import com.mudiatech.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.utility.TextFieldUtils;
 
 import org.apache.commons.lang3.StringUtils;
 

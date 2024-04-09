@@ -1,7 +1,7 @@
 package pinodesk;
 
-import com.gitlab.mudiasoft.pandora.utility.PageLoader;
-import com.gitlab.mudiasoft.pandora.utility.StageUtils;
+import com.mudiatech.pandora.utility.PageLoader;
+import com.mudiatech.pandora.utility.StageUtils;
 
 import javafx.application.Application;
 import javafx.stage.Stage;

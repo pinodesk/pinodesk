@@ -2,7 +2,7 @@ package pinodesk.javafx.converter;
 
 import java.time.format.DateTimeFormatter;
 
-import com.gitlab.mudiasoft.pandora.converter.DefaultStringConverterAdapter;
+import com.mudiatech.pandora.converter.DefaultStringConverterAdapter;
 
 import javafx.scene.control.ComboBox;
 import pinodesk.constant.CommonConstants;

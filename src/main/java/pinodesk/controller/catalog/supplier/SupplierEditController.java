@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import com.gitlab.mudiasoft.pandora.utility.AlertResult;
-import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
-import com.gitlab.mudiasoft.pandora.utility.StageUtils;
-import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
-import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
+import com.mudiatech.pandora.utility.AlertResult;
+import com.mudiatech.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.utility.StageUtils;
+import com.mudiatech.pandora.utility.TableViewUtils;
+import com.mudiatech.pandora.utility.TextFieldUtils;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;

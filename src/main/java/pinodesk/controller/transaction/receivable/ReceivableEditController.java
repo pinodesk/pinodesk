@@ -5,13 +5,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
-import com.gitlab.mudiasoft.pandora.factory.LocalDateCellFactory;
-import com.gitlab.mudiasoft.pandora.factory.NumberCellFactory;
-import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
-import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
-import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
-import com.gitlab.mudiasoft.pandora.utility.ValidationResult;
-import com.gitlab.mudiasoft.toolbox.data.StringNumberUtils;
+import com.mudiatech.pandora.factory.LocalDateCellFactory;
+import com.mudiatech.pandora.factory.NumberCellFactory;
+import com.mudiatech.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.utility.TableViewUtils;
+import com.mudiatech.pandora.utility.TextFieldUtils;
+import com.mudiatech.pandora.utility.ValidationResult;
+import com.mudiatech.toolbox.data.StringNumberUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

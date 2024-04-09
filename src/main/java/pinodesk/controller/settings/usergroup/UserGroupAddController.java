@@ -8,12 +8,12 @@ import java.util.Objects;
 
 import org.apache.commons.lang3.BooleanUtils;
 
-import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
-import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
-import com.gitlab.mudiasoft.pandora.utility.ControlValidator;
-import com.gitlab.mudiasoft.pandora.utility.TableViewUtils;
-import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
-import com.gitlab.mudiasoft.toolbox.future.AsyncUtils;
+import com.mudiatech.pandora.model.SimpleComboBoxModel;
+import com.mudiatech.pandora.utility.ComboBoxUtils;
+import com.mudiatech.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.utility.TableViewUtils;
+import com.mudiatech.pandora.utility.TextFieldUtils;
+import com.mudiatech.toolbox.future.AsyncUtils;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;

@@ -1,6 +1,6 @@
 package pinodesk.controller.catalog.product;
 
-import static com.gitlab.mudiasoft.toolbox.data.StringNumberUtils.toStringOrNull;
+import static com.mudiatech.toolbox.data.StringNumberUtils.toStringOrNull;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -8,9 +8,9 @@ import java.time.LocalDate;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.gitlab.mudiasoft.pandora.model.SimpleComboBoxModel;
-import com.gitlab.mudiasoft.pandora.utility.ComboBoxUtils;
-import com.gitlab.mudiasoft.pandora.utility.TextFieldUtils;
+import com.mudiatech.pandora.model.SimpleComboBoxModel;
+import com.mudiatech.pandora.utility.ComboBoxUtils;
+import com.mudiatech.pandora.utility.TextFieldUtils;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
