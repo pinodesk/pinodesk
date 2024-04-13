@@ -115,7 +115,7 @@ distribute-releases:
     - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
     - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
     - echo $FILENAME_DEB
-    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pinodesk.com/public_html/snapshots/linux-deb/"
+    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pinodesk.com/public_html/releases/linux-deb/"
     - |
       curl -v --location 'https://api.pinodesk.com/v1/releases' \
       --header 'Content-Type: application/json' \
