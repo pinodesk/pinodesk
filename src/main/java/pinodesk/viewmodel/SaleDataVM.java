@@ -1,0 +1,17 @@
+package pinodesk.viewmodel;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+
+import lombok.Data;
+import pinodesk.constant.SellingMode;
+
+@Data
+public class SaleDataVM {
+    private List<SaleProductVM> saleProducts;
+    private Optional<CustomerVM> customer;
+    private SellingMode sellingMode;
+    private Integer totalProduct;
+    private BigDecimal totalSale;
+}
