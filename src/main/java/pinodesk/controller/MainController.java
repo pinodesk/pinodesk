@@ -22,6 +22,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.MenuCodeConstants;
@@ -34,6 +35,7 @@ import pinodesk.viewmodel.PurchaseReportFilterVM;
 import pinodesk.viewmodel.SaleReportFilterVM;
 import pinodesk.viewmodel.UserGroupMenuVM;
 
+@Slf4j
 public class MainController extends BaseController {
 
     @FXML
@@ -332,6 +334,7 @@ public class MainController extends BaseController {
                 setActiveMenu(btn);
                 swapContentPane(page);
             } catch (Exception e) {
+                log.error("Error on change content", e);
                 throw new UnsupportedOperationException(e);
             }
         });

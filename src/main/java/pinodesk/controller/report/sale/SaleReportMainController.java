@@ -35,6 +35,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
 import pinodesk.constant.MessageCode;
@@ -49,6 +50,7 @@ import pinodesk.util.SpringUtils;
 import pinodesk.viewmodel.SaleReportFilterVM;
 import pinodesk.viewmodel.SaleReportVM;
 
+@Slf4j
 public class SaleReportMainController extends BaseController {
 
     @FXML
@@ -200,6 +202,7 @@ public class SaleReportMainController extends BaseController {
                 workbook.write(fos);
                 workbook.close();
             } catch (Exception e) {
+                log.error("Error on export sales", e);
                 throw new CompletionException(e);
             }
         }).whenComplete((result, ex) -> Platform.runLater(() -> {
