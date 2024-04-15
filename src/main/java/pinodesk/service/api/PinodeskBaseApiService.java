@@ -11,12 +11,14 @@ import kong.unirest.core.HeaderNames;
 import kong.unirest.core.HttpMethod;
 import kong.unirest.core.Unirest;
 import kong.unirest.core.UnirestException;
+import lombok.extern.slf4j.Slf4j;
 import pinodesk.apimodel.PinodeskApiError;
 import pinodesk.apimodel.PinodeskApiResponse;
 import pinodesk.constant.MessageCode;
 import pinodesk.exception.DefaultRuntimeException;
 import pinodesk.exception.PinodeskApiException;
 
+@Slf4j
 public class PinodeskBaseApiService extends BaseApiService {
 
     @Value("${pinodesk.api.base_url}")
@@ -33,8 +35,9 @@ public class PinodeskBaseApiService extends BaseApiService {
     }
 
     private <T> T request(HttpMethod method, String path, Object req, Class<T> dataClass) {
+        String url = baseURL + path;
         try {
-            String response = Unirest.request(method.toString(), baseURL + path)
+            String response = Unirest.request(method.toString(), url)
                     .header(HeaderNames.CONTENT_TYPE, "application/json")
                     .header(HeaderNames.AUTHORIZATION, "Bearer " + apiKey).body(req).asString().getBody();
             PinodeskApiResponse<T> pinodeskResponse = parseResponse(response, dataClass);
@@ -44,9 +47,11 @@ public class PinodeskBaseApiService extends BaseApiService {
             }
             return pinodeskResponse.getData();
         } catch (JsonProcessingException e) {
+            log.error("Error processing response as JSON", e);
             // This is unexpected error (bug), need to check and fix the parsing class
             throw new DefaultRuntimeException(e);
         } catch (UnirestException e) {
+            log.error(String.format("Error on the request: %s %s", method, url), e);
             throw new PinodeskApiException(null, null, MessageCode.ERROR_REQUEST_PINODESK);
         }
     }

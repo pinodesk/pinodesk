@@ -32,6 +32,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -49,6 +51,7 @@ import pinodesk.util.SpringUtils;
 import pinodesk.viewmodel.ProductFilterVM;
 import pinodesk.viewmodel.ProductVM;
 
+@Slf4j
 public class ProductMainController extends BaseController {
 
     @FXML
@@ -253,6 +256,7 @@ public class ProductMainController extends BaseController {
                 workbook.write(fos);
                 workbook.close();
             } catch (Exception e) {
+                log.error("Error on export products", e);
                 throw new CompletionException(e);
             }
         }).whenComplete((result, ex) -> Platform.runLater(() -> {

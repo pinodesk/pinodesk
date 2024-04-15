@@ -142,6 +142,7 @@ public class ConfigurationService extends BaseService {
             Files.delete(backupFile.toPath());
             Files.delete(backupProperties.toPath());
         } catch (IOException e) {
+            log.error("Error on create backup", e);
             throw new DomainException(DomainError.BACKUP_DATABASE_ERROR, e.toString());
         }
     }
@@ -177,6 +178,7 @@ public class ConfigurationService extends BaseService {
             boolean deleted = FileSystemUtils.deleteRecursively(dbDirFileOld);
             log.debug("The old dir deleted: {}", deleted);
         } catch (SQLException | IOException e) {
+            log.error("Error on restore database", e);
             File dbDirFile = new File(dbDir);
             File dbDirFileOld = new File(dbDirOld);
             if (!dbDirFile.exists() && dbDirFileOld.exists()) {

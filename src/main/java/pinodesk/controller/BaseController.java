@@ -253,6 +253,7 @@ public abstract class BaseController {
             buttonContainer.requestFocus();
             return new AlertResult(alert.showAndWait());
         } catch (Exception e) {
+            log.error("Error on diplaying an alert", e);
             throw new DefaultRuntimeException(e);
         }
     }

@@ -32,6 +32,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import pinodesk.apimodel.ActivateReleaseResponse;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
@@ -47,6 +48,7 @@ import pinodesk.javafx.converter.LanguageComboBoxConverter;
 import pinodesk.service.ConfigurationService;
 import pinodesk.util.SpringUtils;
 
+@Slf4j
 public class ConfigurationMainController extends CommonContentPaneController {
 
     @FXML
@@ -147,6 +149,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
             try {
                 configurationService.createBackup(location);
             } catch (Exception e) {
+                log.error("Error on backup process", e);
                 throw new CompletionException(e);
             }
         }).whenComplete((result, ex) -> Platform.runLater(() -> {
@@ -177,6 +180,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
             try {
                 configurationService.restoreDatabase(location);
             } catch (Exception e) {
+                log.error("Error on restore backup", e);
                 throw new CompletionException(e);
             }
         }).whenComplete((result, ex) -> Platform.runLater(() -> {

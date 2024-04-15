@@ -33,6 +33,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
 import pinodesk.constant.MessageCode;
@@ -48,6 +49,7 @@ import pinodesk.viewmodel.ProductCategoryVM;
 import pinodesk.viewmodel.ProductImportVM;
 import pinodesk.viewmodel.UnitVM;
 
+@Slf4j
 public class ProductImportController extends CommonContentPaneController {
 
     @FXML
@@ -120,6 +122,7 @@ public class ProductImportController extends CommonContentPaneController {
                 workbook.write(fos);
                 workbook.close();
             } catch (Exception e) {
+                log.error("Error on download template", e);
                 throw new CompletionException(e);
             }
         }).whenComplete((result, ex) -> Platform.runLater(() -> {
@@ -187,6 +190,7 @@ public class ProductImportController extends CommonContentPaneController {
             try {
                 productService.importProducts(readProductsToImport());
             } catch (IOException | InvalidFormatException e) {
+                log.error("Error on import products", e);
                 throw new CompletionException(e);
             }
         }).whenComplete((result, ex) -> Platform.runLater(() -> {
