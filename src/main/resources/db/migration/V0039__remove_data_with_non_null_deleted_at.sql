@@ -45,6 +45,13 @@ FOREIGN KEY (product_id)
 REFERENCES product (id)
 ON DELETE CASCADE;
 
+-- Delete package products with deleted_at not null
+DELETE FROM package_detail
+WHERE product_id in (
+    SELECT id FROM product WHERE deleted_at IS NOT NULL 
+        AND id NOT IN (SELECT product_id FROM purchase_detail)
+        AND id NOT IN (SELECT product_id FROM sale_detail));
+
 -- Delete product data with deleted_at not null and not in purchase_detail and sale_detail
 DELETE FROM product
 WHERE deleted_at IS NOT NULL
