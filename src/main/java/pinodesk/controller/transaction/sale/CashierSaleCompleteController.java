@@ -6,6 +6,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang3.StringUtils;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,8 +15,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.input.KeyCode;
+import lombok.extern.slf4j.Slf4j;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
+import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.PaymentStatus;
 import pinodesk.constant.SellingMode;
 import pinodesk.constant.StringConstants;
@@ -26,6 +30,7 @@ import pinodesk.viewmodel.CustomerVM;
 import pinodesk.viewmodel.PaymentDataVM;
 import pinodesk.viewmodel.SaleDataVM;
 
+@Slf4j
 public class CashierSaleCompleteController extends CommonContentPaneController {
 
     @FXML
@@ -78,14 +83,24 @@ public class CashierSaleCompleteController extends CommonContentPaneController {
 
     @FXML
     void onActionBtnPrint(ActionEvent event) {
-        printer.printReceipt(saleData, paymentData, false);
+        String printerName = configurationService.getConfiguration(ConfigurationConstants.PRINTER_NAME);
+        if (StringUtils.isBlank(printerName)) {
+            log.debug("Printer name is empty");
+            return;
+        }
+        printer.printReceipt(printerName, saleData, paymentData, false);
     }
 
     @Override
     protected void initContentPaneControlActions() {
         btnPrintCopy = new MenuItem(t.translate(CommonLabel.BTN_PRINT_COPY));
         btnPrintCopy.setOnAction(event -> {
-            printer.printReceipt(saleData, paymentData, true);
+            String printerName = configurationService.getConfiguration(ConfigurationConstants.PRINTER_NAME);
+            if (StringUtils.isBlank(printerName)) {
+                log.debug("Printer name is empty");
+                return;
+            }
+            printer.printReceipt(printerName, saleData, paymentData, true);
         });
         btnPrint.getItems().addAll(btnPrintCopy);
         setFocused(contentPane);

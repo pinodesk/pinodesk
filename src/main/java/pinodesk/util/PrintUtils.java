@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.mudiatech.pandora.utility.Translator;
 
 import javafx.geometry.HPos;
@@ -50,19 +48,16 @@ public class PrintUtils {
 
     // https://examples.javacodegeeks.com/desktop-java/javafx/javafx-print-api/
     // https://stackoverflow.com/questions/38470568/javafx-doesnt-detect-changes-of-available-printers
-    public void printReceipt(SaleDataVM saleData, PaymentDataVM paymentData, boolean isCopy) {
-        String printerName = configurationService.getConfiguration(ConfigurationConstants.PRINTER_NAME);
-        if (StringUtils.isBlank(printerName)) {
-            log.debug("Printer name is empty");
-            return;
-        }
+    public void printReceipt(String printerName, SaleDataVM saleData, PaymentDataVM paymentData, boolean isCopy) {
         Optional<Printer> printer = Printer.getAllPrinters().stream().filter(p -> p.getName().equals(printerName))
                 .findAny();
         if (printer.isEmpty()) {
-            throw new PrinterException(MessageCode.ERROR_PRINTER_NOT_FOUND);
+            log.error("Printer name not found: {}", printerName);
+            throw new PrinterException(MessageCode.ERROR_PRINTER_NOT_FOUND, printerName);
         }
         PrinterJob job = PrinterJob.createPrinterJob(printer.get());
         if (job == null) {
+            log.error("Printer job cannot be created (null)");
             throw new PrinterException(MessageCode.ERROR_PRINTER_UNAVAILABLE);
         }
         job.getJobSettings().setJobName("Pinodesk Print Job");
@@ -77,7 +72,7 @@ public class PrintUtils {
         }
     }
 
-    public Node prepareReceipt(SaleDataVM saleData, PaymentDataVM paymentData, boolean isCopy) {
+    private Node prepareReceipt(SaleDataVM saleData, PaymentDataVM paymentData, boolean isCopy) {
         Locale locale = resources.getLocale();
         Map<String, String> config = configurationService.getConfigurationMap();
 

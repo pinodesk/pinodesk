@@ -179,7 +179,7 @@ public abstract class BaseController {
     }
 
     protected void handlePrinterException(PrinterException e) {
-        displayError(t.translate(e.getMessageCode()));
+        displayError(String.format(t.translate(e.getMessageCode()), e.getArguments()));
     }
 
     protected void handlePinodeskApiException(PinodeskApiException e) {
