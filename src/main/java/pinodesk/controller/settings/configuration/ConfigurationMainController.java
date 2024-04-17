@@ -154,9 +154,10 @@ public class ConfigurationMainController extends CommonContentPaneController {
         saleData.setTotalSale(BigDecimal.valueOf(3000));
         PaymentDataVM paymentData = new PaymentDataVM();
         paymentData.setChangeAmount(BigDecimal.valueOf(2000));
-        paymentData.setInvoiceNumber("1234567890");
         paymentData.setPaymentAmount(BigDecimal.valueOf(5000));
         paymentData.setPaymentStatus(PaymentStatus.PAID);
+        paymentData.setInvoiceNumber("1234567890");
+        paymentData.setPaymentDateTime(LocalDateTime.now());
         printer.printReceipt(selectedPrinter.getName(), saleData, paymentData, false);
     }
 

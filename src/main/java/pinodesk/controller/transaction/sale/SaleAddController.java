@@ -331,7 +331,8 @@ public class SaleAddController extends CommonDataSaveController {
     protected void initDataSaveControlValues() {
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         ComboBoxUtils.selectIndex(cbSellingMode, 0);
-        String invoiceNumber = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSS"));
+        String invoiceNumber = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern(CommonConstants.SALE_INVOICE_NUMBER_PATTERN));
         tfInvoiceNumber.setText(invoiceNumber);
         if (!isPharmacyFeatureEnabled()) {
             setVisibleInLayout(false, hboxDoctor);

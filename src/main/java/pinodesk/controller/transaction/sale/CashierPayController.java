@@ -22,6 +22,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
 import pinodesk.constant.MessageCode;
 import pinodesk.constant.PaymentStatus;
@@ -110,7 +111,9 @@ public class CashierPayController extends CommonDataSaveController {
 
     @Override
     protected Object save() {
-        String invoiceNumber = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSS"));
+        LocalDateTime paymentDateTime = LocalDateTime.now();
+        String invoiceNumber = paymentDateTime
+                .format(DateTimeFormatter.ofPattern(CommonConstants.SALE_INVOICE_NUMBER_PATTERN));
         SaleAddVM saleAdd = new SaleAddVM();
         saleData.getCustomer().ifPresent(customer -> saleAdd.setCustomerId(customer.getId()));
         saleAdd.setInvoiceNumber(invoiceNumber);
@@ -129,6 +132,7 @@ public class CashierPayController extends CommonDataSaveController {
         PaymentDataVM paymentData = new PaymentDataVM();
         paymentData.setChangeAmount(changeAmount);
         paymentData.setInvoiceNumber(invoiceNumber);
+        paymentData.setPaymentDateTime(paymentDateTime);
         paymentData.setPaymentAmount(toBigDecimalOrNull(tfPaymentAmount.getText()));
         paymentData.setPaymentStatus(paymentStatus);
         paymentData.setPaymentDueDate(paymentDueDate);

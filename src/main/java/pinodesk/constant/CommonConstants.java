@@ -23,5 +23,5 @@ public interface CommonConstants {
             "/assets/images/pinodesk-logo-icon-128.png",
             "/assets/images/pinodesk-logo-icon-256.png" };
     int DECIMAL_SCALE = 4;
-
+    String SALE_INVOICE_NUMBER_PATTERN = "yyyyMMddHHmmssSS";
 }

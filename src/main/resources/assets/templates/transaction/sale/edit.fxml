@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinodesk.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinodesk.controller.transaction.sale.SaleEditController">
+<AnchorPane fx:id="contentPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="1024.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinodesk.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinodesk.controller.transaction.sale.SaleEditController">
    <children>
       <VBox AnchorPane.bottomAnchor="46.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -446,6 +446,7 @@
                <children>
                   <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
                   <Button fx:id="btnRemove" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnRemove" styleClass="btn-danger" text="%btn_remove" textFill="WHITE" />
+                  <Button fx:id="btnPrintCopy" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnPrintCopy" styleClass="btn-primary" text="%btn_print_copy" textFill="WHITE" />
                   <Button fx:id="btnSave" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnSave" styleClass="btn-primary" text="%btn_save" textFill="WHITE" />
                </children>
             </HBox>

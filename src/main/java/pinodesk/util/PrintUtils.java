@@ -2,7 +2,6 @@ package pinodesk.util;
 
 import static com.mudiatech.toolbox.data.StringNumberUtils.formatOrDefault;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -213,7 +212,7 @@ public class PrintUtils {
         col3.setPercentWidth(50);
         gp.getColumnConstraints().addAll(col1, col2, col3);
         gp.setHgap(5);
-        String date = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm", locale).format(LocalDateTime.now());
+        String date = DateTimeFormatter.ofPattern("dd MMM yyyy HH:mm", locale).format(paymentData.getPaymentDateTime());
         Label lblDate = new Label(date);
         GridPane.setHalignment(lblDate, HPos.RIGHT);
         Label lblInvoiceNumber = new Label(paymentData.getInvoiceNumber());
