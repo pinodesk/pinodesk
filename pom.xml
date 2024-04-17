@@ -488,6 +488,11 @@
                                         <setupLanguages>
                                             <english>compiler:Default.isl</english>
                                         </setupLanguages>
+                                        <signing>
+                                            <storetype>PKCS12</storetype>
+                                            <keystore>src/main/resources/Mudiatech_Code_Signing_Certificate.p12</keystore>
+                                            <storepass>Secret1234</storepass>
+                                        </signing>
                                     </winConfig>
                                 </configuration>
                             </execution>
