@@ -12,12 +12,8 @@ function run {
 	./mvnw -V clean javafx:run
 }
 
-function build_dev {
-	./mvnw -V clean package -DskipTests
-}
-
-function build_dist {
-	./mvnw -V clean package -DskipTests -Pdist
+function build_exe {
+	./mvnw -V clean package -DskipTests -Pexe
 }
 
 if [ ! -z $1 ]; then
@@ -30,11 +26,8 @@ if [ ! -z $1 ]; then
 	elif [ $1 == "run" ]; then
 		echo "Start running in development mode"
 		run
-	elif [ $1 == "build" ]; then
-		echo "Build application with 'dist' profile"
-		build_dist
-	elif [ $1 == "build:dev" ]; then
-		echo "Build application with 'dev' profile"
-		build_dev
+	elif [ $1 == "build:exe" ]; then
+		echo "Build application with 'exe' profile"
+		build_exe
 	fi
 fi
