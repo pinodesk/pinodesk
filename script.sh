@@ -1,19 +1,19 @@
 #!/bin/bash
 
 function fix {
-	./mvnw -V clean spotless:apply pmd:check
+	mvn -V clean spotless:apply pmd:check
 }
 
 function run_test {
-	./mvnw -V clean spotless:apply pmd:check test
+	mvn -V clean spotless:apply pmd:check test
 }
 
 function run {
-	./mvnw -V clean javafx:run
+	mvn -V clean javafx:run
 }
 
 function build_exe {
-	./mvnw -V clean package -DskipTests -Pexe
+	mvn -V clean package -DskipTests -Pexe
 }
 
 if [ ! -z $1 ]; then

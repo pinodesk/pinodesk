@@ -2,18 +2,15 @@ app.name=${project.name}
 app.version=${project.version}
 
 # Please change based on your development OS, must be one of: windows, macos, linux-deb, linux-rpm
-release.platform=macos
+release.platform=windows
 
 # JDBC configs
 jdbc.url=jdbc:h2:~/.pinodesk-dev/db/pinodesk;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_ON_EXIT=FALSE;CIPHER=AES
-jdbc.user=ENC(87VSs0Z5dUp0F52yC2pE1XEJluiTJ5Gi)
-jdbc.password=ENC(RTaKUNCztwsDaDYWssKiURT6GhEEnRIyukic7HPynQI=)
+jdbc.user=sa
+jdbc.password=sa
 jdbc.driver=org.h2.Driver
 
 sequel.jdbc.formatsql=true
 
-#pinodesk.api.base_url=https://api-staging.pinodesk.com
-#pinodesk.api.key=780212a4-afdb-4d75-8000-26b6eefda33e
-
 pinodesk.api.base_url=http://localhost:8080
-pinodesk.api.key=c8750589-743f-4a6f-9dde-4a642e776ba0
+pinodesk.api.key=xxx

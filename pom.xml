@@ -292,6 +292,18 @@
             </resource>
         </resources>
         <plugins>
+            <!--
+            Resolve warning on the logs: `Using deprecated '-debug' fallback for parameter name resolution ...` 
+            https://stackoverflow.com/questions/74845574/using-deprecated-debug-fallback-for-parameter-name-resolution-compile-the-af
+            https://stackoverflow.com/questions/74600681/warning-printed-after-migrating-to-spring-boot-3-0-spring-integration-6-0/74601911#74601911
+            -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -416,6 +428,7 @@
                     <skipTestProject>true</skipTestProject>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -446,6 +459,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
     <profiles>
@@ -481,7 +495,8 @@
                                     <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
-                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <!-- Required by apache poi, related issue
+                                    https://github.com/traccar/traccar/issues/4126 -->
                                     <additionalModules>jdk.charsets</additionalModules>
                                     <platform>windows</platform>
                                     <winConfig>
@@ -498,7 +513,8 @@
                                         </setupLanguages>
                                         <signing>
                                             <storetype>PKCS12</storetype>
-                                            <keystore>src/main/resources/Mudiatech_Code_Signing_Certificate.p12</keystore>
+                                            <keystore>
+                                                src/main/resources/Mudiatech_Code_Signing_Certificate.p12</keystore>
                                             <storepass>Secret1234</storepass>
                                         </signing>
                                     </winConfig>
@@ -532,7 +548,8 @@
                                     <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
-                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <!-- Required by apache poi, related issue
+                                    https://github.com/traccar/traccar/issues/4126 -->
                                     <additionalModules>jdk.charsets</additionalModules>
                                     <platform>linux</platform>
                                     <linuxConfig>
@@ -570,7 +587,8 @@
                                     <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
-                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <!-- Required by apache poi, related issue
+                                    https://github.com/traccar/traccar/issues/4126 -->
                                     <additionalModules>jdk.charsets</additionalModules>
                                     <platform>linux</platform>
                                     <linuxConfig>
@@ -608,7 +626,8 @@
                                     <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
-                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <!-- Required by apache poi, related issue
+                                    https://github.com/traccar/traccar/issues/4126 -->
                                     <additionalModules>jdk.charsets</additionalModules>
                                     <platform>mac</platform>
                                     <macConfig>

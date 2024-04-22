@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOG_DIR" value="${dollar}{user.home}/.pinodesk/logs"/>
+    <if condition='"${version}".endsWith("SNAPSHOT")'>
+        <then>
+            <property name="LOG_DIR" value="${dollar}{user.home}/.pinodesk-snapshot/logs" />
+        </then>
+        <else>
+            <property name="LOG_DIR" value="${dollar}{user.home}/.pinodesk/logs" />
+        </else>
+    </if>
 
     <appender name="STDOUT_COLOR" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
@@ -28,18 +35,18 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="FILE"/>
+        <appender-ref ref="FILE" />
     </root>
 
     <if condition='property("os.name").toLowerCase().contains("windows")'>
         <then>
             <root>
-                <appender-ref ref="STDOUT_NO_COLOR"/>
+                <appender-ref ref="STDOUT_NO_COLOR" />
             </root>
         </then>
         <else>
             <root>
-                <appender-ref ref="STDOUT_COLOR"/>
+                <appender-ref ref="STDOUT_COLOR" />
             </root>
         </else>
     </if>
