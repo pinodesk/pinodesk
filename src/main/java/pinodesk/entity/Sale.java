@@ -16,6 +16,7 @@ public class Sale extends DataModel {
     public static final String C_DOCTOR_ID = "doctor_id";
     public static final String C_SELLING_MODE = "selling_mode";
     public static final String C_INVOICE_NUMBER = "invoice_number";
+    public static final String C_INVOICE_DATE = "invoice_date";
     public static final String C_PAYMENT_STATUS = "payment_status";
     public static final String C_PAYMENT_DUE_DATE = "payment_due_date";
     public static final String C_TOTAL_PRODUCT = "total_product";
@@ -27,6 +28,7 @@ public class Sale extends DataModel {
     private Long doctorId;
     private String sellingMode;
     private String invoiceNumber;
+    private LocalDate invoiceDate;
     private String paymentStatus;
     private LocalDate paymentDueDate;
     private Integer totalProduct;

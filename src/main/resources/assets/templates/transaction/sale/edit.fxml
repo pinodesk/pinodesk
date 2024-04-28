@@ -128,7 +128,7 @@
                                                       </Label>
                                                       <ComboBox fx:id="cbSellingMode" maxWidth="1.7976931348623157E308" prefWidth="158.0">
                                                          <styleClass>
-                                                            <String fx:value="combo-box-autocomplete" />
+                                                            <String fx:value="combo-box-primary" />
                                                             <String fx:value="border-primary" />
                                                          </styleClass>
                                                       </ComboBox>
@@ -147,7 +147,7 @@
                                                       </Label>
                                                       <ComboBox fx:id="cbPaymentStatus" maxWidth="1.7976931348623157E308" prefWidth="158.0">
                                                          <styleClass>
-                                                            <String fx:value="combo-box-autocomplete" />
+                                                            <String fx:value="combo-box-primary" />
                                                             <String fx:value="border-primary" />
                                                          </styleClass>
                                                       </ComboBox>
@@ -311,7 +311,7 @@
                                                       </Label>
                                                       <ComboBox fx:id="cbExpiredDate" maxWidth="1.7976931348623157E308" prefWidth="158.0">
                                                          <styleClass>
-                                                            <String fx:value="combo-box-autocomplete" />
+                                                            <String fx:value="combo-box-primary" />
                                                             <String fx:value="border-primary" />
                                                          </styleClass>
                                                       </ComboBox>

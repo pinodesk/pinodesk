@@ -88,6 +88,9 @@ public class SaleAddController extends CommonDataSaveController {
     private TextField tfInvoiceNumber;
 
     @FXML
+    private DatePicker dpInvoiceDate;
+
+    @FXML
     private ComboBox<SimpleComboBoxModel> cbSellingMode;
 
     @FXML
@@ -270,7 +273,7 @@ public class SaleAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        initCustomDatePicker(dpDueDate);
+        initCustomDatePicker(dpInvoiceDate, dpDueDate);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
@@ -329,11 +332,12 @@ public class SaleAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
+        LocalDateTime now = LocalDateTime.now();
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         ComboBoxUtils.selectIndex(cbSellingMode, 0);
-        String invoiceNumber = LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern(CommonConstants.SALE_INVOICE_NUMBER_PATTERN));
+        String invoiceNumber = now.format(DateTimeFormatter.ofPattern(CommonConstants.SALE_INVOICE_NUMBER_PATTERN));
         tfInvoiceNumber.setText(invoiceNumber);
+        dpInvoiceDate.setValue(now.toLocalDate());
         if (!isPharmacyFeatureEnabled()) {
             setVisibleInLayout(false, hboxDoctor);
             cbSellingMode.getItems().remove(1);
@@ -349,6 +353,7 @@ public class SaleAddController extends CommonDataSaveController {
         saleAdd.setCustomerId(selectedCustomer == null ? null : selectedCustomer.getId());
         saleAdd.setDoctorId(selectedDoctor == null ? null : selectedDoctor.getId());
         saleAdd.setInvoiceNumber(tfInvoiceNumber.getText().trim());
+        saleAdd.setInvoiceDate(dpInvoiceDate.getValue());
         PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         saleAdd.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
@@ -365,14 +370,19 @@ public class SaleAddController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
+        LocalDate invoiceDate = dpInvoiceDate.getValue();
         LocalDate dueDate = dpDueDate.getValue();
         PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
+        validator.validateCustom(() -> invoiceDate == null, MessageCode.ERROR_INVALID_INVOICE_DATE);
+        LocalDate today = LocalDate.now();
+        validator.validateCustom(
+                () -> invoiceDate != null && invoiceDate.isAfter(today),
+                MessageCode.ERROR_INVOICE_DATE_AFTER_TODAY);
         validator.validateCustom(
                 () -> isUnpaid && selectedCustomer == null,
                 MessageCode.ERROR_UNPAID_PAYMENT_WITH_EMPTY_CUSTOMER);
-        LocalDate today = LocalDate.now();
         validator.validateCustom(() -> isUnpaid && dueDate == null, MessageCode.ERROR_INVALID_DUE_DATE);
         validator.validateCustom(
                 () -> isUnpaid && dueDate != null && dueDate.isBefore(today),

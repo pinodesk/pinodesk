@@ -208,7 +208,7 @@ public class SaleMainController extends BaseController {
         TableViewUtils.initTableColumn(
                 colInvoiceDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                vm -> vm.getCreatedAt().toLocalDate());
+                vm -> vm.getInvoiceDate());
         TableViewUtils.initTableColumn(
                 colCreatedAt,
                 new LocalDateTimeCellFactory<>(CommonConstants.DATETIME_DISPLAY_PATTERN),

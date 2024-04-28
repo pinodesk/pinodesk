@@ -52,7 +52,7 @@
                         </Label>
                         <ComboBox fx:id="cbStatus" maxWidth="200.0" prefWidth="200.0">
                            <styleClass>
-                              <String fx:value="combo-box-autocomplete" />
+                              <String fx:value="combo-box-primary" />
                               <String fx:value="input-primary" />
                            </styleClass>
                         </ComboBox>

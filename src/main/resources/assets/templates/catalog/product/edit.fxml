@@ -160,7 +160,7 @@
                                                       </Label>
                                                       <ComboBox fx:id="cbStatus" maxWidth="1.7976931348623157E308" prefWidth="169.0">
                                                          <styleClass>
-                                                            <String fx:value="combo-box-autocomplete" />
+                                                            <String fx:value="combo-box-primary" />
                                                             <String fx:value="input-primary" />
                                                          </styleClass>
                                                       </ComboBox>
