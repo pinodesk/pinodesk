@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Where;
 
-import pinodesk.domain.User;
+import pinodesk.entity.User;
 import pinodesk.viewmodel.UserFilterVM;
 import pinodesk.viewmodel.UserVM;
 

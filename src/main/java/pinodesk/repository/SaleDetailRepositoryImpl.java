@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Where;
 
-import pinodesk.domain.SaleDetail;
+import pinodesk.entity.SaleDetail;
 import pinodesk.viewmodel.SaleProductVM;
 import pinodesk.viewmodel.SaleReportFilterVM;
 import pinodesk.viewmodel.SaleReportVM;

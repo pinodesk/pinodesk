@@ -1,4 +1,4 @@
-package pinodesk.domain;
+package pinodesk.entity;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,10 +10,10 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class Payable extends DataModel {
+public class Receivable extends DataModel {
 
-    public static final String C_SUPPLIER_ID = "supplier_id";
-    public static final String C_PURCHASE_ID = "purchase_id";
+    public static final String C_CUSTOMER_ID = "customer_id";
+    public static final String C_SALE_ID = "sale_id";
     public static final String C_INVOICE_NUMBER = "invoice_number";
     public static final String C_INVOICE_DATE = "invoice_date";
     public static final String C_AMOUNT = "amount";
@@ -21,8 +21,8 @@ public class Payable extends DataModel {
     public static final String C_COMPLETION_DATE = "completion_date";
     public static final String C_REMARKS = "remarks";
 
-    private Long supplierId;
-    private Long purchaseId;
+    private Long customerId;
+    private Long saleId;
     private String invoiceNumber;
     private LocalDate invoiceDate;
     private BigDecimal amount;

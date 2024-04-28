@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.domain.Product;
+import pinodesk.entity.Product;
 import pinodesk.viewmodel.ProductClosestExpiryVM;
 import pinodesk.viewmodel.ProductOutOfStockVM;
 import pinodesk.viewmodel.ProductVM;

@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.domain.ReceivablePayment;
+import pinodesk.entity.ReceivablePayment;
 
 @Repository
 public interface ReceivablePaymentRepository extends PagingAndSortingRepository<ReceivablePayment, Long> {

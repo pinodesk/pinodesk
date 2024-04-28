@@ -28,7 +28,7 @@ import org.mockito.Mock;
 
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.DomainError;
-import pinodesk.domain.Customer;
+import pinodesk.entity.Customer;
 import pinodesk.exception.DomainException;
 import pinodesk.viewmodel.CustomerAddVM;
 import pinodesk.viewmodel.CustomerEditVM;

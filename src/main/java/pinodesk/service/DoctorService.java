@@ -18,6 +18,8 @@ import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.DomainError;
+import pinodesk.entity.Doctor;
+import pinodesk.entity.DoctorCategory;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.DoctorCategoryRepository;
 import pinodesk.viewmodel.DoctorAddVM;
@@ -25,8 +27,6 @@ import pinodesk.viewmodel.DoctorCategoryVM;
 import pinodesk.viewmodel.DoctorEditVM;
 import pinodesk.viewmodel.DoctorFilterVM;
 import pinodesk.viewmodel.DoctorVM;
-import pinodesk.domain.Doctor;
-import pinodesk.domain.DoctorCategory;
 import pinodesk.repository.DoctorRepository;
 
 @Service

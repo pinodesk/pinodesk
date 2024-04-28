@@ -3,7 +3,7 @@ package pinodesk.repository;
 import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Where;
 import lombok.RequiredArgsConstructor;
-import pinodesk.domain.DoctorCategory;
+import pinodesk.entity.DoctorCategory;
 
 import java.util.List;
 

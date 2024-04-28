@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.mudiatech.sequel.repository.AbstractRepository;
 
-import pinodesk.domain.UserGroupMenu;
+import pinodesk.entity.UserGroupMenu;
 import pinodesk.viewmodel.UserGroupMenuVM;
 
 public class UserGroupMenuRepositoryImpl extends AbstractRepository<UserGroupMenu>

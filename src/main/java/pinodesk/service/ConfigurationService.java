@@ -21,12 +21,12 @@ import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.DomainError;
 import pinodesk.constant.SystemConstants;
+import pinodesk.entity.Configuration;
+import pinodesk.entity.User;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.ConfigurationRepository;
 import pinodesk.repository.UserRepository;
 import pinodesk.viewmodel.UserAddVM;
-import pinodesk.domain.Configuration;
-import pinodesk.domain.User;
 import pinodesk.util.PasswordUtils;
 
 import javax.sql.DataSource;

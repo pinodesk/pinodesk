@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Where;
 
-import pinodesk.domain.UserGroup;
+import pinodesk.entity.UserGroup;
 import pinodesk.viewmodel.UserGroupFilterVM;
 
 public class UserGroupRepositoryImpl extends AbstractRepository<UserGroup> implements UserGroupRepositoryCustom {

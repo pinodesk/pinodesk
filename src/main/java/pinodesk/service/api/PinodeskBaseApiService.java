@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.net.http.HttpRequest.BodyPublishers;
+import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -13,10 +13,8 @@ import java.security.SecureRandom;
 
 import javax.net.ssl.SSLContext;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mudiatech.toolbox.jackson.JSON;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,9 +32,6 @@ public class PinodeskBaseApiService extends BaseApiService {
 
     @Value("${pinodesk.api.key}")
     private String apiKey;
-
-    @Autowired
-    private ObjectMapper mapper;
 
     private HttpClient httpClient = createHttpClient();
 

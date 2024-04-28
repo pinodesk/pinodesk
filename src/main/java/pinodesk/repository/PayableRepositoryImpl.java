@@ -8,7 +8,7 @@ import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Where;
 
 import pinodesk.constant.PaymentStatus;
-import pinodesk.domain.Payable;
+import pinodesk.entity.Payable;
 import pinodesk.viewmodel.PayableFilterVM;
 import pinodesk.viewmodel.PayableVM;
 

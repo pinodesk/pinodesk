@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import pinodesk.domain.Customer;
+import pinodesk.entity.Customer;
 import pinodesk.viewmodel.CustomerFilterVM;
 
 import org.junit.jupiter.api.Test;

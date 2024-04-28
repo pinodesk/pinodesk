@@ -1,4 +1,4 @@
-package pinodesk.domain;
+package pinodesk.entity;
 
 import com.mudiatech.sequel.model.DataModel;
 

@@ -15,13 +15,13 @@ import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.DomainError;
 import pinodesk.constant.UserStatus;
+import pinodesk.entity.User;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.UserRepository;
 import pinodesk.viewmodel.UserAddVM;
 import pinodesk.viewmodel.UserEditVM;
 import pinodesk.viewmodel.UserFilterVM;
 import pinodesk.viewmodel.UserVM;
-import pinodesk.domain.User;
 import pinodesk.util.PasswordUtils;
 
 @Service

@@ -10,7 +10,7 @@ import com.mudiatech.sequel.utility.SQLUtils;
 import com.mudiatech.toolbox.data.ListBuilder;
 
 import lombok.RequiredArgsConstructor;
-import pinodesk.domain.Doctor;
+import pinodesk.entity.Doctor;
 import pinodesk.viewmodel.DoctorFilterVM;
 import pinodesk.viewmodel.DoctorVM;
 

@@ -2,7 +2,7 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import pinodesk.domain.Customer;
+import pinodesk.entity.Customer;
 import pinodesk.viewmodel.CustomerFilterVM;
 
 public interface CustomerRepositoryCustom {

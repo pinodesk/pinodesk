@@ -8,7 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.domain.Session;
+import pinodesk.entity.Session;
 
 @Repository
 public interface SessionRepository extends PagingAndSortingRepository<Session, Long> {

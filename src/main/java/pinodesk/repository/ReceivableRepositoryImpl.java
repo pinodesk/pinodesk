@@ -8,7 +8,7 @@ import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Where;
 
 import pinodesk.constant.PaymentStatus;
-import pinodesk.domain.Receivable;
+import pinodesk.entity.Receivable;
 import pinodesk.viewmodel.ReceivableFilterVM;
 import pinodesk.viewmodel.ReceivableVM;
 

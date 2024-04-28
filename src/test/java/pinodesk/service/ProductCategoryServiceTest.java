@@ -22,7 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import pinodesk.constant.DomainError;
-import pinodesk.domain.ProductCategory;
+import pinodesk.entity.ProductCategory;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.ProductCategoryRepository;
 import pinodesk.viewmodel.ProductCategoryVM;

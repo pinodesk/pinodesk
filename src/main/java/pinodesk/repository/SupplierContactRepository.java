@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.domain.SupplierContact;
+import pinodesk.entity.SupplierContact;
 
 @Repository
 public interface SupplierContactRepository extends PagingAndSortingRepository<SupplierContact, Long> {

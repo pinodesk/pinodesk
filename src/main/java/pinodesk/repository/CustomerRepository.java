@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.domain.Customer;
+import pinodesk.entity.Customer;
 
 @Repository
 public interface CustomerRepository extends PagingAndSortingRepository<Customer, Long>, CustomerRepositoryCustom {

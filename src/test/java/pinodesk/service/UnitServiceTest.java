@@ -21,7 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import pinodesk.constant.DomainError;
-import pinodesk.domain.Unit;
+import pinodesk.entity.Unit;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.UnitRepository;
 import pinodesk.viewmodel.UnitVM;

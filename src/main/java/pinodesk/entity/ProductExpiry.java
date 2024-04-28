@@ -1,4 +1,4 @@
-package pinodesk.domain;
+package pinodesk.entity;
 
 import java.time.LocalDate;
 

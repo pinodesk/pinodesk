@@ -2,7 +2,7 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import pinodesk.domain.DoctorCategory;
+import pinodesk.entity.DoctorCategory;
 
 public interface DoctorCategoryRepositoryCustom {
 
