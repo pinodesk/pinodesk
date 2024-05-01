@@ -573,6 +573,19 @@ public abstract class BaseController {
         });
     }
 
+    protected void handleReadAction(String menuCode, Consumer<Boolean> action) {
+        sessionService.getCurrentSession().getUserGroupMenus().stream()
+                .filter(ugm -> ugm.getMenuCode().equals(menuCode)).findFirst().ifPresentOrElse(ugm -> {
+                    if (action != null) {
+                        action.accept(SimpleStatus.YES.toString().equals(ugm.getRead()));
+                    }
+                }, () -> {
+                    if (action != null) {
+                        action.accept(false);
+                    }
+                });
+    }
+
     // Reference:
     // https://edencoding.com/how-to-hide-a-button-in-javafx/#set-visibility
     /**

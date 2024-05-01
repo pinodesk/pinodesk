@@ -29,6 +29,7 @@ import pinodesk.repository.ProductCategoryRepository;
 import pinodesk.repository.ProductExpiryRepository;
 import pinodesk.repository.ProductRepository;
 import pinodesk.repository.ProductStockRepository;
+import pinodesk.repository.PurchaseDetailRepository;
 import pinodesk.repository.UnitRepository;
 import pinodesk.viewmodel.DrugClassificationVM;
 import pinodesk.viewmodel.GroupedProductExpiryVM;
@@ -40,6 +41,7 @@ import pinodesk.viewmodel.ProductExpiryVM;
 import pinodesk.viewmodel.ProductFilterVM;
 import pinodesk.viewmodel.ProductImportVM;
 import pinodesk.viewmodel.ProductPriceVM;
+import pinodesk.viewmodel.ProductPurchaseVM;
 import pinodesk.viewmodel.ProductStockVM;
 import pinodesk.viewmodel.ProductVM;
 import pinodesk.viewmodel.UnitVM;
@@ -89,6 +91,9 @@ public class ProductService extends BaseService {
 
     @Autowired
     private SessionService sessionService;
+
+    @Autowired
+    private PurchaseDetailRepository purchaseDetailRepository;
 
     @ForActivity(Activity.SEARCH_PRODUCTS_BY_FILTER)
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
@@ -372,6 +377,11 @@ public class ProductService extends BaseService {
     @ForActivity(Activity.GET_PRODUCT_STOCKS_BY_PRODUCT_ID)
     public List<ProductStockVM> getProductStockByProductId(Long productId) {
         return productStockRepository.findByProductIdOrderByIdDesc(productId);
+    }
+
+    @ForActivity(Activity.GET_PRODUCT_PURCHASES_BY_PRODUCT_ID)
+    public List<ProductPurchaseVM> getProductPurchaseByProductId(Long productId) {
+        return purchaseDetailRepository.findByProductIdOrderByIdDesc(productId);
     }
 
     @ForActivity(Activity.ADD_PRODUCT_EXPIRY)

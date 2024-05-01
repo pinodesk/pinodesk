@@ -226,7 +226,7 @@
                         </AnchorPane>
                   </content>
                 </Tab>
-                <Tab fx:id="tabPrice" text="%tab_price">
+                <Tab fx:id="tabPrice" onSelectionChanged="#onSelectionChangedTabPrice" text="%tab_price">
                   <content>
                     <AnchorPane prefWidth="200.0">
                            <children>
@@ -302,7 +302,7 @@
                            </children></AnchorPane>
                   </content>
                 </Tab>
-                  <Tab fx:id="tabStock" text="%tab_stock">
+                  <Tab fx:id="tabStock" onSelectionChanged="#onSelectionChangedTabStock" text="%tab_stock">
                      <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
@@ -365,7 +365,7 @@
                            </children></AnchorPane>
                      </content>
                   </Tab>
-                  <Tab fx:id="tabExpiry" text="%tab_expiry">
+                  <Tab fx:id="tabExpiry" onSelectionChanged="#onSelectionChangedTabExpiry" text="%tab_expiry">
                      <content>
                         <AnchorPane prefWidth="200.0">
                            <children>
@@ -471,6 +471,34 @@
                               </VBox>
                            </children></AnchorPane>
                      </content>
+                  </Tab>
+                  <Tab fx:id="tabPurchases" onSelectionChanged="#onSelectionChangedTabPurchases" text="%tab_purchases">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <VBox spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                 <children>
+                                    <Label text="%lbl_section_product_purchases">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <TableView fx:id="tblPurchases" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                       <columns>
+                                          <TableColumn fx:id="colProductPurchaseInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
+                                          <TableColumn fx:id="colProductPurchaseInvoiceDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
+                                          <TableColumn fx:id="colProductPurchaseSupplierName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_supplier_name" />
+                                          <TableColumn fx:id="colProductPurchaseQuantity" minWidth="-Infinity" prefWidth="150.0" text="%lbl_quantity" />
+                                          <TableColumn fx:id="colProductPurchaseBuyingPrice" minWidth="-Infinity" prefWidth="150.0" text="%lbl_buying_price" />
+                                          <TableColumn fx:id="colProductPurchaseDiscount" minWidth="-Infinity" prefWidth="150.0" text="%lbl_discount" />
+                                          <TableColumn fx:id="colProductPurchaseBuyingPriceDiscount" minWidth="-Infinity" prefWidth="150.0" text="%lbl_buying_price_discount" />
+                                       </columns>
+                                    </TableView>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
                   </Tab>
               </tabs>
             </TabPane>
