@@ -370,6 +370,7 @@ public class SaleService extends BaseService {
             sale.setDoctorId(saleEdit.getDoctorId());
         }
         sale.setInvoiceNumber(invoiceNumber);
+        sale.setInvoiceDate(saleEdit.getInvoiceDate());
         sale.setPaymentDueDate(saleEdit.getPaymentDueDate());
         sale.setPaymentStatus(saleEdit.getPaymentStatus().toString());
         sale.setSellingMode(saleEdit.getSellingMode().toString());

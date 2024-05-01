@@ -46,7 +46,7 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
                     select
                     sd.sale_id,
                     s.invoice_number,
-                    s.created_at as invoice_date,
+                    s.invoice_date,
                     s.selling_mode,
                     c.name as customer_name,
                     p.name as product_name,
@@ -75,10 +75,10 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
             where.andContainsIgnoreCase("p.name", filter.getProductName().trim());
         }
         if (filter.getInvoiceDateMin() != null) {
-            where.andGreaterThanOrEqual("s.created_at", filter.getInvoiceDateMin());
+            where.andGreaterThanOrEqual("s.invoice_date", filter.getInvoiceDateMin());
         }
         if (filter.getInvoiceDateMax() != null) {
-            where.andLowerThan("s.created_at", filter.getInvoiceDateMax().plusDays(1));
+            where.andLowerThanOrEqual("s.invoice_date", filter.getInvoiceDateMax());
         }
         if (filter.getPaymentStatus() != null) {
             where.andEquals("s.payment_status", filter.getPaymentStatus().toString());
@@ -87,7 +87,7 @@ public class SaleDetailRepositoryImpl extends AbstractRepository<SaleDetail> imp
             where.andEquals("s.selling_mode", filter.getSellingMode().toString());
         }
         sb.append(where.getClause());
-        sb.append(" order by s.created_at, sd.id ");
+        sb.append(" order by s.invoice_date, sd.id ");
         List<Object> values = where.getValues();
         values.add(0, language);
         return performSelect(sb.toString(), values, SaleReportVM.class);

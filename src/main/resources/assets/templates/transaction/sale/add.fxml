@@ -186,7 +186,7 @@
                                                       </AnchorPane>
                                                    </children>
                                                 </VBox>
-                                                <VBox fx:id="vboxDueDate1" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                    <children>
                                                       <Label text="%lbl_invoice_date">
                                                          <font>

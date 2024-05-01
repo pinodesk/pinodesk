@@ -173,7 +173,7 @@ public class SaleReportMainController extends BaseController {
                 int rowNum = 8;
                 for (SaleReportVM vm : report) {
                     row = sheet.createRow(rowNum++);
-                    row.createCell(0).setCellValue(dateFormatter.format(vm.getCreatedAt()));
+                    row.createCell(0).setCellValue(dateFormatter.format(vm.getInvoiceDate()));
                     row.createCell(1).setCellValue(vm.getInvoiceNumber());
                     row.createCell(2).setCellValue(
                             SellingMode.GENERAL.toString().equals(vm.getSellingMode()) ?

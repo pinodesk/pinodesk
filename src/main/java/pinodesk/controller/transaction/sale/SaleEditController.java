@@ -99,6 +99,9 @@ public class SaleEditController extends CommonDataSaveController {
     private TextField tfInvoiceNumber;
 
     @FXML
+    private DatePicker dpInvoiceDate;
+
+    @FXML
     private ComboBox<SimpleComboBoxModel> cbSellingMode;
 
     @FXML
@@ -323,7 +326,7 @@ public class SaleEditController extends CommonDataSaveController {
                 btnNewCustomer,
                 btnNewProduct,
                 btnNewDoctor);
-        initCustomDatePicker(dpDueDate);
+        initCustomDatePicker(dpDueDate, dpInvoiceDate);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
@@ -413,6 +416,7 @@ public class SaleEditController extends CommonDataSaveController {
         totalSale = currentSale.getTotalSale();
         totalPayment = currentSale.getTotalPayment();
         tfInvoiceNumber.setText(currentSale.getInvoiceNumber());
+        dpInvoiceDate.setValue(currentSale.getInvoiceDate());
         if (paymentDueDate != null) {
             dpDueDate.setValue(paymentDueDate);
         }
@@ -434,6 +438,7 @@ public class SaleEditController extends CommonDataSaveController {
         saleEdit.setCustomerId(selectedCustomer == null ? null : selectedCustomer.getId());
         saleEdit.setDoctorId(selectedDoctor == null ? null : selectedDoctor.getId());
         saleEdit.setInvoiceNumber(tfInvoiceNumber.getText().trim());
+        saleEdit.setInvoiceDate(dpInvoiceDate.getValue());
         PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         saleEdit.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
@@ -450,14 +455,19 @@ public class SaleEditController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
+        LocalDate invoiceDate = dpInvoiceDate.getValue();
         LocalDate dueDate = dpDueDate.getValue();
         PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
+        validator.validateCustom(() -> invoiceDate == null, MessageCode.ERROR_INVALID_INVOICE_DATE);
+        LocalDate today = LocalDate.now();
+        validator.validateCustom(
+                () -> invoiceDate != null && invoiceDate.isAfter(today),
+                MessageCode.ERROR_INVOICE_DATE_AFTER_TODAY);
         validator.validateCustom(
                 () -> isUnpaid && selectedCustomer == null,
                 MessageCode.ERROR_UNPAID_PAYMENT_WITH_EMPTY_CUSTOMER);
-        LocalDate today = LocalDate.now();
         validator.validateCustom(() -> isUnpaid && dueDate == null, MessageCode.ERROR_INVALID_DUE_DATE);
         validator.validateCustom(
                 () -> isUnpaid && dueDate != null && dueDate.isBefore(today),
