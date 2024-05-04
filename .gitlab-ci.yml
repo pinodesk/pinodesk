@@ -89,7 +89,7 @@ publish-snapshot-deb:
     - echo $PROJECT_VERSION
     - cp -rv ${APPLICATION_PROPERTIES_SNAPSHOT_DEB} src/main/resources/application.properties
     - cp -rv src/main/resources/logback.xml.example src/main/resources/logback.xml
-    - rm -rv **/*.example
+    - rm -rv src/main/resources/*.example
     - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
     - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
     - echo $FILENAME_DEB
@@ -145,7 +145,7 @@ publish-release-deb:
     - echo $PROJECT_VERSION
     - cp -rv ${APPLICATION_PROPERTIES_RELEASE_DEB} src/main/resources/application.properties
     - cp -rv src/main/resources/logback.xml.example src/main/resources/logback.xml
-    - rm -rv **/*.example
+    - rm -rv src/main/resources/*.example
     - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
     - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
     - echo $FILENAME_DEB
