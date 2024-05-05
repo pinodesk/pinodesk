@@ -117,6 +117,7 @@ public class CashierPayController extends CommonDataSaveController {
         SaleAddVM saleAdd = new SaleAddVM();
         saleData.getCustomer().ifPresent(customer -> saleAdd.setCustomerId(customer.getId()));
         saleAdd.setInvoiceNumber(invoiceNumber);
+        saleAdd.setInvoiceDate(paymentDateTime.toLocalDate());
         PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         saleAdd.setPaymentStatus(paymentStatus);
         LocalDate paymentDueDate = null;
