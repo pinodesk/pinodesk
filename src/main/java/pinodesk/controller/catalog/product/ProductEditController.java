@@ -3,6 +3,7 @@ package pinodesk.controller.catalog.product;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrZero;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -13,6 +14,7 @@ import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.mudiatech.pandora.factory.DefaultCellFactory;
 import com.mudiatech.pandora.factory.LocalDateCellFactory;
 import com.mudiatech.pandora.factory.LocalDateTimeCellFactory;
 import com.mudiatech.pandora.factory.NumberCellFactory;
@@ -23,15 +25,18 @@ import com.mudiatech.pandora.utility.ControlValidator;
 import com.mudiatech.pandora.utility.TableViewUtils;
 import com.mudiatech.pandora.utility.TextFieldUtils;
 import com.mudiatech.pandora.utility.ValidationResult;
+import com.mudiatech.toolbox.data.StringNumberUtils;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -40,6 +45,7 @@ import javafx.scene.layout.VBox;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
+import pinodesk.constant.DiscountType;
 import pinodesk.constant.MenuCodeConstants;
 import pinodesk.constant.MessageCode;
 import pinodesk.constant.ProductStatus;
@@ -60,6 +66,7 @@ import pinodesk.viewmodel.ProductEditVM;
 import pinodesk.viewmodel.ProductExpiryAddVM;
 import pinodesk.viewmodel.ProductExpiryVM;
 import pinodesk.viewmodel.ProductPriceVM;
+import pinodesk.viewmodel.ProductPurchaseVM;
 import pinodesk.viewmodel.ProductStockVM;
 import pinodesk.viewmodel.ProductVM;
 import pinodesk.viewmodel.UnitVM;
@@ -231,6 +238,50 @@ public class ProductEditController extends CommonDataSaveController {
     @FXML
     private Button btnAddExpiry;
 
+    @FXML
+    private Tab tabPrice;
+
+    @FXML
+    private Tab tabStock;
+
+    @FXML
+    private Tab tabExpiry;
+
+    @FXML
+    private Tab tabPurchases;
+
+    @FXML
+    private TableView<ProductPurchaseVM> tblPurchases;
+
+    @FXML
+    private TableColumn<ProductPurchaseVM, BigDecimal> colProductPurchaseBuyingPrice;
+
+    @FXML
+    private TableColumn<ProductPurchaseVM, BigDecimal> colProductPurchaseBuyingPriceDiscount;
+
+    @FXML
+    private TableColumn<ProductPurchaseVM, String> colProductPurchaseDiscount;
+
+    @FXML
+    private TableColumn<ProductPurchaseVM, LocalDate> colProductPurchaseInvoiceDate;
+
+    @FXML
+    private TableColumn<ProductPurchaseVM, String> colProductPurchaseInvoiceNumber;
+
+    @FXML
+    private TableColumn<ProductPurchaseVM, Integer> colProductPurchaseQuantity;
+
+    @FXML
+    private TableColumn<ProductPurchaseVM, String> colProductPurchaseSupplierName;
+
+    private List<ProductPriceVM> productPrices;
+
+    private List<ProductStockVM> productStocks;
+
+    private List<ProductExpiryVM> productExpiries;
+
+    private List<ProductPurchaseVM> productPurchases;
+
     private ProductVM currentProduct;
 
     private ProductService productService;
@@ -248,6 +299,34 @@ public class ProductEditController extends CommonDataSaveController {
     private UnitVM selectedUnit;
 
     private DrugClassificationVM selectedDrugClassification;
+
+    @FXML
+    void onSelectionChangedTabPrice(Event event) {
+        if (tabPrice.isSelected() && productPrices == null) {
+            loadProductPrice(currentProduct.getId());
+        }
+    }
+
+    @FXML
+    void onSelectionChangedTabStock(Event event) {
+        if (tabStock.isSelected() && productStocks == null) {
+            loadProductStock(currentProduct.getId());
+        }
+    }
+
+    @FXML
+    void onSelectionChangedTabExpiry(Event event) {
+        if (tabExpiry.isSelected() && productExpiries == null) {
+            loadProductExpiry(currentProduct.getId());
+        }
+    }
+
+    @FXML
+    void onSelectionChangedTabPurchases(Event event) {
+        if (tabPurchases.isSelected() && productPurchases == null) {
+            loadProductPurchases(currentProduct.getId());
+        }
+    }
 
     @FXML
     void onActionBtnRemove(ActionEvent event) {
@@ -288,6 +367,11 @@ public class ProductEditController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlActions() {
         disableWriteAction(MenuCodeConstants.CATALOG_PRODUCTS, btnSave, btnRemove, btnAddExpiry);
+        handleReadAction(MenuCodeConstants.TRANSACTION_PURCHASES, isReadAllowed -> {
+            if (!Boolean.TRUE.equals(isReadAllowed)) {
+                tabPaneEditProduct.getTabs().remove(tabPurchases);
+            }
+        });
         initCustomDatePicker(dpExpiredDate);
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(
@@ -307,6 +391,7 @@ public class ProductEditController extends CommonDataSaveController {
         initTableProductPrice(locale);
         initTableProductStock();
         initTableProductExpiry(locale);
+        initTablePurchases(locale);
     }
 
     private void initTableProductExpiry(Locale locale) {
@@ -381,10 +466,43 @@ public class ProductEditController extends CommonDataSaveController {
         TableViewUtils.enableSort(false, tblPrice);
     }
 
+    private void initTablePurchases(Locale locale) {
+        TableViewUtils.setColumnValue(colProductPurchaseInvoiceNumber, ProductPurchaseVM::getInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductPurchaseSupplierName, ProductPurchaseVM::getSupplierName);
+        TableViewUtils.setColumnValue(colProductPurchaseInvoiceDate, ProductPurchaseVM::getInvoiceDate);
+        TableViewUtils.initTableColumn(
+                colProductPurchaseBuyingPrice,
+                new NumberCellFactory<>(locale),
+                ProductPurchaseVM::getBuyingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colProductPurchaseBuyingPriceDiscount,
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
+                ProductPurchaseVM::getBuyingPriceDiscount,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(colProductPurchaseDiscount, new DefaultCellFactory<>(), (vm) -> {
+            BigDecimal discountAmount = vm.getDiscountAmount();
+            if (discountAmount == null) {
+                return null;
+            }
+            String strDiscount = StringNumberUtils.format(discountAmount, locale);
+            if (DiscountType.PERCENTAGE.toString().equals(vm.getDiscountType())) {
+                BigDecimal realAmount = vm.getBuyingPrice().subtract(vm.getBuyingPriceDiscount());
+                String strRealAmount = StringNumberUtils.format(realAmount, locale);
+                strDiscount = String.format("%s%% = %s", strDiscount, strRealAmount);
+            }
+            return strDiscount;
+        }, StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colProductPurchaseQuantity,
+                new NumberCellFactory<>(locale),
+                ProductPurchaseVM::getQuantity,
+                StyleConstants.ALIGN_RIGHT);
+    }
+
     @Override
     protected void initDataSaveControlValues() {
         currentProduct = getPageData();
-        Long productId = currentProduct.getId();
         selectedProductCategory = productCategoryService.getProductCategoryById(currentProduct.getCategoryId());
         selectedUnit = unitService.getUnitById(currentProduct.getUnitId());
         tfName.setText(currentProduct.getName());
@@ -409,9 +527,6 @@ public class ProductEditController extends CommonDataSaveController {
             vboxMedicine.setDisable(false);
             vboxPresciptionSellPrice.setDisable(false);
         }
-        loadProductPrice(productId);
-        loadProductStock(productId);
-        loadProductExpiry(productId);
         if (!isPharmacyFeatureEnabled()) {
             setVisibleInLayout(false, vboxMedicine);
             setVisibleInLayout(false, vboxPresciptionSellPrice);
@@ -545,12 +660,12 @@ public class ProductEditController extends CommonDataSaveController {
         tblExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblExpiry.setItems(FXCollections.observableArrayList());
         TaskUtils.runTask("Load product expiry", () -> {
-            List<ProductExpiryVM> list = productService.getProductExpiryByProductId(productId);
+            productExpiries = productService.getProductExpiryByProductId(productId);
             Platform.runLater(() -> {
-                if (list.isEmpty()) {
+                if (productExpiries.isEmpty()) {
                     tblExpiry.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                 }
-                tblExpiry.setItems(FXCollections.observableList(list));
+                tblExpiry.setItems(FXCollections.observableList(productExpiries));
             });
         });
     }
@@ -559,12 +674,12 @@ public class ProductEditController extends CommonDataSaveController {
         tblStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblStock.setItems(FXCollections.observableArrayList());
         TaskUtils.runTask("Load product stock", () -> {
-            List<ProductStockVM> list = productService.getProductStockByProductId(productId);
+            productStocks = productService.getProductStockByProductId(productId);
             Platform.runLater(() -> {
-                if (list.isEmpty()) {
+                if (productStocks.isEmpty()) {
                     tblStock.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                 }
-                tblStock.setItems(FXCollections.observableList(list));
+                tblStock.setItems(FXCollections.observableList(productStocks));
             });
         });
     }
@@ -573,12 +688,27 @@ public class ProductEditController extends CommonDataSaveController {
         tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblPrice.setItems(FXCollections.observableArrayList());
         TaskUtils.runTask("Load product price", () -> {
-            List<ProductPriceVM> list = productService.getProductPriceByProductId(productId);
+            productPrices = productService.getProductPriceByProductId(productId);
             Platform.runLater(() -> {
-                if (list.isEmpty()) {
+                if (productPrices.isEmpty()) {
                     tblPrice.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
                 }
-                tblPrice.setItems(FXCollections.observableList(list));
+                tblPrice.setItems(FXCollections.observableList(productPrices));
+            });
+        });
+    }
+
+    private void loadProductPurchases(Long productId) {
+        tblPurchases.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblPurchases.setItems(FXCollections.observableArrayList());
+        TaskUtils.runTask("Load product purchase", () -> {
+            productPurchases = productService.getProductPurchaseByProductId(productId);
+            Platform.runLater(() -> {
+                if (productPurchases.isEmpty()) {
+                    tblPurchases.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                }
+                tblPurchases.setItems(FXCollections.observableList(productPurchases));
+                TableViewUtils.sortDescending(tblPurchases, colProductPurchaseInvoiceDate);
             });
         });
     }

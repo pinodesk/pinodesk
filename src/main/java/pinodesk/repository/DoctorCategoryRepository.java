@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import pinodesk.domain.DoctorCategory;
+import pinodesk.entity.DoctorCategory;
 
 @Repository
 public interface DoctorCategoryRepository

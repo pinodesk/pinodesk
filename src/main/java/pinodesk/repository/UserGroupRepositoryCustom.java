@@ -2,7 +2,7 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import pinodesk.domain.UserGroup;
+import pinodesk.entity.UserGroup;
 import pinodesk.viewmodel.UserGroupFilterVM;
 
 public interface UserGroupRepositoryCustom {

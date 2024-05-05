@@ -16,6 +16,9 @@ import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.DomainError;
 import pinodesk.constant.PaymentStatus;
+import pinodesk.entity.Payable;
+import pinodesk.entity.PayablePayment;
+import pinodesk.entity.Purchase;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.PayablePaymentRepository;
 import pinodesk.repository.PayableRepository;
@@ -23,9 +26,6 @@ import pinodesk.viewmodel.PayableEditVM;
 import pinodesk.viewmodel.PayableFilterVM;
 import pinodesk.viewmodel.PayablePaymentVM;
 import pinodesk.viewmodel.PayableVM;
-import pinodesk.domain.Payable;
-import pinodesk.domain.PayablePayment;
-import pinodesk.domain.Purchase;
 import pinodesk.repository.PurchaseRepository;
 
 @Service

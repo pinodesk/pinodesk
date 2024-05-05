@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 
-import pinodesk.domain.ProductCategory;
+import pinodesk.entity.ProductCategory;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -7,7 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Where;
 
-import pinodesk.domain.PurchaseDetail;
+import pinodesk.entity.PurchaseDetail;
 import pinodesk.viewmodel.PurchaseProductVM;
 import pinodesk.viewmodel.PurchaseReportFilterVM;
 import pinodesk.viewmodel.PurchaseReportVM;
@@ -83,7 +83,7 @@ public class PurchaseDetailRepositoryImpl extends AbstractRepository<PurchaseDet
             where.andGreaterThanOrEqual("b.invoice_date", filter.getInvoiceDateMin());
         }
         if (filter.getInvoiceDateMax() != null) {
-            where.andLowerThan("b.invoice_date", filter.getInvoiceDateMax().plusDays(1));
+            where.andLowerThanOrEqual("b.invoice_date", filter.getInvoiceDateMax());
         }
         if (filter.getPaymentStatus() != null) {
             where.andEquals("b.payment_status", filter.getPaymentStatus().toString());

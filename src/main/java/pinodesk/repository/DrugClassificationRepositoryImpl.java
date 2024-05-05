@@ -6,7 +6,7 @@ import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Order;
 import com.mudiatech.sequel.sql.Where;
 
-import pinodesk.domain.DrugClassification;
+import pinodesk.entity.DrugClassification;
 
 public class DrugClassificationRepositoryImpl extends AbstractRepository<DrugClassification>
         implements DrugClassificationRepositoryCustom {

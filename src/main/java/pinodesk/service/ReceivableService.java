@@ -16,15 +16,15 @@ import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.DomainError;
 import pinodesk.constant.PaymentStatus;
+import pinodesk.entity.Receivable;
+import pinodesk.entity.ReceivablePayment;
+import pinodesk.entity.Sale;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.SaleRepository;
 import pinodesk.viewmodel.ReceivableEditVM;
 import pinodesk.viewmodel.ReceivableFilterVM;
 import pinodesk.viewmodel.ReceivablePaymentVM;
 import pinodesk.viewmodel.ReceivableVM;
-import pinodesk.domain.Receivable;
-import pinodesk.domain.ReceivablePayment;
-import pinodesk.domain.Sale;
 import pinodesk.repository.ReceivablePaymentRepository;
 import pinodesk.repository.ReceivableRepository;
 

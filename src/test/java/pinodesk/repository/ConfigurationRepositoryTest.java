@@ -12,7 +12,7 @@ import com.github.springtestdbunit.annotation.DatabaseSetup;
 
 import org.hamcrest.Matchers;
 import pinodesk.constant.ConfigurationConstants;
-import pinodesk.domain.Configuration;
+import pinodesk.entity.Configuration;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -13,6 +13,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.mudiatech.pandora.factory.LocalDateCellFactory;
 import com.mudiatech.pandora.factory.NumberCellFactory;
 import com.mudiatech.pandora.model.SimpleComboBoxModel;
@@ -42,8 +44,10 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import lombok.extern.slf4j.Slf4j;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
+import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.MenuCodeConstants;
 import pinodesk.constant.MessageCode;
 import pinodesk.constant.Page;
@@ -54,16 +58,20 @@ import pinodesk.controller.CommonDataSaveController;
 import pinodesk.javafx.converter.GroupedProductExpiryComboBoxConverter;
 import pinodesk.service.ProductService;
 import pinodesk.service.SaleService;
+import pinodesk.util.PrintUtils;
 import pinodesk.util.SpringUtils;
 import pinodesk.viewmodel.ChooseResultVM;
 import pinodesk.viewmodel.CustomerVM;
 import pinodesk.viewmodel.DoctorVM;
 import pinodesk.viewmodel.GroupedProductExpiryVM;
+import pinodesk.viewmodel.PaymentDataVM;
 import pinodesk.viewmodel.ProductVM;
+import pinodesk.viewmodel.SaleDataVM;
 import pinodesk.viewmodel.SaleEditVM;
 import pinodesk.viewmodel.SaleProductVM;
 import pinodesk.viewmodel.SaleVM;
 
+@Slf4j
 public class SaleEditController extends CommonDataSaveController {
 
     @FXML
@@ -89,6 +97,9 @@ public class SaleEditController extends CommonDataSaveController {
 
     @FXML
     private TextField tfInvoiceNumber;
+
+    @FXML
+    private DatePicker dpInvoiceDate;
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbSellingMode;
@@ -183,10 +194,12 @@ public class SaleEditController extends CommonDataSaveController {
 
     private SaleService saleService;
     private ProductService productService;
+    private PrintUtils printer;
 
     private int idxSelectedSaleProduct = -1;
 
     private SaleVM currentSale;
+    private List<SaleProductVM> currentSaleProducts;
 
     @FXML
     void onActionBtnNewProduct(ActionEvent event) {
@@ -284,6 +297,26 @@ public class SaleEditController extends CommonDataSaveController {
         super.onActionBtnSave(event);
     }
 
+    @FXML
+    void onActionBtnPrintCopy(ActionEvent event) {
+        String printerName = configurationService.getConfiguration(ConfigurationConstants.PRINTER_NAME);
+        if (StringUtils.isBlank(printerName)) {
+            log.debug("Printer name is empty");
+            return;
+        }
+        SaleDataVM saleData = new SaleDataVM();
+        saleData.setSaleProducts(currentSaleProducts);
+        saleData.setTotalProduct(currentSale.getTotalProduct());
+        saleData.setTotalSale(currentSale.getTotalSale());
+        PaymentDataVM paymentData = new PaymentDataVM();
+        paymentData.setChangeAmount(BigDecimal.valueOf(0));
+        paymentData.setPaymentAmount(currentSale.getTotalPayment());
+        paymentData.setPaymentStatus(PaymentStatus.valueOf(currentSale.getPaymentStatus().toUpperCase()));
+        paymentData.setInvoiceNumber(currentSale.getInvoiceNumber());
+        paymentData.setPaymentDateTime(currentSale.getCreatedAt());
+        printer.printReceipt(printerName, saleData, paymentData, true);
+    }
+
     @Override
     protected void initDataSaveControlActions() {
         disableWriteAction(
@@ -293,7 +326,7 @@ public class SaleEditController extends CommonDataSaveController {
                 btnNewCustomer,
                 btnNewProduct,
                 btnNewDoctor);
-        initCustomDatePicker(dpDueDate);
+        initCustomDatePicker(dpDueDate, dpInvoiceDate);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
@@ -376,13 +409,14 @@ public class SaleEditController extends CommonDataSaveController {
                 () -> cbPaymentStatus.getItems().stream()
                         .filter(vm -> vm.getValue().toString().equals(currentSale.getPaymentStatus())).findAny()
                         .orElseThrow());
-        List<SaleProductVM> products = saleService.getSaleProducts(currentSale.getId());
-        tblSaleProduct.getItems().addAll(products);
+        currentSaleProducts = saleService.getSaleProducts(currentSale.getId());
+        tblSaleProduct.getItems().addAll(currentSaleProducts);
         LocalDate paymentDueDate = currentSale.getPaymentDueDate();
         totalProduct = currentSale.getTotalProduct();
         totalSale = currentSale.getTotalSale();
         totalPayment = currentSale.getTotalPayment();
         tfInvoiceNumber.setText(currentSale.getInvoiceNumber());
+        dpInvoiceDate.setValue(currentSale.getInvoiceDate());
         if (paymentDueDate != null) {
             dpDueDate.setValue(paymentDueDate);
         }
@@ -404,6 +438,7 @@ public class SaleEditController extends CommonDataSaveController {
         saleEdit.setCustomerId(selectedCustomer == null ? null : selectedCustomer.getId());
         saleEdit.setDoctorId(selectedDoctor == null ? null : selectedDoctor.getId());
         saleEdit.setInvoiceNumber(tfInvoiceNumber.getText().trim());
+        saleEdit.setInvoiceDate(dpInvoiceDate.getValue());
         PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         saleEdit.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
@@ -420,14 +455,19 @@ public class SaleEditController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
+        LocalDate invoiceDate = dpInvoiceDate.getValue();
         LocalDate dueDate = dpDueDate.getValue();
         PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
         boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
         validator.validateBlank(tfInvoiceNumber, MessageCode.ERROR_INVALID_INVOICE_NUMBER);
+        validator.validateCustom(() -> invoiceDate == null, MessageCode.ERROR_INVALID_INVOICE_DATE);
+        LocalDate today = LocalDate.now();
+        validator.validateCustom(
+                () -> invoiceDate != null && invoiceDate.isAfter(today),
+                MessageCode.ERROR_INVOICE_DATE_AFTER_TODAY);
         validator.validateCustom(
                 () -> isUnpaid && selectedCustomer == null,
                 MessageCode.ERROR_UNPAID_PAYMENT_WITH_EMPTY_CUSTOMER);
-        LocalDate today = LocalDate.now();
         validator.validateCustom(() -> isUnpaid && dueDate == null, MessageCode.ERROR_INVALID_DUE_DATE);
         validator.validateCustom(
                 () -> isUnpaid && dueDate != null && dueDate.isBefore(today),
@@ -439,6 +479,7 @@ public class SaleEditController extends CommonDataSaveController {
     protected void initServices() {
         saleService = SpringUtils.getBean(SaleService.class);
         productService = SpringUtils.getBean(ProductService.class);
+        printer = new PrintUtils(configurationService, t, resources);
     }
 
     public void handleSelectedProduct(ChooseResultVM<ProductVM> result) {

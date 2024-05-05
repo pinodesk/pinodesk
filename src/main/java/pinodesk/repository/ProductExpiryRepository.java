@@ -9,7 +9,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import pinodesk.domain.ProductExpiry;
+import pinodesk.entity.ProductExpiry;
 import pinodesk.viewmodel.GroupedProductExpiryVM;
 import pinodesk.viewmodel.ProductExpiryVM;
 

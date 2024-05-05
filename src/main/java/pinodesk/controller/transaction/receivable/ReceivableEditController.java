@@ -122,7 +122,7 @@ public class ReceivableEditController extends CommonDataSaveController {
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 ReceivablePaymentVM::getPaymentDate);
         TextFieldUtils.setDigitTextFields(tfReceivableAmount);
-        setFocused(dpPaymentDate);
+        setFocused(tfPaymentAmount);
     }
 
     @Override

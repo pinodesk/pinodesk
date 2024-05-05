@@ -179,7 +179,7 @@ public abstract class BaseController {
     }
 
     protected void handlePrinterException(PrinterException e) {
-        displayError(t.translate(e.getMessageCode()));
+        displayError(String.format(t.translate(e.getMessageCode()), e.getArguments()));
     }
 
     protected void handlePinodeskApiException(PinodeskApiException e) {
@@ -571,6 +571,19 @@ public abstract class BaseController {
                 return;
             }
         });
+    }
+
+    protected void handleReadAction(String menuCode, Consumer<Boolean> action) {
+        sessionService.getCurrentSession().getUserGroupMenus().stream()
+                .filter(ugm -> ugm.getMenuCode().equals(menuCode)).findFirst().ifPresentOrElse(ugm -> {
+                    if (action != null) {
+                        action.accept(SimpleStatus.YES.toString().equals(ugm.getRead()));
+                    }
+                }, () -> {
+                    if (action != null) {
+                        action.accept(false);
+                    }
+                });
     }
 
     // Reference:

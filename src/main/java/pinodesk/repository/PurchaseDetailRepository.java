@@ -9,7 +9,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.domain.PurchaseDetail;
+import pinodesk.entity.PurchaseDetail;
+import pinodesk.viewmodel.ProductPurchaseVM;
 
 @Repository
 public interface PurchaseDetailRepository
@@ -33,5 +34,22 @@ public interface PurchaseDetailRepository
     @Modifying
     @Query("delete from purchase_detail where purchase_id in (:purchaseIds)")
     Long deleteByPurchaseIdIn(@Param("purchaseIds") List<Long> purchaseIds);
+
+    @Query("""
+            select
+                a.*,
+                b.invoice_number,
+                b.invoice_date,
+                b.payment_due_date,
+                b.payment_status,
+                c.id as supplier_id,
+                c.name as supplier_name
+            from purchase_detail a
+            join purchase b on b.id = a.purchase_id
+            join supplier c on c.id = b.supplier_id
+            where a.product_id = :productId
+            order by b.id desc
+            """)
+    List<ProductPurchaseVM> findByProductIdOrderByIdDesc(@Param("productId") Long productId);
 
 }

@@ -12,6 +12,13 @@ import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.DomainError;
 import pinodesk.constant.PaymentStatus;
 import pinodesk.constant.SellingMode;
+import pinodesk.entity.Product;
+import pinodesk.entity.ProductExpiry;
+import pinodesk.entity.ProductPrice;
+import pinodesk.entity.ProductStock;
+import pinodesk.entity.Receivable;
+import pinodesk.entity.Sale;
+import pinodesk.entity.SaleDetail;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.PackageDetailRepository;
 import pinodesk.repository.ProductExpiryRepository;
@@ -25,13 +32,6 @@ import pinodesk.viewmodel.SaleProductVM;
 import pinodesk.viewmodel.SaleReportFilterVM;
 import pinodesk.viewmodel.SaleReportVM;
 import pinodesk.viewmodel.SaleVM;
-import pinodesk.domain.Product;
-import pinodesk.domain.ProductExpiry;
-import pinodesk.domain.ProductPrice;
-import pinodesk.domain.ProductStock;
-import pinodesk.domain.Receivable;
-import pinodesk.domain.Sale;
-import pinodesk.domain.SaleDetail;
 import pinodesk.repository.ProductPriceRepository;
 import pinodesk.repository.ReceivablePaymentRepository;
 import pinodesk.repository.ReceivableRepository;
@@ -146,6 +146,7 @@ public class SaleService extends BaseService {
             sale.setDoctorId(saleAdd.getDoctorId());
         }
         sale.setInvoiceNumber(invoiceNumber);
+        sale.setInvoiceDate(saleAdd.getInvoiceDate());
         sale.setPaymentDueDate(saleAdd.getPaymentDueDate());
         sale.setPaymentStatus(saleAdd.getPaymentStatus().toString());
         sale.setSellingMode(saleAdd.getSellingMode().toString());
@@ -369,6 +370,7 @@ public class SaleService extends BaseService {
             sale.setDoctorId(saleEdit.getDoctorId());
         }
         sale.setInvoiceNumber(invoiceNumber);
+        sale.setInvoiceDate(saleEdit.getInvoiceDate());
         sale.setPaymentDueDate(saleEdit.getPaymentDueDate());
         sale.setPaymentStatus(saleEdit.getPaymentStatus().toString());
         sale.setSellingMode(saleEdit.getSellingMode().toString());

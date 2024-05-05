@@ -12,7 +12,7 @@ import com.mudiatech.sequel.utility.WhereParamsHelper;
 import com.mudiatech.toolbox.data.ListBuilder;
 
 import pinodesk.constant.ProductStatus;
-import pinodesk.domain.Product;
+import pinodesk.entity.Product;
 import pinodesk.viewmodel.ProductCategoryVM;
 import pinodesk.viewmodel.ProductFilterVM;
 import pinodesk.viewmodel.ProductVM;

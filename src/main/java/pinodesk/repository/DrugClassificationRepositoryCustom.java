@@ -2,7 +2,7 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import pinodesk.domain.DrugClassification;
+import pinodesk.entity.DrugClassification;
 
 public interface DrugClassificationRepositoryCustom {
 

@@ -12,10 +12,10 @@ import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.DomainError;
+import pinodesk.entity.Unit;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.UnitRepository;
 import pinodesk.viewmodel.UnitVM;
-import pinodesk.domain.Unit;
 
 @Service
 public class UnitService extends BaseService {

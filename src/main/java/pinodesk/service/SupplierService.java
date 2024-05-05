@@ -18,14 +18,14 @@ import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.DomainError;
+import pinodesk.entity.Supplier;
+import pinodesk.entity.SupplierContact;
 import pinodesk.exception.DomainException;
 import pinodesk.viewmodel.SupplierAddVM;
 import pinodesk.viewmodel.SupplierContactAddVM;
 import pinodesk.viewmodel.SupplierEditVM;
 import pinodesk.viewmodel.SupplierFilterVM;
 import pinodesk.viewmodel.SupplierVM;
-import pinodesk.domain.Supplier;
-import pinodesk.domain.SupplierContact;
 import pinodesk.repository.SupplierContactRepository;
 import pinodesk.repository.SupplierRepository;
 

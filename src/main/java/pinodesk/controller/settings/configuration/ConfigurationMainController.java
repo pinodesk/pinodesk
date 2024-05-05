@@ -1,8 +1,10 @@
 package pinodesk.controller.settings.configuration;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -40,13 +42,18 @@ import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.MenuCodeConstants;
 import pinodesk.constant.MessageCode;
 import pinodesk.constant.Page;
+import pinodesk.constant.PaymentStatus;
 import pinodesk.constant.SimpleStatus;
 import pinodesk.constant.StringConstants;
 import pinodesk.constant.SystemConstants;
 import pinodesk.controller.CommonContentPaneController;
 import pinodesk.javafx.converter.LanguageComboBoxConverter;
 import pinodesk.service.ConfigurationService;
+import pinodesk.util.PrintUtils;
 import pinodesk.util.SpringUtils;
+import pinodesk.viewmodel.PaymentDataVM;
+import pinodesk.viewmodel.SaleDataVM;
+import pinodesk.viewmodel.SaleProductVM;
 
 @Slf4j
 public class ConfigurationMainController extends CommonContentPaneController {
@@ -104,6 +111,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
     private ConfigurationService configurationService;
     private List<Locale> locales;
     private Map<String, String> configurationMap;
+    private PrintUtils printer;
 
     @FXML
     void onActionBtnSaveGeneral(ActionEvent event) {
@@ -120,6 +128,37 @@ public class ConfigurationMainController extends CommonContentPaneController {
         closeRootPane();
         sessionService.logout();
         StageUtils.open(Page.LOGIN, false);
+    }
+
+    @FXML
+    void onActionBtnTestPrinter(ActionEvent event) {
+        Printer selectedPrinter = ComboBoxUtils.getSelectedItem(cbPrinterName).getValue();
+        if (selectedPrinter == null) {
+            log.debug("The selected printer is empty");
+            return;
+        }
+        String lblProduct = t.translate(CommonLabel.LBL_PRODUCT);
+        List<SaleProductVM> saleProducts = new ArrayList<>();
+        for (long i = 1; i <= 3; i++) {
+            SaleProductVM sp = new SaleProductVM();
+            sp.setProductId(i);
+            sp.setProductName(String.format("%s %d", lblProduct, i));
+            sp.setSellingPrice(BigDecimal.valueOf(1000));
+            sp.setSaleQuantity(1);
+            sp.setSubtotal(BigDecimal.valueOf(1000));
+            saleProducts.add(sp);
+        }
+        SaleDataVM saleData = new SaleDataVM();
+        saleData.setSaleProducts(saleProducts);
+        saleData.setTotalProduct(10);
+        saleData.setTotalSale(BigDecimal.valueOf(3000));
+        PaymentDataVM paymentData = new PaymentDataVM();
+        paymentData.setChangeAmount(BigDecimal.valueOf(2000));
+        paymentData.setPaymentAmount(BigDecimal.valueOf(5000));
+        paymentData.setPaymentStatus(PaymentStatus.PAID);
+        paymentData.setInvoiceNumber("1234567890");
+        paymentData.setPaymentDateTime(LocalDateTime.now());
+        printer.printReceipt(selectedPrinter.getName(), saleData, paymentData, false);
     }
 
     @FXML
@@ -204,6 +243,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
                 new Locale(CommonConstants.LANGUAGE_CODE_ENGLISH),
                 new Locale(CommonConstants.LANGUAGE_CODE_INDONESIA));
         configurationMap = configurationService.getConfigurationMap();
+        printer = new PrintUtils(configurationService, t, resources);
     }
 
     @Override

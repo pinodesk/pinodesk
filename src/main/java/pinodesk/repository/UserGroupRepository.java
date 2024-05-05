@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.domain.UserGroup;
+import pinodesk.entity.UserGroup;
 
 @Repository
 public interface UserGroupRepository extends PagingAndSortingRepository<UserGroup, Long>, UserGroupRepositoryCustom {

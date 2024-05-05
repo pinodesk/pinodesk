@@ -12,10 +12,10 @@ import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.ConfigurationConstants;
 import pinodesk.constant.DomainError;
+import pinodesk.entity.ProductCategory;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.ProductCategoryRepository;
 import pinodesk.viewmodel.ProductCategoryVM;
-import pinodesk.domain.ProductCategory;
 
 @Service
 public class ProductCategoryService extends BaseService {

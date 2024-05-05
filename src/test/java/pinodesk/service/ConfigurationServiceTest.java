@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import pinodesk.domain.Configuration;
+import pinodesk.entity.Configuration;
 import pinodesk.repository.ConfigurationRepository;
 
 class ConfigurationServiceTest extends BaseServiceTest {

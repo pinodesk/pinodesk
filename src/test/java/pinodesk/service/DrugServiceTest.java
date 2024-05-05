@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import pinodesk.domain.Drug;
+import pinodesk.entity.Drug;
 import pinodesk.repository.DrugRepository;
 import pinodesk.viewmodel.DrugVM;
 

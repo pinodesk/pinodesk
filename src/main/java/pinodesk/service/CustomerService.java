@@ -17,12 +17,12 @@ import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.DomainError;
+import pinodesk.entity.Customer;
 import pinodesk.exception.DomainException;
 import pinodesk.viewmodel.CustomerAddVM;
 import pinodesk.viewmodel.CustomerEditVM;
 import pinodesk.viewmodel.CustomerFilterVM;
 import pinodesk.viewmodel.CustomerVM;
-import pinodesk.domain.Customer;
 import pinodesk.repository.CustomerRepository;
 
 @Service

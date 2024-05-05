@@ -2,7 +2,7 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import pinodesk.domain.ProductCategory;
+import pinodesk.entity.ProductCategory;
 
 public interface ProductCategoryRepositoryCustom {
 

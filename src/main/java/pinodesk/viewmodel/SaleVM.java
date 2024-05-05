@@ -17,6 +17,7 @@ public class SaleVM {
     private Long doctorId;
     private String doctorName;
     private String invoiceNumber;
+    private LocalDate invoiceDate;
     private Integer totalProduct;
     private BigDecimal totalPayment;
     private BigDecimal totalSale;

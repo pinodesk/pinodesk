@@ -6,7 +6,7 @@ import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Order;
 import com.mudiatech.sequel.sql.Where;
 
-import pinodesk.domain.Unit;
+import pinodesk.entity.Unit;
 
 public class UnitRepositoryImpl extends AbstractRepository<Unit> implements UnitRepositoryCustom {
 

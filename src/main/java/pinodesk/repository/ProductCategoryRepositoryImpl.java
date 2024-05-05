@@ -6,7 +6,7 @@ import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Order;
 import com.mudiatech.sequel.sql.Where;
 
-import pinodesk.domain.ProductCategory;
+import pinodesk.entity.ProductCategory;
 
 public class ProductCategoryRepositoryImpl extends AbstractRepository<ProductCategory>
         implements ProductCategoryRepositoryCustom {

@@ -212,6 +212,21 @@
     font-size: 13px;
 }
 
+.combo-box-base.combo-box-primary>.text-field {
+    -fx-background-color: white;
+    background-color: white;
+}
+
+.combo-box-base.combo-box-primary>.text-field .bg-disabled {
+    -fx-background-color: #ececec;
+    background-color: #ececec;
+}
+
+.combo-box.combo-box-primary {
+    -fx-background-color: white;
+    background-color: white;
+}
+
 .date-picker-clear-btn {
     -fx-min-height: 23px;
     -fx-max-height: 23px;

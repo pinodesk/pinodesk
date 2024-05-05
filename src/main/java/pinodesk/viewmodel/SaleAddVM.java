@@ -14,6 +14,7 @@ public class SaleAddVM {
     private Long doctorId;
     private SellingMode sellingMode;
     private String invoiceNumber;
+    private LocalDate invoiceDate;
     private PaymentStatus paymentStatus;
     private LocalDate paymentDueDate;
     private Integer totalProduct;

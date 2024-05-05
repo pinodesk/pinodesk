@@ -5,7 +5,7 @@ import java.util.List;
 import com.mudiatech.sequel.repository.AbstractRepository;
 import com.mudiatech.sequel.sql.Where;
 
-import pinodesk.domain.Purchase;
+import pinodesk.entity.Purchase;
 import pinodesk.viewmodel.PurchaseFilterVM;
 import pinodesk.viewmodel.PurchaseVM;
 

@@ -2,7 +2,7 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import pinodesk.domain.Unit;
+import pinodesk.entity.Unit;
 
 public interface UnitRepositoryCustom {
 

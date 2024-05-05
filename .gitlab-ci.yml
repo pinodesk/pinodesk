@@ -22,14 +22,19 @@ variables:
   RELEASE_DIGIT: 1
   HOTFIX_DIGIT: 2
 
-default:
-  before_script:
-    - apk add --update --no-cache maven git
-    - mvn -v
-    - git --version
-    - git remote set-url --push origin "https://${GITLAB_USER_LOGIN}:${READ_WRITE_REPOSITORY_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
-    - git config user.name "${GITLAB_USER_NAME}"
-    - git config user.email "${GITLAB_USER_EMAIL}"
+.setup_git: &setup_git
+  - git remote set-url --push origin "https://${GITLAB_USER_LOGIN}:${READ_WRITE_REPOSITORY_ACCESS_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
+  - git config user.name "${GITLAB_USER_NAME}"
+  - git config user.email "${GITLAB_USER_EMAIL}"
+
+.setup_alpine: &setup_alpine
+  - apk add --update --no-cache maven git binutils lftp curl
+
+.setup_debian: &setup_debian
+  - apt-get update; apt-get install -y git binutils lftp curl sudo wget gpg
+  - wget -O - https://apt.corretto.aws/corretto.key | gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg
+  - echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | tee /etc/apt/sources.list.d/corretto.list
+  - apt-get update; apt-get install -y java-17-amazon-corretto-jdk maven
 
 cache:
   paths:
@@ -39,11 +44,14 @@ stages:
   - validate
   - test
   - release
-  - distribute
+  - publish-snapshot
+  - publish-release
 
 validate:
   stage: validate
   script:
+    - *setup_alpine
+    - *setup_git
     - mvn $MAVEN_CLI_OPTS spotless:check pmd:check test-compile -U
   allow_failure: false
   except:
@@ -55,6 +63,8 @@ test:
     JACOCO_REPORT_HTML: $CI_PROJECT_DIR/target/site/jacoco/index.html
   stage: test
   script:
+    - *setup_alpine
+    - *setup_git
     - mvn $MAVEN_CLI_OPTS verify -U
     - if [ -f $JACOCO_REPORT_HTML ]; then cat $JACOCO_REPORT_HTML | grep -o "Total[^%]*%"; fi
   allow_failure: false
@@ -67,14 +77,19 @@ test:
     - master
     - tags
 
-distribute-snapshots:
-  stage: distribute
+publish-snapshot-deb:
+  image: debian:11-slim
+  stage: publish-snapshot
   dependencies:
     - test
   script:
-    - apk add --no-cache binutils lftp curl # Install binutils to fix: Error: java.io.IOException: Cannot run program "objcopy": error=2, No such file or directory
+    - *setup_debian
+    - *setup_git
     - PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
     - echo $PROJECT_VERSION
+    - cp -rv ${APPLICATION_PROPERTIES_SNAPSHOT_DEB} src/main/resources/application.properties
+    - cp -rv src/main/resources/logback.xml.example src/main/resources/logback.xml
+    - rm -rv src/main/resources/*.example
     - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
     - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
     - echo $FILENAME_DEB
@@ -94,24 +109,43 @@ distribute-snapshots:
     - develop
   when: manual
 
+publish-snapshot-exe:
+  image: busybox
+  stage: publish-snapshot
+  dependencies:
+    - test
+  script:
+    - echo "Continue on Jenkins https://optiplex.pinodesk.com/jenkins/job/pinodesk-develop-build"
+  allow_failure: false
+  only:
+    - develop
+  when: manual
+
 release:
   stage: release
   dependencies:
     - test
   script:
+    - *setup_alpine
+    - *setup_git
     - mvn $MAVEN_CLI_OPTS gitflow:release -DallowSnapshots -DversionDigitToIncrement=$RELEASE_DIGIT -DargLine=$MAVEN_CLI_OPTS
   only:
     - develop
   when: manual
 
-distribute-releases:
-  stage: distribute
+publish-release-deb:
+  image: debian:11-slim
+  stage: publish-release
   dependencies:
     - release
   script:
-    - apk add --no-cache binutils lftp curl
+    - *setup_debian
+    - *setup_git
     - PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
     - echo $PROJECT_VERSION
+    - cp -rv ${APPLICATION_PROPERTIES_RELEASE_DEB} src/main/resources/application.properties
+    - cp -rv src/main/resources/logback.xml.example src/main/resources/logback.xml
+    - rm -rv src/main/resources/*.example
     - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
     - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
     - echo $FILENAME_DEB
@@ -131,11 +165,25 @@ distribute-releases:
     - master
   when: manual
 
+publish-release-exe:
+  image: busybox
+  stage: publish-release
+  dependencies:
+    - test
+  script:
+    - echo "Continue on Jenkins https://optiplex.pinodesk.com/jenkins/job/pinodesk-master-build"
+  allow_failure: false
+  only:
+    - master
+  when: manual
+
 hotfix-start:
   stage: release
   dependencies:
     - release
   script:
+    - *setup_alpine
+    - *setup_git
     - mvn $MAVEN_CLI_OPTS gitflow:hotfix-start -DhotfixVersionDigitToIncrement=$HOTFIX_DIGIT -DargLine=$MAVEN_CLI_OPTS
     - git push origin HEAD
   only:
@@ -148,6 +196,8 @@ hotfix-finish:
   dependencies:
     - hotfix-start
   script:
+    - *setup_alpine
+    - *setup_git
     # Manually fix the git refs. gitflow plugin uses the heads ref, but we do not have it set up locally, however we have the remote ref
     - git symbolic-ref refs/heads/$CI_COMMIT_BRANCH refs/remotes/origin/$CI_COMMIT_BRANCH
     - mvn $MAVEN_CLI_OPTS gitflow:hotfix-finish -DskipMergeDevBranch -DhotfixBranch=$CI_COMMIT_BRANCH -DargLine=$MAVEN_CLI_OPTS

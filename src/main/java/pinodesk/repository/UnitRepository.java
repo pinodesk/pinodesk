@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import pinodesk.domain.Unit;
+import pinodesk.entity.Unit;
 
 @Repository
 public interface UnitRepository extends PagingAndSortingRepository<Unit, Long>, UnitRepositoryCustom {

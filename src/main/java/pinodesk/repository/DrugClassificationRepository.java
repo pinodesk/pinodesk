@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
-import pinodesk.domain.DrugClassification;
+import pinodesk.entity.DrugClassification;
 
 @Repository
 public interface DrugClassificationRepository

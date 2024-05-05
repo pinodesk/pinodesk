@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pinodesk</groupId>
     <artifactId>pinodesk</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
     <name>Pinodesk</name>
     <description>Pinodesk</description>
@@ -95,7 +95,7 @@
         <dependency>
             <groupId>com.mudiatech</groupId>
             <artifactId>toolbox</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.mudiatech</groupId>
@@ -292,6 +292,26 @@
             </resource>
         </resources>
         <plugins>
+            <!--
+            Resolve warning on the logs: `Using deprecated '-debug' fallback for parameter name resolution ...` 
+            https://stackoverflow.com/questions/74845574/using-deprecated-debug-fallback-for-parameter-name-resolution-compile-the-af
+            https://stackoverflow.com/questions/74600681/warning-printed-after-migrating-to-spring-boot-3-0-spring-integration-6-0/74601911#74601911
+            -->
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -408,6 +428,7 @@
                     <skipTestProject>true</skipTestProject>
                 </configuration>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
@@ -438,6 +459,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
         </plugins>
     </build>
     <profiles>
@@ -473,7 +495,8 @@
                                     <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
-                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <!-- Required by apache poi, related issue
+                                    https://github.com/traccar/traccar/issues/4126 -->
                                     <additionalModules>jdk.charsets</additionalModules>
                                     <platform>windows</platform>
                                     <winConfig>
@@ -488,6 +511,12 @@
                                         <setupLanguages>
                                             <english>compiler:Default.isl</english>
                                         </setupLanguages>
+                                        <signing>
+                                            <storetype>PKCS12</storetype>
+                                            <keystore>
+                                                src/main/resources/Mudiatech_Code_Signing_Certificate.p12</keystore>
+                                            <storepass>Secret1234</storepass>
+                                        </signing>
                                     </winConfig>
                                 </configuration>
                             </execution>
@@ -519,7 +548,8 @@
                                     <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
-                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <!-- Required by apache poi, related issue
+                                    https://github.com/traccar/traccar/issues/4126 -->
                                     <additionalModules>jdk.charsets</additionalModules>
                                     <platform>linux</platform>
                                     <linuxConfig>
@@ -557,7 +587,8 @@
                                     <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
-                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <!-- Required by apache poi, related issue
+                                    https://github.com/traccar/traccar/issues/4126 -->
                                     <additionalModules>jdk.charsets</additionalModules>
                                     <platform>linux</platform>
                                     <linuxConfig>
@@ -595,7 +626,8 @@
                                     <organizationName>${project.name}</organizationName>
                                     <mainClass>${project.mainClass}</mainClass>
                                     <bundleJre>true</bundleJre>
-                                    <!-- Required by apache poi, related issue https://github.com/traccar/traccar/issues/4126 -->
+                                    <!-- Required by apache poi, related issue
+                                    https://github.com/traccar/traccar/issues/4126 -->
                                     <additionalModules>jdk.charsets</additionalModules>
                                     <platform>mac</platform>
                                     <macConfig>
