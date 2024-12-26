@@ -455,6 +455,7 @@ public class PurchaseEditController extends CommonDataSaveController {
                 calculateBuyingPriceDiscount(locale);
             }
         });
+        ComboBoxUtils.selectIndex(cbDiscountType, 0);
     }
 
     @Override
