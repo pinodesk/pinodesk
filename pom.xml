@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pinodesk</groupId>
     <artifactId>pinodesk</artifactId>
-    <version>1.1.1</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
     <name>Pinodesk</name>
     <description>Pinodesk</description>
@@ -38,7 +38,7 @@
             <dependency>
                 <groupId>com.konghq</groupId>
                 <artifactId>unirest-java-bom</artifactId>
-                <version>4.0.12</version>
+                <version>4.4.5</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -258,7 +258,7 @@
         </dependency>
         <dependency>
             <groupId>com.konghq</groupId>
-            <artifactId>unirest-objectmapper-jackson</artifactId>
+        <artifactId>unirest-modules-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.sitture</groupId>
@@ -497,7 +497,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>windows</platform>
                                     <winConfig>
                                         <generateMsi>false</generateMsi>
@@ -550,7 +551,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>linux</platform>
                                     <linuxConfig>
                                         <generateAppImage>false</generateAppImage>
@@ -589,7 +591,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>linux</platform>
                                     <linuxConfig>
                                         <generateAppImage>false</generateAppImage>
@@ -628,7 +631,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>mac</platform>
                                     <macConfig>
                                         <generateDmg>false</generateDmg>
