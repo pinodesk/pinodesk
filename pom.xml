@@ -497,7 +497,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>windows</platform>
                                     <winConfig>
                                         <generateMsi>false</generateMsi>
@@ -550,7 +551,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>linux</platform>
                                     <linuxConfig>
                                         <generateAppImage>false</generateAppImage>
@@ -589,7 +591,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>linux</platform>
                                     <linuxConfig>
                                         <generateAppImage>false</generateAppImage>
@@ -628,7 +631,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets</additionalModules>
+                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>mac</platform>
                                     <macConfig>
                                         <generateDmg>false</generateDmg>
