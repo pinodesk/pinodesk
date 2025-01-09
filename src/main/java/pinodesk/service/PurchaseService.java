@@ -13,7 +13,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.ConfigurationConstants;
@@ -76,13 +76,13 @@ public class PurchaseService extends BaseService {
     @Autowired
     private SessionService sessionService;
 
-    @ForActivity(Activity.SEARCH_PURCHASES_BY_FILTER)
+    @TargetActivity(Activity.SEARCH_PURCHASES_BY_FILTER)
     @Cacheable(CacheNameConstants.PURCHASES_BY_FILTER)
     public List<PurchaseVM> searchPurchases(PurchaseFilterVM filter) {
         return purchaseRepository.findByFilter(filter);
     }
 
-    @ForActivity(Activity.ADD_PURCHASE)
+    @TargetActivity(Activity.ADD_PURCHASE)
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -189,7 +189,7 @@ public class PurchaseService extends BaseService {
         });
     }
 
-    @ForActivity(Activity.EDIT_PURCHASE)
+    @TargetActivity(Activity.EDIT_PURCHASE)
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -415,7 +415,7 @@ public class PurchaseService extends BaseService {
         productPriceRepository.save(pp);
     }
 
-    @ForActivity(Activity.REMOVE_PURCHASES)
+    @TargetActivity(Activity.REMOVE_PURCHASES)
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -429,13 +429,13 @@ public class PurchaseService extends BaseService {
         purchaseRepository.deleteByIdIn(ids); // Cascade delete to purchase_detail
     }
 
-    @ForActivity(Activity.GET_PURCHASE_PRODUCTS)
+    @TargetActivity(Activity.GET_PURCHASE_PRODUCTS)
     public List<PurchaseProductVM> getPurchaseProducts(Long purchaseId) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return purchaseDetailRepository.findByPurchaseIdJoinProducts(purchaseId, language);
     }
 
-    @ForActivity(Activity.SEARCH_PURCHASE_REPORT)
+    @TargetActivity(Activity.SEARCH_PURCHASE_REPORT)
     public List<PurchaseReportVM> searchPurchaseReport(PurchaseReportFilterVM filter, String language) {
         return purchaseDetailRepository.findByFilter(filter, language);
     }

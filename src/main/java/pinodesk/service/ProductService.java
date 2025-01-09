@@ -9,7 +9,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.CommonConstants;
@@ -95,28 +95,28 @@ public class ProductService extends BaseService {
     @Autowired
     private PurchaseDetailRepository purchaseDetailRepository;
 
-    @ForActivity(Activity.SEARCH_PRODUCTS_BY_FILTER)
+    @TargetActivity(Activity.SEARCH_PRODUCTS_BY_FILTER)
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
     public List<ProductVM> searchProductsByFilter(ProductFilterVM filter) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return productRepository.findByFilter(filter, language);
     }
 
-    @ForActivity(Activity.SEARCH_PRODUCTS_BY_KEYWORD)
+    @TargetActivity(Activity.SEARCH_PRODUCTS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.PRODUCTS_BY_KEYWORD)
     public List<ProductVM> searchProductsByKeyword(String keyword) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return productRepository.findByKeyword(keyword, language);
     }
 
-    @ForActivity(Activity.SEARCH_PRODUCT_BY_CODE)
+    @TargetActivity(Activity.SEARCH_PRODUCT_BY_CODE)
     @Cacheable(CacheNameConstants.PRODUCT_BY_CODE)
     public Optional<ProductVM> searchProductByCode(String code) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return productRepository.findByCode(code, language);
     }
 
-    @ForActivity(Activity.EDIT_PRODUCT)
+    @TargetActivity(Activity.EDIT_PRODUCT)
     @CacheEvict(value = {
             CacheNameConstants.PRODUCTS_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_KEYWORD,
@@ -259,7 +259,7 @@ public class ProductService extends BaseService {
         }
     }
 
-    @ForActivity(Activity.REMOVE_PRODUCTS)
+    @TargetActivity(Activity.REMOVE_PRODUCTS)
     @CacheEvict(value = {
             CacheNameConstants.PRODUCTS_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_KEYWORD,
@@ -270,7 +270,7 @@ public class ProductService extends BaseService {
         productRepository.deleteUpdateByIdIn(ids);
     }
 
-    @ForActivity(Activity.ADD_PRODUCT)
+    @TargetActivity(Activity.ADD_PRODUCT)
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -364,27 +364,27 @@ public class ProductService extends BaseService {
         return created;
     }
 
-    @ForActivity(Activity.GET_PRODUCT_PRICES_BY_PRODUCT_ID)
+    @TargetActivity(Activity.GET_PRODUCT_PRICES_BY_PRODUCT_ID)
     public List<ProductPriceVM> getProductPriceByProductId(Long productId) {
         return productPriceRepository.findByProductIdOrderByIdDesc(productId);
     }
 
-    @ForActivity(Activity.GET_PRODUCT_EXPIRIES_BY_PRODUCT_ID)
+    @TargetActivity(Activity.GET_PRODUCT_EXPIRIES_BY_PRODUCT_ID)
     public List<ProductExpiryVM> getProductExpiryByProductId(Long productId) {
         return productExpiryRepository.findByProductIdOrderByIdDesc(productId);
     }
 
-    @ForActivity(Activity.GET_PRODUCT_STOCKS_BY_PRODUCT_ID)
+    @TargetActivity(Activity.GET_PRODUCT_STOCKS_BY_PRODUCT_ID)
     public List<ProductStockVM> getProductStockByProductId(Long productId) {
         return productStockRepository.findByProductIdOrderByIdDesc(productId);
     }
 
-    @ForActivity(Activity.GET_PRODUCT_PURCHASES_BY_PRODUCT_ID)
+    @TargetActivity(Activity.GET_PRODUCT_PURCHASES_BY_PRODUCT_ID)
     public List<ProductPurchaseVM> getProductPurchaseByProductId(Long productId) {
         return purchaseDetailRepository.findByProductIdOrderByIdDesc(productId);
     }
 
-    @ForActivity(Activity.ADD_PRODUCT_EXPIRY)
+    @TargetActivity(Activity.ADD_PRODUCT_EXPIRY)
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -418,7 +418,7 @@ public class ProductService extends BaseService {
         });
     }
 
-    @ForActivity(Activity.GET_REMAINING_PRODUCT_EXPIRIES)
+    @TargetActivity(Activity.GET_REMAINING_PRODUCT_EXPIRIES)
     public List<GroupedProductExpiryVM> getRemainingProductExpiry(Long productId) {
         return productExpiryRepository.findGroupedByProductId(productId);
     }
@@ -430,7 +430,7 @@ public class ProductService extends BaseService {
         });
     }
 
-    @ForActivity(Activity.IMPORT_PRODUCTS)
+    @TargetActivity(Activity.IMPORT_PRODUCTS)
     @CacheEvict(value = {
             CacheNameConstants.PRODUCTS_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_KEYWORD,
@@ -518,7 +518,7 @@ public class ProductService extends BaseService {
         processProductImportMappings(mappings);
     }
 
-    @ForActivity(Activity.ADD_PACKAGE)
+    @TargetActivity(Activity.ADD_PACKAGE)
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -534,13 +534,13 @@ public class ProductService extends BaseService {
         packageDetailRepository.saveAll(packageDetails);
     }
 
-    @ForActivity(Activity.GET_PACKAGE_PRODUCTS_BY_PRODUCT_ID)
+    @TargetActivity(Activity.GET_PACKAGE_PRODUCTS_BY_PRODUCT_ID)
     public List<PackageProductVM> getPackageProductsByProductId(Long productId) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return packageDetailRepository.findByProductId(productId, language);
     }
 
-    @ForActivity(Activity.EDIT_PACKAGE)
+    @TargetActivity(Activity.EDIT_PACKAGE)
     @CacheEvict(value = { CacheNameConstants.PRODUCTS_BY_FILTER, CacheNameConstants.PRODUCTS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -561,7 +561,7 @@ public class ProductService extends BaseService {
      * Returns the package product with the lowest quantity from all products in
      * this package.
      */
-    @ForActivity(Activity.GET_PACKAGE_QUANTITY)
+    @TargetActivity(Activity.GET_PACKAGE_QUANTITY)
     public PackageProductVM getLowestQuantityPackageProduct(Long productId) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         List<PackageProductVM> products = packageDetailRepository.findByProductId(productId, language);

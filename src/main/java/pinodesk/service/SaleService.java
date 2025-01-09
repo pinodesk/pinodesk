@@ -5,7 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.ConfigurationConstants;
@@ -79,13 +79,13 @@ public class SaleService extends BaseService {
     @Autowired
     private SessionService sessionService;
 
-    @ForActivity(Activity.SEARCH_SALES_BY_FILTER)
+    @TargetActivity(Activity.SEARCH_SALES_BY_FILTER)
     @Cacheable(CacheNameConstants.SALES_BY_FILTER)
     public List<SaleVM> searchSales(SaleFilterVM filter) {
         return saleRepository.findByFilter(filter);
     }
 
-    @ForActivity(Activity.REMOVE_SALES)
+    @TargetActivity(Activity.REMOVE_SALES)
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -125,7 +125,7 @@ public class SaleService extends BaseService {
         return product.getGeneralSellingPrice() == null && product.getPrescriptionSellingPrice() == null;
     }
 
-    @ForActivity(Activity.ADD_SALE)
+    @TargetActivity(Activity.ADD_SALE)
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -345,7 +345,7 @@ public class SaleService extends BaseService {
         });
     }
 
-    @ForActivity(Activity.EDIT_SALE)
+    @TargetActivity(Activity.EDIT_SALE)
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -508,13 +508,13 @@ public class SaleService extends BaseService {
         });
     }
 
-    @ForActivity(Activity.GET_SALE_PRODUCTS)
+    @TargetActivity(Activity.GET_SALE_PRODUCTS)
     public List<SaleProductVM> getSaleProducts(Long saleId) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return saleDetailRepository.findBySaleIdJoinProducts(saleId, language);
     }
 
-    @ForActivity(Activity.ADD_SALE_CASHIER)
+    @TargetActivity(Activity.ADD_SALE_CASHIER)
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
             CacheNameConstants.PRODUCTS_BY_FILTER,
@@ -526,7 +526,7 @@ public class SaleService extends BaseService {
         createSale(saleAdd, Activity.ADD_SALE_CASHIER);
     }
 
-    @ForActivity(Activity.SEARCH_SALE_REPORT)
+    @TargetActivity(Activity.SEARCH_SALE_REPORT)
     public List<SaleReportVM> searchSalesReport(SaleReportFilterVM filter, String language) {
         return saleDetailRepository.findByFilter(filter, language);
     }

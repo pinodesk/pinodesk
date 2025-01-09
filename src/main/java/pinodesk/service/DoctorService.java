@@ -12,7 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.CommonConstants;
@@ -41,14 +41,14 @@ public class DoctorService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
-    @ForActivity(Activity.SEARCH_DOCTORS_BY_FILTER)
+    @TargetActivity(Activity.SEARCH_DOCTORS_BY_FILTER)
     @Cacheable(CacheNameConstants.DOCTORS_BY_FILTER)
     public List<DoctorVM> searchDoctorsByFilter(DoctorFilterVM filter) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return doctorRepository.findByFilter(filter, language);
     }
 
-    @ForActivity(Activity.REMOVE_DOCTORS)
+    @TargetActivity(Activity.REMOVE_DOCTORS)
     @CacheEvict(value = { CacheNameConstants.DOCTORS_BY_FILTER, CacheNameConstants.DOCTORS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -56,14 +56,14 @@ public class DoctorService extends BaseService {
         doctorRepository.deleteUpdateByIdIn(ids);
     }
 
-    @ForActivity(Activity.SEARCH_DOCTORS_BY_KEYWORD)
+    @TargetActivity(Activity.SEARCH_DOCTORS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.DOCTORS_BY_KEYWORD)
     public List<DoctorVM> searchDoctorsByKeyword(String keyword) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         return doctorRepository.findByKeyword(keyword.trim(), language);
     }
 
-    @ForActivity(Activity.ADD_DOCTOR)
+    @TargetActivity(Activity.ADD_DOCTOR)
     @CacheEvict(value = { CacheNameConstants.DOCTORS_BY_FILTER, CacheNameConstants.DOCTORS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -92,7 +92,7 @@ public class DoctorService extends BaseService {
         return doctorRepository.save(objectConverter.convertObject(doctorAdd, Doctor.class));
     }
 
-    @ForActivity(Activity.EDIT_DOCTOR)
+    @TargetActivity(Activity.EDIT_DOCTOR)
     @CacheEvict(value = { CacheNameConstants.DOCTORS_BY_FILTER, CacheNameConstants.DOCTORS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -145,7 +145,7 @@ public class DoctorService extends BaseService {
         return prefix + String.format("%04d", sequence); // Left pad with "0"
     }
 
-    @ForActivity(Activity.SEARCH_DOCTOR_CATEGORIES_BY_KEYWORD)
+    @TargetActivity(Activity.SEARCH_DOCTOR_CATEGORIES_BY_KEYWORD)
     @Cacheable(CacheNameConstants.DOCTOR_CATEGORIES_BY_KEYWORD)
     public List<DoctorCategoryVM> searchDoctorCategoryByKeyword(String keyword) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
@@ -153,7 +153,7 @@ public class DoctorService extends BaseService {
         return objectConverter.convertList(categories, DoctorCategoryVM.class);
     }
 
-    @ForActivity(Activity.GET_DOCTOR_CATEGORY_BY_ID)
+    @TargetActivity(Activity.GET_DOCTOR_CATEGORY_BY_ID)
     public DoctorCategoryVM getDoctorCategoryById(Long id) {
         return objectConverter.convertOptionalOrThrow(
                 doctorCategoryRepository.findByIdAndDeletedAtIsNull(id),

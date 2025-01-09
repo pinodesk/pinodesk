@@ -12,7 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.CommonConstants;
@@ -31,13 +31,13 @@ public class CustomerService extends BaseService {
     @Autowired
     private CustomerRepository customerRepository;
 
-    @ForActivity(Activity.SEARCH_CUSTOMERS_BY_FILTER)
+    @TargetActivity(Activity.SEARCH_CUSTOMERS_BY_FILTER)
     @Cacheable(CacheNameConstants.CUSTOMERS_BY_FILTER)
     public List<CustomerVM> searchCustomers(CustomerFilterVM filter) {
         return objectConverter.convertList(customerRepository.findByFilter(filter), CustomerVM.class);
     }
 
-    @ForActivity(Activity.SEARCH_CUSTOMERS_BY_KEYWORD)
+    @TargetActivity(Activity.SEARCH_CUSTOMERS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.CUSTOMERS_BY_KEYWORD)
     public List<CustomerVM> searchCustomersByKeyword(String keyword) {
         List<Customer> suppliers = StringUtils.isBlank(keyword) ?
@@ -45,7 +45,7 @@ public class CustomerService extends BaseService {
         return objectConverter.convertList(suppliers, CustomerVM.class);
     }
 
-    @ForActivity(Activity.REMOVE_CUSTOMERS)
+    @TargetActivity(Activity.REMOVE_CUSTOMERS)
     @CacheEvict(value = { CacheNameConstants.CUSTOMERS_BY_FILTER, CacheNameConstants.CUSTOMERS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -53,7 +53,7 @@ public class CustomerService extends BaseService {
         customerRepository.deleteUpdateByIdIn(ids);
     }
 
-    @ForActivity(Activity.ADD_CUSTOMER)
+    @TargetActivity(Activity.ADD_CUSTOMER)
     @CacheEvict(value = { CacheNameConstants.CUSTOMERS_BY_FILTER, CacheNameConstants.CUSTOMERS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -72,7 +72,7 @@ public class CustomerService extends BaseService {
         return customerRepository.save(objectConverter.convertObject(customerAdd, Customer.class));
     }
 
-    @ForActivity(Activity.EDIT_CUSTOMER)
+    @TargetActivity(Activity.EDIT_CUSTOMER)
     @CacheEvict(value = { CacheNameConstants.CUSTOMERS_BY_FILTER, CacheNameConstants.CUSTOMERS_BY_KEYWORD },
         allEntries = true)
     @Transactional
@@ -102,7 +102,7 @@ public class CustomerService extends BaseService {
         return customerRepository.save(customer);
     }
 
-    @ForActivity(Activity.GET_NEXT_CUSTOMER_CODE)
+    @TargetActivity(Activity.GET_NEXT_CUSTOMER_CODE)
     public String getNextCustomerCode() {
         String prefix = DateFormatUtils.format(new Date(), CommonConstants.CODE_PREFIX_DATE_PATTERN);
         Optional<Customer> customer = customerRepository.findFirstByCodeStartingWithOrderByCodeDesc(prefix);

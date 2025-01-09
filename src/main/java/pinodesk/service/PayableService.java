@@ -11,7 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.DomainError;
@@ -40,13 +40,13 @@ public class PayableService extends BaseService {
     @Autowired
     private PurchaseRepository purchaseRepository;
 
-    @ForActivity(Activity.SEARCH_PAYABLES_BY_FILTER)
+    @TargetActivity(Activity.SEARCH_PAYABLES_BY_FILTER)
     @Cacheable(CacheNameConstants.PAYABLES_BY_FILTER)
     public List<PayableVM> searchPayables(PayableFilterVM filter) {
         return payableRepository.findByFilter(filter);
     }
 
-    @ForActivity(Activity.EDIT_PAYABLE)
+    @TargetActivity(Activity.EDIT_PAYABLE)
     @CacheEvict(value = { CacheNameConstants.PAYABLES_BY_FILTER, CacheNameConstants.PURCHASES_BY_FILTER },
         allEntries = true)
     @Transactional
@@ -86,7 +86,7 @@ public class PayableService extends BaseService {
         payableRepository.save(payable);
     }
 
-    @ForActivity(Activity.GET_PAYABLE_PAYMENTS)
+    @TargetActivity(Activity.GET_PAYABLE_PAYMENTS)
     public List<PayablePaymentVM> getPayablePayments(Long payableId) {
         return objectConverter.convertList(
                 payablePaymentRepository.findByPayableIdAndDeletedAtIsNull(payableId),
