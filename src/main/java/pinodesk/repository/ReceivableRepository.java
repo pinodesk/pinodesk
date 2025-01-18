@@ -25,6 +25,7 @@ public interface ReceivableRepository extends PagingAndSortingRepository<Receiva
             join customer c on c.id = r.customer_id
             where r.completion_date is null
             and r.due_date < :dueDate
+            and r.deleted_at is null
             order by r.due_date
             """)
     List<ReceivableClosestDueDateVM> findByDueDateBefore(@Param("dueDate") LocalDate dueDate);

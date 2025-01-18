@@ -60,22 +60,22 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     Optional<Integer> findMinCreatedYear();
 
     @Query("""
-            select p.name as product_name, pc.name as category_name, p.closest_expired_date as expired_date
+            select p.id as product_id, p.name as product_name, pc.name as category_name, p.closest_expired_date as expired_date
             from product p
             join product_category pc on pc.code = p.category_code and pc.language = :language
-            where closest_expired_date < :expiredDate
-            order by closest_expired_date
+            where p.closest_expired_date < :expiredDate and p.deleted_at is null
+            order by p.closest_expired_date
             """)
     List<ProductClosestExpiryVM> findByExpiredDateBefore(
             @Param("expiredDate") LocalDate expiredDate,
             @Param("language") String language);
 
     @Query("""
-            select p.name as product_name, pc.name as category_name, p.quantity as quantity
+            select p.id as product_id, p.name as product_name, pc.name as category_name, p.quantity as quantity
             from product p
             join product_category pc on pc.code = p.category_code and pc.language = :language
-            where quantity < :quantity
-            order by quantity
+            where p.quantity < :quantity and p.deleted_at is null
+            order by p.quantity
             """)
     List<ProductOutOfStockVM> findByQuantityLowerThan(
             @Param("quantity") Integer quantity,
