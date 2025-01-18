@@ -13,6 +13,7 @@ import com.mudiatech.pandora.utility.StageUtils;
 import com.mudiatech.pandora.utility.TableViewUtils;
 import com.mudiatech.toolbox.data.StringNumberUtils;
 import com.mudiatech.toolbox.future.AsyncUtils;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -101,7 +102,7 @@ public class ReceivableMainController extends BaseController {
         TableViewUtils.setColumnValue(colRemarks, ReceivableVM::getRemarks);
         TableViewUtils.initTableColumn(
                 colAmount,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 ReceivableVM::getAmount,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(

@@ -15,6 +15,7 @@ import com.mudiatech.pandora.utility.TableViewUtils;
 import com.mudiatech.toolbox.data.StringNumberUtils;
 import com.mudiatech.toolbox.future.AsyncUtils;
 
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
@@ -197,12 +198,12 @@ public class SaleMainController extends BaseController {
                         t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION));
         TableViewUtils.initTableColumn(
                 colTotalProduct,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 SaleVM::getTotalProduct,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colTotalPayment,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 SaleVM::getTotalPayment,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
