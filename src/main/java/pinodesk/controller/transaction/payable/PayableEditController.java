@@ -132,7 +132,7 @@ public class PayableEditController extends CommonDataSaveController {
         tfSupplier.setText(currentPayable.getSupplierName());
         tfInvoiceNumber.setText(currentPayable.getInvoiceNumber());
         dpInvoiceDate.setValue(currentPayable.getInvoiceDate());
-        tfPayableAmount.setText(StringNumberUtils.toStringOrEmpty(currentPayable.getAmount(), DECIMAL_SCALE));
+        tfPayableAmount.setText(StringNumberUtils.toStringOrEmpty(currentPayable.getAmount().doubleValue()));
         dpDueDate.setValue(currentPayable.getDueDate());
         List<PayablePaymentVM> payments = payableService.getPayablePayments(currentPayable.getId());
         tblPayments.getItems().addAll(payments);
