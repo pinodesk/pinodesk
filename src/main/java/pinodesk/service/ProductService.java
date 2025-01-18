@@ -2,6 +2,7 @@ package pinodesk.service;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -190,35 +191,24 @@ public class ProductService extends BaseService {
         }
 
         if (productEdit.getExpiredDate() != null) {
-            productStockRepository.findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId)
-                    .ifPresentOrElse(ps -> {
-                        Integer finalQuantity = productExpiryRepository.findFirstByProductIdOrderByIdDesc(productId)
-                                .map(ProductExpiry::getFinalQuantity).orElse(0);
-                        Integer finalQuantityExpiredDate = productExpiryRepository
-                                .findFirstByProductIdAndExpiredDateOrderByIdDesc(
-                                        productId,
-                                        productEdit.getExpiredDate())
-                                .map(ProductExpiry::getFinalQuantityExpiredDate).orElse(0);
-                        Integer expiryQuantity = productEdit.getExpiryQuantity();
-                        Integer totalExpiryQuantity = finalQuantity + expiryQuantity;
-                        Integer totalExpiryQuantityExpiredDate = finalQuantityExpiredDate + expiryQuantity;
-                        if (totalExpiryQuantity > ps.getFinalQuantity()) {
-                            throw new DomainException(DomainError.PRODUCT_EXPIRY_QUANTITY_EXCEEDS_PRODUCT_STOCK);
-                        }
-                        ProductExpiry px = new ProductExpiry();
-                        px.setProductId(productId);
-                        px.setExpiredDate(productEdit.getExpiredDate());
-                        px.setBatchNumber(productEdit.getBatchNumber());
-                        px.setQuantityIn(expiryQuantity);
-                        px.setFinalQuantity(totalExpiryQuantity);
-                        px.setFinalQuantityExpiredDate(totalExpiryQuantityExpiredDate);
-                        px.setUserId(currentUserId);
-                        px.setActivity(activityName);
-                        px.setRemarks(productEdit.getExpiryRemarks());
-                        productExpiryRepository.save(px);
-                    }, () -> {
-                        throw new DomainException(DomainError.PRODUCT_EXPIRY_QUANTITY_EXCEEDS_PRODUCT_STOCK);
-                    });
+            Integer expiryFinalQuantity = productExpiryRepository.findFirstByProductIdOrderByIdDesc(productId)
+                    .map(ProductExpiry::getFinalQuantity).orElse(0);
+            Integer finalQuantityExpiredDate = productExpiryRepository
+                    .findFirstByProductIdAndExpiredDateOrderByIdDesc(productId, productEdit.getExpiredDate())
+                    .map(ProductExpiry::getFinalQuantityExpiredDate).orElse(0);
+            Integer totalExpiryQuantityExpiredDate = productEdit.getExpiryQuantity();
+            Integer totalExpiryQuantity = expiryFinalQuantity - finalQuantityExpiredDate
+                    + totalExpiryQuantityExpiredDate;
+            ProductExpiry px = new ProductExpiry();
+            px.setProductId(productId);
+            px.setExpiredDate(productEdit.getExpiredDate());
+            px.setBatchNumber(productEdit.getBatchNumber());
+            px.setFinalQuantity(totalExpiryQuantity);
+            px.setFinalQuantityExpiredDate(totalExpiryQuantityExpiredDate);
+            px.setUserId(currentUserId);
+            px.setActivity(activityName);
+            px.setRemarks(productEdit.getExpiryRemarks());
+            productExpiryRepository.save(px);
         }
 
         productExpiryRepository.findClosestExpiredDateAvailableByProductId(productId)
@@ -390,32 +380,26 @@ public class ProductService extends BaseService {
     @Transactional
     public void addProductExpiry(ProductExpiryAddVM productExpiryAddVM, Activity activity) {
         Long productId = productExpiryAddVM.getProductId();
-        productStockRepository.findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId).ifPresentOrElse(ps -> {
-            Integer expiryFinalQuantity = productExpiryRepository.findFirstByProductIdOrderByIdDesc(productId)
-                    .map(ProductExpiry::getFinalQuantity).orElse(0);
-            Integer finalQuantityExpiredDate = productExpiryRepository
-                    .findFirstByProductIdAndExpiredDateOrderByIdDesc(productId, productExpiryAddVM.getExpiredDate())
-                    .map(ProductExpiry::getFinalQuantityExpiredDate).orElse(0);
-            Integer totalExpiryQuantity = expiryFinalQuantity + productExpiryAddVM.getQuantity();
-            Integer totalExpiryQuantityExpiredDate = finalQuantityExpiredDate + productExpiryAddVM.getQuantity();
-            if (totalExpiryQuantity > ps.getFinalQuantity()) {
-                throw new DomainException(DomainError.PRODUCT_EXPIRY_QUANTITY_EXCEEDS_PRODUCT_STOCK);
-            }
-            ProductExpiry px = new ProductExpiry();
-            px.setProductId(productId);
-            px.setExpiredDate(productExpiryAddVM.getExpiredDate());
-            px.setBatchNumber(productExpiryAddVM.getBatchNumber());
-            px.setQuantityIn(productExpiryAddVM.getQuantity());
-            px.setActivity(activity.toString());
-            px.setUserId(sessionService.getCurrentSession().getUser().getId());
-            px.setFinalQuantity(totalExpiryQuantity);
-            px.setFinalQuantityExpiredDate(totalExpiryQuantityExpiredDate);
-            productExpiryRepository.save(px);
-            productExpiryRepository.findClosestExpiredDateAvailableByProductId(productId)
-                    .ifPresent(expiredDate -> productRepository.updateClosestExpiredDateById(productId, expiredDate));
-        }, () -> {
-            throw new DomainException(DomainError.PRODUCT_EXPIRY_QUANTITY_EXCEEDS_PRODUCT_STOCK);
-        });
+        Integer expiryFinalQuantity = productExpiryRepository.findFirstByProductIdOrderByIdDesc(productId)
+                .map(ProductExpiry::getFinalQuantity).orElse(0);
+        Integer finalQuantityExpiredDate = productExpiryRepository
+                .findFirstByProductIdAndExpiredDateOrderByIdDesc(productId, productExpiryAddVM.getExpiredDate())
+                .map(ProductExpiry::getFinalQuantityExpiredDate).orElse(0);
+        Integer totalExpiryQuantityExpiredDate = productExpiryAddVM.getQuantity();
+        Integer totalExpiryQuantity = expiryFinalQuantity - finalQuantityExpiredDate + totalExpiryQuantityExpiredDate;
+        ProductExpiry px = new ProductExpiry();
+        px.setProductId(productId);
+        px.setExpiredDate(productExpiryAddVM.getExpiredDate());
+        px.setBatchNumber(productExpiryAddVM.getBatchNumber());
+        px.setFinalQuantity(totalExpiryQuantity);
+        px.setFinalQuantityExpiredDate(totalExpiryQuantityExpiredDate);
+        px.setUserId(sessionService.getCurrentSession().getUser().getId());
+        px.setActivity(activity.toString());
+        px.setRemarks(productExpiryAddVM.getRemarks());
+        productExpiryRepository.save(px);
+        productExpiryRepository.findClosestExpiredDateAvailableByProductId(productId).ifPresentOrElse(
+                expiredDate -> productRepository.updateClosestExpiredDateById(productId, expiredDate),
+                () -> productRepository.updateClosestExpiredDateById(productId, null));
     }
 
     @TargetActivity(Activity.GET_REMAINING_PRODUCT_EXPIRIES)

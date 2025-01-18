@@ -455,11 +455,11 @@ public class PurchaseEditController extends CommonDataSaveController {
                 calculateBuyingPriceDiscount(locale);
             }
         });
-        ComboBoxUtils.selectIndex(cbDiscountType, 0);
     }
 
     @Override
     protected void initDataSaveControlValues() {
+        ComboBoxUtils.selectIndex(cbDiscountType, 0);
         Locale locale = resources.getLocale();
         currentPurchase = getPageData();
         List<PurchaseProductVM> products = purchaseService.getPurchaseProducts(currentPurchase.getId());
