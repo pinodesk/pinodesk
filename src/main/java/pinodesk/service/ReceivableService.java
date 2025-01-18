@@ -93,4 +93,8 @@ public class ReceivableService extends BaseService {
                 ReceivablePaymentVM.class);
     }
 
+    public ReceivableVM getReceivableById(Long id) {
+        return receivableRepository.findByIdJoinCustomer(id)
+                .orElseThrow(() -> new DomainException(DomainError.RECEIVABLE_NOT_FOUND_BY_ID));
+    }
 }

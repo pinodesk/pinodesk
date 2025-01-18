@@ -620,4 +620,10 @@ public class ProductService extends BaseService {
         private ProductExpiry productExpiry;
     }
 
+    public ProductVM getProductById(Long id) {
+        String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
+        return productRepository.findByIdJoinProductCategoryAndUnit(id, language)
+                .orElseThrow(() -> new DomainException(DomainError.PRODUCT_NOT_FOUND_BY_ID));
+    }
+
 }

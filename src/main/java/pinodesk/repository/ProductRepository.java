@@ -81,4 +81,18 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
             @Param("quantity") Integer quantity,
             @Param("language") String language);
 
+    @Query("""
+            select
+            a.*,
+            b.id as category_id,
+            b.name as category_name,
+            c.id as unit_id,
+            c.label as unit_label
+            from product a
+            inner join product_category b on b.code = a.category_code and b.language = :language
+            inner join unit c on c.code = a.unit_code and c.language = :language
+            where a.id = :id and a.deleted_at is null
+            """)
+    Optional<ProductVM> findByIdJoinProductCategoryAndUnit(@Param("id") Long id, @Param("language") String language);
+
 }

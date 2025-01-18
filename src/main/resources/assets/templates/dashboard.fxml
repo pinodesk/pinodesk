@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../css/pinodesk.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinodesk.controller.DashboardController">
+<VBox prefHeight="623.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../css/pinodesk.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinodesk.controller.DashboardController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -279,9 +279,12 @@
                         </VBox>
                      </children>
                   </GridPane>
-                  <VBox alignment="TOP_CENTER" style="-fx-border-color: #bebebe;">
+                  <VBox alignment="TOP_CENTER">
                      <children>
-                        <Label text="%lbl_monthly_expense_and_revenue" />
+                        <Label fx:id="lblMonthlyExpenseAndRevenue" text="%lbl_monthly_expense_and_revenue">
+                           <font>
+                              <Font size="16.0" />
+                           </font></Label>
                         <BarChart fx:id="chartMonthlyExpenseAndRevenue" barGap="0.0" verticalGridLinesVisible="false">
                            <xAxis>
                               <CategoryAxis side="BOTTOM" />
@@ -295,7 +298,7 @@
                         <Insets top="10.0" />
                      </padding>
                   </VBox>
-                  <GridPane hgap="10.0" vgap="10.0">
+                  <GridPane hgap="20.0" vgap="20.0">
                      <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" percentWidth="50.0" prefWidth="100.0" />
@@ -306,9 +309,13 @@
                         <RowConstraints vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
-                        <VBox spacing="10.0">
+                        <VBox spacing="5.0">
                            <children>
-                              <Label text="%lbl_best_selling_products" />
+                              <Label fx:id="lblBestSellingProducts" text="%lbl_best_selling_products">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font></Label>
+                              <Label fx:id="lblBestSellingProductsDesc" text="%lbl_best_selling_products_desc" textFill="#838383" />
                               <TableView fx:id="tblBestSellingProducts" prefHeight="200.0" prefWidth="200.0">
                                 <columns>
                                   <TableColumn fx:id="colBestSellingProductName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
@@ -319,9 +326,13 @@
                               </TableView>
                            </children>
                         </VBox>
-                        <VBox spacing="10.0" GridPane.columnIndex="1">
+                        <VBox spacing="5.0" GridPane.columnIndex="1">
                            <children>
-                              <Label text="%lbl_lowest_selling_products" />
+                              <Label fx:id="lblLowestSellingProduct" text="%lbl_lowest_selling_products">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font></Label>
+                              <Label fx:id="lblLowestSellingProductsDesc" text="%lbl_lowest_selling_products_desc" textFill="#838383" />
                               <TableView fx:id="tblLowestSellingProducts" prefHeight="200.0" prefWidth="200.0">
                                  <columns>
                                     <TableColumn fx:id="colLowestSellingProductName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
@@ -332,9 +343,13 @@
                               </TableView>
                            </children>
                         </VBox>
-                        <VBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <Label text="%lbl_products_out_of_stock" />
+                              <Label fx:id="lblProductsOutOfStock" text="%lbl_products_out_of_stock">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font></Label>
+                              <Label fx:id="lblProductsOutOfStockDesc" text="%lbl_products_out_of_stock_desc" textFill="#838383" />
                               <TableView fx:id="tblProductOutOfStock" prefHeight="200.0" prefWidth="200.0">
                                  <columns>
                                     <TableColumn fx:id="colProductOutOfStockName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
@@ -344,9 +359,13 @@
                               </TableView>
                            </children>
                         </VBox>
-                        <VBox spacing="10.0" GridPane.rowIndex="1">
+                        <VBox spacing="5.0" GridPane.rowIndex="1">
                            <children>
-                              <Label text="%lbl_product_closest_expiries" />
+                              <Label fx:id="lblProductClosestExpiries" text="%lbl_product_closest_expiries">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font></Label>
+                              <Label fx:id="lblProductClosestExpiriesDesc" text="%lbl_product_closest_expiries_desc" textFill="#838383" />
                               <TableView fx:id="tblProductClosestExpiry" prefHeight="200.0" prefWidth="200.0">
                                  <columns>
                                     <TableColumn fx:id="colProductClosestExpiryName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_name" />
@@ -356,9 +375,13 @@
                               </TableView>
                            </children>
                         </VBox>
-                        <VBox spacing="10.0" GridPane.rowIndex="2">
+                        <VBox spacing="5.0" GridPane.rowIndex="2">
                            <children>
-                              <Label text="%lbl_payable_closest_due_dates" />
+                              <Label fx:id="lblPayableClosestDueDates" text="%lbl_payable_closest_due_dates">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font></Label>
+                              <Label fx:id="lblPayableClosestDueDatesDesc" text="%lbl_payable_closest_due_dates_desc" textFill="#838383" />
                               <TableView fx:id="tblPayableClosestDueDate" prefHeight="200.0" prefWidth="200.0">
                                  <columns>
                                     <TableColumn fx:id="colPayableClosestDueDateSupplierName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_supplier_name" />
@@ -369,9 +392,13 @@
                               </TableView>
                            </children>
                         </VBox>
-                        <VBox spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                            <children>
-                              <Label text="%lbl_receivable_closest_due_dates" />
+                              <Label fx:id="lblReceivableClosestDueDates" text="%lbl_receivable_closest_due_dates">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font></Label>
+                              <Label fx:id="lblReceivableClosestDueDatesDesc" text="%lbl_receivable_closest_due_dates_desc" textFill="#838383" />
                               <TableView fx:id="tblReceivableClosestDueDate" prefHeight="200.0" prefWidth="200.0">
                                  <columns>
                                     <TableColumn fx:id="colReceivableClosestDueDateCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />

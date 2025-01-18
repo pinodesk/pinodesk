@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pinodesk.entity.Payable;
 import pinodesk.viewmodel.PayableClosestDueDateVM;
+import pinodesk.viewmodel.PayableVM;
 
 @Repository
 public interface PayableRepository extends PagingAndSortingRepository<Payable, Long>, PayableRepositoryCustom {
@@ -34,5 +35,13 @@ public interface PayableRepository extends PagingAndSortingRepository<Payable, L
     @Modifying
     @Query("delete from payable where purchase_id in (:purchaseIds)")
     Long deleteByPurchaseIdIn(@Param("purchaseIds") List<Long> purchaseIds);
+
+    @Query("""
+            select a.*, b.id as supplier_id, b.name as supplier_name
+            from payable a
+            inner join supplier b on b.id = a.supplier_id
+            where a.id = :id and a.deleted_at is null
+            """)
+    Optional<PayableVM> findByIdJoinSupplier(@Param("id") Long id);
 
 }

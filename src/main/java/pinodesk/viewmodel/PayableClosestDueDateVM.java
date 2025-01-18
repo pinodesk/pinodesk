@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class PayableClosestDueDateVM {
+    private Long payableId;
     private String supplierName;
     private String invoiceNumber;
     private LocalDate invoiceDate;

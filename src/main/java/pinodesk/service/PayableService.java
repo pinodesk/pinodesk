@@ -22,11 +22,11 @@ import pinodesk.entity.Purchase;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.PayablePaymentRepository;
 import pinodesk.repository.PayableRepository;
+import pinodesk.repository.PurchaseRepository;
 import pinodesk.viewmodel.PayableEditVM;
 import pinodesk.viewmodel.PayableFilterVM;
 import pinodesk.viewmodel.PayablePaymentVM;
 import pinodesk.viewmodel.PayableVM;
-import pinodesk.repository.PurchaseRepository;
 
 @Service
 public class PayableService extends BaseService {
@@ -91,6 +91,11 @@ public class PayableService extends BaseService {
         return objectConverter.convertList(
                 payablePaymentRepository.findByPayableIdAndDeletedAtIsNull(payableId),
                 PayablePaymentVM.class);
+    }
+
+    public PayableVM getPayableById(Long id) {
+        return payableRepository.findByIdJoinSupplier(id)
+                .orElseThrow(() -> new DomainException(DomainError.PAYABLE_NOT_FOUND_BY_ID));
     }
 
 }

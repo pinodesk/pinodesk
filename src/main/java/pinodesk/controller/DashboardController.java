@@ -17,7 +17,9 @@ import com.mudiatech.pandora.factory.LocalDateCellFactory;
 import com.mudiatech.pandora.factory.NumberCellFactory;
 import com.mudiatech.pandora.model.SimpleComboBoxModel;
 import com.mudiatech.pandora.utility.ComboBoxUtils;
+import com.mudiatech.pandora.utility.EventUtils;
 import com.mudiatech.pandora.utility.ScrollPaneUtils;
+import com.mudiatech.pandora.utility.StageUtils;
 import com.mudiatech.pandora.utility.TableViewUtils;
 
 import javafx.application.Platform;
@@ -34,10 +36,15 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
+import lombok.extern.slf4j.Slf4j;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
+import pinodesk.constant.Page;
 import pinodesk.constant.StyleConstants;
 import pinodesk.service.DashboardService;
+import pinodesk.service.PayableService;
+import pinodesk.service.ProductService;
+import pinodesk.service.ReceivableService;
 import pinodesk.util.SpringUtils;
 import pinodesk.util.TaskUtils;
 import pinodesk.viewmodel.BestSellingProductVM;
@@ -45,12 +52,16 @@ import pinodesk.viewmodel.LowestSellingProductVM;
 import pinodesk.viewmodel.MonthlyPurchaseTransactionVM;
 import pinodesk.viewmodel.MonthlySaleTransactionVM;
 import pinodesk.viewmodel.PayableClosestDueDateVM;
+import pinodesk.viewmodel.PayableVM;
 import pinodesk.viewmodel.ProductClosestExpiryVM;
 import pinodesk.viewmodel.ProductOutOfStockVM;
+import pinodesk.viewmodel.ProductVM;
 import pinodesk.viewmodel.ReceivableClosestDueDateVM;
+import pinodesk.viewmodel.ReceivableVM;
 import pinodesk.viewmodel.TotalPurchaseTransactionVM;
 import pinodesk.viewmodel.TotalSaleTransactionVM;
 
+@Slf4j
 public class DashboardController extends BaseController {
 
     @FXML
@@ -172,9 +183,18 @@ public class DashboardController extends BaseController {
 
     private DashboardService dashboardService;
 
+    private ProductService productService;
+
+    private PayableService payableService;
+
+    private ReceivableService receivableService;
+
     @Override
     protected void initServices() {
         dashboardService = SpringUtils.getBean(DashboardService.class);
+        productService = SpringUtils.getBean(ProductService.class);
+        payableService = SpringUtils.getBean(PayableService.class);
+        receivableService = SpringUtils.getBean(ReceivableService.class);
     }
 
     @Override
@@ -245,6 +265,11 @@ public class DashboardController extends BaseController {
         TableViewUtils.enableSort(false, tblPayableClosestDueDate);
         TableViewUtils.enableSort(false, tblReceivableClosestDueDate);
 
+        registerKeyListenersOnTableProductClosestExpiry(locale);
+        registerKeyListenersOnTableProductOutOfStock(locale);
+        registerKeyListenersOnTablePayableClosestDueDate();
+        registerKeyListenersOnTableReceivableClosestDueDate();
+
         List<SimpleComboBoxModel> years = dashboardService.getYears().stream()
                 .map(y -> new SimpleComboBoxModel(y, Integer.toString(y))).toList();
         ComboBoxUtils.initSimple(cbYear, years);
@@ -301,8 +326,8 @@ public class DashboardController extends BaseController {
         loadLowestSellingProducts(locale, start, end);
         loadProductClosestExpiries(locale);
         loadProductsOutOfStock(locale);
-        loadPayableClosestDueDates(locale);
-        loadReceivableClosestDueDates(locale);
+        loadPayableClosestDueDates();
+        loadReceivableClosestDueDates();
     }
 
     private void loadMonthlyTransactionChart(Locale locale, LocalDate start, LocalDate end) {
@@ -446,11 +471,11 @@ public class DashboardController extends BaseController {
         });
     }
 
-    private void loadPayableClosestDueDates(Locale locale) {
+    private void loadPayableClosestDueDates() {
         tblPayableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblPayableClosestDueDate.setItems(FXCollections.observableArrayList());
         TaskUtils.runTask("Load payable closest due dates", () -> {
-            List<PayableClosestDueDateVM> list = dashboardService.getPayableClosestDueDates(locale.getLanguage());
+            List<PayableClosestDueDateVM> list = dashboardService.getPayableClosestDueDates();
             Platform.runLater(() -> {
                 if (list.isEmpty()) {
                     tblPayableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
@@ -461,11 +486,11 @@ public class DashboardController extends BaseController {
         });
     }
 
-    private void loadReceivableClosestDueDates(Locale locale) {
+    private void loadReceivableClosestDueDates() {
         tblReceivableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
         tblReceivableClosestDueDate.setItems(FXCollections.observableArrayList());
         TaskUtils.runTask("Load receivable closest due dates", () -> {
-            List<ReceivableClosestDueDateVM> list = dashboardService.getReceivableClosestDueDates(locale.getLanguage());
+            List<ReceivableClosestDueDateVM> list = dashboardService.getReceivableClosestDueDates();
             Platform.runLater(() -> {
                 if (list.isEmpty()) {
                     tblReceivableClosestDueDate.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
@@ -474,6 +499,132 @@ public class DashboardController extends BaseController {
                 tblReceivableClosestDueDate.setItems(FXCollections.observableList(list));
             });
         });
+    }
+
+    private void registerKeyListenersOnTableProductClosestExpiry(Locale locale) {
+        tblProductClosestExpiry.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                handleActionTableProductClosestExpiry(locale);
+            }
+        });
+        tblProductClosestExpiry.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                handleActionTableProductClosestExpiry(locale);
+            }
+        });
+    }
+
+    private void registerKeyListenersOnTableProductOutOfStock(Locale locale) {
+        tblProductOutOfStock.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                handleActionTableProductOutOfStock(locale);
+            }
+        });
+        tblProductOutOfStock.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                handleActionTableProductOutOfStock(locale);
+            }
+        });
+    }
+
+    private void handleActionTableProductClosestExpiry(Locale locale) {
+        if (TableViewUtils.hasItemSelected(tblProductClosestExpiry)) {
+            ProductClosestExpiryVM product = TableViewUtils.getSelectedItem(tblProductClosestExpiry);
+            handleEditProduct(locale, product.getProductId());
+        }
+    }
+
+    private void handleActionTableProductOutOfStock(Locale locale) {
+        if (TableViewUtils.hasItemSelected(tblProductOutOfStock)) {
+            ProductOutOfStockVM product = TableViewUtils.getSelectedItem(tblProductOutOfStock);
+            handleEditProduct(locale, product.getProductId());
+        }
+    }
+
+    private void handleEditProduct(Locale locale, Long productId) {
+        TaskUtils.runTask("Load product by id", () -> {
+            ProductVM p = productService.getProductById(productId);
+            setPageData(p);
+            Platform.runLater(() -> {
+                StageUtils.modal(Page.CATALOG_PRODUCT_EDIT, event -> {
+                    getPageData();
+                    loadProductsOutOfStock(locale);
+                    loadProductClosestExpiries(locale);
+                });
+            });
+        }, throwable -> Platform.runLater(() -> {
+            handleException(throwable);
+        }));
+    }
+
+    private void registerKeyListenersOnTablePayableClosestDueDate() {
+        tblPayableClosestDueDate.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                handleActionTablePayableClosestDueDate();
+            }
+        });
+        tblPayableClosestDueDate.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                handleActionTablePayableClosestDueDate();
+            }
+        });
+    }
+
+    private void handleActionTablePayableClosestDueDate() {
+        if (TableViewUtils.hasItemSelected(tblPayableClosestDueDate)) {
+            PayableClosestDueDateVM payable = TableViewUtils.getSelectedItem(tblPayableClosestDueDate);
+            handleEditPayable(payable.getPayableId());
+        }
+    }
+
+    private void handleEditPayable(Long payableId) {
+        TaskUtils.runTask("Load payable by id", () -> {
+            PayableVM p = payableService.getPayableById(payableId);
+            setPageData(p);
+            Platform.runLater(() -> {
+                StageUtils.modal(Page.TRANSACTION_PAYABLE_EDIT, event -> {
+                    getPageData();
+                    loadPayableClosestDueDates();
+                });
+            });
+        }, throwable -> Platform.runLater(() -> {
+            handleException(throwable);
+        }));
+    }
+
+    private void registerKeyListenersOnTableReceivableClosestDueDate() {
+        tblReceivableClosestDueDate.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                handleActionTableReceivableClosestDueDate();
+            }
+        });
+        tblReceivableClosestDueDate.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                handleActionTableReceivableClosestDueDate();
+            }
+        });
+    }
+
+    private void handleActionTableReceivableClosestDueDate() {
+        if (TableViewUtils.hasItemSelected(tblReceivableClosestDueDate)) {
+            ReceivableClosestDueDateVM receivable = TableViewUtils.getSelectedItem(tblReceivableClosestDueDate);
+            handleEditReceivable(receivable.getReceivableId());
+        }
+    }
+
+    private void handleEditReceivable(Long receivableId) {
+        TaskUtils.runTask("Load receivable by id", () -> {
+            ReceivableVM r = receivableService.getReceivableById(receivableId);
+            setPageData(r);
+            Platform.runLater(() -> {
+                StageUtils.modal(Page.TRANSACTION_RECEIVABLE_EDIT, event -> {
+                    getPageData();
+                    loadReceivableClosestDueDates();
+                });
+            });
+        }, throwable -> Platform.runLater(() -> {
+            handleException(throwable);
+        }));
     }
 
 }
