@@ -9,6 +9,6 @@ import pinodesk.constant.Activity;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ForActivity {
+public @interface TargetActivity {
     Activity value();
 }

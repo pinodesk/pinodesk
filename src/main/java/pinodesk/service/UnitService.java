@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.ConfigurationConstants;
@@ -26,13 +26,13 @@ public class UnitService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
-    @ForActivity(Activity.GET_ALL_UNITS)
+    @TargetActivity(Activity.GET_ALL_UNITS)
     @Cacheable(CacheNameConstants.UNITS_ALL)
     public List<UnitVM> getAllUnits() {
         return objectConverter.convertList(unitRepository.findByDeletedAtIsNull(), UnitVM.class);
     }
 
-    @ForActivity(Activity.SEARCH_UNITS_BY_KEYWORD)
+    @TargetActivity(Activity.SEARCH_UNITS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.UNITS_BY_KEYWORD)
     public List<UnitVM> searchUnitByKeyword(String keyword) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
@@ -45,7 +45,7 @@ public class UnitService extends BaseService {
         return objectConverter.convertList(units, UnitVM.class);
     }
 
-    @ForActivity(Activity.GET_UNIT_BY_ID)
+    @TargetActivity(Activity.GET_UNIT_BY_ID)
     public UnitVM getUnitById(Long id) {
         return objectConverter.convertOptionalOrThrow(
                 unitRepository.findByIdAndDeletedAtIsNull(id),

@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import pinodesk.entity.Payable;
 import pinodesk.viewmodel.PayableClosestDueDateVM;
+import pinodesk.viewmodel.PayableVM;
 
 @Repository
 public interface PayableRepository extends PagingAndSortingRepository<Payable, Long>, PayableRepositoryCustom {
@@ -20,12 +21,13 @@ public interface PayableRepository extends PagingAndSortingRepository<Payable, L
     Optional<Payable> findByPurchaseId(Long purchaseId);
 
     @Query("""
-            select s.name as supplier_name, p.invoice_number, p.invoice_date, p.due_date
+            select p.id as payable_id, s.name as supplier_name, p.invoice_number, p.invoice_date, p.due_date
             from payable p
             join supplier s on s.id = p.supplier_id
-            where completion_date is null
-            and due_date < :dueDate
-            order by due_date
+            where p.completion_date is null
+            and p.due_date < :dueDate
+            and p.deleted_at is null
+            order by p.due_date
             """)
     List<PayableClosestDueDateVM> findByDueDateBefore(@Param("dueDate") LocalDate dueDate);
 
@@ -33,5 +35,13 @@ public interface PayableRepository extends PagingAndSortingRepository<Payable, L
     @Modifying
     @Query("delete from payable where purchase_id in (:purchaseIds)")
     Long deleteByPurchaseIdIn(@Param("purchaseIds") List<Long> purchaseIds);
+
+    @Query("""
+            select a.*, b.id as supplier_id, b.name as supplier_name
+            from payable a
+            inner join supplier b on b.id = a.supplier_id
+            where a.id = :id and a.deleted_at is null
+            """)
+    Optional<PayableVM> findByIdJoinSupplier(@Param("id") Long id);
 
 }

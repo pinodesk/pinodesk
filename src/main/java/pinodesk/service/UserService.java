@@ -9,7 +9,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.CommonConstants;
@@ -33,13 +33,13 @@ public class UserService extends BaseService {
     @Autowired
     private UserRepository userRepository;
 
-    @ForActivity(Activity.SEARCH_USERS_BY_FILTER)
+    @TargetActivity(Activity.SEARCH_USERS_BY_FILTER)
     @Cacheable(CacheNameConstants.USERS_BY_FILTER)
     public List<UserVM> searchUsersByFilter(UserFilterVM filter) {
         return userRepository.findByFilter(filter);
     }
 
-    @ForActivity(Activity.REMOVE_USERS)
+    @TargetActivity(Activity.REMOVE_USERS)
     @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
     @Transactional
     public void removeUsers(List<Long> ids) {
@@ -55,7 +55,7 @@ public class UserService extends BaseService {
         }
     }
 
-    @ForActivity(Activity.ADD_USER)
+    @TargetActivity(Activity.ADD_USER)
     @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
     @Transactional
     public User createUser(UserAddVM userAdd) {
@@ -72,7 +72,7 @@ public class UserService extends BaseService {
         return userRepository.save(user);
     }
 
-    @ForActivity(Activity.EDIT_USER)
+    @TargetActivity(Activity.EDIT_USER)
     @CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
     @Transactional
     public User updateUser(UserEditVM userEdit, Long userId) {

@@ -15,6 +15,7 @@ import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import com.mudiatech.pandora.factory.LocalDateCellFactory;
 import com.mudiatech.pandora.factory.NumberCellFactory;
 import com.mudiatech.pandora.model.SimpleComboBoxModel;
@@ -342,17 +343,17 @@ public class SaleEditController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colProductCategory, SaleProductVM::getProductCategoryName);
         TableViewUtils.initTableColumn(
                 colSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 SaleProductVM::getSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colQuantity,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 SaleProductVM::getSaleQuantity,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colSubtotal,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 SaleProductVM::getSubtotal,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(

@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import java.util.function.Predicate;
 
 import com.mudiatech.pandora.factory.LocalDateCellFactory;
@@ -289,17 +290,17 @@ public class SaleAddController extends CommonDataSaveController {
         TableViewUtils.setColumnValue(colProductCategory, SaleProductVM::getProductCategoryName);
         TableViewUtils.initTableColumn(
                 colSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 SaleProductVM::getSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colQuantity,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 SaleProductVM::getSaleQuantity,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colSubtotal,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 SaleProductVM::getSubtotal,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(

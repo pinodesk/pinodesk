@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Locale;
 
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import com.mudiatech.pandora.factory.LocalDateCellFactory;
 import com.mudiatech.pandora.factory.LocalDateTimeCellFactory;
 import com.mudiatech.pandora.factory.NumberCellFactory;
@@ -101,7 +102,7 @@ public class PayableMainController extends BaseController {
         TableViewUtils.setColumnValue(colRemarks, PayableVM::getRemarks);
         TableViewUtils.initTableColumn(
                 colAmount,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PayableVM::getAmount,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(

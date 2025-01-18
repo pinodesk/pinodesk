@@ -112,7 +112,7 @@ public class DashboardService extends BaseService {
 
     public List<ProductClosestExpiryVM> getProductClosestExpiries(String language) {
         LocalDate now = LocalDate.now();
-        LocalDate next3month = now.plusMonths(4).withDayOfMonth(1);
+        LocalDate next3month = now.plusMonths(3);
         return productRepository.findByExpiredDateBefore(next3month, language);
     }
 
@@ -120,16 +120,16 @@ public class DashboardService extends BaseService {
         return productRepository.findByQuantityLowerThan(10, language);
     }
 
-    public List<PayableClosestDueDateVM> getPayableClosestDueDates(String language) {
+    public List<PayableClosestDueDateVM> getPayableClosestDueDates() {
         LocalDate now = LocalDate.now();
-        LocalDate next1month = now.plusMonths(2).withDayOfMonth(1);
-        return payableRepository.findByDueDateBefore(next1month);
+        LocalDate next2month = now.plusMonths(2);
+        return payableRepository.findByDueDateBefore(next2month);
     }
 
-    public List<ReceivableClosestDueDateVM> getReceivableClosestDueDates(String language) {
+    public List<ReceivableClosestDueDateVM> getReceivableClosestDueDates() {
         LocalDate now = LocalDate.now();
-        LocalDate next1month = now.plusMonths(2).withDayOfMonth(1);
-        return receivableRepository.findByDueDateBefore(next1month);
+        LocalDate next2month = now.plusMonths(2);
+        return receivableRepository.findByDueDateBefore(next2month);
     }
 
 }

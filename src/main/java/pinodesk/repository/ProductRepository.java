@@ -60,25 +60,39 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
     Optional<Integer> findMinCreatedYear();
 
     @Query("""
-            select p.name as product_name, pc.name as category_name, p.closest_expired_date as expired_date
+            select p.id as product_id, p.name as product_name, pc.name as category_name, p.closest_expired_date as expired_date
             from product p
             join product_category pc on pc.code = p.category_code and pc.language = :language
-            where closest_expired_date < :expiredDate
-            order by closest_expired_date
+            where p.closest_expired_date < :expiredDate and p.deleted_at is null
+            order by p.closest_expired_date
             """)
     List<ProductClosestExpiryVM> findByExpiredDateBefore(
             @Param("expiredDate") LocalDate expiredDate,
             @Param("language") String language);
 
     @Query("""
-            select p.name as product_name, pc.name as category_name, p.quantity as quantity
+            select p.id as product_id, p.name as product_name, pc.name as category_name, p.quantity as quantity
             from product p
             join product_category pc on pc.code = p.category_code and pc.language = :language
-            where quantity < :quantity
-            order by quantity
+            where p.quantity < :quantity and p.deleted_at is null
+            order by p.quantity
             """)
     List<ProductOutOfStockVM> findByQuantityLowerThan(
             @Param("quantity") Integer quantity,
             @Param("language") String language);
+
+    @Query("""
+            select
+            a.*,
+            b.id as category_id,
+            b.name as category_name,
+            c.id as unit_id,
+            c.label as unit_label
+            from product a
+            inner join product_category b on b.code = a.category_code and b.language = :language
+            inner join unit c on c.code = a.unit_code and c.language = :language
+            where a.id = :id and a.deleted_at is null
+            """)
+    Optional<ProductVM> findByIdJoinProductCategoryAndUnit(@Param("id") Long id, @Param("language") String language);
 
 }

@@ -13,6 +13,7 @@ import com.mudiatech.pandora.utility.TextFieldUtils;
 import com.mudiatech.pandora.utility.ValidationResult;
 import com.mudiatech.toolbox.data.StringNumberUtils;
 
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -114,7 +115,7 @@ public class ReceivableEditController extends CommonDataSaveController {
         tblPayments.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.initTableColumn(
                 colAmount,
-                new NumberCellFactory<>(resources.getLocale()),
+                new NumberCellFactory<>(DECIMAL_SCALE, resources.getLocale()),
                 ReceivablePaymentVM::getAmount,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(

@@ -11,7 +11,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.DomainError;
@@ -40,13 +40,13 @@ public class ReceivableService extends BaseService {
     @Autowired
     private SaleRepository saleRepository;
 
-    @ForActivity(Activity.SEARCH_RECEIVABLES_BY_FILTER)
+    @TargetActivity(Activity.SEARCH_RECEIVABLES_BY_FILTER)
     @Cacheable(CacheNameConstants.RECEIVABLES_BY_FILTER)
     public List<ReceivableVM> searchReceivables(ReceivableFilterVM filter) {
         return receivableRepository.findByFilter(filter);
     }
 
-    @ForActivity(Activity.EDIT_RECEIVABLE)
+    @TargetActivity(Activity.EDIT_RECEIVABLE)
     @CacheEvict(value = { CacheNameConstants.RECEIVABLES_BY_FILTER, CacheNameConstants.SALES_BY_FILTER },
         allEntries = true)
     @Transactional
@@ -86,11 +86,15 @@ public class ReceivableService extends BaseService {
         receivableRepository.save(receivable);
     }
 
-    @ForActivity(Activity.GET_RECEIVABLE_PAYMENTS)
+    @TargetActivity(Activity.GET_RECEIVABLE_PAYMENTS)
     public List<ReceivablePaymentVM> getReceivablePayments(Long receivableId) {
         return objectConverter.convertList(
                 receivablePaymentRepository.findByReceivableIdAndDeletedAtIsNull(receivableId),
                 ReceivablePaymentVM.class);
     }
 
+    public ReceivableVM getReceivableById(Long id) {
+        return receivableRepository.findByIdJoinCustomer(id)
+                .orElseThrow(() -> new DomainException(DomainError.RECEIVABLE_NOT_FOUND_BY_ID));
+    }
 }

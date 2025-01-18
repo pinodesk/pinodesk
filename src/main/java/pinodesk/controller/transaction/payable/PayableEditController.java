@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import com.mudiatech.pandora.factory.LocalDateCellFactory;
 import com.mudiatech.pandora.factory.NumberCellFactory;
 import com.mudiatech.pandora.utility.ControlValidator;
@@ -89,7 +90,7 @@ public class PayableEditController extends CommonDataSaveController {
             tblPayments.getItems().remove(idx);
         }
         PayablePaymentVM vm = new PayablePaymentVM();
-        vm.setAmount(StringNumberUtils.toBigDecimalOrNull(tfPaymentAmount.getText()));
+        vm.setAmount(StringNumberUtils.toBigDecimalOrNull(tfPaymentAmount.getText(), DECIMAL_SCALE));
         vm.setPaymentDate(paymentDate);
         tblPayments.getItems().add(vm);
         tfPaymentAmount.setText("");
@@ -114,14 +115,14 @@ public class PayableEditController extends CommonDataSaveController {
         tblPayments.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         TableViewUtils.initTableColumn(
                 colAmount,
-                new NumberCellFactory<>(resources.getLocale()),
+                new NumberCellFactory<>(DECIMAL_SCALE, resources.getLocale()),
                 PayablePaymentVM::getAmount,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colPaymentDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 PayablePaymentVM::getPaymentDate);
-        TextFieldUtils.setDigitTextFields(tfPayableAmount);
+        TextFieldUtils.setDecimalTextFields(tfPayableAmount, tfPaymentAmount);
         setFocused(tfPaymentAmount);
     }
 
@@ -131,7 +132,7 @@ public class PayableEditController extends CommonDataSaveController {
         tfSupplier.setText(currentPayable.getSupplierName());
         tfInvoiceNumber.setText(currentPayable.getInvoiceNumber());
         dpInvoiceDate.setValue(currentPayable.getInvoiceDate());
-        tfPayableAmount.setText(StringNumberUtils.toStringOrEmpty(currentPayable.getAmount()));
+        tfPayableAmount.setText(StringNumberUtils.toStringOrEmpty(currentPayable.getAmount(), DECIMAL_SCALE));
         dpDueDate.setValue(currentPayable.getDueDate());
         List<PayablePaymentVM> payments = payableService.getPayablePayments(currentPayable.getId());
         tblPayments.getItems().addAll(payments);
@@ -160,7 +161,7 @@ public class PayableEditController extends CommonDataSaveController {
         cv.validateCustom(() -> paymentDate == null, MessageCode.ERROR_INVALID_PAYMENT_DATE);
         cv.validatePositive(tfPaymentAmount, MessageCode.ERROR_INVALID_AMOUNT);
         cv.validateCustom(() -> {
-            BigDecimal total = StringNumberUtils.toBigDecimalOrZero(tfPaymentAmount.getText());
+            BigDecimal total = StringNumberUtils.toBigDecimalOrZero(tfPaymentAmount.getText(), DECIMAL_SCALE);
             for (PayablePaymentVM vm : tblPayments.getItems()) {
                 total = total.add(vm.getAmount());
             }

@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
-import pinodesk.annotation.ForActivity;
+import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
 import pinodesk.constant.DomainError;
@@ -84,13 +84,13 @@ public class ConfigurationService extends BaseService {
     private static final String BACKUP_FILENAME_ENCRYPTED = "backup.dat";
     private static final String BACKUP_PROPERTIES = "backup.properties";
 
-    @ForActivity(Activity.GET_CONFIGURATION_BY_CODE)
+    @TargetActivity(Activity.GET_CONFIGURATION_BY_CODE)
     @Cacheable(CacheNameConstants.CONFIGURATION_BY_CODE)
     public String getConfiguration(String code) {
         return configurationRepository.findByCodeAndDeletedAtIsNull(code).map(Configuration::getValue).orElse(null);
     }
 
-    @ForActivity(Activity.GET_CONFIGURATION_MAP)
+    @TargetActivity(Activity.GET_CONFIGURATION_MAP)
     @Cacheable(CacheNameConstants.CONFIGURATION_MAP)
     public Map<String, String> getConfigurationMap() {
         return configurationRepository.findByDeletedAtIsNull().stream()
@@ -189,7 +189,7 @@ public class ConfigurationService extends BaseService {
         }
     }
 
-    @ForActivity(Activity.UPDATE_CONFIGURATION)
+    @TargetActivity(Activity.UPDATE_CONFIGURATION)
     @Transactional
     public void updateConfiguration(Map<String, String> configurationMap) {
         configurationMap.entrySet()

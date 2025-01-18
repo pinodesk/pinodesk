@@ -389,12 +389,12 @@ public class PurchaseAddController extends CommonDataSaveController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colGeneralSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PurchaseProductVM::getGeneralSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colPrescriptionSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PurchaseProductVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
