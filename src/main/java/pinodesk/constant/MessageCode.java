@@ -58,6 +58,7 @@ public enum MessageCode implements IMessage {
     RESTORE_DATABASE_ERROR,
     BACKUP_DATABASE_ERROR,
     CONFIRMATION_RESTORE_DATA,
+    CONFIRMATION_ACTIVATE_LATER,
 
     // Product
     SUCCESS_ADD_PRODUCT,

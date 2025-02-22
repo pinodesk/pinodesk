@@ -11,4 +11,7 @@ public interface ConfigurationConstants {
     String PRINTER_NAME = "printer_name";
     String PRINTER_FOOTER = "printer_footer";
     String PRINTER_FOOTER_POWERED_BY = "printer_footer_powered_by";
+    String INSTALL_DATETIME = "install_datetime";
+    String TRIAL_PERIOD_DAYS = "trial_period_days";
+    String ACTIVATE_LATER = "activate_later";
 }

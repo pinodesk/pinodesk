@@ -1,5 +1,9 @@
 package pinodesk.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -27,19 +31,41 @@ public class SplashController {
     @FXML
     private AnchorPane contentPane;
 
+    private boolean isActivationRequired(Map<String, String> configurationMap) {
+        String activateLater = configurationMap.get(ConfigurationConstants.ACTIVATE_LATER);
+        String strTrialPeriodDays = configurationMap.get(ConfigurationConstants.TRIAL_PERIOD_DAYS);
+        String strInstallDatetime = configurationMap.get(ConfigurationConstants.INSTALL_DATETIME);
+        String activationData = configurationMap.get(ConfigurationConstants.ACTIVATION_DATA);
+        LocalDate today = LocalDate.now();
+        LocalDateTime installDatetime = ZonedDateTime.parse(strInstallDatetime).toLocalDateTime();
+        log.debug("Install date time: {}", installDatetime);
+        int trialPeriodDays = Integer.parseInt(strTrialPeriodDays);
+        log.debug("Trial period in days: {}", trialPeriodDays);
+        LocalDate endTrialDate = installDatetime.plus(trialPeriodDays, ChronoUnit.DAYS).toLocalDate();
+        log.debug("End trial date: {}", endTrialDate);
+        log.debug("Today's date: {}", today);
+        if (StringUtils.isBlank(activationData)) {
+            if (SimpleStatus.YES.toString().equals(activateLater)) {
+                return today.isAfter(endTrialDate);
+            }
+            return true;
+        }
+        return false;
+    }
+
     @FXML
     void initialize() {
         CompletableFuture.runAsync(() -> SpringUtils.init(PinodeskConfig.class)).thenRun(() -> {
             ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
-            String activationData = configurationService.getConfiguration(ConfigurationConstants.ACTIVATION_DATA);
-            if (StringUtils.isBlank(activationData)) {
+            Map<String, String> configurationMap = configurationService.getConfigurationMap();
+            if (isActivationRequired(configurationMap)) {
                 Platform.runLater(() -> {
                     contentPane.getScene().getWindow().hide();
                     StageUtils.open(Page.ACTIVATION, false);
                 });
                 return;
             }
-            String initialSetupDone = configurationService.getConfiguration(ConfigurationConstants.INITIAL_SETUP_DONE);
+            String initialSetupDone = configurationMap.get(ConfigurationConstants.INITIAL_SETUP_DONE);
             boolean isInitialSetupDone = SimpleStatus.YES.toString().equals(initialSetupDone);
             if (!isInitialSetupDone) {
                 String language = Locale.getDefault().getLanguage();

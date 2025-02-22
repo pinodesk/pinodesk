@@ -78,8 +78,8 @@ public class PrintUtils {
         String sep = "--------------------------------------------------";
 
         Label lblReceiptStoreName = new Label(config.get(ConfigurationConstants.STORE_NAME));
-        lblReceiptStoreName.setWrapText(true);
         lblReceiptStoreName.setTextAlignment(TextAlignment.CENTER);
+        lblReceiptStoreName.setWrapText(true);
 
         Label lblStoreAddress = new Label(config.get(ConfigurationConstants.STORE_ADDRESS));
         lblStoreAddress.setTextAlignment(TextAlignment.CENTER);
@@ -87,19 +87,22 @@ public class PrintUtils {
 
         Label lblFooter = new Label(config.get(ConfigurationConstants.PRINTER_FOOTER));
         lblFooter.setTextAlignment(TextAlignment.CENTER);
+        lblFooter.setWrapText(true);
 
         Label lblPowered = new Label(t.translate(CommonLabel.LBL_POWERED_BY_PINODESK));
         lblPowered.setTextAlignment(TextAlignment.CENTER);
+        lblPowered.setWrapText(true);
 
         Label lblWww = new Label(t.translate(CommonLabel.LBL_WWW_PINODESK));
         lblWww.setTextAlignment(TextAlignment.CENTER);
+        lblWww.setWrapText(true);
 
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
         vbox.setSpacing(5d);
         vbox.setMaxWidth(240);
         if (isCopy) {
-            Label lblCopyReceipt = new Label("--- " + t.translate(CommonLabel.LBL_COPY_RECEIPT) + " ---");
+            Label lblCopyReceipt = new Label("--- " + t.translate(CommonLabel.LBL_COPY_RECEIPT).toUpperCase() + " ---");
             lblCopyReceipt.setTextAlignment(TextAlignment.CENTER);
             vbox.getChildren().add(lblCopyReceipt);
             vbox.getChildren().add(new Label());
