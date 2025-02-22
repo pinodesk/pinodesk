@@ -342,33 +342,37 @@ public abstract class BaseController {
         dialogPane.getButtonTypes().clear();
         dialogPane.getStylesheets().add(getClass().getResource("/assets/css/pinodesk.css").toExternalForm());
 
-        ButtonType btnTypeOk = new ButtonType(t.translate(CommonLabel.BTN_OK));
-        ButtonType btnTypeSendReport = new ButtonType(t.translate(CommonLabel.BTN_SEND_REPORT));
-
-        dialogPane.getButtonTypes().addAll(btnTypeSendReport, btnTypeOk);
-        dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
-
-        Button btnSendReport = (Button) dialogPane.lookupButton(btnTypeSendReport);
-        btnSendReport.getStyleClass().add("btn-secondary");
-        btnSendReport.addEventFilter(ActionEvent.ACTION, event -> {
-            AlertResult confirmation = displayConfirmation(MessageCode.CONFIRMATION_SEND_ERROR_REPORT);
-            if (confirmation.isNo()) {
-                event.consume();
-                return;
-            }
-            Stage loading = displayLoading();
-            TaskUtils.runTask("Send error report", () -> {
-                sendErrorReport(ex, exceptionText);
-                Platform.runLater(() -> {
+        // Display report button only when the app is already activated
+        String strActivationData = configurationService.getConfiguration(ConfigurationConstants.ACTIVATION_DATA);
+        if (!StringUtils.isBlank(strActivationData)) {
+            ButtonType btnTypeSendReport = new ButtonType(t.translate(CommonLabel.BTN_SEND_REPORT));
+            dialogPane.getButtonTypes().add(btnTypeSendReport);
+            Button btnSendReport = (Button) dialogPane.lookupButton(btnTypeSendReport);
+            btnSendReport.getStyleClass().add("btn-secondary");
+            btnSendReport.addEventFilter(ActionEvent.ACTION, event -> {
+                AlertResult confirmation = displayConfirmation(MessageCode.CONFIRMATION_SEND_ERROR_REPORT);
+                if (confirmation.isNo()) {
+                    event.consume();
+                    return;
+                }
+                Stage loading = displayLoading();
+                TaskUtils.runTask("Send error report", () -> {
+                    sendErrorReport(ex, exceptionText);
+                    Platform.runLater(() -> {
+                        loading.hide();
+                        displayInfo(MessageCode.SUCCESS_SEND_ERROR_REPORT);
+                        alert.close();
+                    });
+                }, throwable -> Platform.runLater(() -> {
                     loading.hide();
-                    displayInfo(MessageCode.SUCCESS_SEND_ERROR_REPORT);
-                    alert.close();
-                });
-            }, throwable -> Platform.runLater(() -> {
-                loading.hide();
-                handleException(throwable);
-            }));
-        });
+                    handleException(throwable);
+                }));
+            });
+        }
+
+        ButtonType btnTypeOk = new ButtonType(t.translate(CommonLabel.BTN_OK));
+        dialogPane.getButtonTypes().add(btnTypeOk);
+        dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
 
         dialogPane.applyCss();
 

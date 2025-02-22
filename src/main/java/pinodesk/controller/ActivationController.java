@@ -1,8 +1,13 @@
 package pinodesk.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mudiatech.pandora.utility.AlertResult;
 import com.mudiatech.pandora.utility.ControlValidator;
 import com.mudiatech.pandora.utility.StageUtils;
 import com.mudiatech.toolbox.jackson.JSON;
@@ -10,6 +15,8 @@ import com.mudiatech.toolbox.jackson.JSON;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
@@ -31,14 +38,42 @@ public class ActivationController extends CommonDataSaveController {
     @FXML
     private TextField tfActivationCode;
 
+    @FXML
+    private Label lblTrialPeriodEnds;
+
+    @FXML
+    private Button btnActivateLater;
+
     private PinodeskApiService pinodeskApiService;
 
     private ApplicationProperties applicationProperties;
 
+    private Map<String, String> configurationMap;
+
+    @FXML
+    protected void onActionBtnActivateLater(ActionEvent event) {
+        String strTrialPeriodDays = configurationMap.get(ConfigurationConstants.TRIAL_PERIOD_DAYS);
+        String message = String.format(t.translate(MessageCode.CONFIRMATION_ACTIVATE_LATER), strTrialPeriodDays);
+        AlertResult result = displayConfirmation(message);
+        if (result.isConfirmed()) {
+            TaskUtils.runTask("Activate later", () -> {
+                configurationService.updateConfiguration(
+                        Map.of(ConfigurationConstants.ACTIVATE_LATER, SimpleStatus.YES.toString()));
+                log.debug("activate later already set to yes");
+                String initialSetupDone = configurationService
+                        .getConfiguration(ConfigurationConstants.INITIAL_SETUP_DONE);
+                boolean isInitialSetupDone = SimpleStatus.YES.toString().equals(initialSetupDone);
+                Platform.runLater(() -> {
+                    closeAndOpenNextPage(isInitialSetupDone);
+                });
+            });
+        }
+    }
+
     @Override
     protected void onActionBtnCancel(ActionEvent event) {
         super.onActionBtnCancel(event);
-        log.info("Activation cancelled, exiting application.");
+        log.info("Activation was cancelled, exiting application.");
         System.exit(0);
     }
 
@@ -53,17 +88,7 @@ public class ActivationController extends CommonDataSaveController {
                 boolean isInitialSetupDone = SimpleStatus.YES.toString().equals(initialSetupDone);
                 Platform.runLater(() -> {
                     displayInfo(MessageCode.SUCCESS_ACTIVATION);
-                    close();
-                    if (!isInitialSetupDone) {
-                        StageUtils.open(Page.INITIAL_SETUP, false);
-                        return;
-                    }
-                    sessionService.activateLastSession();
-                    if (!sessionService.isCurrentSessionActive()) {
-                        StageUtils.open(Page.LOGIN, false);
-                        return;
-                    }
-                    StageUtils.open(Page.MAIN);
+                    closeAndOpenNextPage(isInitialSetupDone);
                 });
             }
             Platform.runLater(loading::hide);
@@ -75,7 +100,16 @@ public class ActivationController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlActions() {
-        // Nothing to init
+        String strTrialPeriodDays = configurationMap.get(ConfigurationConstants.TRIAL_PERIOD_DAYS);
+        String strInstallDatetime = configurationMap.get(ConfigurationConstants.INSTALL_DATETIME);
+        LocalDate today = LocalDate.now();
+        LocalDateTime installDatetime = ZonedDateTime.parse(strInstallDatetime).toLocalDateTime();
+        int trialPeriodDays = Integer.parseInt(strTrialPeriodDays);
+        LocalDate endTrialDate = installDatetime.plus(trialPeriodDays, ChronoUnit.DAYS).toLocalDate();
+        if (today.isAfter(endTrialDate)) {
+            lblTrialPeriodEnds.setVisible(true);
+            setVisibleInLayout(false, btnActivateLater);
+        }
     }
 
     @Override
@@ -118,6 +152,21 @@ public class ActivationController extends CommonDataSaveController {
     protected void initServices() {
         pinodeskApiService = SpringUtils.getBean(PinodeskApiService.class);
         applicationProperties = SpringUtils.getBean(ApplicationProperties.class);
+        configurationMap = configurationService.getConfigurationMap();
+    }
+
+    private void closeAndOpenNextPage(boolean isInitialSetupDone) {
+        close();
+        if (!isInitialSetupDone) {
+            StageUtils.open(Page.INITIAL_SETUP, false);
+            return;
+        }
+        sessionService.activateLastSession();
+        if (!sessionService.isCurrentSessionActive()) {
+            StageUtils.open(Page.LOGIN, false);
+            return;
+        }
+        StageUtils.open(Page.MAIN);
     }
 
 }

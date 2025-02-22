@@ -14,7 +14,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="contentPane" prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinodesk.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinodesk.controller.settings.configuration.ConfigurationMainController">
+<VBox fx:id="contentPane" prefHeight="560.0" prefWidth="774.0" style="-fx-background-color: transparent;" stylesheets="@../../../css/pinodesk.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="pinodesk.controller.settings.configuration.ConfigurationMainController">
    <children>
       <AnchorPane prefWidth="774.0">
          <children>
@@ -51,45 +51,51 @@
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <Label fx:id="lblActivationIntro" text="%lbl_activation_intro">
+                        <Label fx:id="lblActivationIntro" text="%lbl_activation_intro" wrapText="true">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
                         <HBox spacing="10.0" VBox.vgrow="ALWAYS">
                            <children>
-                              <HBox spacing="10.0" HBox.hgrow="ALWAYS">
+                              <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <Label fx:id="lblActivationEmail" text="%lbl_email">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="tfActivationEmail" editable="false" prefHeight="30.0" styleClass="input-primary" />
-                                       </children>
-                                    </VBox>
+                                    <Label fx:id="lblActivationEmail" text="%lbl_email">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="tfActivationEmail" editable="false" prefHeight="30.0" styleClass="input-primary" />
                                  </children>
-                              </HBox>
-                              <HBox spacing="10.0" HBox.hgrow="ALWAYS">
+                              </VBox>
+                              <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                                       <children>
-                                          <Label fx:id="lblActivationCode" text="%lbl_activation_code">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </Label>
-                                          <TextField fx:id="tfActivationCode" editable="false" prefHeight="30.0" styleClass="input-primary">
-                                             <font>
-                                                <Font size="13.0" />
-                                             </font>
-                                          </TextField>
-                                       </children>
-                                    </VBox>
+                                    <Label fx:id="lblActivationCode" text="%lbl_activation_code">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="tfActivationCode" editable="false" prefHeight="30.0" styleClass="input-primary">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </TextField>
                                  </children>
-                              </HBox>
+                              </VBox>
+                              <VBox fx:id="vboxActivateNow" spacing="5.0">
+                                 <children>
+                                    <Label>
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Label>
+                                    <Button fx:id="btnActivateNow" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnActivateNow" prefHeight="30.0" styleClass="btn-primary" text="%btn_activate_now" textFill="WHITE">
+                                       <font>
+                                          <Font size="13.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
                      </children>

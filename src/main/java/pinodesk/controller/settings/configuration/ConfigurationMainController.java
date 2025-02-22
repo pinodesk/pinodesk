@@ -2,8 +2,11 @@ package pinodesk.controller.settings.configuration;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +20,10 @@ import org.apache.commons.lang3.StringUtils;
 import com.mudiatech.pandora.model.SimpleComboBoxModel;
 import com.mudiatech.pandora.utility.AlertResult;
 import com.mudiatech.pandora.utility.ComboBoxUtils;
+import com.mudiatech.pandora.utility.ControlValidator;
 import com.mudiatech.pandora.utility.ScrollPaneUtils;
 import com.mudiatech.pandora.utility.StageUtils;
+import com.mudiatech.pandora.utility.ValidationResult;
 import com.mudiatech.toolbox.data.ListBuilder;
 import com.mudiatech.toolbox.jackson.JSON;
 
@@ -30,11 +35,14 @@ import javafx.fxml.FXML;
 import javafx.print.Printer;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lombok.extern.slf4j.Slf4j;
+import pinodesk.apimodel.ActivateReleaseRequest;
 import pinodesk.apimodel.ActivateReleaseResponse;
 import pinodesk.constant.CommonConstants;
 import pinodesk.constant.CommonLabel;
@@ -49,8 +57,10 @@ import pinodesk.constant.SystemConstants;
 import pinodesk.controller.CommonContentPaneController;
 import pinodesk.javafx.converter.LanguageComboBoxConverter;
 import pinodesk.service.ConfigurationService;
+import pinodesk.util.DeviceUtils;
 import pinodesk.util.PrintUtils;
 import pinodesk.util.SpringUtils;
+import pinodesk.util.TaskUtils;
 import pinodesk.viewmodel.PaymentDataVM;
 import pinodesk.viewmodel.SaleDataVM;
 import pinodesk.viewmodel.SaleProductVM;
@@ -106,12 +116,63 @@ public class ConfigurationMainController extends CommonContentPaneController {
     @FXML
     private TextField tfActivationCode;
 
+    @FXML
+    private VBox vboxActivateNow;
+
+    @FXML
+    private Label lblActivationIntro;
+
     private FileChooser fileChooser = new FileChooser();
 
     private ConfigurationService configurationService;
     private List<Locale> locales;
     private Map<String, String> configurationMap;
     private PrintUtils printer;
+
+    @FXML
+    void onActionBtnActivateNow(ActionEvent event) {
+        ControlValidator cv = new ControlValidator(resources);
+        cv.validateBlank(tfActivationCode, MessageCode.ERROR_EMPTY_ACTIVATION_CODE);
+        ValidationResult result = cv.getResult();
+        if (!result.isValid()) {
+            displayError(result.getMessages());
+            return;
+        }
+        Stage loading = displayLoading();
+        TaskUtils.runTask("Submit activation", () -> {
+            ActivateReleaseRequest req = new ActivateReleaseRequest();
+            req.setActivationCode(tfActivationCode.getText());
+            req.setReleasePlatform(applicationProperties.getReleasePlatform());
+            req.setReleaseVersion(applicationProperties.getAppVersion());
+            req.setDeviceSignature(DeviceUtils.getDeviceSignature());
+            req.setDeviceManufacturer(defaultNullUnknown(DeviceUtils.getDeviceManufacturer()));
+            req.setDeviceModel(defaultNullUnknown(DeviceUtils.getDeviceModel()));
+            req.setOsName(defaultNullUnknown(DeviceUtils.getOsName()));
+            req.setOsVersion(defaultNullUnknown(DeviceUtils.getOsVersion()));
+            req.setOsFamily(defaultNullUnknown(DeviceUtils.getOsFamily()));
+            req.setOsArch(defaultNullUnknown(DeviceUtils.getOsArch()));
+            req.setOsBitness(DeviceUtils.getOsBitness());
+            req.setCpuName(defaultNullUnknown(DeviceUtils.getCpuName()));
+            req.setCpuVendor(defaultNullUnknown(DeviceUtils.getCpuVendor()));
+            req.setCpuFamily(defaultNullUnknown(DeviceUtils.getCpuFamily()));
+            req.setRamSize(DeviceUtils.getRamSize());
+            req.setStorageSize(DeviceUtils.getStorageSize());
+            ActivateReleaseResponse response = pinodeskApiService.activateRelease(req);
+            Map<String, String> map = new HashMap<>();
+            map.put(ConfigurationConstants.ACTIVATION_DATA, JSON.stringify(response));
+            configurationService.updateConfiguration(map);
+            Platform.runLater(() -> {
+                loading.hide();
+                displayInfo(MessageCode.SUCCESS_ACTIVATION);
+                closeRootPane();
+                sessionService.logout();
+                StageUtils.open(Page.LOGIN, false);
+            });
+        }, throwable -> Platform.runLater(() -> {
+            loading.hide();
+            handleException(throwable);
+        }));
+    }
 
     @FXML
     void onActionBtnSaveGeneral(ActionEvent event) {
@@ -325,9 +386,23 @@ public class ConfigurationMainController extends CommonContentPaneController {
             ScrollPaneUtils.fixBlur(configurationScrollPane);
         });
         String activationData = configurationMap.get(ConfigurationConstants.ACTIVATION_DATA);
-        ActivateReleaseResponse response = JSON.parse(activationData, ActivateReleaseResponse.class);
-        tfActivationEmail.setText(response.getEmail());
-        tfActivationCode.setText(response.getCode());
+        String strTrialPeriodDays = configurationMap.get(ConfigurationConstants.TRIAL_PERIOD_DAYS);
+        String strInstallDatetime = configurationMap.get(ConfigurationConstants.INSTALL_DATETIME);
+        LocalDate today = LocalDate.now();
+        LocalDateTime installDatetime = ZonedDateTime.parse(strInstallDatetime).toLocalDateTime();
+        int trialPeriodDays = Integer.parseInt(strTrialPeriodDays);
+        LocalDate endTrialDate = installDatetime.plus(trialPeriodDays, ChronoUnit.DAYS).toLocalDate();
+        Long remainingDays = today.until(endTrialDate, ChronoUnit.DAYS);
+        if (StringUtils.isBlank(activationData)) {
+            String lblActivationPending = t.translate(CommonLabel.LBL_ACTIVATION_PENDING);
+            lblActivationIntro.setText(String.format(lblActivationPending, remainingDays, endTrialDate));
+            tfActivationCode.setEditable(true);
+        } else {
+            ActivateReleaseResponse response = JSON.parse(activationData, ActivateReleaseResponse.class);
+            tfActivationEmail.setText(response.getEmail());
+            tfActivationCode.setText(response.getCode());
+            setVisibleInLayout(false, vboxActivateNow);
+        }
     }
 
     @Override
