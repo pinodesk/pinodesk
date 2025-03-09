@@ -225,9 +225,14 @@ public class SaleReportMainController extends BaseController {
     protected void initControlActions() {
         Locale locale = resources.getLocale();
         TableViewUtils.setColumnValue(colCustomerName, SaleReportVM::getCustomerName);
-        TableViewUtils.setColumnValue(colProductName, SaleReportVM::getProductName);
         TableViewUtils.setColumnValue(colUnit, SaleReportVM::getUnit);
         TableViewUtils.setColumnValue(colInvoiceNumber, SaleReportVM::getInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductName, vm -> {
+            if (vm.getProductDeletedAt() != null) {
+                return String.format("%s (%s)", vm.getProductName(), t.translate(CommonLabel.LBL_REMOVED));
+            }
+            return vm.getProductName();
+        });
         TableViewUtils.setColumnValue(
                 colPaymentStatus,
                 vm -> PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?

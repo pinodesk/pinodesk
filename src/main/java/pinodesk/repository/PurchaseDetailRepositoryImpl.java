@@ -20,7 +20,8 @@ public class PurchaseDetailRepositoryImpl extends AbstractRepository<PurchaseDet
         String sql = """
                     select
                     a.*,
-                    b.name as product_name ,
+                    b.name as product_name,
+                    b.deleted_at as product_deleted_at,
                     f.label as product_unit_label,
                     c.code as product_category_code,
                     c.name as product_category_name,
@@ -51,6 +52,7 @@ public class PurchaseDetailRepositoryImpl extends AbstractRepository<PurchaseDet
                     b.invoice_date,
                     c.name as supplier_name,
                     d.name as product_name,
+                    d.deleted_at as product_deleted_at,
                     a.quantity,
                     e.label as unit,
                     a.buying_price,

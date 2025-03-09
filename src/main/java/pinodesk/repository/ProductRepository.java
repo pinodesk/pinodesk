@@ -27,6 +27,24 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, L
 
     Optional<Product> findByIdAndDeletedAtIsNull(Long id);
 
+    List<Product> findByIdIn(List<Long> ids);
+
+    @Query("""
+            select p.*
+            from purchase_detail pd
+            inner join product p on p.id = pd.product_id
+            where pd.purchase_id = :purchaseId and p.deleted_at is null
+            """)
+    List<Product> findByPurchaseIdAndDeletedAtIsNull(Long purchaseId);
+
+    @Query("""
+            select p.*
+            from sale_detail sd
+            inner join product p on p.id = sd.product_id
+            where sd.sale_id = :saleId and p.deleted_at is null
+            """)
+    List<Product> findBySaleIdAndDeletedAtIsNull(Long saleId);
+
     @Transactional
     @Modifying
     @Query("update product set updated_at=now(), deleted_at=now() where id in (:ids)")

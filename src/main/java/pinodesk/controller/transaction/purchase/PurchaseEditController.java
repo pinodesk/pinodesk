@@ -364,10 +364,15 @@ public class PurchaseEditController extends CommonDataSaveController {
                 tfGeneralSellingPrice,
                 tfPrescriptionSellingPrice,
                 tfProductQuantity);
-        TableViewUtils.setColumnValue(colProductName, PurchaseProductVM::getProductName);
         TableViewUtils.setColumnValue(colUnit, PurchaseProductVM::getProductUnitLabel);
         TableViewUtils.setColumnValue(colBactchNumber, PurchaseProductVM::getBatchNumber);
         TableViewUtils.setColumnValue(colProductCategory, PurchaseProductVM::getProductCategoryName);
+        TableViewUtils.setColumnValue(colProductName, vm -> {
+            if (vm.getProductDeletedAt() != null) {
+                return String.format("%s (%s)", vm.getProductName(), t.translate(CommonLabel.LBL_REMOVED));
+            }
+            return vm.getProductName();
+        });
         TableViewUtils.initTableColumn(
                 colBuyingPrice,
                 new NumberCellFactory<>(locale),

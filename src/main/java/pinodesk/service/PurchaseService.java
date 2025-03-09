@@ -3,8 +3,11 @@ package pinodesk.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -133,7 +136,7 @@ public class PurchaseService extends BaseService {
             Integer nextStockQuantity = lastStockQuantity + purchaseQuantity;
             createProductStock(activityName, invoiceNumber, purchaseId, productId, purchaseQuantity, nextStockQuantity);
             createProductPrice(activityName, invoiceNumber, purchaseId, purchaseProduct, productId);
-            updateProduct(purchaseProduct, productId, product, nextStockQuantity);
+            updateProduct(purchaseProduct, product, nextStockQuantity);
         });
         if (PaymentStatus.UNPAID.equals(purchaseAdd.getPaymentStatus())) {
             Payable payable = new Payable();
@@ -147,6 +150,25 @@ public class PurchaseService extends BaseService {
         }
     }
 
+    /**
+     * Processes the change in payment status for a purchase.
+     * <p>
+     * This method handles the logic for updating payables based on the change in
+     * payment status of a purchase. If the status changes to PAID, it deletes the
+     * corresponding payable. If the status changes to UNPAID, it creates a new
+     * payable. If the status remains unchanged, it updates the existing payable
+     * information.
+     * </p>
+     *
+     * @param purchaseEdit The PurchaseEditVM containing the updated purchase
+     *                     information.
+     * @param purchase     The existing Purchase entity.
+     * 
+     * @throws DomainException If a payable payment already exists for the purchase
+     *                         when the status is changed to PAID, or if a payable
+     *                         is already completed when the status is changed to
+     *                         UNPAID.
+     */
     private void processPaymentStatusChange(PurchaseEditVM purchaseEdit, Purchase purchase) {
         boolean isChangedToPaid = !purchaseEdit.getPaymentStatus().toString().equals(purchase.getPaymentStatus())
                 && purchaseEdit.getPaymentStatus().equals(PaymentStatus.PAID);
@@ -189,6 +211,25 @@ public class PurchaseService extends BaseService {
         });
     }
 
+    /**
+     * Updates the purchase data and the details. The purchase might contain some
+     * deleted products, which will maintain the purchase product history as long as
+     * the deleted products are not removed from the purchased products.
+     * <p>
+     * This method handles updating the purchase information, reverting previous
+     * purchase product details (stock, expiry, price), and then applying the new
+     * purchase product details. It also checks for invoice number and supplier ID
+     * uniqueness and handles payment status changes which may affect payables.
+     * </p>
+     * 
+     * @param purchaseEdit The PurchaseEditVM model containing the updated purchase
+     *                     data and products.
+     * @param purchaseId   The ID of the purchase to be updated.
+     * 
+     * @throws DomainException If the purchase is not found, if another purchase
+     *                         with the same invoice number and supplier ID exists,
+     *                         or if there are issues with payable payments.
+     */
     @TargetActivity(Activity.EDIT_PURCHASE)
     @CacheEvict(value = {
             CacheNameConstants.PURCHASES_BY_FILTER,
@@ -222,10 +263,14 @@ public class PurchaseService extends BaseService {
         purchaseRepository.save(purchase);
         revertLastPurchasedProducts(purchaseId, activityName);
         purchaseDetailRepository.deleteByPurchaseId(purchaseId);
-        purchaseEdit.getPurchaseProducts().stream().forEach(purchaseProduct -> {
-            Long productId = purchaseProduct.getProductId();
+        // Process the products for this purchase as the new order details
+        List<Long> productIds = purchaseEdit.getPurchaseProducts().stream().map(p -> p.getProductId()).toList();
+        Map<Long, PurchaseProductVM> mapPurchaseProducts = purchaseEdit.getPurchaseProducts().stream()
+                .collect(Collectors.toMap(PurchaseProductVM::getProductId, Function.identity()));
+        productRepository.findByIdIn(productIds).forEach(product -> {
+            Long productId = product.getId();
+            PurchaseProductVM purchaseProduct = mapPurchaseProducts.get(productId);
             Integer purchaseQuantity = purchaseProduct.getQuantity();
-            Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
             createPurchaseDetail(purchaseId, purchaseProduct, productId, purchaseQuantity);
             if (purchaseProduct.getExpiredDate() != null) {
                 createProductExpiry(
@@ -242,61 +287,32 @@ public class PurchaseService extends BaseService {
             Integer nextStockQuantity = lastStockQuantity + purchaseQuantity;
             createProductStock(activityName, invoiceNumber, purchaseId, productId, purchaseQuantity, nextStockQuantity);
             createProductPrice(activityName, invoiceNumber, purchaseId, purchaseProduct, productId);
-            updateProduct(purchaseProduct, productId, product, nextStockQuantity);
+            updateProduct(purchaseProduct, product, nextStockQuantity);
         });
     }
 
+    /**
+     * Reverts the old product details of the purchase, including stocks, expiries,
+     * and prices to the state before the edit or removal.
+     * <p>
+     * This method iterates through each product associated with the given purchase
+     * ID. For each product, it reverts the product stock, expiry, and price to
+     * their previous states. It also updates the product's closest expiry date and
+     * recalculates the average buying price.
+     * </p>
+     *
+     * @param purchaseId   The ID of the purchase being reverted.
+     * @param activityName The name of the activity causing the reversion (e.g.,
+     *                     "EDIT_PURCHASE", "REMOVE_PURCHASES"). This is used for
+     *                     audit purposes.
+     */
     private void revertLastPurchasedProducts(Long purchaseId, String activityName) {
         Long currentUserId = sessionService.getCurrentSession().getUser().getId();
-        purchaseDetailRepository.findByPurchaseId(purchaseId).forEach(pd -> {
-            Long productId = pd.getProductId();
-            Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
-            productStockRepository.findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId).ifPresent(ps -> {
-                if (Objects.equals(purchaseId, ps.getPurchaseId())) {
-                    ProductStock nps = new ProductStock();
-                    nps.setActivity(activityName);
-                    int finalQuantity = ps.getFinalQuantity() - ps.getQuantityIn();
-                    nps.setFinalQuantity(finalQuantity);
-                    nps.setProductId(productId);
-                    nps.setUserId(currentUserId);
-                    nps.setRemarks("Revert stock");
-                    productStockRepository.save(nps);
-                    product.setQuantity(finalQuantity);
-                }
-            });
-            productExpiryRepository.findFirstByProductIdOrderByIdDesc(productId).ifPresent(px -> {
-                if (Objects.equals(purchaseId, px.getPurchaseId())) {
-                    ProductExpiry npx = new ProductExpiry();
-                    npx.setActivity(activityName);
-                    npx.setExpiredDate(px.getExpiredDate());
-                    npx.setFinalQuantity(px.getFinalQuantity() - px.getQuantityIn());
-                    npx.setFinalQuantityExpiredDate(px.getFinalQuantityExpiredDate() - px.getQuantityIn());
-                    npx.setProductId(productId);
-                    npx.setUserId(currentUserId);
-                    npx.setRemarks("Revert expiry stock");
-                    productExpiryRepository.save(npx);
-                }
-            });
-            List<ProductPrice> pps = productPriceRepository
-                    .findFirst2ByProductIdAndDeletedAtIsNullOrderByIdDesc(productId);
-            if (!pps.isEmpty()) {
-                ProductPrice pp0 = pps.get(0);
-                if (Objects.equals(purchaseId, pp0.getPurchaseId())) {
-                    ProductPrice pp = new ProductPrice();
-                    pp.setActivity(activityName);
-                    pp.setProductId(productId);
-                    pp.setUserId(currentUserId);
-                    if (pps.size() == 2) {
-                        ProductPrice pp1 = pps.get(1);
-                        pp.setGeneralSellingPrice(pp1.getGeneralSellingPrice());
-                        pp.setPrescriptionSellingPrice(pp1.getPrescriptionSellingPrice());
-                    }
-                    pp.setRemarks("Revert price");
-                    productPriceRepository.save(pp);
-                    product.setGeneralSellingPrice(pp.getGeneralSellingPrice());
-                    product.setPrescriptionSellingPrice(pp.getPrescriptionSellingPrice());
-                }
-            }
+        productRepository.findByPurchaseIdAndDeletedAtIsNull(purchaseId).forEach(product -> {
+            Long productId = product.getId();
+            revertProductStock(purchaseId, activityName, currentUserId, product);
+            revertProductExpiry(purchaseId, activityName, currentUserId, productId);
+            revertProductPrice(purchaseId, activityName, currentUserId, product);
             productExpiryRepository.findClosestExpiredDateAvailableByProductId(productId)
                     .ifPresentOrElse(product::setClosestExpiredDate, () -> product.setClosestExpiredDate(null));
             List<PurchaseDetail> purchaseDetails = purchaseDetailRepository
@@ -307,6 +323,62 @@ public class PurchaseService extends BaseService {
                     .divide(BigDecimal.valueOf(purchaseDetails.size()), 4, RoundingMode.HALF_EVEN);
             product.setAverageBuyingPrice(averageBuyingPrice);
             productRepository.save(product);
+        });
+    }
+
+    private void revertProductPrice(Long purchaseId, String activityName, Long currentUserId, Product product) {
+        Long productId = product.getId();
+        List<ProductPrice> pps = productPriceRepository.findFirst2ByProductIdAndDeletedAtIsNullOrderByIdDesc(productId);
+        if (!pps.isEmpty()) {
+            ProductPrice pp0 = pps.get(0);
+            if (Objects.equals(purchaseId, pp0.getPurchaseId())) {
+                ProductPrice pp = new ProductPrice();
+                pp.setActivity(activityName);
+                pp.setProductId(productId);
+                pp.setUserId(currentUserId);
+                if (pps.size() == 2) {
+                    ProductPrice pp1 = pps.get(1);
+                    pp.setGeneralSellingPrice(pp1.getGeneralSellingPrice());
+                    pp.setPrescriptionSellingPrice(pp1.getPrescriptionSellingPrice());
+                }
+                pp.setRemarks("Revert price");
+                productPriceRepository.save(pp);
+                product.setGeneralSellingPrice(pp.getGeneralSellingPrice());
+                product.setPrescriptionSellingPrice(pp.getPrescriptionSellingPrice());
+            }
+        }
+    }
+
+    private void revertProductExpiry(Long purchaseId, String activityName, Long currentUserId, Long productId) {
+        productExpiryRepository.findFirstByProductIdOrderByIdDesc(productId).ifPresent(px -> {
+            if (Objects.equals(purchaseId, px.getPurchaseId())) {
+                ProductExpiry npx = new ProductExpiry();
+                npx.setActivity(activityName);
+                npx.setExpiredDate(px.getExpiredDate());
+                npx.setFinalQuantity(px.getFinalQuantity() - px.getQuantityIn());
+                npx.setFinalQuantityExpiredDate(px.getFinalQuantityExpiredDate() - px.getQuantityIn());
+                npx.setProductId(productId);
+                npx.setUserId(currentUserId);
+                npx.setRemarks("Revert expiry stock");
+                productExpiryRepository.save(npx);
+            }
+        });
+    }
+
+    private void revertProductStock(Long purchaseId, String activityName, Long currentUserId, Product product) {
+        Long productId = product.getId();
+        productStockRepository.findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId).ifPresent(ps -> {
+            if (Objects.equals(purchaseId, ps.getPurchaseId())) {
+                ProductStock nps = new ProductStock();
+                nps.setActivity(activityName);
+                int finalQuantity = ps.getFinalQuantity() - ps.getQuantityIn();
+                nps.setFinalQuantity(finalQuantity);
+                nps.setProductId(productId);
+                nps.setUserId(currentUserId);
+                nps.setRemarks("Revert stock");
+                productStockRepository.save(nps);
+                product.setQuantity(finalQuantity);
+            }
         });
     }
 
@@ -333,11 +405,8 @@ public class PurchaseService extends BaseService {
         purchaseDetailRepository.save(pd);
     }
 
-    private void updateProduct(
-            PurchaseProductVM purchaseProduct,
-            Long productId,
-            Product product,
-            Integer nextStockQuantity) {
+    private void updateProduct(PurchaseProductVM purchaseProduct, Product product, Integer nextStockQuantity) {
+        Long productId = product.getId();
         productExpiryRepository.findClosestExpiredDateAvailableByProductId(productId)
                 .ifPresentOrElse(product::setClosestExpiredDate, () -> product.setClosestExpiredDate(null));
         BigDecimal averageBuyingPrice = calculateProductAverageBuyingPrice(productId);

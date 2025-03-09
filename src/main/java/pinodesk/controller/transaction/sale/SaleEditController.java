@@ -5,6 +5,7 @@ import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrZero;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toStringOrEmpty;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,7 +16,6 @@ import java.util.function.Predicate;
 
 import org.apache.commons.lang3.StringUtils;
 
-import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import com.mudiatech.pandora.factory.LocalDateCellFactory;
 import com.mudiatech.pandora.factory.NumberCellFactory;
 import com.mudiatech.pandora.model.SimpleComboBoxModel;
@@ -338,9 +338,14 @@ public class SaleEditController extends CommonDataSaveController {
                 new SimpleComboBoxModel(SellingMode.PRESCRIPTION, t.translate(CommonLabel.LBL_PRESCRIPTION)));
         Locale locale = resources.getLocale();
         TextFieldUtils.setDigitTextFields(tfSellingPrice, tfCurrentQuantity, tfSaleQuantity);
-        TableViewUtils.setColumnValue(colProductName, SaleProductVM::getProductName);
         TableViewUtils.setColumnValue(colUnit, SaleProductVM::getProductUnitLabel);
         TableViewUtils.setColumnValue(colProductCategory, SaleProductVM::getProductCategoryName);
+        TableViewUtils.setColumnValue(colProductName, vm -> {
+            if (vm.getProductDeletedAt() != null) {
+                return String.format("%s (%s)", vm.getProductName(), t.translate(CommonLabel.LBL_REMOVED));
+            }
+            return vm.getProductName();
+        });
         TableViewUtils.initTableColumn(
                 colSellingPrice,
                 new NumberCellFactory<>(DECIMAL_SCALE, locale),
