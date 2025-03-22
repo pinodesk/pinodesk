@@ -1,6 +1,7 @@
 package pinodesk.controller.transaction.sale;
 
 import static com.mudiatech.toolbox.data.StringNumberUtils.formatOrDefault;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -224,39 +225,7 @@ public class CashierController extends CommonContentPaneController {
         toggleSellingMode.selectedToggleProperty()
                 .addListener((o, ov, nv) -> handleSelectedSellingMode((RadioButton) nv));
         TextFieldUtils.setDigitTextFields(tfQuantity);
-        TableViewUtils.setColumnValue(colProductName, SaleProductVM::getProductName);
-        TableViewUtils.setColumnValue(colUnit, SaleProductVM::getProductUnitLabel);
-        TableViewUtils.setColumnValue(colProductCategory, SaleProductVM::getProductCategoryName);
-        TableViewUtils.initTableColumn(
-                colSellingPrice,
-                new NumberCellFactory<>(locale),
-                SaleProductVM::getSellingPrice,
-                StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colQuantity,
-                new NumberCellFactory<>(locale),
-                SaleProductVM::getSaleQuantity,
-                StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colSubtotal,
-                new NumberCellFactory<>(locale),
-                SaleProductVM::getSubtotal,
-                StyleConstants.ALIGN_RIGHT);
-        TableViewUtils.initTableColumn(
-                colExpiredDate,
-                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
-                SaleProductVM::getExpiredDate);
-        tblSaleProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
-        tblSaleProducts.setOnMouseClicked(event -> {
-            if (EventUtils.isDoubleClick(event)) {
-                handleActionTableSaleProduct();
-            }
-        });
-        tblSaleProducts.setOnKeyPressed(event -> {
-            if (EventUtils.isEnter(event)) {
-                handleActionTableSaleProduct();
-            }
-        });
+        initTableSaleProducts(locale);
         setFocused(tfProduct);
         addContentPaneOnKeyPressedHandler(event -> {
             if (KeyCode.ENTER.equals(event.getCode())) {
@@ -272,6 +241,42 @@ public class CashierController extends CommonContentPaneController {
                     btnCancel.fire();
                     return;
                 }
+            }
+        });
+    }
+
+    private void initTableSaleProducts(Locale locale) {
+        TableViewUtils.setColumnValue(colProductName, SaleProductVM::getProductName);
+        TableViewUtils.setColumnValue(colUnit, SaleProductVM::getProductUnitLabel);
+        TableViewUtils.setColumnValue(colProductCategory, SaleProductVM::getProductCategoryName);
+        TableViewUtils.initTableColumn(
+                colSellingPrice,
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
+                SaleProductVM::getSellingPrice,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colQuantity,
+                new NumberCellFactory<>(locale),
+                SaleProductVM::getSaleQuantity,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colSubtotal,
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
+                SaleProductVM::getSubtotal,
+                StyleConstants.ALIGN_RIGHT);
+        TableViewUtils.initTableColumn(
+                colExpiredDate,
+                new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
+                SaleProductVM::getExpiredDate);
+        tblSaleProducts.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+        tblSaleProducts.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                handleActionTableSaleProduct();
+            }
+        });
+        tblSaleProducts.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                handleActionTableSaleProduct();
             }
         });
     }
@@ -508,14 +513,28 @@ public class CashierController extends CommonContentPaneController {
     }
 
     /**
-     * Returns true if the product has properties or conditions that need to be
-     * confirmed, such as: 1. The product has expiration date(s). 2. The product
-     * quantity is empty or zero. 3. The product price is empty or zero.
+     * Determines if a product requires confirmation before being added to the sale.
+     * Confirmation is needed when:
+     * <ol>
+     * <li>The product has one or more expiration dates.</li>
+     * <li>The product's quantity is unset (null) or zero.</li>
+     * <li>The product's general selling price is unset (null) or zero.</li>
+     * <li>The product is not already in the sale table and has an empty quantity or
+     * price.</li>
+     * </ol>
+     * <p>
+     * This method helps ensure that the cashier is aware of important product
+     * details (like expiration dates or missing quantity/price information) before
+     * finalizing the sale.
+     * </p>
+     *
+     * @param product         The {@link ProductVM} to check. Must not be null.
+     * @param productExpiries A list of {@link GroupedProductExpiryVM} representing
+     *                        the product's expiration dates. Can be empty but not
+     *                        null.
      * 
-     * @param product
-     * @param productExpiries
-     * 
-     * @return
+     * @return {@code true} if the product requires confirmation; {@code false}
+     *         otherwise.
      */
     private boolean isRequiredToConfirmProduct(ProductVM product, List<GroupedProductExpiryVM> productExpiries) {
         boolean emptyQtyOrPrice = isNullOrZero(product.getQuantity()) || isNullOrZero(product.getGeneralSellingPrice());
@@ -529,8 +548,8 @@ public class CashierController extends CommonContentPaneController {
         totalProduct = items.stream().map(SaleProductVM::getSaleQuantity).reduce(0, Integer::sum);
         totalSale = items.stream().map(SaleProductVM::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
         lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
-        lblTotalSale.setText(formatOrDefault(totalSale, locale, "0"));
-        lblTotal.setText(formatOrDefault(totalSale, locale, "0"));
+        lblTotalSale.setText(formatOrDefault(totalSale, locale, DECIMAL_SCALE, "0"));
+        lblTotal.setText(formatOrDefault(totalSale, locale, DECIMAL_SCALE, "0"));
     }
 
     private SellingMode getSelectedSellingMode() {

@@ -2,7 +2,7 @@ package pinodesk.controller.catalog.product;
 
 import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrDefault;
-import static com.mudiatech.toolbox.data.StringNumberUtils.toStringOrEmpty;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.math.BigDecimal;
 import java.util.Locale;
@@ -183,7 +183,8 @@ public class ProductPackageAddController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlActions() {
         Locale locale = resources.getLocale();
-        TextFieldUtils.setDigitTextFields(tfBarcode, tfGeneralSellPrice, tfPrescriptionSellPrice);
+        TextFieldUtils.setDecimalTextFields(tfGeneralSellPrice, tfPrescriptionSellPrice);
+        TextFieldUtils.setDigitTextFields(tfBarcode);
         setProductChooser(tfProduct, this::handleSelectedProduct, tfQuantity);
         ComboBoxUtils.initSimple(
                 cbStatus,
@@ -204,12 +205,12 @@ public class ProductPackageAddController extends CommonDataSaveController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colGeneralSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PackageProductVM::getGeneralSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colPrescriptionSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PackageProductVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         addContentPaneOnKeyPressedHandler(event -> {
@@ -246,8 +247,8 @@ public class ProductPackageAddController extends CommonDataSaveController {
         productAdd.setUnit(selectedUnit);
         SimpleComboBoxModel status = ComboBoxUtils.getSelectedItem(cbStatus);
         productAdd.setStatus(status.getValue());
-        productAdd.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellPrice.getText()));
-        productAdd.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellPrice.getText()));
+        productAdd.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellPrice.getText(), DECIMAL_SCALE));
+        productAdd.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellPrice.getText(), DECIMAL_SCALE));
         productAdd.setPriceRemarks(tfPriceRemarks.getText());
         productService.createPackage(productAdd, tblProducts.getItems());
         return true;
@@ -324,8 +325,12 @@ public class ProductPackageAddController extends CommonDataSaveController {
                 prescriptionSellPrice = prescriptionSellPrice == null ? total : prescriptionSellPrice.add(total);
             }
         }
-        tfGeneralSellPrice.setText(toStringOrEmpty(generalSellPrice));
-        tfPrescriptionSellPrice.setText(toStringOrEmpty(prescriptionSellPrice));
+        if (generalSellPrice != null) {
+            tfGeneralSellPrice.setText(generalSellPrice.doubleValue() + "");
+        }
+        if (prescriptionSellPrice != null) {
+            tfPrescriptionSellPrice.setText(prescriptionSellPrice.doubleValue() + "");
+        }
     }
 
 }

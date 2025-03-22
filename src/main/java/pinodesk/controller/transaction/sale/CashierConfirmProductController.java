@@ -4,12 +4,14 @@ import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrZero;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toStringOrEmpty;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import com.mudiatech.pandora.utility.ComboBoxUtils;
 import com.mudiatech.pandora.utility.ControlValidator;
+import com.mudiatech.pandora.utility.TextFieldUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -80,6 +82,8 @@ public class CashierConfirmProductController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
+        TextFieldUtils.setDecimalTextFields(tfSellingPrice);
+        TextFieldUtils.setDigitTextFields(tfCurrentQuantity, tfSaleQuantity);
         if (isEdit) {
             initValuesForEdit();
         } else {
@@ -90,7 +94,7 @@ public class CashierConfirmProductController extends CommonDataSaveController {
     @Override
     protected Object save() {
         Integer saleQty = toIntegerOrNull(tfSaleQuantity.getText());
-        BigDecimal sellingPrice = toBigDecimalOrNull(tfSellingPrice.getText());
+        BigDecimal sellingPrice = toBigDecimalOrNull(tfSellingPrice.getText(), DECIMAL_SCALE);
         GroupedProductExpiryVM productExpiry = ComboBoxUtils.getSelectedItem(cbExpiredDate);
         SaleProductVM saleProduct = currentSaleProduct;
         if (!isEdit) {
@@ -175,7 +179,10 @@ public class CashierConfirmProductController extends CommonDataSaveController {
         tfSaleQuantity.setText(toStringOrEmpty(currentSaleProduct.getSaleQuantity()));
         tfCurrentQuantity.setText(toStringOrEmpty(currentSaleProduct.getCurrentQuantity()));
         tfCurrentQuantity.setEditable(!isEdit);
-        tfSellingPrice.setText(toStringOrEmpty(currentSaleProduct.getSellingPrice()));
+        BigDecimal sellingPrice = currentSaleProduct.getSellingPrice();
+        if (sellingPrice != null) {
+            tfSellingPrice.setText(sellingPrice.doubleValue() + "");
+        }
         if (!productExpiries.isEmpty()) {
             productExpiries.add(0, null);
             ComboBoxUtils
@@ -205,15 +212,19 @@ public class CashierConfirmProductController extends CommonDataSaveController {
             tfCurrentQuantity.setEditable(true);
         }
         BigDecimal generalSellingPrice = currentProduct.getGeneralSellingPrice();
+        if (generalSellingPrice != null) {
+            tfSellingPrice.setText(generalSellingPrice.doubleValue() + "");
+        }
         BigDecimal prescriptionSellingPrice = currentProduct.getPrescriptionSellingPrice();
-        tfSellingPrice.setText(toStringOrEmpty(generalSellingPrice));
         if (SellingMode.PRESCRIPTION.equals(sellingMode) && prescriptionSellingPrice != null) {
-            tfSellingPrice.setText(toStringOrEmpty(prescriptionSellingPrice));
+            tfSellingPrice.setText(prescriptionSellingPrice.doubleValue() + "");
         }
         confirmProduct.getCurrentSaleProducts().stream().filter(sp -> sp.getProductId().equals(currentProduct.getId()))
                 .findAny().ifPresent(sp -> {
                     tfCurrentQuantity.setText(toStringOrEmpty(sp.getCurrentQuantity()));
-                    tfSellingPrice.setText(toStringOrEmpty(sp.getSellingPrice()));
+                    if (sp.getSellingPrice() != null) {
+                        tfSellingPrice.setText(sp.getSellingPrice().doubleValue() + "");
+                    }
                 });
         if (!productExpiries.isEmpty()) {
             productExpiries.add(0, null);

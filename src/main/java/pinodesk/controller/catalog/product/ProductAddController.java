@@ -3,6 +3,7 @@ package pinodesk.controller.catalog.product;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrZero;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.time.LocalDate;
 
@@ -135,12 +136,8 @@ public class ProductAddController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlActions() {
         initCustomDatePicker(dpExpiredDate);
-        TextFieldUtils.setDigitTextFields(
-                tfBarcode,
-                tfGeneralSellPrice,
-                tfPrescriptionSellPrice,
-                tfStockQuantity,
-                tfExpiryQuantity);
+        TextFieldUtils.setDecimalTextFields(tfGeneralSellPrice, tfPrescriptionSellPrice);
+        TextFieldUtils.setDigitTextFields(tfBarcode, tfStockQuantity, tfExpiryQuantity);
         setProductCategoryChooser(tfCategory, this::handleSelectedProductCategory, tfUnit.getParent());
         setUnitChooser(tfUnit, this::handleSelectedUnit, cbStatus);
         setDrugClassificationChooser(tfDrugClassification, this::handleSelectedDrugClassification, tfIndication);
@@ -184,8 +181,8 @@ public class ProductAddController extends CommonDataSaveController {
         productAdd.setDrugClassification(selectedDrugClassification);
         productAdd.setIndication(tfIndication.getText());
         productAdd.setContraindication(tfContraindication.getText());
-        productAdd.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellPrice.getText()));
-        productAdd.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellPrice.getText()));
+        productAdd.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellPrice.getText(), DECIMAL_SCALE));
+        productAdd.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellPrice.getText(), DECIMAL_SCALE));
         productAdd.setPriceRemarks(tfPriceRemarks.getText());
         productAdd.setStockQuantity(toIntegerOrNull(tfStockQuantity.getText()));
         productAdd.setStockRemarks(tfStockRemarks.getText());

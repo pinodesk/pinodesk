@@ -1,7 +1,7 @@
 package pinodesk.controller.transaction.payable;
 
 import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
-import static com.mudiatech.toolbox.data.StringNumberUtils.toStringOrNull;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import com.mudiatech.pandora.model.SimpleComboBoxModel;
 import com.mudiatech.pandora.utility.ComboBoxUtils;
@@ -66,8 +66,12 @@ public class PayableFilterController extends CommonDataFilterController<PayableF
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
             tfSupplier.setText(currentFilter.getSupplierName());
             tfRemarks.setText(currentFilter.getRemarks());
-            tfAmountMax.setText(toStringOrNull(currentFilter.getAmountMax()));
-            tfAmountMin.setText(toStringOrNull(currentFilter.getAmountMin()));
+            if (currentFilter.getAmountMax() != null) {
+                tfAmountMax.setText(currentFilter.getAmountMax().doubleValue() + "");
+            }
+            if (currentFilter.getAmountMin() != null) {
+                tfAmountMin.setText(currentFilter.getAmountMin().doubleValue() + "");
+            }
             if (currentFilter.getInvoiceDateMin() != null) {
                 dpInvoiceDateMin.setValue(currentFilter.getInvoiceDateMin());
             }
@@ -112,8 +116,8 @@ public class PayableFilterController extends CommonDataFilterController<PayableF
             filter.setSupplierId(selectedSupplier.getId());
             filter.setSupplierName(selectedSupplier.getName());
         }
-        filter.setAmountMax(toBigDecimalOrNull(tfAmountMax.getText()));
-        filter.setAmountMin(toBigDecimalOrNull(tfAmountMin.getText()));
+        filter.setAmountMax(toBigDecimalOrNull(tfAmountMax.getText(), DECIMAL_SCALE));
+        filter.setAmountMin(toBigDecimalOrNull(tfAmountMin.getText(), DECIMAL_SCALE));
         filter.setRemarks(tfRemarks.getText());
         return filter;
     }
@@ -145,7 +149,7 @@ public class PayableFilterController extends CommonDataFilterController<PayableF
                 dpDueDateMin,
                 dpCompletionDateMax,
                 dpCompletionDateMin);
-        TextFieldUtils.setDigitTextFields(tfAmountMax, tfAmountMin);
+        TextFieldUtils.setDecimalTextFields(tfAmountMax, tfAmountMin);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(null, StringConstants.EMPTY),

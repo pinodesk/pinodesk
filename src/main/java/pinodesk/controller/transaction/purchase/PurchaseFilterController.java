@@ -63,10 +63,14 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
         if (currentFilter != null) {
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
             tfSupplier.setText(currentFilter.getSupplierName());
-            tfTotalPaymentMax.setText(toStringOrNull(currentFilter.getTotalPaymentMax()));
-            tfTotalPaymentMin.setText(toStringOrNull(currentFilter.getTotalPaymentMin()));
             tfTotalProductMax.setText(toStringOrNull(currentFilter.getTotalProductMax()));
             tfTotalProductMin.setText(toStringOrNull(currentFilter.getTotalProductMin()));
+            if (currentFilter.getTotalPaymentMax() != null) {
+                tfTotalPaymentMax.setText(currentFilter.getTotalPaymentMax().doubleValue() + "");
+            }
+            if (currentFilter.getTotalPaymentMin() != null) {
+                tfTotalPaymentMin.setText(currentFilter.getTotalPaymentMin().doubleValue() + "");
+            }
             if (currentFilter.getInvoiceDateMin() != null) {
                 dpInvoiceDateMin.setValue(currentFilter.getInvoiceDateMin());
             }
@@ -134,7 +138,8 @@ public class PurchaseFilterController extends CommonDataFilterController<Purchas
 
     @Override
     protected void initDataFilterControlActions() {
-        TextFieldUtils.setDigitTextFields(tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax, tfTotalProductMin);
+        TextFieldUtils.setDecimalTextFields(tfTotalPaymentMax, tfTotalPaymentMin);
+        TextFieldUtils.setDigitTextFields(tfTotalProductMax, tfTotalProductMin);
         initCustomDatePicker(dpDueDateMax, dpDueDateMin, dpInvoiceDateMax, dpInvoiceDateMin);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,

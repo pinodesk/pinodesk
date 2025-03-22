@@ -198,7 +198,7 @@ public class SaleMainController extends BaseController {
                         t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION));
         TableViewUtils.initTableColumn(
                 colTotalProduct,
-                new NumberCellFactory<>(DECIMAL_SCALE, locale),
+                new NumberCellFactory<>(locale),
                 SaleVM::getTotalProduct,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(

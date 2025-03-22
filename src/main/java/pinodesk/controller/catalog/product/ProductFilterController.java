@@ -1,12 +1,12 @@
 package pinodesk.controller.catalog.product;
 
+import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
+import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toStringOrNull;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import com.mudiatech.pandora.model.SimpleComboBoxModel;
 import com.mudiatech.pandora.utility.ComboBoxUtils;
@@ -150,24 +150,12 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
         filter.setBatchNumber(tfBatchNumber.getText());
         filter.setExpiredDateMin(expiredDateMin);
         filter.setExpiredDateMax(expiredDateMax);
-        if (StringUtils.isNotBlank(generalSellingPriceMax)) {
-            filter.setGeneralSellingPriceMax(NumberUtils.toScaledBigDecimal(generalSellingPriceMax));
-        }
-        if (StringUtils.isNotBlank(generalSellingPriceMin)) {
-            filter.setGeneralSellingPriceMin(NumberUtils.toScaledBigDecimal(generalSellingPriceMin));
-        }
-        if (StringUtils.isNotBlank(prescriptionSellingPriceMax)) {
-            filter.setPrescriptionSellingPriceMax(NumberUtils.toScaledBigDecimal(prescriptionSellingPriceMax));
-        }
-        if (StringUtils.isNotBlank(prescriptionSellingPriceMin)) {
-            filter.setPrescriptionSellingPriceMin(NumberUtils.toScaledBigDecimal(prescriptionSellingPriceMin));
-        }
-        if (StringUtils.isNotBlank(stockQuantityMax)) {
-            filter.setStockQuantityMax(NumberUtils.toInt(stockQuantityMax));
-        }
-        if (StringUtils.isNotBlank(stockQuantityMin)) {
-            filter.setStockQuantityMin(NumberUtils.toInt(stockQuantityMin));
-        }
+        filter.setGeneralSellingPriceMax(toBigDecimalOrNull(generalSellingPriceMax, DECIMAL_SCALE));
+        filter.setGeneralSellingPriceMin(toBigDecimalOrNull(generalSellingPriceMin, DECIMAL_SCALE));
+        filter.setPrescriptionSellingPriceMax(toBigDecimalOrNull(prescriptionSellingPriceMax, DECIMAL_SCALE));
+        filter.setPrescriptionSellingPriceMin(toBigDecimalOrNull(prescriptionSellingPriceMin, DECIMAL_SCALE));
+        filter.setStockQuantityMax(toIntegerOrNull(stockQuantityMax));
+        filter.setStockQuantityMin(toIntegerOrNull(stockQuantityMin));
         filter.setStatus(status);
         filter.setUnit(selectedUnit);
         filter.setCategory(selectedProductCategory);
@@ -205,14 +193,12 @@ public class ProductFilterController extends CommonDataFilterController<ProductF
     @Override
     protected void initDataFilterControlActions() {
         initCustomDatePicker(dpExpiredDateMax, dpExpiredDateMin);
-        TextFieldUtils.setDigitTextFields(
-                tfBarcode,
-                tfPrescriptionSellingPriceMin,
+        TextFieldUtils.setDecimalTextFields(
                 tfPrescriptionSellingPriceMax,
-                tfGeneralSellingPriceMin,
+                tfPrescriptionSellingPriceMin,
                 tfGeneralSellingPriceMax,
-                tfStockQuantityMin,
-                tfStockQuantityMax);
+                tfGeneralSellingPriceMin);
+        TextFieldUtils.setDigitTextFields(tfBarcode, tfStockQuantityMin, tfStockQuantityMax);
         ComboBoxUtils.initSimple(
                 cbStatus,
                 new SimpleComboBoxModel(null, StringConstants.EMPTY),

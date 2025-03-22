@@ -374,12 +374,8 @@ public class ProductEditController extends CommonDataSaveController {
         });
         initCustomDatePicker(dpExpiredDate);
         Locale locale = resources.getLocale();
-        TextFieldUtils.setDigitTextFields(
-                tfBarcode,
-                tfGeneralSellingPrice,
-                tfPrescriptionSellingPrice,
-                tfStockQuantity,
-                tfExpiryQuantity);
+        TextFieldUtils.setDecimalTextFields(tfGeneralSellingPrice, tfPrescriptionSellingPrice);
+        TextFieldUtils.setDigitTextFields(tfBarcode, tfStockQuantity, tfExpiryQuantity);
         setProductCategoryChooser(tfCategory, this::handleSelectedProductCategory, tfUnit.getParent());
         setUnitChooser(tfUnit, this::handleSelectedUnit, cbStatus);
         setDrugClassificationChooser(tfDrugClassification, this::handleSelectedDrugClassification, tfIndication);
@@ -446,12 +442,12 @@ public class ProductEditController extends CommonDataSaveController {
     private void initTableProductPrice(Locale locale) {
         TableViewUtils.initTableColumn(
                 colGeneralSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 ProductPriceVM::getGeneralSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colPrescripionSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 ProductPriceVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.setColumnValue(colProductPricePurchaseInvoiceNumber, ProductPriceVM::getPurchaseInvoiceNumber);
@@ -548,8 +544,9 @@ public class ProductEditController extends CommonDataSaveController {
         productEdit.setDrugClassification(selectedDrugClassification);
         productEdit.setIndication(tfIndication.getText());
         productEdit.setContraindication(tfContraindication.getText());
-        productEdit.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellingPrice.getText()));
-        productEdit.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellingPrice.getText()));
+        productEdit.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellingPrice.getText(), DECIMAL_SCALE));
+        productEdit
+                .setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellingPrice.getText(), DECIMAL_SCALE));
         productEdit.setPriceRemarks(tfPriceRemarks.getText());
         productEdit.setStockQuantity(toIntegerOrNull(tfStockQuantity.getText()));
         productEdit.setStockRemarks(tfStockRemarks.getText());

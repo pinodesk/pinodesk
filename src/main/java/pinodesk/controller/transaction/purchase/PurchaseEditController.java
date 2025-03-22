@@ -282,8 +282,8 @@ public class PurchaseEditController extends CommonDataSaveController {
             return;
         }
         Integer quantity = toIntegerOrNull(tfProductQuantity.getText());
-        BigDecimal buyingPrice = toBigDecimalOrNull(tfBuyingPrice.getText());
-        BigDecimal generalSellingPrice = toBigDecimalOrNull(tfGeneralSellingPrice.getText());
+        BigDecimal buyingPrice = toBigDecimalOrNull(tfBuyingPrice.getText(), DECIMAL_SCALE);
+        BigDecimal generalSellingPrice = toBigDecimalOrNull(tfGeneralSellingPrice.getText(), DECIMAL_SCALE);
         PurchaseProductVM purchaseProduct = new PurchaseProductVM();
         purchaseProduct.setProductId(selectedProduct.getId());
         purchaseProduct.setProductName(selectedProduct.getName());
@@ -295,7 +295,9 @@ public class PurchaseEditController extends CommonDataSaveController {
         purchaseProduct.setSubtotalPrice(buyingPrice.multiply(BigDecimal.valueOf(quantity)));
         purchaseProduct.setGeneralSellingPrice(generalSellingPrice);
         if (isProductCategoryDrugs) {
-            BigDecimal prescriptionSellingPrice = toBigDecimalOrNull(tfPrescriptionSellingPrice.getText());
+            BigDecimal prescriptionSellingPrice = toBigDecimalOrNull(
+                    tfPrescriptionSellingPrice.getText(),
+                    DECIMAL_SCALE);
             purchaseProduct.setPrescriptionSellingPrice(prescriptionSellingPrice);
         }
         purchaseProduct.setBatchNumber(tfBatchNumber.getText());
@@ -356,14 +358,46 @@ public class PurchaseEditController extends CommonDataSaveController {
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
                 new SimpleComboBoxModel(PaymentStatus.UNPAID, t.translate(CommonLabel.LBL_UNPAID)));
         Locale locale = resources.getLocale();
-        TextFieldUtils.setDecimalTextFields(tfDiscountAmount);
-        TextFieldUtils.setDigitTextFields(
+        TextFieldUtils.setDecimalTextFields(
                 tfAdditionalDiscount,
                 tfTax,
                 tfBuyingPrice,
                 tfGeneralSellingPrice,
                 tfPrescriptionSellingPrice,
-                tfProductQuantity);
+                tfDiscountAmount);
+        TextFieldUtils.setDigitTextFields(tfProductQuantity);
+        initTablePurchaseProduct(locale);
+        setProductChooser(tfProduct, this::handleSelectedProduct, tfProductQuantity);
+        setSupplierChooser(tfSupplier, true, this::handleSelectedSupplier, tfInvoiceNumber);
+        TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchaseSummary(), tfAdditionalDiscount, tfTax);
+        TextFieldUtils.onTextChanged((ov, nv) -> {
+            calculateBuyingPriceDiscount(locale);
+        }, tfDiscountAmount, tfBuyingPrice);
+        ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
+            boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
+            if (isPaid) {
+                dpDueDate.setValue(null);
+            }
+            vboxDueDate.setDisable(isPaid);
+        });
+        ComboBoxUtils.initSimple(
+                cbDiscountType,
+                new SimpleComboBoxModel(null, t.translate(CommonLabel.LBL_NO_DISCOUNT)),
+                new SimpleComboBoxModel(DiscountType.PERCENTAGE, t.translate(CommonLabel.LBL_PERCENTAGE)),
+                new SimpleComboBoxModel(DiscountType.FIXED_AMOUNT, t.translate(CommonLabel.LBL_FIXED_AMOUNT)));
+        ComboBoxUtils.onSelectedItemChanged(cbDiscountType, (ov, nv) -> {
+            boolean isNoDiscount = nv.getValue() == null;
+            vboxDiscountAmount.setDisable(isNoDiscount);
+            vboxBuyingPriceDiscount.setDisable(isNoDiscount);
+            if (isNoDiscount) {
+                TextFieldUtils.setTextEmpty(tfDiscountAmount, tfBuyingPriceDiscount);
+            } else {
+                calculateBuyingPriceDiscount(locale);
+            }
+        });
+    }
+
+    private void initTablePurchaseProduct(Locale locale) {
         TableViewUtils.setColumnValue(colUnit, PurchaseProductVM::getProductUnitLabel);
         TableViewUtils.setColumnValue(colBactchNumber, PurchaseProductVM::getBatchNumber);
         TableViewUtils.setColumnValue(colProductCategory, PurchaseProductVM::getProductCategoryName);
@@ -375,7 +409,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         });
         TableViewUtils.initTableColumn(
                 colBuyingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PurchaseProductVM::getBuyingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(colDiscount, new DefaultCellFactory<>(), (vm) -> {
@@ -383,10 +417,10 @@ public class PurchaseEditController extends CommonDataSaveController {
             if (discountAmount == null) {
                 return null;
             }
-            String strDiscount = StringNumberUtils.format(discountAmount, locale);
+            String strDiscount = StringNumberUtils.format(discountAmount, locale, DECIMAL_SCALE);
             if (DiscountType.PERCENTAGE.toString().equals(vm.getDiscountType())) {
                 BigDecimal realAmount = vm.getBuyingPrice().subtract(vm.getBuyingPriceDiscount());
-                String strRealAmount = StringNumberUtils.format(realAmount, locale);
+                String strRealAmount = StringNumberUtils.format(realAmount, locale, DECIMAL_SCALE);
                 strDiscount = String.format("%s%% = %s", strDiscount, strRealAmount);
             }
             return strDiscount;
@@ -432,34 +466,6 @@ public class PurchaseEditController extends CommonDataSaveController {
                 handleActionTablePurchaseProduct();
             }
         });
-        setProductChooser(tfProduct, this::handleSelectedProduct, tfProductQuantity);
-        setSupplierChooser(tfSupplier, true, this::handleSelectedSupplier, tfInvoiceNumber);
-        TextFieldUtils.onTextChanged((ov, nv) -> calculatePurchaseSummary(), tfAdditionalDiscount, tfTax);
-        TextFieldUtils.onTextChanged((ov, nv) -> {
-            calculateBuyingPriceDiscount(locale);
-        }, tfDiscountAmount, tfBuyingPrice);
-        ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
-            boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
-            if (isPaid) {
-                dpDueDate.setValue(null);
-            }
-            vboxDueDate.setDisable(isPaid);
-        });
-        ComboBoxUtils.initSimple(
-                cbDiscountType,
-                new SimpleComboBoxModel(null, t.translate(CommonLabel.LBL_NO_DISCOUNT)),
-                new SimpleComboBoxModel(DiscountType.PERCENTAGE, t.translate(CommonLabel.LBL_PERCENTAGE)),
-                new SimpleComboBoxModel(DiscountType.FIXED_AMOUNT, t.translate(CommonLabel.LBL_FIXED_AMOUNT)));
-        ComboBoxUtils.onSelectedItemChanged(cbDiscountType, (ov, nv) -> {
-            boolean isNoDiscount = nv.getValue() == null;
-            vboxDiscountAmount.setDisable(isNoDiscount);
-            vboxBuyingPriceDiscount.setDisable(isNoDiscount);
-            if (isNoDiscount) {
-                TextFieldUtils.setTextEmpty(tfDiscountAmount, tfBuyingPriceDiscount);
-            } else {
-                calculateBuyingPriceDiscount(locale);
-            }
-        });
     }
 
     @Override
@@ -490,13 +496,17 @@ public class PurchaseEditController extends CommonDataSaveController {
         if (paymentDueDate != null) {
             dpDueDate.setValue(paymentDueDate);
         }
-        lblTotalDiscount.setText(formatOrDefault(totalDiscount, locale, "0"));
-        lblTax.setText(formatOrDefault(tax, locale, "0"));
-        lblTotalPayment.setText(formatOrDefault(totalPayment, locale, "0"));
-        lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
+        lblTotalDiscount.setText(formatOrDefault(totalDiscount, locale, DECIMAL_SCALE, "0"));
+        lblTax.setText(formatOrDefault(tax, locale, DECIMAL_SCALE, "0"));
+        lblTotalPayment.setText(formatOrDefault(totalPayment, locale, DECIMAL_SCALE, "0"));
+        lblTotalProduct.setText(formatOrDefault(totalProduct, locale, DECIMAL_SCALE, "0"));
         lblTotalPrice.setText(formatOrDefault(totalPrice, locale, "0"));
-        tfAdditionalDiscount.setText(toStringOrEmpty(additionalDiscount));
-        tfTax.setText(toStringOrEmpty(tax));
+        if (additionalDiscount != null) {
+            tfAdditionalDiscount.setText(additionalDiscount.doubleValue() + "");
+        }
+        if (tax != null) {
+            tfTax.setText(tax.doubleValue() + "");
+        }
         if (!isPharmacyFeatureEnabled()) {
             vboxPrescriptionSellingPrice.setVisible(false);
             tblPurchaseProduct.getColumns().remove(colPrescriptionSellingPrice);
@@ -519,7 +529,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         }
         purchase.setAdditionalDiscount(additionalDiscount);
         purchase.setTotalDiscount(totalDiscount);
-        purchase.setTax(toBigDecimalOrNull(tfTax.getText()));
+        purchase.setTax(toBigDecimalOrNull(tfTax.getText(), DECIMAL_SCALE));
         purchase.setTotalPayment(totalPayment);
         purchase.setTotalProduct(totalProduct);
         purchase.setTotalPrice(totalPrice);
@@ -563,8 +573,12 @@ public class PurchaseEditController extends CommonDataSaveController {
             tfProduct.setText(product.getName());
             tfProductCategory.setText(product.getCategoryName());
             tfProductUnit.setText(product.getUnitLabel());
-            tfGeneralSellingPrice.setText(toStringOrEmpty(product.getGeneralSellingPrice()));
-            tfPrescriptionSellingPrice.setText(toStringOrEmpty(product.getPrescriptionSellingPrice()));
+            if (product.getGeneralSellingPrice() != null) {
+                tfGeneralSellingPrice.setText(product.getGeneralSellingPrice().doubleValue() + "");
+            }
+            if (product.getPrescriptionSellingPrice() != null) {
+                tfPrescriptionSellingPrice.setText(product.getPrescriptionSellingPrice().doubleValue() + "");
+            }
             if (ProductUtils.isProductCategoryDrugs(product.getCategoryCode())) {
                 vboxPrescriptionSellingPrice.setDisable(false);
             }
@@ -602,11 +616,11 @@ public class PurchaseEditController extends CommonDataSaveController {
         totalProduct = items.stream().map(PurchaseProductVM::getQuantity).reduce(0, Integer::sum);
         totalPrice = items.stream().map(vm -> vm.getBuyingPrice().multiply(BigDecimal.valueOf(vm.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        additionalDiscount = toBigDecimalOrNull(tfAdditionalDiscount.getText());
+        additionalDiscount = toBigDecimalOrNull(tfAdditionalDiscount.getText(), DECIMAL_SCALE);
         totalDiscount = items.stream().map(PurchaseProductVM::getSubtotalDiscount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
                 .add(additionalDiscount == null ? BigDecimal.ZERO : additionalDiscount);
-        BigDecimal tax = toBigDecimalOrZero(tfTax.getText());
+        BigDecimal tax = toBigDecimalOrZero(tfTax.getText(), DECIMAL_SCALE);
         totalPayment = totalPrice.add(tax).subtract(totalDiscount);
         lblTotalDiscount.setText(formatOrDefault(totalDiscount, locale, DECIMAL_SCALE, "0"));
         lblTax.setText(formatOrDefault(tax, locale, DECIMAL_SCALE, "0"));
@@ -629,7 +643,7 @@ public class PurchaseEditController extends CommonDataSaveController {
             product.setPrescriptionSellingPrice(selected.getPrescriptionSellingPrice());
             handleSelectedProduct(new ChooseResultVM<>(false, Optional.of(product)));
             tfProductQuantity.setText(toStringOrEmpty(selected.getQuantity()));
-            tfBuyingPrice.setText(toStringOrEmpty(selected.getBuyingPrice()));
+            tfBuyingPrice.setText(toStringOrEmpty(selected.getBuyingPrice().doubleValue()));
             tfBatchNumber.setText(selected.getBatchNumber());
             dpExpiredDate.setValue(null);
             if (selected.getExpiredDate() != null) {

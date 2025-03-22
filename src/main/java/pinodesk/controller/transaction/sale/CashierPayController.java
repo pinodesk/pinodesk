@@ -3,6 +3,7 @@ package pinodesk.controller.transaction.sale;
 import static com.mudiatech.toolbox.data.StringNumberUtils.formatOrDefault;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrZero;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,7 +15,6 @@ import com.mudiatech.pandora.model.SimpleComboBoxModel;
 import com.mudiatech.pandora.utility.ComboBoxUtils;
 import com.mudiatech.pandora.utility.ControlValidator;
 import com.mudiatech.pandora.utility.TextFieldUtils;
-import com.mudiatech.toolbox.data.StringNumberUtils;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -78,13 +78,14 @@ public class CashierPayController extends CommonDataSaveController {
                 cbPaymentStatus,
                 new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
                 new SimpleComboBoxModel(PaymentStatus.UNPAID, t.translate(CommonLabel.LBL_UNPAID)));
+        TextFieldUtils.setDecimalTextFields(tfPaymentAmount);
         tfPaymentAmount.textProperty().addListener((o, ov, nv) -> {
             changeAmount = BigDecimal.ZERO;
-            BigDecimal paymentAmount = toBigDecimalOrZero(nv);
+            BigDecimal paymentAmount = toBigDecimalOrZero(nv, DECIMAL_SCALE);
             if (paymentAmount.compareTo(saleData.getTotalSale()) > 0) {
                 changeAmount = paymentAmount.subtract(saleData.getTotalSale());
             }
-            lblChange.setText(StringNumberUtils.formatOrDefault(changeAmount, resources.getLocale(), "0"));
+            lblChange.setText(formatOrDefault(changeAmount, resources.getLocale(), DECIMAL_SCALE, "0"));
         });
         ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
             boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
@@ -99,14 +100,13 @@ public class CashierPayController extends CommonDataSaveController {
     protected void initDataSaveControlValues() {
         Locale locale = resources.getLocale();
         saleData = getPageData();
-        lblTotalSale.setText(formatOrDefault(saleData.getTotalSale(), locale, "0"));
+        lblTotalSale.setText(formatOrDefault(saleData.getTotalSale(), locale, DECIMAL_SCALE, "0"));
         lblTotalProduct.setText(formatOrDefault(saleData.getTotalProduct(), locale, "0"));
         lblCustomer.setText(saleData.getCustomer().map(CustomerVM::getName).orElse(StringConstants.MINUS));
         lblSellingMode.setText(
                 SellingMode.GENERAL.equals(saleData.getSellingMode()) ?
                         t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION));
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
-        TextFieldUtils.setDigitTextFields(tfPaymentAmount);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class CashierPayController extends CommonDataSaveController {
         paymentData.setChangeAmount(changeAmount);
         paymentData.setInvoiceNumber(invoiceNumber);
         paymentData.setPaymentDateTime(paymentDateTime);
-        paymentData.setPaymentAmount(toBigDecimalOrNull(tfPaymentAmount.getText()));
+        paymentData.setPaymentAmount(toBigDecimalOrNull(tfPaymentAmount.getText(), DECIMAL_SCALE));
         paymentData.setPaymentStatus(paymentStatus);
         paymentData.setPaymentDueDate(paymentDueDate);
         return paymentData;

@@ -13,6 +13,7 @@ import com.mudiatech.pandora.utility.TextFieldUtils;
 import com.mudiatech.pandora.utility.ValidationResult;
 import com.mudiatech.toolbox.data.StringNumberUtils;
 
+import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -90,7 +91,7 @@ public class ReceivableEditController extends CommonDataSaveController {
             tblPayments.getItems().remove(idx);
         }
         ReceivablePaymentVM vm = new ReceivablePaymentVM();
-        vm.setAmount(StringNumberUtils.toBigDecimalOrNull(tfPaymentAmount.getText()));
+        vm.setAmount(toBigDecimalOrNull(tfPaymentAmount.getText(), DECIMAL_SCALE));
         vm.setPaymentDate(paymentDate);
         tblPayments.getItems().add(vm);
         tfPaymentAmount.setText("");
@@ -122,7 +123,7 @@ public class ReceivableEditController extends CommonDataSaveController {
                 colPaymentDate,
                 new LocalDateCellFactory<>(CommonConstants.DATE_DISPLAY_PATTERN),
                 ReceivablePaymentVM::getPaymentDate);
-        TextFieldUtils.setDigitTextFields(tfReceivableAmount);
+        TextFieldUtils.setDecimalTextFields(tfReceivableAmount, tfPaymentAmount);
         setFocused(tfPaymentAmount);
     }
 
@@ -132,7 +133,7 @@ public class ReceivableEditController extends CommonDataSaveController {
         tfCustomer.setText(currentReceivable.getCustomerName());
         tfInvoiceNumber.setText(currentReceivable.getInvoiceNumber());
         dpInvoiceDate.setValue(currentReceivable.getInvoiceDate());
-        tfReceivableAmount.setText(StringNumberUtils.toStringOrEmpty(currentReceivable.getAmount()));
+        tfReceivableAmount.setText(currentReceivable.getAmount().doubleValue() + "");
         dpDueDate.setValue(currentReceivable.getDueDate());
         List<ReceivablePaymentVM> payments = receivableService.getReceivablePayments(currentReceivable.getId());
         tblPayments.getItems().addAll(payments);
