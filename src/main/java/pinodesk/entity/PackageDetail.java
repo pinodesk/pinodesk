@@ -13,7 +13,9 @@ public class PackageDetail extends DataModel {
     public static final String C_PRODUCT_ID = "product_id";
     public static final String C_QUANTITY = "quantity";
 
+    // Package content
     private Long packageProductId;
+    // Product parent
     private Long productId;
     private Integer quantity;
 }

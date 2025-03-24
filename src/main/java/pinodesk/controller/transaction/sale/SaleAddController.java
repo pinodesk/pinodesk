@@ -167,9 +167,6 @@ public class SaleAddController extends CommonDataSaveController {
     private Label lblDiscount;
 
     @FXML
-    private Label lblTax;
-
-    @FXML
     private Label lblTotalPayment;
 
     @FXML
@@ -233,7 +230,7 @@ public class SaleAddController extends CommonDataSaveController {
             return;
         }
         Integer saleQuantity = toIntegerOrNull(tfSaleQuantity.getText());
-        BigDecimal sellingPrice = toBigDecimalOrNull(tfSellingPrice.getText());
+        BigDecimal sellingPrice = toBigDecimalOrNull(tfSellingPrice.getText(), DECIMAL_SCALE);
         SaleProductVM saleProduct = new SaleProductVM();
         saleProduct.setProductId(selectedProduct.getId());
         saleProduct.setProductName(selectedProduct.getName());
@@ -284,7 +281,8 @@ public class SaleAddController extends CommonDataSaveController {
                 new SimpleComboBoxModel(SellingMode.GENERAL, t.translate(CommonLabel.LBL_GENERAL)),
                 new SimpleComboBoxModel(SellingMode.PRESCRIPTION, t.translate(CommonLabel.LBL_PRESCRIPTION)));
         Locale locale = resources.getLocale();
-        TextFieldUtils.setDigitTextFields(tfSellingPrice, tfCurrentQuantity, tfSaleQuantity);
+        TextFieldUtils.setDecimalTextFields(tfSellingPrice);
+        TextFieldUtils.setDigitTextFields(tfCurrentQuantity, tfSaleQuantity);
         TableViewUtils.setColumnValue(colProductName, SaleProductVM::getProductName);
         TableViewUtils.setColumnValue(colUnit, SaleProductVM::getProductUnitLabel);
         TableViewUtils.setColumnValue(colProductCategory, SaleProductVM::getProductCategoryName);
@@ -295,7 +293,7 @@ public class SaleAddController extends CommonDataSaveController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colQuantity,
-                new NumberCellFactory<>(DECIMAL_SCALE, locale),
+                new NumberCellFactory<>(locale),
                 SaleProductVM::getSaleQuantity,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
@@ -407,11 +405,13 @@ public class SaleAddController extends CommonDataSaveController {
             tfProductCategory.setText(product.getCategoryName());
             tfProductUnit.setText(product.getUnitLabel());
             tfCurrentQuantity.setText(toStringOrEmpty(product.getQuantity()));
-            tfSellingPrice.setText(toStringOrEmpty(product.getGeneralSellingPrice()));
+            if (product.getGeneralSellingPrice() != null) {
+                tfSellingPrice.setText(product.getGeneralSellingPrice().doubleValue() + "");
+            }
             SellingMode mode = ComboBoxUtils.getSelectedItem(cbSellingMode).getValue();
             BigDecimal prescriptionSellingPrice = product.getPrescriptionSellingPrice();
             if (SellingMode.PRESCRIPTION.equals(mode) && prescriptionSellingPrice != null) {
-                tfSellingPrice.setText(toStringOrEmpty(prescriptionSellingPrice));
+                tfSellingPrice.setText(prescriptionSellingPrice.doubleValue() + "");
             }
             List<GroupedProductExpiryVM> productExpiries = productService.getRemainingProductExpiry(product.getId());
             if (!productExpiries.isEmpty()) {
@@ -495,8 +495,8 @@ public class SaleAddController extends CommonDataSaveController {
         totalSale = items.stream().map(SaleProductVM::getSubtotal).reduce(BigDecimal.ZERO, BigDecimal::add);
         totalPayment = totalSale;
         lblTotalProduct.setText(formatOrDefault(totalProduct, locale, "0"));
-        lblTotalSale.setText(formatOrDefault(totalSale, locale, "0"));
-        lblTotalPayment.setText(formatOrDefault(totalPayment, locale, "0"));
+        lblTotalSale.setText(formatOrDefault(totalSale, locale, DECIMAL_SCALE, "0"));
+        lblTotalPayment.setText(formatOrDefault(totalPayment, locale, DECIMAL_SCALE, "0"));
     }
 
     private void resetControls() {
@@ -515,7 +515,6 @@ public class SaleAddController extends CommonDataSaveController {
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         tblSaleProduct.getItems().clear();
         lblDiscount.setText("0");
-        lblTax.setText("0");
         lblTotalProduct.setText("0");
         lblTotalSale.setText("0");
         lblTotalPayment.setText("0");
@@ -543,7 +542,9 @@ public class SaleAddController extends CommonDataSaveController {
                                 .findAny().orElseThrow());
             }
             tfSaleQuantity.setText(toStringOrEmpty(selected.getSaleQuantity()));
-            tfSellingPrice.setText(toStringOrEmpty(selected.getSellingPrice()));
+            if (selected.getSellingPrice() != null) {
+                tfSellingPrice.setText(selected.getSellingPrice().doubleValue() + "");
+            }
         }
     }
 
@@ -577,16 +578,18 @@ public class SaleAddController extends CommonDataSaveController {
 
     private void updateDisplaySellingPrice(SellingMode mode) {
         if (selectedProduct != null) {
-            tfSellingPrice.setText(toStringOrEmpty(selectedProduct.getGeneralSellingPrice()));
+            if (selectedProduct.getGeneralSellingPrice() != null) {
+                tfSellingPrice.setText(selectedProduct.getGeneralSellingPrice() + "");
+            }
             if (SellingMode.PRESCRIPTION.equals(mode) && selectedProduct.getPrescriptionSellingPrice() != null) {
-                tfSellingPrice.setText(toStringOrEmpty(selectedProduct.getPrescriptionSellingPrice()));
+                tfSellingPrice.setText(selectedProduct.getPrescriptionSellingPrice().doubleValue() + "");
             }
         }
         tblSaleProduct.getItems().forEach(saleProduct -> {
             BigDecimal gsp = saleProduct.getGeneralSellingPrice();
             BigDecimal psp = saleProduct.getPrescriptionSellingPrice();
             if (gsp != null) {
-                saleProduct.setSellingPrice(saleProduct.getGeneralSellingPrice());
+                saleProduct.setSellingPrice(gsp);
             }
             if (SellingMode.PRESCRIPTION.equals(mode) && psp != null) {
                 saleProduct.setSellingPrice(psp);

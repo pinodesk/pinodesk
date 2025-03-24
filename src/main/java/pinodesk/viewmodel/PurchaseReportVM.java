@@ -13,6 +13,7 @@ public class PurchaseReportVM {
     private String invoiceNumber;
     private String supplierName;
     private String productName;
+    private LocalDateTime productDeletedAt;
     private Integer quantity;
     private String unit;
     private BigDecimal buyingPrice;

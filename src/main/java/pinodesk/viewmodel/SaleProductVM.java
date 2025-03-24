@@ -2,6 +2,7 @@ package pinodesk.viewmodel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import lombok.Data;
 public class SaleProductVM {
     private Long productId;
     private String productName;
+    private LocalDateTime productDeletedAt;
     private String productCode;
     private String productBarcode;
     private String productCategoryName;

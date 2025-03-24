@@ -1,11 +1,13 @@
 package pinodesk.controller.transaction.payable;
 
+import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import com.mudiatech.pandora.factory.LocalDateCellFactory;
 import com.mudiatech.pandora.factory.NumberCellFactory;
 import com.mudiatech.pandora.utility.ControlValidator;
@@ -90,7 +92,7 @@ public class PayableEditController extends CommonDataSaveController {
             tblPayments.getItems().remove(idx);
         }
         PayablePaymentVM vm = new PayablePaymentVM();
-        vm.setAmount(StringNumberUtils.toBigDecimalOrNull(tfPaymentAmount.getText(), DECIMAL_SCALE));
+        vm.setAmount(toBigDecimalOrNull(tfPaymentAmount.getText(), DECIMAL_SCALE));
         vm.setPaymentDate(paymentDate);
         tblPayments.getItems().add(vm);
         tfPaymentAmount.setText("");
@@ -132,7 +134,7 @@ public class PayableEditController extends CommonDataSaveController {
         tfSupplier.setText(currentPayable.getSupplierName());
         tfInvoiceNumber.setText(currentPayable.getInvoiceNumber());
         dpInvoiceDate.setValue(currentPayable.getInvoiceDate());
-        tfPayableAmount.setText(StringNumberUtils.toStringOrEmpty(currentPayable.getAmount().doubleValue()));
+        tfPayableAmount.setText(currentPayable.getAmount().doubleValue() + "");
         dpDueDate.setValue(currentPayable.getDueDate());
         List<PayablePaymentVM> payments = payableService.getPayablePayments(currentPayable.getId());
         tblPayments.getItems().addAll(payments);

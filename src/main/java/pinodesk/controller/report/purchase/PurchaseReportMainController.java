@@ -248,9 +248,14 @@ public class PurchaseReportMainController extends BaseController {
     protected void initControlActions() {
         Locale locale = resources.getLocale();
         TableViewUtils.setColumnValue(colSupplierName, PurchaseReportVM::getSupplierName);
-        TableViewUtils.setColumnValue(colProductName, PurchaseReportVM::getProductName);
         TableViewUtils.setColumnValue(colUnit, PurchaseReportVM::getUnit);
         TableViewUtils.setColumnValue(colInvoiceNumber, PurchaseReportVM::getInvoiceNumber);
+        TableViewUtils.setColumnValue(colProductName, vm -> {
+            if (vm.getProductDeletedAt() != null) {
+                return String.format("%s (%s)", vm.getProductName(), t.translate(CommonLabel.LBL_REMOVED));
+            }
+            return vm.getProductName();
+        });
         TableViewUtils.setColumnValue(
                 colPaymentStatus,
                 vm -> PaymentStatus.PAID.toString().equals(vm.getPaymentStatus()) ?

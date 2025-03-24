@@ -3,6 +3,7 @@ package pinodesk.controller.transaction.sale;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toStringOrNull;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import com.mudiatech.pandora.model.SimpleComboBoxModel;
 import com.mudiatech.pandora.utility.ComboBoxUtils;
@@ -73,10 +74,14 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
             tfCustomer.setText(currentFilter.getCustomerName());
             tfDoctor.setText(currentFilter.getDoctorName());
-            tfTotalPaymentMax.setText(toStringOrNull(currentFilter.getTotalPaymentMax()));
-            tfTotalPaymentMin.setText(toStringOrNull(currentFilter.getTotalPaymentMin()));
             tfTotalProductMax.setText(toStringOrNull(currentFilter.getTotalProductMax()));
             tfTotalProductMin.setText(toStringOrNull(currentFilter.getTotalProductMin()));
+            if (currentFilter.getTotalPaymentMax() != null) {
+                tfTotalPaymentMax.setText(currentFilter.getTotalPaymentMax().doubleValue() + "");
+            }
+            if (currentFilter.getTotalPaymentMin() != null) {
+                tfTotalPaymentMin.setText(currentFilter.getTotalPaymentMin().doubleValue() + "");
+            }
             if (currentFilter.getCreatedDateMin() != null) {
                 dpCreatedDateMin.setValue(currentFilter.getCreatedDateMin());
             }
@@ -105,7 +110,8 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
     @Override
     protected void initDataFilterControlActions() {
         initCustomDatePicker(dpCreatedDateMax, dpCreatedDateMin, dpDueDateMax, dpDueDateMin);
-        TextFieldUtils.setDigitTextFields(tfTotalPaymentMax, tfTotalPaymentMin, tfTotalProductMax, tfTotalProductMin);
+        TextFieldUtils.setDecimalTextFields(tfTotalPaymentMax, tfTotalPaymentMin);
+        TextFieldUtils.setDigitTextFields(tfTotalProductMax, tfTotalProductMin);
         ComboBoxUtils.initSimple(
                 cbPaymentStatus,
                 new SimpleComboBoxModel(null, StringConstants.EMPTY),
@@ -136,8 +142,8 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
             filter.setDoctorId(selectedDoctor.getId());
             filter.setDoctorName(selectedDoctor.getName());
         }
-        filter.setTotalPaymentMax(toBigDecimalOrNull(tfTotalPaymentMax.getText()));
-        filter.setTotalPaymentMin(toBigDecimalOrNull(tfTotalPaymentMin.getText()));
+        filter.setTotalPaymentMax(toBigDecimalOrNull(tfTotalPaymentMax.getText(), DECIMAL_SCALE));
+        filter.setTotalPaymentMin(toBigDecimalOrNull(tfTotalPaymentMin.getText(), DECIMAL_SCALE));
         filter.setTotalProductMax(toIntegerOrNull(tfTotalProductMax.getText()));
         filter.setTotalProductMin(toIntegerOrNull(tfTotalProductMin.getText()));
         return filter;

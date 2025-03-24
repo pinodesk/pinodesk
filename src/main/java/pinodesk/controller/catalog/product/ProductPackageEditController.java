@@ -3,6 +3,7 @@ package pinodesk.controller.catalog.product;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toIntegerOrDefault;
 import static com.mudiatech.toolbox.data.StringNumberUtils.toStringOrEmpty;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -229,13 +230,19 @@ public class ProductPackageEditController extends CommonDataSaveController {
     @Override
     protected void initDataSaveControlActions() {
         Locale locale = resources.getLocale();
-        TextFieldUtils.setDigitTextFields(tfBarcode, tfGeneralSellPrice, tfPrescriptionSellPrice);
+        TextFieldUtils.setDecimalTextFields(tfGeneralSellPrice, tfPrescriptionSellPrice);
+        TextFieldUtils.setDigitTextFields(tfBarcode);
         setProductChooser(tfProduct, this::handleSelectedProduct, tfQuantity);
         ComboBoxUtils.initSimple(
                 cbStatus,
                 new SimpleComboBoxModel(ProductStatus.ACTIVE, t.translate(CommonLabel.LBL_ACTIVE.toString())),
                 new SimpleComboBoxModel(ProductStatus.INACTIVE, t.translate(CommonLabel.LBL_INACTIVE.toString())));
         ComboBoxUtils.selectIndex(cbStatus, 0);
+        initTablePackageProduct(locale);
+        initTableProductPrice(locale);
+    }
+
+    private void initTablePackageProduct(Locale locale) {
         TableViewUtils.setColumnValue(colName, PackageProductVM::getName);
         TableViewUtils.setColumnValue(colUnit, PackageProductVM::getUnitLabel);
         TableViewUtils.initTableColumn(
@@ -250,26 +257,25 @@ public class ProductPackageEditController extends CommonDataSaveController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colGeneralSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PackageProductVM::getGeneralSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colPrescriptionSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 PackageProductVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
-        initTableProductPrice(locale);
     }
 
     private void initTableProductPrice(Locale locale) {
         TableViewUtils.initTableColumn(
                 colGeneralSellingPrice1,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 ProductPriceVM::getGeneralSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colPrescriptionSellingPrice1,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 ProductPriceVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.setColumnValue(colProductPricePurchaseInvoiceNumber, ProductPriceVM::getPurchaseInvoiceNumber);
@@ -298,8 +304,14 @@ public class ProductPackageEditController extends CommonDataSaveController {
         tfBarcode.setText(currentPackage.getBarcode());
         tfCode.setText(currentPackage.getCode());
         tfDescription.setText(currentPackage.getDescription());
-        tfGeneralSellPrice.setText(toStringOrEmpty(currentPackage.getGeneralSellingPrice()));
-        tfPrescriptionSellPrice.setText(toStringOrEmpty(currentPackage.getPrescriptionSellingPrice()));
+        BigDecimal generalSellingPrice = currentPackage.getGeneralSellingPrice();
+        if (generalSellingPrice != null) {
+            tfGeneralSellPrice.setText(toStringOrEmpty(generalSellingPrice.doubleValue()));
+        }
+        BigDecimal prescriptionSellingPrice = currentPackage.getPrescriptionSellingPrice();
+        if (prescriptionSellingPrice != null) {
+            tfPrescriptionSellPrice.setText(toStringOrEmpty(prescriptionSellingPrice.doubleValue()));
+        }
         loadProductPrice(currentPackage.getId());
         loadPackageProducts(currentPackage.getId());
         if (!isPharmacyFeatureEnabled()) {
@@ -320,8 +332,8 @@ public class ProductPackageEditController extends CommonDataSaveController {
         productEdit.setUnit(selectedUnit);
         SimpleComboBoxModel status = ComboBoxUtils.getSelectedItem(cbStatus);
         productEdit.setStatus(status.getValue());
-        productEdit.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellPrice.getText()));
-        productEdit.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellPrice.getText()));
+        productEdit.setGeneralSellingPrice(toBigDecimalOrNull(tfGeneralSellPrice.getText(), DECIMAL_SCALE));
+        productEdit.setPrescriptionSellingPrice(toBigDecimalOrNull(tfPrescriptionSellPrice.getText(), DECIMAL_SCALE));
         productEdit.setPriceRemarks(tfPriceRemarks.getText());
         productService.updatePackage(productEdit, currentPackage.getId(), tblProducts.getItems());
         return true;
@@ -397,8 +409,12 @@ public class ProductPackageEditController extends CommonDataSaveController {
                 prescriptionSellPrice = prescriptionSellPrice == null ? total : prescriptionSellPrice.add(total);
             }
         }
-        tfGeneralSellPrice.setText(toStringOrEmpty(generalSellPrice));
-        tfPrescriptionSellPrice.setText(toStringOrEmpty(prescriptionSellPrice));
+        if (generalSellPrice != null) {
+            tfGeneralSellPrice.setText(toStringOrEmpty(generalSellPrice.doubleValue()));
+        }
+        if (prescriptionSellPrice != null) {
+            tfPrescriptionSellPrice.setText(toStringOrEmpty(prescriptionSellPrice.doubleValue()));
+        }
     }
 
     private void loadProductPrice(Long productId) {

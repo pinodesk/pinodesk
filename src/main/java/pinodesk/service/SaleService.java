@@ -1,10 +1,19 @@
 package pinodesk.service;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
@@ -22,9 +31,14 @@ import pinodesk.entity.SaleDetail;
 import pinodesk.exception.DomainException;
 import pinodesk.repository.PackageDetailRepository;
 import pinodesk.repository.ProductExpiryRepository;
+import pinodesk.repository.ProductPriceRepository;
 import pinodesk.repository.ProductRepository;
 import pinodesk.repository.ProductStockRepository;
+import pinodesk.repository.ReceivablePaymentRepository;
+import pinodesk.repository.ReceivableRepository;
+import pinodesk.repository.SaleDetailRepository;
 import pinodesk.repository.SaleRepository;
+import pinodesk.util.ProductUtils;
 import pinodesk.viewmodel.SaleAddVM;
 import pinodesk.viewmodel.SaleEditVM;
 import pinodesk.viewmodel.SaleFilterVM;
@@ -32,16 +46,6 @@ import pinodesk.viewmodel.SaleProductVM;
 import pinodesk.viewmodel.SaleReportFilterVM;
 import pinodesk.viewmodel.SaleReportVM;
 import pinodesk.viewmodel.SaleVM;
-import pinodesk.repository.ProductPriceRepository;
-import pinodesk.repository.ReceivablePaymentRepository;
-import pinodesk.repository.ReceivableRepository;
-import pinodesk.repository.SaleDetailRepository;
-import pinodesk.util.ProductUtils;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Service
 public class SaleService extends BaseService {
@@ -106,17 +110,18 @@ public class SaleService extends BaseService {
             String invoiceNumber) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         packageDetailRepository.findByProductId(saleProduct.getProductId(), language).forEach(pp -> {
-            Product product = productRepository.findByIdAndDeletedAtIsNull(pp.getId()).orElseThrow();
-            Integer finalQuantity = createProductStock(
-                    activityName,
-                    saleId,
-                    pp.getId(),
-                    pp.getName(),
-                    pp.getQuantityInPackage() * saleProduct.getSaleQuantity(),
-                    invoiceNumber,
-                    saleProduct.getProductName());
-            product.setQuantity(finalQuantity);
-            productRepository.save(product);
+            productRepository.findByIdAndDeletedAtIsNull(pp.getId()).ifPresent(product -> {
+                Integer finalQuantity = createProductStock(
+                        activityName,
+                        saleId,
+                        pp.getId(),
+                        pp.getName(),
+                        pp.getQuantityInPackage() * saleProduct.getSaleQuantity(),
+                        invoiceNumber,
+                        saleProduct.getProductName());
+                product.setQuantity(finalQuantity);
+                productRepository.save(product);
+            });
         });
         createSaleDetail(saleId, saleProduct);
     }
@@ -161,6 +166,7 @@ public class SaleService extends BaseService {
                 handleSalePackageProduct(activityName, saleProduct, saleId, invoiceNumber);
                 return;
             }
+            SaleDetail sd = createSaleDetail(saleId, saleProduct);
             Long productId = saleProduct.getProductId();
             Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
             boolean productNeedsUpdate = false;
@@ -197,7 +203,6 @@ public class SaleService extends BaseService {
                 product = productRepository.save(product);
             }
             Integer finalQuantity = createProductStock(activityName, saleId, saleProduct, invoiceNumber);
-            SaleDetail sd = createSaleDetail(saleId, saleProduct);
             if (saleProduct.getExpiredDate() != null) {
                 createProductExpiry(activityName, sd, saleProduct, invoiceNumber);
             }
@@ -301,6 +306,24 @@ public class SaleService extends BaseService {
         return saleDetailRepository.save(sd);
     }
 
+    /**
+     * Processes the change in payment status for a sale.
+     * <p>
+     * This method handles the logic for updating receivables based on the change in
+     * payment status of a sale. If the status changes to PAID, it deletes the
+     * corresponding receivable. If the status changes to UNPAID, it creates a new
+     * receivable. If the status remains unchanged, it updates the existing
+     * receivable information.
+     * </p>
+     *
+     * @param saleEdit The SaleEditVM containing the updated sale information.
+     * @param sale     The existing Sale entity.
+     * 
+     * @throws DomainException If a receivable payment already exists for the sale
+     *                         when the status is changed to PAID, or if a
+     *                         receivable is already completed when the status is
+     *                         changed to UNPAID.
+     */
     private void processPaymentStatusChange(SaleEditVM saleEdit, Sale sale) {
         boolean isChangedToPaid = !saleEdit.getPaymentStatus().toString().equals(sale.getPaymentStatus())
                 && saleEdit.getPaymentStatus().equals(PaymentStatus.PAID);
@@ -345,6 +368,25 @@ public class SaleService extends BaseService {
         });
     }
 
+    /**
+     * Updates the sale data and the details. The sale might contain some deleted
+     * products, which will maintain the sale product history as long as the deleted
+     * products are not removed from the sold products.
+     * <p>
+     * This method handles updating the sale information, reverting previous sale
+     * product details (stock, expiry, price), and then applying the new sale
+     * product details. It also checks for invoice number uniqueness and handles
+     * payment status changes which may affect receivables.
+     * <p/>
+     *
+     * @param saleEdit The SaleEditVM model containing the updated sale data and
+     *                 products.
+     * @param saleId   The sale id that will be updated.
+     * 
+     * @throws DomainException If the sale is not found, if another sale with the
+     *                         same invoice number exists, or if there are issues
+     *                         with receivable payments.
+     */
     @TargetActivity(Activity.EDIT_SALE)
     @CacheEvict(value = {
             CacheNameConstants.SALES_BY_FILTER,
@@ -380,13 +422,24 @@ public class SaleService extends BaseService {
         saleRepository.save(sale);
         revertLastSaleProducts(saleId, activityName);
         saleDetailRepository.deleteBySaleId(saleId);
-        saleEdit.getSaleProducts().forEach(saleProduct -> {
+        List<Long> productIds = saleEdit.getSaleProducts().stream().map(SaleProductVM::getProductId).toList();
+        Map<Long, SaleProductVM> mapSaleProducts = saleEdit.getSaleProducts().stream()
+                .collect(Collectors.toMap(SaleProductVM::getProductId, Function.identity()));
+        productRepository.findByIdIn(productIds).forEach(product -> {
+            SaleProductVM saleProduct = mapSaleProducts.get(product.getId());
             if (ProductUtils.isProductCategoryCustomPackage(saleProduct.getProductCategoryCode())) {
+                // Process package products separately
                 handleSalePackageProduct(activityName, saleProduct, saleId, invoiceNumber);
                 return;
             }
-            Long productId = saleProduct.getProductId();
-            Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
+            SaleDetail sd = createSaleDetail(saleId, saleProduct);
+            if (product.getDeletedAt() != null) {
+                // The deleted products will be kept for the sale details only, changes to the
+                // product details, price, stock, or expiry won't be stored as they won't be
+                // seen on the product list anymore.
+                return;
+            }
+            Long productId = product.getId();
             boolean productNeedsUpdate = false;
             if (product.getQuantity() == null) {
                 ProductStock ps = new ProductStock();
@@ -421,7 +474,6 @@ public class SaleService extends BaseService {
                 product = productRepository.save(product);
             }
             Integer finalQuantity = createProductStock(activityName, saleId, saleProduct, invoiceNumber);
-            SaleDetail sd = createSaleDetail(saleId, saleProduct);
             if (saleProduct.getExpiredDate() != null) {
                 createProductExpiry(activityName, sd, saleProduct, invoiceNumber);
             }
@@ -430,12 +482,25 @@ public class SaleService extends BaseService {
         });
     }
 
+    /**
+     * Reverts the effects of a sale on product details (stock, expiry, price).
+     * <p>
+     * When a sale is edited or removed, this method reverses the changes made to
+     * the associated products. It iterates through each product in the sale and
+     * calls methods to restore the product's stock, expiry, and price to their
+     * previous state. If a product is a package, this method will also revert the
+     * effects on the products contained within the package.
+     * </p>
+     *
+     * @param saleId       The ID of the sale being reverted.
+     * @param activityName The activity that triggered the reversion (e.g.,
+     *                     "EDIT_SALE", "REMOVE_SALES").
+     */
     private void revertLastSaleProducts(Long saleId, String activityName) {
         String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
         Long currentUserId = sessionService.getCurrentSession().getUser().getId();
-        saleDetailRepository.findBySaleId(saleId).forEach(pd -> {
-            Long productId = pd.getProductId();
-            Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
+        productRepository.findBySaleIdAndDeletedAtIsNull(saleId).forEach(product -> {
+            Long productId = product.getId();
             List<Product> products = List.of(product);
             if (ProductUtils.isProductCategoryCustomPackage(product.getCategoryCode())) {
                 products = packageDetailRepository.findByProductId(productId, language).stream()

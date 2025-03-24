@@ -1,6 +1,7 @@
 package pinodesk.controller.transaction.sale;
 
 import static com.mudiatech.toolbox.data.StringNumberUtils.formatOrDefault;
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -130,7 +131,7 @@ public class CashierSaleCompleteController extends CommonContentPaneController {
                         t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION));
         lblCustomer.setText(saleData.getCustomer().map(CustomerVM::getName).orElse(StringConstants.MINUS));
         lblTotalProduct.setText(formatOrDefault(saleData.getTotalProduct(), locale, "0"));
-        lblTotalSale.setText(formatOrDefault(saleData.getTotalSale(), locale, "0"));
+        lblTotalSale.setText(formatOrDefault(saleData.getTotalSale(), locale, DECIMAL_SCALE, "0"));
         PaymentStatus paymentStatus = paymentData.getPaymentStatus();
         lblPaymentStatus.setText(
                 PaymentStatus.PAID.equals(paymentStatus) ?
@@ -140,8 +141,8 @@ public class CashierSaleCompleteController extends CommonContentPaneController {
                     .format(DateTimeFormatter.ofPattern(CommonConstants.DATE_DISPLAY_PATTERN));
             lblPaymentDueDate.setText(format);
         }
-        lblPaymentAmount.setText(formatOrDefault(paymentData.getPaymentAmount(), locale, "0"));
-        lblChange.setText(formatOrDefault(paymentData.getChangeAmount(), locale, "0"));
+        lblPaymentAmount.setText(formatOrDefault(paymentData.getPaymentAmount(), locale, DECIMAL_SCALE, "0"));
+        lblChange.setText(formatOrDefault(paymentData.getChangeAmount(), locale, DECIMAL_SCALE, "0"));
     }
 
     @Override

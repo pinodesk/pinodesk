@@ -10,7 +10,7 @@ import pinodesk.apimodel.CreateIssueResponse;
 @Service
 public class PinodeskApiService extends PinodeskBaseApiService {
 
-    private static final String PATH_ACTIVATE_RELEASE = "/v1/releases/activate";
+    private static final String PATH_ACTIVATE_RELEASE = "/v1/activation-devices";
     private static final String PATH_CREATE_ISSUES = "/v1/issues";
 
     public ActivateReleaseResponse activateRelease(ActivateReleaseRequest req) {

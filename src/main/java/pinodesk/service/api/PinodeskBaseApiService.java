@@ -17,6 +17,7 @@ import pinodesk.apimodel.PinodeskApiResponse;
 import pinodesk.constant.MessageCode;
 import pinodesk.exception.DefaultRuntimeException;
 import pinodesk.exception.PinodeskApiException;
+import pinodesk.util.DeviceUtils;
 
 @Slf4j
 public class PinodeskBaseApiService extends BaseApiService {
@@ -30,6 +31,9 @@ public class PinodeskBaseApiService extends BaseApiService {
     @Autowired
     private ObjectMapper mapper;
 
+    protected static final String HEADER_PINODESK_API_KEY = "X-Pinodesk-Api-Key";
+    protected static final String HEADER_PINODESK_DEVICE_SIGNATURE = "X-Pinodesk-Device-Signature";
+
     protected <T> T post(String path, Object req, Class<T> dataClass) {
         return request(HttpMethod.POST, path, req, dataClass);
     }
@@ -38,8 +42,9 @@ public class PinodeskBaseApiService extends BaseApiService {
         String url = baseURL + path;
         try {
             String response = Unirest.request(method.toString(), url)
-                    .header(HeaderNames.CONTENT_TYPE, "application/json")
-                    .header(HeaderNames.AUTHORIZATION, "Bearer " + apiKey).body(req).asString().getBody();
+                    .header(HeaderNames.CONTENT_TYPE, "application/json").header(HEADER_PINODESK_API_KEY, apiKey)
+                    .header(HEADER_PINODESK_DEVICE_SIGNATURE, DeviceUtils.getDeviceSignature()).body(req).asString()
+                    .getBody();
             PinodeskApiResponse<T> pinodeskResponse = parseResponse(response, dataClass);
             if (!pinodeskResponse.isSuccess()) {
                 PinodeskApiError error = pinodeskResponse.getError();

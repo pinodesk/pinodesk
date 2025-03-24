@@ -15,6 +15,9 @@ import com.mudiatech.pandora.utility.StageUtils;
 import com.mudiatech.pandora.utility.TableViewUtils;
 import com.mudiatech.toolbox.data.StringNumberUtils;
 import com.mudiatech.toolbox.future.AsyncUtils;
+
+import static pinodesk.constant.CommonConstants.DECIMAL_SCALE;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.concurrent.CompletableFuture;
@@ -308,7 +311,7 @@ public class ProductMainController extends BaseController {
         TableViewUtils.setColumnValue(colStatus, ProductVM::getStatus);
         TableViewUtils.initTableColumn(
                 colAverageBuyingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 ProductVM::getAverageBuyingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
@@ -318,12 +321,12 @@ public class ProductMainController extends BaseController {
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colGeneralSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 ProductVM::getGeneralSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(
                 colPrescriptionSellingPrice,
-                new NumberCellFactory<>(locale),
+                new NumberCellFactory<>(DECIMAL_SCALE, locale),
                 ProductVM::getPrescriptionSellingPrice,
                 StyleConstants.ALIGN_RIGHT);
         TableViewUtils.initTableColumn(

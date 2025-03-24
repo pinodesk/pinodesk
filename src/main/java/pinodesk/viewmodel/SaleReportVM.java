@@ -14,6 +14,7 @@ public class SaleReportVM {
     private String sellingMode;
     private String customerName;
     private String productName;
+    private LocalDateTime productDeletedAt;
     private Integer quantity;
     private String unit;
     private BigDecimal sellingPrice;

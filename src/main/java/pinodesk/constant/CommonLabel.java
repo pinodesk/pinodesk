@@ -90,7 +90,8 @@ public enum CommonLabel implements IMessage {
     LBL_BUYING_PRICE_DISCOUNT,
     LBL_SUBTOTAL_DISCOUNT,
     LBL_SUBTOTAL_PRICE,
-    LBL_ACTIVATION_PENDING;
+    LBL_ACTIVATION_PENDING,
+    LBL_REMOVED;
 
     @Override
     public String toString() {
