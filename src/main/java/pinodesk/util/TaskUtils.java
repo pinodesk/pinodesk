@@ -37,4 +37,21 @@ public final class TaskUtils {
         new Thread(task).start();
     }
 
+    public static <T> void runTask(Task<T> task, Consumer<T> onSuccess, Consumer<Throwable> onFailure) {
+        if (task == null) {
+            return;
+        }
+        if (onFailure != null) {
+            task.setOnFailed(event -> onFailure.accept(task.getException()));
+        }
+        if (onSuccess != null) {
+            task.setOnSucceeded(event -> onSuccess.accept(task.getValue()));
+        }
+        new Thread(task).start();
+    }
+
+    public static <T> void runTask(Task<T> task, Consumer<T> onSuccess) {
+        runTask(task, onSuccess, null);
+    }
+
 }
