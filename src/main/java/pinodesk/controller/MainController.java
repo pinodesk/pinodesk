@@ -90,6 +90,9 @@ public class MainController extends BaseController {
     private Button btnMenuReceivables;
 
     @FXML
+    private Button btnMenuConsignments;
+
+    @FXML
     private Label lblMenuSettings;
 
     @FXML
@@ -138,6 +141,12 @@ public class MainController extends BaseController {
             vboxMenu.getChildren().removeAll(vboxMenu.getChildren());
             return;
         }
+        initVersionAndUserInfo();
+        initMenuAccess();
+        Platform.runLater(() -> ScrollPaneUtils.fixBlur(menuScrollPane));
+    }
+
+    private void initVersionAndUserInfo() {
         lblVersion.setText(String.format("%s %s", CommonConstants.APP_TITLE, applicationProperties.getAppVersion()));
         CurrentSessionVM currentSession = sessionService.getCurrentSession();
         Map<String, String> configurationMap = configurationService.getConfigurationMap();
@@ -145,11 +154,27 @@ public class MainController extends BaseController {
         lblUser.setText(currentSession.getUser().getFullName());
         lblUserGroup.setText(currentSession.getUserGroup().getName());
         lblHelloName.setText(currentSession.getUser().getFullName());
-        List<UserGroupMenuVM> userGroupMenus = currentSession.getUserGroupMenus();
-        List<String> userGroupMenuCodes = userGroupMenus.stream()
+    }
+
+    private void initMenuAccess() {
+        CurrentSessionVM currentSession = sessionService.getCurrentSession();
+        List<String> userGroupMenuCodes = currentSession.getUserGroupMenus().stream()
                 .filter(ugm -> SimpleStatus.YES.toString().equals(ugm.getRead())).map(UserGroupMenuVM::getMenuCode)
                 .toList();
+
         Set<Node> inaccessibleMenus = new HashSet<>();
+        initCatalogMenus(inaccessibleMenus, userGroupMenuCodes);
+        initTransactionMenus(inaccessibleMenus, userGroupMenuCodes);
+        initSettingsMenus(inaccessibleMenus, userGroupMenuCodes);
+        initReportMenus(inaccessibleMenus, userGroupMenuCodes);
+
+        if (!isPharmacyFeatureEnabled() && btnMenuDoctors.isVisible()) {
+            inaccessibleMenus.add(btnMenuDoctors);
+        }
+        vboxMenu.getChildren().removeAll(inaccessibleMenus);
+    }
+
+    private void initCatalogMenus(Set<Node> inaccessibleMenus, List<String> userGroupMenuCodes) {
         appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.DASHBOARD, btnMenuDashboard);
         appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.CATALOG, lblMenuCatalog);
         appendInaccessibleMenus(
@@ -172,6 +197,9 @@ public class MainController extends BaseController {
                 userGroupMenuCodes,
                 MenuCodeConstants.CATALOG_DOCTORS,
                 btnMenuDoctors);
+    }
+
+    private void initTransactionMenus(Set<Node> inaccessibleMenus, List<String> userGroupMenuCodes) {
         appendInaccessibleMenus(
                 inaccessibleMenus,
                 userGroupMenuCodes,
@@ -197,6 +225,14 @@ public class MainController extends BaseController {
                 userGroupMenuCodes,
                 MenuCodeConstants.TRANSACTION_RECEIVABLES,
                 btnMenuReceivables);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.TRANSACTION_CONSIGNMENTS,
+                btnMenuConsignments);
+    }
+
+    private void initSettingsMenus(Set<Node> inaccessibleMenus, List<String> userGroupMenuCodes) {
         appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.SETTINGS, lblMenuSettings);
         appendInaccessibleMenus(
                 inaccessibleMenus,
@@ -209,6 +245,9 @@ public class MainController extends BaseController {
                 userGroupMenuCodes,
                 MenuCodeConstants.SETTINGS_USER_GROUPS,
                 btnMenuUserGroups);
+    }
+
+    private void initReportMenus(Set<Node> inaccessibleMenus, List<String> userGroupMenuCodes) {
         appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.REPORT, lblMenuReport);
         appendInaccessibleMenus(
                 inaccessibleMenus,
@@ -220,13 +259,6 @@ public class MainController extends BaseController {
                 userGroupMenuCodes,
                 MenuCodeConstants.REPORT_SALES,
                 btnMenuSalesReport);
-        if (!isPharmacyFeatureEnabled() && btnMenuDoctors.isVisible()) {
-            inaccessibleMenus.add(btnMenuDoctors);
-        }
-        vboxMenu.getChildren().removeAll(inaccessibleMenus);
-        Platform.runLater(() -> {
-            ScrollPaneUtils.fixBlur(menuScrollPane);
-        });
     }
 
     @Override
@@ -291,6 +323,11 @@ public class MainController extends BaseController {
     @FXML
     void onActionBtnMenuReceivables(ActionEvent event) {
         changeContent(Page.TRANSACTION_RECEIVABLE_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
+    void onActionBtnMenuConsignments(ActionEvent event) {
+        changeContent(Page.TRANSACTION_CONSIGNMENT_MAIN, (Button) event.getSource());
     }
 
     @FXML

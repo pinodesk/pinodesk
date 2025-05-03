@@ -19,4 +19,5 @@ public interface MenuCodeConstants {
     String REPORT = "0016";
     String REPORT_SALES = "0017";
     String REPORT_PURCHASES = "0018";
+    String TRANSACTION_CONSIGNMENTS = "0019";
 }
