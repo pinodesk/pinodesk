@@ -84,7 +84,8 @@ public enum Activity {
     SEARCH_SALE_REPORT,
     SEARCH_PURCHASE_REPORT,
     SEARCH_CONSIGNMENTS_BY_FILTER,
-    REMOVE_CONSIGNMENTS;
+    REMOVE_CONSIGNMENTS,
+    ADD_CONSIGNMENTS;
 
     @Override
     public String toString() {

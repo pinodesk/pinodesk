@@ -21,5 +21,4 @@ public class ConsignmentDetail extends DataModel {
     private Long productId;
     private Integer quantity;
     private BigDecimal price;
-    private BigDecimal subtotal;
 }

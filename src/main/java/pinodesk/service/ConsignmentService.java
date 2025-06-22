@@ -11,8 +11,23 @@ import org.springframework.transaction.annotation.Transactional;
 import pinodesk.annotation.TargetActivity;
 import pinodesk.constant.Activity;
 import pinodesk.constant.CacheNameConstants;
+import pinodesk.constant.DomainError;
+import pinodesk.entity.Consignment;
+import pinodesk.entity.ConsignmentDetail;
+import pinodesk.entity.Product;
+import pinodesk.entity.ProductExpiry;
+import pinodesk.entity.ProductPrice;
+import pinodesk.entity.ProductStock;
+import pinodesk.exception.DomainException;
+import pinodesk.repository.ConsignmentDetailRepository;
 import pinodesk.repository.ConsignmentRepository;
+import pinodesk.repository.ProductExpiryRepository;
+import pinodesk.repository.ProductPriceRepository;
+import pinodesk.repository.ProductRepository;
+import pinodesk.repository.ProductStockRepository;
+import pinodesk.viewmodel.ConsignmentAddVM;
 import pinodesk.viewmodel.ConsignmentFilterVM;
+import pinodesk.viewmodel.ConsignmentProductVM;
 import pinodesk.viewmodel.ConsignmentVM;
 
 @Service
@@ -20,6 +35,24 @@ public class ConsignmentService extends BaseService {
 
     @Autowired
     private ConsignmentRepository consignmentRepository;
+
+    @Autowired
+    private ConsignmentDetailRepository consignmentDetailRepository;
+
+    @Autowired
+    private ProductStockRepository productStockRepository;
+
+    @Autowired
+    private ProductPriceRepository productPriceRepository;
+
+    @Autowired
+    private ProductExpiryRepository productExpiryRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private SessionService sessionService;
 
     @TargetActivity(Activity.SEARCH_CONSIGNMENTS_BY_FILTER)
     @Cacheable(CacheNameConstants.CONSIGNMENTS_BY_FILTER)
@@ -37,6 +70,141 @@ public class ConsignmentService extends BaseService {
     @Transactional
     public void removeConsignments(List<Long> consignmentIds) {
 
+    }
+
+    @TargetActivity(Activity.ADD_CONSIGNMENTS)
+    @CacheEvict(value = {
+            CacheNameConstants.CONSIGNMENTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_FILTER,
+            CacheNameConstants.PRODUCTS_BY_KEYWORD,
+            CacheNameConstants.PAYABLES_BY_FILTER },
+        allEntries = true)
+    @Transactional
+    public void createConsignment(ConsignmentAddVM consignmentAdd) {
+        String activityName = Activity.ADD_CONSIGNMENTS.toString();
+        String invoiceNumber = consignmentAdd.getInvoiceNumber();
+        if (consignmentRepository.existsByInvoiceNumberIgnoreCaseAndSupplierIdAndDeletedAtIsNull(
+                invoiceNumber,
+                consignmentAdd.getSupplierId())) {
+            throw new DomainException(DomainError.CONSIGNMENT_EXISTS_BY_INVOICE_NUMBER_AND_SUPPLIER_ID);
+        }
+        Consignment consignment = new Consignment();
+        consignment.setInvoiceDate(consignmentAdd.getInvoiceDate());
+        consignment.setInvoiceNumber(invoiceNumber);
+        consignment.setSupplierId(consignmentAdd.getSupplierId());
+        consignment.setTotalProduct(consignmentAdd.getTotalProduct());
+        consignment.setUserId(sessionService.getCurrentSession().getUser().getId());
+        Consignment created = consignmentRepository.save(consignment);
+        Long consignmentId = created.getId();
+        consignmentAdd.getConsignmentProducts().stream().forEach(consignmentProduct -> {
+            Long productId = consignmentProduct.getProductId();
+            Integer quantity = consignmentProduct.getQuantity();
+            Product product = productRepository.findByIdAndDeletedAtIsNull(productId).orElseThrow();
+            createConsignmentDetail(consignmentId, consignmentProduct, productId, quantity);
+            if (consignmentProduct.getExpiredDate() != null) {
+                createProductExpiry(
+                        activityName,
+                        invoiceNumber,
+                        consignmentId,
+                        consignmentProduct,
+                        productId,
+                        quantity);
+            }
+            Integer lastStockQuantity = productStockRepository
+                    .findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(productId).stream()
+                    .map(ProductStock::getFinalQuantity).findAny().orElse(0);
+            Integer nextStockQuantity = lastStockQuantity + quantity;
+            createProductStock(activityName, invoiceNumber, consignmentId, productId, quantity, nextStockQuantity);
+            createProductPrice(activityName, invoiceNumber, consignmentId, consignmentProduct, productId);
+            updateProduct(consignmentProduct, product, nextStockQuantity);
+        });
+    }
+
+    private void createConsignmentDetail(
+            Long consignmentId,
+            ConsignmentProductVM consignmentProduct,
+            Long productId,
+            Integer qty) {
+        ConsignmentDetail cd = new ConsignmentDetail();
+        cd.setPrice(consignmentProduct.getSupplierPrice());
+        cd.setProductId(productId);
+        cd.setConsignmentId(consignmentId);
+        cd.setQuantity(qty);
+        consignmentDetailRepository.save(cd);
+    }
+
+    private void updateProduct(ConsignmentProductVM consignmentProduct, Product product, Integer nextStockQuantity) {
+        Long productId = product.getId();
+        productExpiryRepository.findClosestExpiredDateAvailableByProductId(productId)
+                .ifPresentOrElse(product::setClosestExpiredDate, () -> product.setClosestExpiredDate(null));
+        // Set the average buying price with null since we never buy from the
+        // supplier for consignment products
+        product.setAverageBuyingPrice(null);
+        product.setGeneralSellingPrice(consignmentProduct.getGeneralSellingPrice());
+        product.setPrescriptionSellingPrice(consignmentProduct.getPrescriptionSellingPrice());
+        product.setQuantity(nextStockQuantity);
+        productRepository.save(product);
+    }
+
+    private void createProductExpiry(
+            String activityName,
+            String invoiceNumber,
+            Long consignmentId,
+            ConsignmentProductVM consignmentProduct,
+            Long productId,
+            Integer purchaseQuantity) {
+        Integer lastExpiryQuantity = productExpiryRepository.findFirstByProductIdOrderByIdDesc(productId).stream()
+                .map(ProductExpiry::getFinalQuantity).findAny().orElse(0);
+        Integer finalQuantityExpiredDate = productExpiryRepository
+                .findFirstByProductIdAndExpiredDateOrderByIdDesc(productId, consignmentProduct.getExpiredDate())
+                .map(ProductExpiry::getFinalQuantityExpiredDate).orElse(0);
+        ProductExpiry px = new ProductExpiry();
+        px.setActivity(activityName);
+        px.setBatchNumber(consignmentProduct.getBatchNumber());
+        px.setExpiredDate(consignmentProduct.getExpiredDate());
+        px.setFinalQuantity(lastExpiryQuantity + purchaseQuantity);
+        px.setFinalQuantityExpiredDate(finalQuantityExpiredDate + purchaseQuantity);
+        px.setProductId(productId);
+        px.setConsignmentId(consignmentId);
+        px.setConsignmentInvoiceNumber(invoiceNumber);
+        px.setQuantityIn(purchaseQuantity);
+        px.setUserId(sessionService.getCurrentSession().getUser().getId());
+        productExpiryRepository.save(px);
+    }
+
+    private void createProductStock(
+            String activityName,
+            String invoiceNumber,
+            Long consignmentId,
+            Long productId,
+            Integer purchaseQuantity,
+            Integer nextStockQuantity) {
+        ProductStock ps = new ProductStock();
+        ps.setActivity(activityName);
+        ps.setProductId(productId);
+        ps.setConsignmentId(consignmentId);
+        ps.setConsignmentInvoiceNumber(invoiceNumber);
+        ps.setQuantityIn(purchaseQuantity);
+        ps.setFinalQuantity(nextStockQuantity);
+        ps.setUserId(sessionService.getCurrentSession().getUser().getId());
+        productStockRepository.save(ps);
+    }
+
+    private void createProductPrice(
+            String activityName,
+            String invoiceNumber,
+            Long consignmentId,
+            ConsignmentProductVM consignmentProduct,
+            Long productId) {
+        ProductPrice pp = new ProductPrice();
+        pp.setActivity(activityName);
+        pp.setGeneralSellingPrice(consignmentProduct.getGeneralSellingPrice());
+        pp.setPrescriptionSellingPrice(consignmentProduct.getPrescriptionSellingPrice());
+        pp.setProductId(productId);
+        pp.setConsignmentId(consignmentId);
+        pp.setConsignmentInvoiceNumber(invoiceNumber);
+        pp.setUserId(sessionService.getCurrentSession().getUser().getId());
+        productPriceRepository.save(pp);
     }
 
 }
