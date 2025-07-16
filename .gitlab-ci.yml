@@ -84,42 +84,29 @@ publish-snapshot-deb:
     - test
   script:
     - *setup_debian
-    - *setup_git
-    - PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-    - echo $PROJECT_VERSION
-    - cp -rv ${APPLICATION_PROPERTIES_SNAPSHOT_DEB} src/main/resources/application.properties
-    - cp -rv src/main/resources/logback.xml.example src/main/resources/logback.xml
-    - rm -rv src/main/resources/*.example
-    - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
-    - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
-    - echo $FILENAME_DEB
-    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pinodesk.com/public_html/snapshots/linux-deb/"
-    - |
-      curl -v --location 'https://api-staging.pinodesk.com/v1/releases' \
-      --header 'Content-Type: application/json' \
-      --header 'Authorization: Bearer '"$PINODESK_API_KEY_STAGING" \
-      --data '{
-          "name": "Pinodesk for Linux DEB v'"$PROJECT_VERSION"'",
-          "platform": "linux-deb",
-          "version": "'"$PROJECT_VERSION"'",
-          "download_url": "https://download.pinodesk.com/snapshots/linux-deb/'"$FILENAME_DEB"'"
-      }'
+    - chmod +x scripts/build-deb.sh
+    - ./scripts/build-deb.sh
   allow_failure: false
   only:
     - develop
   when: manual
+  variables:
+    RELEASE_MODE: snapshot
 
 publish-snapshot-exe:
-  image: busybox
   stage: publish-snapshot
+  tags:
+    - windows
   dependencies:
     - test
   script:
-    - echo "Continue on Jenkins https://optiplex.pinodesk.com/jenkins/job/pinodesk-develop-build"
+    - .\scripts\build-exe.ps1
   allow_failure: false
   only:
     - develop
   when: manual
+  variables:
+    RELEASE_MODE: snapshot
 
 release:
   stage: release
@@ -140,42 +127,29 @@ publish-release-deb:
     - release
   script:
     - *setup_debian
-    - *setup_git
-    - PROJECT_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-    - echo $PROJECT_VERSION
-    - cp -rv ${APPLICATION_PROPERTIES_RELEASE_DEB} src/main/resources/application.properties
-    - cp -rv src/main/resources/logback.xml.example src/main/resources/logback.xml
-    - rm -rv src/main/resources/*.example
-    - mvn $MAVEN_CLI_OPTS clean package -P deb -DskipTests
-    - cd target && FILENAME_DEB=$(ls *.deb | head -n 1)
-    - echo $FILENAME_DEB
-    - lftp -c "set ftp:ssl-allow no; open -u $FTP_USERNAME,$FTP_PASSWORD $FTP_HOST; mirror -Rv --file=$FILENAME_DEB --target-directory=./domains/download.pinodesk.com/public_html/releases/linux-deb/"
-    - |
-      curl -v --location 'https://api.pinodesk.com/v1/releases' \
-      --header 'Content-Type: application/json' \
-      --header 'Authorization: Bearer '"$PINODESK_API_KEY_PRODUCTION" \
-      --data '{
-          "name": "Pinodesk for Linux DEB v'"$PROJECT_VERSION"'",
-          "platform": "linux-deb",
-          "version": "'"$PROJECT_VERSION"'",
-          "download_url": "https://download.pinodesk.com/releases/linux-deb/'"$FILENAME_DEB"'"
-      }'
+    - chmod +x scripts/build-deb.sh
+    - ./scripts/build-deb.sh
   allow_failure: false
   only:
     - master
   when: manual
+  variables:
+    RELEASE_MODE: release
 
 publish-release-exe:
-  image: busybox
   stage: publish-release
+  tags:
+    - windows
   dependencies:
     - test
   script:
-    - echo "Continue on Jenkins https://optiplex.pinodesk.com/jenkins/job/pinodesk-master-build"
+    - .\scripts\build-exe.ps1
   allow_failure: false
   only:
     - master
   when: manual
+  variables:
+    RELEASE_MODE: release
 
 hotfix-start:
   stage: release
