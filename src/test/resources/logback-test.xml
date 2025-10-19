@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOG_DIR" value="logs" />
-
     <appender name="STDOUT_COLOR" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>%magenta(%d{yyyy-MM-dd HH:mm:ss.SSS}) %highlight(%5level) %yellow([%15.15thread]) %cyan(%-40.40logger{39}) : %msg%n</pattern>

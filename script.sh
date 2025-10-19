@@ -16,6 +16,10 @@ function build_exe {
 	mvn -V clean package -DskipTests -Pexe
 }
 
+function build_deb {
+	mvn -V clean package -DskipTests -Pdeb
+}
+
 if [ ! -z $1 ]; then
 	if [ $1 == "fix" ]; then
 		echo "Fix static code analytics"
@@ -29,5 +33,8 @@ if [ ! -z $1 ]; then
 	elif [ $1 == "build:exe" ]; then
 		echo "Build application with 'exe' profile"
 		build_exe
+	elif [ $1 == "build:deb" ]; then
+		echo "Build application with 'deb' profile"
+		build_deb
 	fi
 fi

@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseDataSourceConnection;
@@ -56,13 +56,13 @@ public abstract class RepositoryTestBase {
 
         @Bean
         public DataSource dataSource() {
-            BasicDataSource dataSource = new BasicDataSource();
+            HikariDataSource dataSource = new HikariDataSource();
             dataSource.setDriverClassName(env.getRequiredProperty("jdbc.driver"));
-            dataSource.setUrl(env.getRequiredProperty("jdbc.url"));
+            dataSource.setJdbcUrl(env.getRequiredProperty("jdbc.url"));
             dataSource.setUsername(env.getRequiredProperty("jdbc.user"));
             dataSource.setPassword(env.getRequiredProperty("jdbc.password"));
-            dataSource.setInitialSize(10);
-            dataSource.setMaxTotal(10);
+            dataSource.setMaximumPoolSize(10);
+            dataSource.setMinimumIdle(10);
             DatabasePopulator databasePopulator = new ResourceDatabasePopulator(new ClassPathResource("init.sql"));
             DatabasePopulatorUtils.execute(databasePopulator, dataSource);
             return dataSource;
