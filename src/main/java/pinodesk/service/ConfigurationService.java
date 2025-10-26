@@ -163,26 +163,31 @@ public class ConfigurationService extends BaseService {
         String dirName = getDatabaseDir(ds.getJdbcUrl());
         String dbDir = SystemConstants.USER_HOME_DIR + dirName;
         String dbDirOld = SystemConstants.USER_HOME_DIR + dirName + ".old";
+        File dbDirFile = new File(dbDir);
+        File dbDirFileOld = new File(dbDirOld);
         try {
             ds.close();
-            File dbDirFile = new File(dbDir);
-            File dbDirFileOld = new File(dbDirOld);
-            Files.move(dbDirFile.toPath(), dbDirFileOld.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            dbDirFile.mkdirs();
             File backupFile = extractEncryptedBackupFile(location);
             if (backupFile == null || !backupFile.exists()) {
                 throw new FileNotFoundException(location);
             }
+            Files.move(dbDirFile.toPath(), dbDirFileOld.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            dbDirFile.mkdirs();
             extractRealBackupFile(backupFile, dbDir);
             boolean deleted = FileSystemUtils.deleteRecursively(dbDirFileOld);
             log.debug("The old dir deleted: {}", deleted);
-        } catch (IOException e) {
-            log.error("Error on restore database", e);
-            File dbDirFile = new File(dbDir);
-            File dbDirFileOld = new File(dbDirOld);
-            if (!dbDirFile.exists() && dbDirFileOld.exists()) {
+        } catch (Exception e) {
+            log.error("Failed to restore database", e);
+            if (dbDirFileOld.exists()) {
+                if (dbDirFile.exists()) {
+                    boolean deleted = dbDirFile.delete();
+                    log.debug("Deleted db dir: {}", deleted);
+                }
                 boolean renamed = dbDirFileOld.renameTo(dbDirFile);
                 log.debug("Renamed old dir to db dir: {}", renamed);
+            }
+            if (e instanceof DomainException) {
+                throw (DomainException) e;
             }
             throw new DomainException(DomainError.RESTORE_DATABASE_ERROR, e.toString());
         }
