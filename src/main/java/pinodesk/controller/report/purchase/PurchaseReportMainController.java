@@ -368,7 +368,7 @@ public class PurchaseReportMainController extends BaseController {
         return sg;
     }
 
-    private class PurchaseGroup {
+    private final class PurchaseGroup {
         private Integer transactionCount = 0;
         private BigDecimal totalPayment = BigDecimal.ZERO;
         private BigDecimal totalPaid = BigDecimal.ZERO;

@@ -17,7 +17,7 @@ public class LanguageComboBoxConverter extends DefaultStringConverterAdapter<Loc
 
     @Override
     protected String getDisplayText(Locale locale) {
-        Locale currentLocale = new Locale(currentLanguage);
+        Locale currentLocale = Locale.forLanguageTag(currentLanguage);
         return locale.getDisplayLanguage(currentLocale);
     }
 

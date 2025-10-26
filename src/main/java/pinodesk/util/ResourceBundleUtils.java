@@ -16,7 +16,7 @@ public final class ResourceBundleUtils {
         if (SpringUtils.isInitialized()) {
             ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
             String language = configurationService.getConfiguration(ConfigurationConstants.LANGUAGE);
-            return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, new Locale(language));
+            return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, Locale.forLanguageTag(language));
         }
         return ResourceBundle.getBundle(CommonConstants.RESOURCE_BUNDLE_PACKAGE, Locale.ENGLISH);
     }

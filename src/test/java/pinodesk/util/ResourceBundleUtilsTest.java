@@ -47,7 +47,7 @@ public class ResourceBundleUtilsTest {
         SpringUtils.init(SampleConfig.class);
         rb = ResourceBundleUtils.getDefaultResourceBundle();
         assertThat(rb, is(notNullValue()));
-        assertThat(rb.getLocale(), is(new Locale("id")));
+        assertThat(rb.getLocale(), is(Locale.forLanguageTag("id")));
     }
 
     @Configuration

@@ -2,7 +2,7 @@
 # https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Maven.gitlab-ci.yml
 # https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
 
-image: amazoncorretto:17-alpine
+image: amazoncorretto:21-alpine
 
 variables:
   MAVEN_OPTS: "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED \
@@ -34,7 +34,7 @@ variables:
   - apt-get update; apt-get install -y git binutils lftp curl sudo wget gpg
   - wget -O - https://apt.corretto.aws/corretto.key | gpg --dearmor -o /usr/share/keyrings/corretto-keyring.gpg
   - echo "deb [signed-by=/usr/share/keyrings/corretto-keyring.gpg] https://apt.corretto.aws stable main" | tee /etc/apt/sources.list.d/corretto.list
-  - apt-get update; apt-get install -y java-17-amazon-corretto-jdk maven
+  - apt-get update; apt-get install -y java-21-amazon-corretto-jdk maven
 
 cache:
   paths:

@@ -61,6 +61,9 @@ public class ConsignmentMainController extends BaseController {
     private TableColumn<ConsignmentVM, String> colSupplierName;
 
     @FXML
+    private TableColumn<ConsignmentVM, String> colUser;
+
+    @FXML
     private TableColumn<ConsignmentVM, Integer> colTotalProduct;
 
     @FXML
@@ -121,6 +124,7 @@ public class ConsignmentMainController extends BaseController {
         Locale locale = resources.getLocale();
         TableViewUtils.setColumnValue(colInvoiceNumber, ConsignmentVM::getInvoiceNumber);
         TableViewUtils.setColumnValue(colSupplierName, ConsignmentVM::getSupplierName);
+        TableViewUtils.setColumnValue(colUser, ConsignmentVM::getUserFullName);
         TableViewUtils.initTableColumn(
                 colTotalProduct,
                 new NumberCellFactory<>(locale),

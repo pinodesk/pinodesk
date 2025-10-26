@@ -9,4 +9,6 @@ import pinodesk.entity.Consignment;
 public interface ConsignmentRepository
         extends PagingAndSortingRepository<Consignment, Long>, ConsignmentRepositoryCustom {
 
+    boolean existsByInvoiceNumberIgnoreCaseAndSupplierIdAndDeletedAtIsNull(String invoiceNumber, Long supplierId);
+
 }

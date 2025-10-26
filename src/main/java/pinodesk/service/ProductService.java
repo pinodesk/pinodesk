@@ -612,7 +612,7 @@ public class ProductService extends BaseService {
 
     @Getter
     @Setter
-    private class ProductImportMapping {
+    private final class ProductImportMapping {
         private Product product;
         private Drug drug;
         private ProductPrice productPrice;

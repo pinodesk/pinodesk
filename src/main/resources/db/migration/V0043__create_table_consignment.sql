@@ -23,9 +23,8 @@ create table consignment_detail (
 	deleted_at timestamp null,
 	consignment_id bigint not null,
 	product_id bigint not null,
-	price decimal(16,4) not null,
+	price decimal(16,4) not null, -- supplier price
 	quantity int not null,
-	subtotal decimal(16,4) not null,
 	primary key (id),
 	index idx_consignment_detail__deleted_at (deleted_at),
 	index idx_consignment_detail__consignment_id (consignment_id),
@@ -33,3 +32,36 @@ create table consignment_detail (
 	constraint fk_consignment_detail__consignment_id foreign key (consignment_id) references consignment(id) on delete cascade,
 	constraint fk_consignment_detail__product_id foreign key (product_id) references product(id)
 );
+
+-- Alter table product_stock
+alter table product_stock 
+add column consignment_id bigint;
+
+alter table product_stock 
+add column consignment_invoice_number varchar(64);
+
+alter table product_stock 
+add constraint fk_product_stock__consignment_id 
+foreign key (consignment_id) references consignment (id) on delete cascade;
+
+-- Alter table product_expiry
+alter table product_expiry
+add column consignment_id bigint;
+
+alter table product_expiry
+add column consignment_invoice_number varchar(64);
+
+alter table product_expiry 
+add constraint fk_product_expiry__consignment_id 
+foreign key (consignment_id) references consignment (id) on delete cascade;
+
+-- Alter table product_price
+alter table product_price 
+add column consignment_id bigint;
+
+alter table product_price 
+add column consignment_invoice_number varchar(64);
+
+alter table product_price 
+add constraint fk_product_price__consignment_id 
+foreign key (consignment_id) references consignment (id) on delete cascade;

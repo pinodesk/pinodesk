@@ -4,7 +4,7 @@ import javax.sql.DataSource;
 import javax.validation.Validation;
 import javax.validation.Validator;
 
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.flywaydb.core.Flyway;
 import org.flywaydb.core.api.configuration.ClassicConfiguration;
 import org.jasypt.encryption.StringEncryptor;
@@ -60,13 +60,13 @@ public class PinodeskConfig extends AbstractJdbcConfiguration {
 
     @Bean
     public DataSource dataSource() {
-        BasicDataSource ds = new BasicDataSource();
+        HikariDataSource ds = new HikariDataSource();
         ds.setDriverClassName(jdbcDriver);
-        ds.setUrl(jdbcUrl);
+        ds.setJdbcUrl(jdbcUrl);
         ds.setUsername(jdbcUser);
         ds.setPassword(jdbcPassword);
-        ds.setInitialSize(10);
-        ds.setMaxTotal(10);
+        ds.setMaximumPoolSize(10);
+        ds.setMinimumIdle(10);
         return ds;
     }
 
