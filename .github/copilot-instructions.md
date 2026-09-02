@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 Pinodesk is a desktop-based Point of Sale application with JavaFX and a layered architecture:
-- **Entities** (`pinodesk.entity`): Data models extending `com.mudiatech.sequel.model.DataModel`, using Lombok `@Data`, with column name constants (e.g., `C_FULL_NAME`).
+- **Entities** (`pinodesk.entity`): Data models extending `com.pinodesk.sequel.model.DataModel`, using Lombok `@Data`, with column name constants (e.g., `C_FULL_NAME`).
 - **Repositories** (`pinodesk.repository`): Spring Data JDBC interfaces with custom implementations for complex queries, soft deletes via `deleted_at` field.
 - **Services** (`pinodesk.service`): Business logic with caching (`@Cacheable`, `@CacheEvict`), transactions, and activity annotations (`@TargetActivity`).
 - **Controllers** (`pinodesk.controller`): JavaFX FXML controllers using Pandora utilities (`PageLoader`, `StageUtils`) for UI navigation and modals.

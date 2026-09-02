@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.mudiatech.sequel.repository.AbstractRepository;
-import com.mudiatech.sequel.sql.Where;
-import com.mudiatech.sequel.utility.SQLUtils;
-import com.mudiatech.toolbox.data.ListBuilder;
+import com.pinodesk.sequel.repository.AbstractRepository;
+import com.pinodesk.sequel.sql.Where;
+import com.pinodesk.sequel.utility.SQLUtils;
+import com.pinodesk.toolbox.data.ListBuilder;
 
 import lombok.RequiredArgsConstructor;
 import pinodesk.entity.Doctor;

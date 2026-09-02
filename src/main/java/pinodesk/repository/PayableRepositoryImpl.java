@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.mudiatech.sequel.repository.AbstractRepository;
-import com.mudiatech.sequel.sql.Where;
+import com.pinodesk.sequel.repository.AbstractRepository;
+import com.pinodesk.sequel.sql.Where;
 
 import pinodesk.constant.PaymentStatus;
 import pinodesk.entity.Payable;

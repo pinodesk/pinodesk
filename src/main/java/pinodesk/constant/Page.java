@@ -1,6 +1,6 @@
 package pinodesk.constant;
 
-import com.mudiatech.pandora.utility.IPage;
+import com.pinodesk.pandora.utility.IPage;
 
 public enum Page implements IPage {
 

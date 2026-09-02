@@ -1,6 +1,6 @@
 package pinodesk.controller.catalog.doctor;
 
-import com.mudiatech.pandora.utility.TextFieldUtils;
+import com.pinodesk.pandora.utility.TextFieldUtils;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;

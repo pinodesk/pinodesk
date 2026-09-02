@@ -6,7 +6,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 
-import com.mudiatech.toolbox.jackson.ObjectConverter;
+import com.pinodesk.toolbox.jackson.ObjectConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -2,7 +2,7 @@ package pinodesk.entity;
 
 import java.math.BigDecimal;
 
-import com.mudiatech.sequel.model.DataModel;
+import com.pinodesk.sequel.model.DataModel;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

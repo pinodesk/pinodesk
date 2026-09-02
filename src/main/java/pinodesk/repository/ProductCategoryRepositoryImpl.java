@@ -2,9 +2,9 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import com.mudiatech.sequel.repository.AbstractRepository;
-import com.mudiatech.sequel.sql.Order;
-import com.mudiatech.sequel.sql.Where;
+import com.pinodesk.sequel.repository.AbstractRepository;
+import com.pinodesk.sequel.sql.Order;
+import com.pinodesk.sequel.sql.Where;
 
 import pinodesk.entity.ProductCategory;
 

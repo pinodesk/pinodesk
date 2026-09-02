@@ -35,7 +35,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DbUnitConfiguration;
-import com.mudiatech.sequel.config.SequelConfig;
+import com.pinodesk.sequel.config.SequelConfig;
 
 @TestExecutionListeners({ DbUnitTestExecutionListener.class, DependencyInjectionTestExecutionListener.class })
 @DbUnitConfiguration(databaseConnection = "databaseConnection")

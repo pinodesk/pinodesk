@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.mudiatech.pandora.utility.AlertResult;
-import com.mudiatech.pandora.utility.PageLoader;
-import com.mudiatech.pandora.utility.ScrollPaneUtils;
-import com.mudiatech.pandora.utility.StageUtils;
+import com.pinodesk.pandora.utility.AlertResult;
+import com.pinodesk.pandora.utility.PageLoader;
+import com.pinodesk.pandora.utility.ScrollPaneUtils;
+import com.pinodesk.pandora.utility.StageUtils;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

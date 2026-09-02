@@ -2,7 +2,7 @@ package pinodesk.repository;
 
 import java.util.List;
 
-import com.mudiatech.sequel.repository.AbstractRepository;
+import com.pinodesk.sequel.repository.AbstractRepository;
 
 import pinodesk.entity.UserGroupMenu;
 import pinodesk.viewmodel.UserGroupMenuVM;

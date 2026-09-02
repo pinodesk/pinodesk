@@ -1,7 +1,7 @@
 package pinodesk.repository;
 
-import com.mudiatech.sequel.repository.AbstractRepository;
-import com.mudiatech.sequel.sql.Where;
+import com.pinodesk.sequel.repository.AbstractRepository;
+import com.pinodesk.sequel.sql.Where;
 import lombok.RequiredArgsConstructor;
 import pinodesk.entity.DoctorCategory;
 

@@ -46,8 +46,8 @@
     </dependencyManagement>
     <repositories>
         <repository>
-            <id>mudiatech</id>
-            <url>https://gitlab.com/api/v4/groups/64413151/-/packages/maven</url>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/pinodesk/*</url>
         </repository>
     </repositories>
     <dependencies>
@@ -81,16 +81,16 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Mudiatech -->
+        <!-- Pinodesk dependencies -->
         <dependency>
-            <groupId>com.mudiatech</groupId>
+            <groupId>com.pinodesk</groupId>
             <artifactId>sequel</artifactId>
-            <version>0.1.0</version>
+            <version>0.3.0</version>
         </dependency>
         <dependency>
-            <groupId>com.mudiatech</groupId>
+            <groupId>com.pinodesk</groupId>
             <artifactId>pandora</artifactId>
-            <version>0.1.0</version>
+            <version>0.2.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -99,14 +99,14 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.mudiatech</groupId>
+            <groupId>com.pinodesk</groupId>
             <artifactId>toolbox</artifactId>
-            <version>0.2.0</version>
+            <version>0.4.0</version>
         </dependency>
         <dependency>
-            <groupId>com.mudiatech</groupId>
+            <groupId>com.pinodesk</groupId>
             <artifactId>norway</artifactId>
-            <version>0.1.0</version>
+            <version>0.3.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>

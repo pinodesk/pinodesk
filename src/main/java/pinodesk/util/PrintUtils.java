@@ -1,6 +1,6 @@
 package pinodesk.util;
 
-import static com.mudiatech.toolbox.data.StringNumberUtils.formatOrDefault;
+import static com.pinodesk.toolbox.data.StringNumberUtils.formatOrDefault;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import com.mudiatech.pandora.utility.Translator;
+import com.pinodesk.pandora.utility.Translator;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;

@@ -1,6 +1,6 @@
 package pinodesk.constant;
 
-import com.mudiatech.pandora.utility.IMessage;
+import com.pinodesk.pandora.utility.IMessage;
 
 public enum MessageCode implements IMessage {
 

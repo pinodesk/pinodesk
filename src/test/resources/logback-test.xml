@@ -24,7 +24,7 @@
         </if>
     </root>
     <logger name="pinodesk" level="TRACE" />
-    <logger name="com.mudiatech.sequel" level="TRACE" />
+    <logger name="com.pinodesk.sequel" level="TRACE" />
     <logger name="org.springframework.jdbc" level="TRACE" />
 
 </configuration>

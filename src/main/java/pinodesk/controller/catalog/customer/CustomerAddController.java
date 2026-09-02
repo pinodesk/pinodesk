@@ -1,8 +1,8 @@
 package pinodesk.controller.catalog.customer;
 
-import com.mudiatech.pandora.constant.KeyConstants;
-import com.mudiatech.pandora.utility.ControlValidator;
-import com.mudiatech.pandora.utility.TextFieldUtils;
+import com.pinodesk.pandora.constant.KeyConstants;
+import com.pinodesk.pandora.utility.ControlValidator;
+import com.pinodesk.pandora.utility.TextFieldUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

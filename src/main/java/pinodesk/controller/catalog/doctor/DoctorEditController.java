@@ -2,9 +2,9 @@ package pinodesk.controller.catalog.doctor;
 
 import java.util.Arrays;
 
-import com.mudiatech.pandora.utility.AlertResult;
-import com.mudiatech.pandora.utility.ControlValidator;
-import com.mudiatech.pandora.utility.TextFieldUtils;
+import com.pinodesk.pandora.utility.AlertResult;
+import com.pinodesk.pandora.utility.ControlValidator;
+import com.pinodesk.pandora.utility.TextFieldUtils;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

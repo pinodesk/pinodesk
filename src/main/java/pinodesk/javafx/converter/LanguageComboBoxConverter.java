@@ -2,7 +2,7 @@ package pinodesk.javafx.converter;
 
 import java.util.Locale;
 
-import com.mudiatech.pandora.converter.DefaultStringConverterAdapter;
+import com.pinodesk.pandora.converter.DefaultStringConverterAdapter;
 
 import javafx.scene.control.ComboBox;
 

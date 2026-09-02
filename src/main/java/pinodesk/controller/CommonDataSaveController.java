@@ -2,9 +2,9 @@ package pinodesk.controller;
 
 import org.apache.commons.lang3.ObjectUtils;
 
-import com.mudiatech.pandora.constant.KeyConstants;
-import com.mudiatech.pandora.utility.ControlValidator;
-import com.mudiatech.pandora.utility.ValidationResult;
+import com.pinodesk.pandora.constant.KeyConstants;
+import com.pinodesk.pandora.utility.ControlValidator;
+import com.pinodesk.pandora.utility.ValidationResult;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;

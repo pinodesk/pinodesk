@@ -1,6 +1,6 @@
 package pinodesk.exception;
 
-import com.mudiatech.pandora.utility.IMessage;
+import com.pinodesk.pandora.utility.IMessage;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

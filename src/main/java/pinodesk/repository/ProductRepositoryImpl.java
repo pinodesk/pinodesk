@@ -1,15 +1,15 @@
 package pinodesk.repository;
 
-import static com.mudiatech.sequel.utility.SQLUtils.likeValueContains;
+import static com.pinodesk.sequel.utility.SQLUtils.likeValueContains;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import com.mudiatech.sequel.repository.AbstractRepository;
-import com.mudiatech.sequel.utility.SQLUtils;
-import com.mudiatech.sequel.utility.WhereParamsHelper;
-import com.mudiatech.toolbox.data.ListBuilder;
+import com.pinodesk.sequel.repository.AbstractRepository;
+import com.pinodesk.sequel.utility.SQLUtils;
+import com.pinodesk.sequel.utility.WhereParamsHelper;
+import com.pinodesk.toolbox.data.ListBuilder;
 
 import pinodesk.constant.ProductStatus;
 import pinodesk.entity.Product;
