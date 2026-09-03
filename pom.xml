@@ -430,10 +430,14 @@
             <plugin>
                 <groupId>com.amashchenko.maven.plugin</groupId>
                 <artifactId>gitflow-maven-plugin</artifactId>
-                <version>1.19.0</version>
+                <version>1.21.0</version>
                 <configuration>
                     <mvnExecutable>./mvnw</mvnExecutable>
                     <skipTestProject>true</skipTestProject>
+                    <gitFlowConfig>
+                        <productionBranch>main</productionBranch>
+                        <developmentBranch>main</developmentBranch>
+                    </gitFlowConfig>
                 </configuration>
             </plugin>
             <!--
