@@ -40,18 +40,18 @@ Pinodesk is a free, open-source, desktop-based Point of Sale system designed for
 
 ### Quick Start
 
-1. **Download** — Get the installer for your platform from [pinodesk.com/en/download](https://www.pinodesk.com/en/download)
-2. **Install** — Run the installer and follow the setup wizard. No server or database configuration needed.
-3. **Activate** — Enter your email on the activation screen. An activation code will be sent to you.
-4. **Start Selling** — That's it. Begin adding products and processing transactions.
+1. **Download**. Get the installer for your platform from [pinodesk.com/en/download](https://www.pinodesk.com/en/download).
+2. **Install**. Run the installer and follow the setup wizard. No server or database configuration needed.
+3. **Activate**. Enter your email on the activation screen. An activation code will be sent to you.
+4. **Start Selling**. That's it. Begin adding products and processing transactions.
 
 ### Hardware Requirements
 
 Pinodesk works with any standard POS hardware:
 
-- **Barcode Scanner** — Any USB or Bluetooth scanner that your operating system recognizes
-- **Thermal Printer** — Standard 58mm ESC/POS-compatible printers
-- **Computer** — Windows or Linux with Java Runtime (bundled in installer)
+- **Barcode Scanner**. Any USB or Bluetooth scanner that your operating system recognizes
+- **Thermal Printer**. Standard 58mm ESC/POS-compatible printers
+- **Computer**. Windows or Linux with Java Runtime (bundled in installer)
 
 > **Note:** You provide your own hardware. Pinodesk doesn't include or require proprietary devices.
 

@@ -24,6 +24,9 @@ jobs:
           java-version: "21"
           distribution: "temurin"
           cache: maven
+          server-id: github
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
 
       - name: Cache Maven packages
         uses: actions/cache@v4
@@ -33,23 +36,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Validate formatting and code style
-        run: ./mvnw spotless:check pmd:check test-compile -B
-
-      - name: Run tests
-        run: ./mvnw verify -B
-
-      - name: Upload test results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results
-          path: target/surefire-reports/
-          retention-days: 7
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: target/site/jacoco/
-          retention-days: 7
+      - name: Build and analyze
+        env:
+          MAVEN_USERNAME: ${{ github.actor }}
+          MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: ./mvnw --batch-mode spotless:check pmd:check verify -U org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
