@@ -42,12 +42,6 @@ jobs:
           MAVEN_USERNAME: ${{ github.actor }}
           MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Generate coverage report
-        run: ./mvnw -s .m2/settings.xml --batch-mode jacoco:report
-        env:
-          MAVEN_USERNAME: ${{ github.actor }}
-          MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Analyze with SonarCloud
         run: ./mvnw -s .m2/settings.xml --batch-mode org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
         env:
