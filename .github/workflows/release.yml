@@ -3,12 +3,13 @@ name: Release
 on:
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+
     outputs:
       tag: ${{ steps.tag.outputs.tag }}
 
@@ -40,6 +41,9 @@ jobs:
   build-linux:
     needs: release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -73,6 +77,9 @@ jobs:
   build-windows:
     needs: release
     runs-on: windows-2022
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -106,6 +113,9 @@ jobs:
   create-release:
     needs: [release, build-linux, build-windows]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
