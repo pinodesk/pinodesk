@@ -1,23 +1,23 @@
 #!/bin/bash
 
 function fix {
-	mvn -V clean spotless:apply pmd:check
+	./mvnw -V clean spotless:apply pmd:check
 }
 
 function run_test {
-	mvn -V clean spotless:apply pmd:check test
+	./mvnw -V clean spotless:apply pmd:check test
 }
 
 function run {
-	mvn -V clean javafx:run
+	./mvnw -V clean javafx:run
 }
 
 function build_exe {
-	mvn -V clean package -DskipTests -Pexe
+	./mvnw -V clean package -DskipTests -Pexe
 }
 
 function build_deb {
-	mvn -V clean package -DskipTests -Pdeb
+	./mvnw -V clean package -DskipTests -Pdeb
 }
 
 if [ ! -z $1 ]; then

@@ -1,0 +1,167 @@
+package com.pinodesk.controller.transaction.sale;
+
+import static com.pinodesk.constant.CommonConstants.DECIMAL_SCALE;
+import static com.pinodesk.toolbox.data.StringNumberUtils.formatOrDefault;
+import static com.pinodesk.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
+import static com.pinodesk.toolbox.data.StringNumberUtils.toBigDecimalOrZero;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
+import com.pinodesk.constant.CommonConstants;
+import com.pinodesk.constant.CommonLabel;
+import com.pinodesk.constant.MessageCode;
+import com.pinodesk.constant.PaymentStatus;
+import com.pinodesk.constant.SellingMode;
+import com.pinodesk.constant.StringConstants;
+import com.pinodesk.controller.CommonDataSaveController;
+import com.pinodesk.pandora.model.SimpleComboBoxModel;
+import com.pinodesk.pandora.utility.ComboBoxUtils;
+import com.pinodesk.pandora.utility.ControlValidator;
+import com.pinodesk.pandora.utility.TextFieldUtils;
+import com.pinodesk.service.SaleService;
+import com.pinodesk.util.SpringUtils;
+import com.pinodesk.viewmodel.CustomerVM;
+import com.pinodesk.viewmodel.PaymentDataVM;
+import com.pinodesk.viewmodel.SaleAddVM;
+import com.pinodesk.viewmodel.SaleDataVM;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.VBox;
+
+public class CashierPayController extends CommonDataSaveController {
+
+    @FXML
+    private Label lblSellingMode;
+
+    @FXML
+    private Label lblCustomer;
+
+    @FXML
+    private Label lblTotalProduct;
+
+    @FXML
+    private Label lblTotalSale;
+
+    @FXML
+    private TextField tfPaymentAmount;
+
+    @FXML
+    private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
+
+    @FXML
+    private VBox vboxDueDate;
+
+    @FXML
+    private DatePicker dpDueDate;
+
+    @FXML
+    private Label lblChange;
+
+    private BigDecimal changeAmount = BigDecimal.ZERO;
+
+    private SaleDataVM saleData;
+
+    private SaleService saleService;
+
+    @Override
+    protected void initDataSaveControlActions() {
+        initCustomDatePicker(dpDueDate);
+        ComboBoxUtils.initSimple(
+                cbPaymentStatus,
+                new SimpleComboBoxModel(PaymentStatus.PAID, t.translate(CommonLabel.LBL_PAID)),
+                new SimpleComboBoxModel(PaymentStatus.UNPAID, t.translate(CommonLabel.LBL_UNPAID)));
+        TextFieldUtils.setDecimalTextFields(tfPaymentAmount);
+        tfPaymentAmount.textProperty().addListener((o, ov, nv) -> {
+            changeAmount = BigDecimal.ZERO;
+            BigDecimal paymentAmount = toBigDecimalOrZero(nv, DECIMAL_SCALE);
+            if (paymentAmount.compareTo(saleData.getTotalSale()) > 0) {
+                changeAmount = paymentAmount.subtract(saleData.getTotalSale());
+            }
+            lblChange.setText(formatOrDefault(changeAmount, resources.getLocale(), DECIMAL_SCALE, "0"));
+        });
+        ComboBoxUtils.onSelectedItemChanged(cbPaymentStatus, (ov, nv) -> {
+            boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
+            if (isPaid) {
+                dpDueDate.setValue(null);
+            }
+            vboxDueDate.setDisable(isPaid);
+        });
+    }
+
+    @Override
+    protected void initDataSaveControlValues() {
+        Locale locale = resources.getLocale();
+        saleData = getPageData();
+        lblTotalSale.setText(formatOrDefault(saleData.getTotalSale(), locale, DECIMAL_SCALE, "0"));
+        lblTotalProduct.setText(formatOrDefault(saleData.getTotalProduct(), locale, "0"));
+        lblCustomer.setText(saleData.getCustomer().map(CustomerVM::getName).orElse(StringConstants.MINUS));
+        lblSellingMode.setText(
+                SellingMode.GENERAL.equals(saleData.getSellingMode()) ?
+                        t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION));
+        ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
+    }
+
+    @Override
+    protected Object save() {
+        LocalDateTime paymentDateTime = LocalDateTime.now();
+        String invoiceNumber = paymentDateTime
+                .format(DateTimeFormatter.ofPattern(CommonConstants.SALE_INVOICE_NUMBER_PATTERN));
+        SaleAddVM saleAdd = new SaleAddVM();
+        saleData.getCustomer().ifPresent(customer -> saleAdd.setCustomerId(customer.getId()));
+        saleAdd.setInvoiceNumber(invoiceNumber);
+        saleAdd.setInvoiceDate(paymentDateTime.toLocalDate());
+        PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
+        saleAdd.setPaymentStatus(paymentStatus);
+        LocalDate paymentDueDate = null;
+        if (PaymentStatus.UNPAID.equals(paymentStatus)) {
+            saleAdd.setPaymentDueDate(dpDueDate.getValue());
+        }
+        saleAdd.setSellingMode(saleData.getSellingMode());
+        saleAdd.setTotalPayment(saleData.getTotalSale());
+        saleAdd.setTotalProduct(saleData.getTotalProduct());
+        saleAdd.setTotalSale(saleData.getTotalSale());
+        saleAdd.setSaleProducts(saleData.getSaleProducts());
+        saleService.createSaleCashier(saleAdd);
+        PaymentDataVM paymentData = new PaymentDataVM();
+        paymentData.setChangeAmount(changeAmount);
+        paymentData.setInvoiceNumber(invoiceNumber);
+        paymentData.setPaymentDateTime(paymentDateTime);
+        paymentData.setPaymentAmount(toBigDecimalOrNull(tfPaymentAmount.getText(), DECIMAL_SCALE));
+        paymentData.setPaymentStatus(paymentStatus);
+        paymentData.setPaymentDueDate(paymentDueDate);
+        return paymentData;
+    }
+
+    @Override
+    protected void validate(ControlValidator validator) {
+        validator.validateCustom(() -> {
+            BigDecimal paymentAmount = toBigDecimalOrZero(tfPaymentAmount.getText());
+            return paymentAmount.compareTo(saleData.getTotalSale()) < 0;
+        }, MessageCode.ERROR_PAYMENT_AMOUNT_LOWER_THAN_SALE_AMOUNT);
+        LocalDate dueDate = dpDueDate.getValue();
+        PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
+        boolean isUnpaid = PaymentStatus.UNPAID.equals(selected);
+        validator.validateCustom(
+                () -> isUnpaid && saleData.getCustomer().isEmpty(),
+                MessageCode.ERROR_UNPAID_PAYMENT_WITH_EMPTY_CUSTOMER);
+        LocalDate today = LocalDate.now();
+        validator.validateCustom(() -> isUnpaid && dueDate == null, MessageCode.ERROR_INVALID_DUE_DATE);
+        validator.validateCustom(
+                () -> isUnpaid && dueDate != null && dueDate.isBefore(today),
+                MessageCode.ERROR_DUE_DATE_BEFORE_TODAY);
+    }
+
+    @Override
+    protected void initServices() {
+        saleService = SpringUtils.getBean(SaleService.class);
+    }
+
+}

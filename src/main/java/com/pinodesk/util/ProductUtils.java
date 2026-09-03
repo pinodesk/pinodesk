@@ -1,0 +1,18 @@
+package com.pinodesk.util;
+
+import com.pinodesk.constant.CommonConstants;
+
+public final class ProductUtils {
+
+    private ProductUtils() {
+    }
+
+    public static boolean isProductCategoryDrugs(String categoryCode) {
+        return CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS.equals(categoryCode);
+    }
+
+    public static boolean isProductCategoryCustomPackage(String categoryCode) {
+        return CommonConstants.PRODUCT_CATEGORY_CODE_CUSTOM_PACKAGE.equals(categoryCode);
+    }
+
+}

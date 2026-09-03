@@ -1,0 +1,96 @@
+package com.pinodesk.controller.catalog.product;
+
+import com.pinodesk.constant.CommonLabel;
+import com.pinodesk.controller.CommonDataChooseController;
+import com.pinodesk.pandora.utility.EventUtils;
+import com.pinodesk.pandora.utility.TableViewUtils;
+import com.pinodesk.service.DrugClassificationService;
+import com.pinodesk.toolbox.future.AsyncUtils;
+import com.pinodesk.util.SpringUtils;
+import com.pinodesk.viewmodel.DrugClassificationVM;
+
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+
+public class DrugClassificationChooseController extends CommonDataChooseController<DrugClassificationVM> {
+
+    @FXML
+    private TextField tfSearch;
+
+    @FXML
+    private TableView<DrugClassificationVM> tblDrugClassification;
+
+    @FXML
+    private TableColumn<DrugClassificationVM, String> colCode;
+
+    @FXML
+    private TableColumn<DrugClassificationVM, String> colName;
+
+    @FXML
+    private TableColumn<DrugClassificationVM, String> colDescription;
+
+    private DrugClassificationService drugClassificationService;
+
+    @Override
+    protected void initDataChooseControlActions() {
+        TableViewUtils.setColumnValue(colCode, DrugClassificationVM::getCode);
+        TableViewUtils.setColumnValue(colName, DrugClassificationVM::getName);
+        TableViewUtils.setColumnValue(colDescription, DrugClassificationVM::getDescription);
+        registerKeyListener();
+        setFocused(contentPane);
+    }
+
+    @Override
+    protected void initDataChooseControlValues() {
+        // Nothing to do
+    }
+
+    @Override
+    protected DrugClassificationVM getSelectedData() {
+        return tblDrugClassification.getSelectionModel().getSelectedItem();
+    }
+
+    @Override
+    protected void initServices() {
+        drugClassificationService = SpringUtils.getBean(DrugClassificationService.class);
+    }
+
+    private void searchProductCategories() {
+        tblDrugClassification.setPlaceholder(new Label(t.translate(CommonLabel.LBL_LOADING_DATA)));
+        tblDrugClassification.setItems(FXCollections.observableArrayList());
+        AsyncUtils.supply(
+                () -> drugClassificationService
+                        .searchDrugClassificationsByKeyword(tfSearch.getText(), resources.getLocale().getLanguage()))
+                .thenAccept(classifications -> Platform.runLater(() -> {
+                    if (classifications.isEmpty()) {
+                        tblDrugClassification.setPlaceholder(new Label(t.translate(CommonLabel.LBL_NO_DATA)));
+                    }
+                    tblDrugClassification.setItems(FXCollections.observableList(classifications));
+                    TableViewUtils.sortAscending(tblDrugClassification, colName);
+                }));
+    }
+
+    private void registerKeyListener() {
+        tblDrugClassification.setOnMouseClicked(event -> {
+            if (EventUtils.isDoubleClick(event)) {
+                btnChoose.fire();
+            }
+        });
+        tblDrugClassification.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                btnChoose.fire();
+            }
+        });
+        tfSearch.setOnKeyPressed(event -> {
+            if (EventUtils.isEnter(event)) {
+                searchProductCategories();
+            }
+        });
+    }
+
+}

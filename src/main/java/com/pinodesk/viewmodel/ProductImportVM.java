@@ -1,0 +1,60 @@
+package com.pinodesk.viewmodel;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import com.pinodesk.constant.ProductStatus;
+
+import lombok.Data;
+
+@Data
+public class ProductImportVM {
+
+    @NotBlank
+    @Size(max = 256)
+    private String name;
+
+    @NotBlank
+    @Size(max = 64)
+    private String code;
+
+    @Size(max = 24)
+    private String barcode;
+
+    @Size(max = 512)
+    private String description;
+
+    @NotBlank
+    private String productCategoryCode;
+
+    @NotNull
+    private String unitCode;
+
+    @NotNull
+    private ProductStatus status;
+
+    private String drugClassificationCode;
+
+    @Size(max = 512)
+    private String indication;
+
+    @Size(max = 512)
+    private String contraindication;
+
+    @Min(0)
+    private BigDecimal generalSellingPrice;
+
+    @Min(0)
+    private BigDecimal prescriptionSellingPrice;
+
+    @Min(0)
+    private Integer quantity;
+
+    private LocalDate expiredDate;
+
+}
