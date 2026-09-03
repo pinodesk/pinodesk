@@ -17,6 +17,8 @@ public class ProductStock extends DataModel {
     public static final String C_PURCHASE_INVOICE_NUMBER = "purchase_invoice_number";
     public static final String C_SALE_ID = "sale_id";
     public static final String C_SALE_INVOICE_NUMBER = "sale_invoice_number";
+    public static final String C_CONSIGNMENT_ID = "consignment_id";
+    public static final String C_CONSIGNMENT_INVOICE_NUMBER = "consignment_invoice_number";
     public static final String C_USER_ID = "user_id";
     public static final String C_ACTIVITY = "activity";
     public static final String C_REMARKS = "remarks";
@@ -29,6 +31,8 @@ public class ProductStock extends DataModel {
     private String purchaseInvoiceNumber;
     private Long saleId;
     private String saleInvoiceNumber;
+    private Long consignmentId;
+    private String consignmentInvoiceNumber;
     private Long userId;
     private String activity;
     private String remarks;

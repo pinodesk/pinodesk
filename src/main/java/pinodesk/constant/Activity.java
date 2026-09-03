@@ -82,7 +82,10 @@ public enum Activity {
     EDIT_DOCTOR,
     LOGIN,
     SEARCH_SALE_REPORT,
-    SEARCH_PURCHASE_REPORT;
+    SEARCH_PURCHASE_REPORT,
+    SEARCH_CONSIGNMENTS_BY_FILTER,
+    REMOVE_CONSIGNMENTS,
+    ADD_CONSIGNMENTS;
 
     @Override
     public String toString() {

@@ -332,7 +332,7 @@ public class SaleReportMainController extends BaseController {
         return sg;
     }
 
-    private class SaleGroup {
+    private final class SaleGroup {
         private Integer transactionCount = 0;
         private BigDecimal totalPayment = BigDecimal.ZERO;
         private BigDecimal totalPaid = BigDecimal.ZERO;

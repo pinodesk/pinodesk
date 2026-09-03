@@ -1,7 +1,7 @@
 package pinodesk.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.dbcp2.BasicDataSource;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
@@ -29,6 +29,7 @@ import pinodesk.repository.UserRepository;
 import pinodesk.viewmodel.UserAddVM;
 import pinodesk.util.PasswordUtils;
 
+import java.sql.PreparedStatement;
 import javax.sql.DataSource;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -39,8 +40,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Properties;
@@ -160,30 +159,35 @@ public class ConfigurationService extends BaseService {
     }
 
     public void restoreDatabase(String location) {
-        BasicDataSource ds = ((BasicDataSource) dataSource);
-        String dirName = getDatabaseDir(ds.getUrl());
+        HikariDataSource ds = ((HikariDataSource) dataSource);
+        String dirName = getDatabaseDir(ds.getJdbcUrl());
         String dbDir = SystemConstants.USER_HOME_DIR + dirName;
         String dbDirOld = SystemConstants.USER_HOME_DIR + dirName + ".old";
+        File dbDirFile = new File(dbDir);
+        File dbDirFileOld = new File(dbDirOld);
         try {
             ds.close();
-            File dbDirFile = new File(dbDir);
-            File dbDirFileOld = new File(dbDirOld);
-            Files.move(dbDirFile.toPath(), dbDirFileOld.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            dbDirFile.mkdirs();
             File backupFile = extractEncryptedBackupFile(location);
             if (backupFile == null || !backupFile.exists()) {
                 throw new FileNotFoundException(location);
             }
+            Files.move(dbDirFile.toPath(), dbDirFileOld.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            dbDirFile.mkdirs();
             extractRealBackupFile(backupFile, dbDir);
             boolean deleted = FileSystemUtils.deleteRecursively(dbDirFileOld);
             log.debug("The old dir deleted: {}", deleted);
-        } catch (SQLException | IOException e) {
-            log.error("Error on restore database", e);
-            File dbDirFile = new File(dbDir);
-            File dbDirFileOld = new File(dbDirOld);
-            if (!dbDirFile.exists() && dbDirFileOld.exists()) {
+        } catch (Exception e) {
+            log.error("Failed to restore database", e);
+            if (dbDirFileOld.exists()) {
+                if (dbDirFile.exists()) {
+                    boolean deleted = dbDirFile.delete();
+                    log.debug("Deleted db dir: {}", deleted);
+                }
                 boolean renamed = dbDirFileOld.renameTo(dbDirFile);
                 log.debug("Renamed old dir to db dir: {}", renamed);
+            }
+            if (e instanceof DomainException) {
+                throw (DomainException) e;
             }
             throw new DomainException(DomainError.RESTORE_DATABASE_ERROR, e.toString());
         }

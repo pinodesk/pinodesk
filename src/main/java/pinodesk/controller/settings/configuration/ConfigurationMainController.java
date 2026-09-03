@@ -301,8 +301,8 @@ public class ConfigurationMainController extends CommonContentPaneController {
     protected void initServices() {
         configurationService = SpringUtils.getBean(ConfigurationService.class);
         locales = FXCollections.observableArrayList(
-                new Locale(CommonConstants.LANGUAGE_CODE_ENGLISH),
-                new Locale(CommonConstants.LANGUAGE_CODE_INDONESIA));
+                Locale.forLanguageTag(CommonConstants.LANGUAGE_CODE_ENGLISH),
+                Locale.forLanguageTag(CommonConstants.LANGUAGE_CODE_INDONESIA));
         configurationMap = configurationService.getConfigurationMap();
         printer = new PrintUtils(configurationService, t, resources);
     }
@@ -363,7 +363,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
         tfStoreAddress.setText(configurationMap.get(ConfigurationConstants.STORE_ADDRESS));
         ComboBoxUtils.select(cbLanguage, () -> locales.stream().filter(locale -> {
             String configLanguage = configurationMap.get(ConfigurationConstants.LANGUAGE);
-            return new Locale(configLanguage).getLanguage().equals(locale.getLanguage());
+            return Locale.forLanguageTag(configLanguage).getLanguage().equals(locale.getLanguage());
         }).findAny().get());
         ComboBoxUtils.select(cbPrinterName, () -> {
             String printerName = configurationMap.get(ConfigurationConstants.PRINTER_NAME);

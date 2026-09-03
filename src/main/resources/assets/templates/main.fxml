@@ -141,6 +141,16 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
+                        <Button fx:id="btnMenuConsignments" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuConsignments" text="%btn_menu_consignments" textFill="WHITE">
+                           <styleClass>
+                              <String fx:value="btn-primary" />
+                              <String fx:value="align-left" />
+                              <String fx:value="btn-menu" />
+                           </styleClass>
+                           <padding>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </padding>
+                        </Button>
                         <Button fx:id="btnMenuPayables" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onActionBtnMenuPayables" text="%btn_menu_payables" textFill="WHITE">
                            <styleClass>
                               <String fx:value="btn-primary" />

@@ -84,6 +84,11 @@ public enum Page implements IPage {
     REPORT_SALE_MAIN("report/sale/main"),
     REPORT_SALE_FILTER("report/sale/filter"),
 
+    TRANSACTION_CONSIGNMENT_MAIN("transaction/consignment/main"),
+    TRANSACTION_CONSIGNMENT_FILTER("transaction/consignment/filter"),
+    TRANSACTION_CONSIGNMENT_ADD("transaction/consignment/add"),
+    TRANSACTION_CONSIGNMENT_EDIT("transaction/consignment/edit"),
+
     REPORT_PURCHASE_MAIN("report/purchase/main"),
     REPORT_PURCHASE_FILTER("report/purchase/filter");
 

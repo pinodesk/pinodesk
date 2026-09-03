@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>pinodesk</groupId>
     <artifactId>pinodesk</artifactId>
-    <version>1.5.0</version>
+    <version>1.6.0</version>
     <packaging>jar</packaging>
     <name>Pinodesk</name>
     <description>Pinodesk</description>
@@ -13,11 +13,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.mainClass>pinodesk.Main</project.mainClass>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
-        <java.version>17</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <java.version>21</java.version>
         <dollar>$</dollar>
-        <javapackager.version>1.7.5</javapackager.version>
+        <javapackager.version>1.7.6</javapackager.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -55,17 +55,17 @@
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
-            <version>15.0.1</version>
+            <version>21.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>15.0.1</version>
+            <version>21.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-graphics</artifactId>
-            <version>15.0.1</version>
+            <version>21.0.1</version>
         </dependency>
         <!-- Spring -->
         <dependency>
@@ -91,6 +91,12 @@
             <groupId>com.mudiatech</groupId>
             <artifactId>pandora</artifactId>
             <version>0.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.mudiatech</groupId>
@@ -101,6 +107,12 @@
             <groupId>com.mudiatech</groupId>
             <artifactId>norway</artifactId>
             <version>0.1.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>jcl-over-slf4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- Database -->
         <dependency>
@@ -135,13 +147,13 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>4.5.1</version>
+            <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.5.1</version>
+            <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -180,14 +192,9 @@
             <version>3.11</version>
         </dependency>
         <dependency>
-            <groupId>commons-validator</groupId>
-            <artifactId>commons-validator</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-dbcp2</artifactId>
-            <version>2.9.0</version>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>5.0.1</version>
         </dependency>
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -199,21 +206,15 @@
             <artifactId>poi-ooxml</artifactId>
             <version>4.1.2</version>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>xerces</groupId>
             <artifactId>xercesImpl</artifactId>
             <version>2.12.2</version>
-        </dependency>
+        </dependency> -->
         <dependency>
             <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>1.9.9</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjtools</artifactId>
-            <version>1.9.9</version>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.21</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -233,17 +234,17 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.11.2</version>
+            <version>2.15.3</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.11.2</version>
+            <version>2.15.3</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.24</version>
+            <version>1.18.30</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -255,10 +256,16 @@
         <dependency>
             <groupId>com.konghq</groupId>
             <artifactId>unirest-java-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.konghq</groupId>
-        <artifactId>unirest-modules-jackson</artifactId>
+            <artifactId>unirest-modules-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.sitture</groupId>
@@ -269,11 +276,6 @@
             <groupId>com.github.oshi</groupId>
             <artifactId>oshi-core-java11</artifactId>
             <version>6.4.4</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
@@ -293,7 +295,7 @@
         </resources>
         <plugins>
             <!--
-            Resolve warning on the logs: `Using deprecated '-debug' fallback for parameter name resolution ...` 
+            Resolve warning on the logs: `Using deprecated '-debug' fallback for parameter name resolution ...`
             https://stackoverflow.com/questions/74845574/using-deprecated-debug-fallback-for-parameter-name-resolution-compile-the-af
             https://stackoverflow.com/questions/74600681/warning-printed-after-migrating-to-spring-boot-3-0-spring-integration-6-0/74601911#74601911
             -->
@@ -317,6 +319,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
                 <configuration>
+                    <argLine>-Dnet.bytebuddy.experimental=true -XX:+EnableDynamicAgentLoading</argLine>
                     <trimStackTrace>false</trimStackTrace>
                 </configuration>
             </plugin>
@@ -336,7 +339,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.8</version>
+                <version>0.8.13</version>
                 <configuration>
                     <excludes>
                         <exclude>pinodesk/desktop/domain/*</exclude>
@@ -384,7 +387,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.22.3</version>
+                <version>2.44.5</version>
                 <configuration>
                     <java>
                         <removeUnusedImports />
@@ -397,7 +400,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
-                <version>3.16.0</version>
+                <version>3.28.0</version>
                 <configuration>
                     <rulesets>
                         <ruleset>default-ruleset.xml</ruleset>
@@ -410,12 +413,12 @@
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-core</artifactId>
-                        <version>6.44.0</version>
+                        <version>7.13.0</version>
                     </dependency>
                     <dependency>
                         <groupId>net.sourceforge.pmd</groupId>
                         <artifactId>pmd-java</artifactId>
-                        <version>6.44.0</version>
+                        <version>7.13.0</version>
                     </dependency>
                 </dependencies>
             </plugin>
@@ -497,7 +500,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <additionalModules>
+                                        jdk.charsets,jdk.crypto.cryptoki,java.net.http</additionalModules>
                                     <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>windows</platform>
                                     <winConfig>
@@ -551,7 +555,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <additionalModules>
+                                        jdk.charsets,jdk.crypto.cryptoki,java.net.http</additionalModules>
                                     <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>linux</platform>
                                     <linuxConfig>
@@ -591,7 +596,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <additionalModules>
+                                        jdk.charsets,jdk.crypto.cryptoki,java.net.http</additionalModules>
                                     <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>linux</platform>
                                     <linuxConfig>
@@ -631,7 +637,8 @@
                                     <bundleJre>true</bundleJre>
                                     <!-- Required by apache poi, related issue
                                     https://github.com/traccar/traccar/issues/4126 -->
-                                    <additionalModules>jdk.charsets,jdk.crypto.cryptoki</additionalModules>
+                                    <additionalModules>
+                                        jdk.charsets,jdk.crypto.cryptoki,java.net.http</additionalModules>
                                     <vmArgs>-Djavax.net.debug=ssl:handshake</vmArgs>
                                     <platform>mac</platform>
                                     <macConfig>
