@@ -1,7 +1,6 @@
 package com.pinodesk.util;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasLength;
@@ -12,6 +11,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.util.Locale;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -340,7 +340,39 @@ public class DeviceUtilsTest {
         when(mockBaseboard.getSerialNumber()).thenReturn("none");
 
         String result = (String) method.invoke(null, mockComputer);
-        assertThat(result, is(notNullValue()));
+        assertThat(result, is(equalTo("7D4FA591E7FD25D94DB29A2A764572B7B00FB268B69EA778C89F9FC589B15DA4")));
+    }
+
+    @Test
+    void testGenerateDeviceSignature_shouldNotCollideWhenValuesContainDelimiter() throws Exception {
+
+        Method method = DeviceUtils.class.getDeclaredMethod("generateDeviceSignature", ComputerSystem.class);
+        method.setAccessible(true);
+
+        ComputerSystem computer1 = mock(ComputerSystem.class);
+        Baseboard baseboard1 = mock(Baseboard.class);
+
+        when(computer1.getHardwareUUID()).thenReturn("12345678-1234-1234-1234-123456789abc");
+        when(computer1.getSerialNumber()).thenReturn("unknown");
+        when(computer1.getBaseboard()).thenReturn(baseboard1);
+        when(computer1.getManufacturer()).thenReturn("a|model=b");
+        when(computer1.getModel()).thenReturn("c");
+        when(baseboard1.getSerialNumber()).thenReturn("none");
+
+        ComputerSystem computer2 = mock(ComputerSystem.class);
+        Baseboard baseboard2 = mock(Baseboard.class);
+
+        when(computer2.getHardwareUUID()).thenReturn("12345678-1234-1234-1234-123456789abc");
+        when(computer2.getSerialNumber()).thenReturn("unknown");
+        when(computer2.getBaseboard()).thenReturn(baseboard2);
+        when(computer2.getManufacturer()).thenReturn("a");
+        when(computer2.getModel()).thenReturn("b|model=c");
+        when(baseboard2.getSerialNumber()).thenReturn("none");
+
+        String signature1 = (String) method.invoke(null, computer1);
+        String signature2 = (String) method.invoke(null, computer2);
+
+        assertThat(signature1, is(not(equalTo(signature2))));
     }
 
     @Test
@@ -355,7 +387,7 @@ public class DeviceUtilsTest {
     void testStaticFields_shouldHaveValidValues() {
         String cwd = DeviceUtils.CWD;
         assertThat(cwd, is(not(emptyOrNullString())));
-        assertThat(cwd, containsString("/"));
+        assertThat(Path.of(cwd).isAbsolute(), is(true));
 
         String osArch = DeviceUtils.getOsArch();
         assertThat(osArch, is(not(emptyOrNullString())));

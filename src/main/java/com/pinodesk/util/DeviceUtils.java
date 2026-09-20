@@ -146,15 +146,19 @@ public final class DeviceUtils {
         String raw = String.join(
                 "|",
                 "v" + DEVICE_SIGNATURE_VERSION,
-                "manufacturer=" + normalizeValue(computer.getManufacturer()),
-                "model=" + normalizeValue(computer.getModel()),
-                "uuid=" + hardwareUuid,
-                "system-serial=" + systemSerial,
-                "baseboard-manufacturer=" + normalizeValue(baseboard.getManufacturer()),
-                "baseboard-model=" + normalizeValue(baseboard.getModel()),
-                "baseboard-serial=" + baseboardSerial);
+                encodeSignatureField("manufacturer", normalizeValue(computer.getManufacturer())),
+                encodeSignatureField("model", normalizeValue(computer.getModel())),
+                encodeSignatureField("uuid", hardwareUuid),
+                encodeSignatureField("system-serial", systemSerial),
+                encodeSignatureField("baseboard-manufacturer", normalizeValue(baseboard.getManufacturer())),
+                encodeSignatureField("baseboard-model", normalizeValue(baseboard.getModel())),
+                encodeSignatureField("baseboard-serial", baseboardSerial));
 
         return DigestUtils.sha256Hex(raw).toUpperCase(Locale.ROOT);
+    }
+
+    private static String encodeSignatureField(String name, String value) {
+        return name + "=" + value.length() + ":" + value;
     }
 
     private static String normalizeHardwareIdentifier(String value) {
