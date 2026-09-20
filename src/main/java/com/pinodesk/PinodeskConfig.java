@@ -110,6 +110,15 @@ public class PinodeskConfig extends AbstractJdbcConfiguration {
         return Validation.buildDefaultValidatorFactory().getValidator();
     }
 
+    /**
+     * Creates the encryptor used to obfuscate sensitive configuration values, such
+     * as the local database password stored in application.properties.
+     * <p>
+     * The encryption key is bundled with the desktop application, so this must not
+     * be considered a security boundary or used to protect secrets that must remain
+     * confidential from the user running the application.
+     * </p>
+     */
     @Bean
     public static StringEncryptor stringEncryptor() {
         StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
@@ -118,6 +127,15 @@ public class PinodeskConfig extends AbstractJdbcConfiguration {
         return encryptor;
     }
 
+    /**
+     * Creates the encryptor used for application-managed binary data, such as
+     * exported database backups.
+     * <p>
+     * The encryption key is bundled with the desktop application, so this provides
+     * protection against casual inspection but must not be treated as a strong
+     * security boundary.
+     * </p>
+     */
     @Bean
     public static StandardPBEByteEncryptor byteEncryptor() {
         StandardPBEByteEncryptor encryptor = new StandardPBEByteEncryptor();

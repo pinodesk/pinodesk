@@ -1,11 +1,14 @@
 package com.pinodesk.util;
 
 import java.nio.file.Path;
+import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.SystemUtils;
 
 import lombok.Getter;
+
 import oshi.SystemInfo;
 import oshi.hardware.Baseboard;
 import oshi.hardware.CentralProcessor;
@@ -30,85 +33,168 @@ public final class DeviceUtils {
     public static final String OS_FAMILY_DARWIN = "darwin";
     public static final String OS_FAMILY_LINUX = "linux";
 
+    /**
+     * Increment this only when the device signature algorithm changes.
+     */
+    public static final int DEVICE_SIGNATURE_VERSION = 1;
+
+    private static final Set<String> INVALID_HARDWARE_IDENTIFIERS = Set.of(
+            "",
+            "unknown",
+            "none",
+            "null",
+            "not specified",
+            "not applicable",
+            "default string",
+            "to be filled by o.e.m.",
+            "system serial number",
+            "base board serial number",
+            "00000000-0000-0000-0000-000000000000",
+            "ffffffff-ffff-ffff-ffff-ffffffffffff",
+            "03000200-0400-0500-0006-000700080009");
+
     @Getter
     private static String deviceSignature;
+
     @Getter
     private static String deviceManufacturer;
+
     @Getter
     private static String deviceModel;
+
     @Getter
     private static String osName;
+
     @Getter
     private static String osVersion;
+
     @Getter
     private static String osFamily;
+
     @Getter
     private static String osArch;
+
     @Getter
     private static Integer osBitness;
+
     @Getter
     private static String cpuName;
+
     @Getter
     private static String cpuFamily;
+
     @Getter
     private static String cpuVendor;
+
     @Getter
     private static Long ramSize;
+
     @Getter
     private static Long storageSize;
 
     static {
         SystemInfo si = new SystemInfo();
+
         HardwareAbstractionLayer hal = si.getHardware();
         OperatingSystem operatingSystem = si.getOperatingSystem();
+
         CentralProcessor processor = hal.getProcessor();
         ComputerSystem computer = hal.getComputerSystem();
-        OperatingSystem.OSVersionInfo osVersionInfo = operatingSystem.getVersionInfo();
         GlobalMemory memory = hal.getMemory();
         FileSystem fileSystem = operatingSystem.getFileSystem();
+
+        OperatingSystem.OSVersionInfo osVersionInfo = operatingSystem.getVersionInfo();
+
         CentralProcessor.ProcessorIdentifier processorIdentifier = processor.getProcessorIdentifier();
-        deviceManufacturer = computer.getManufacturer(); // Apple Inc.
-        deviceModel = computer.getModel();// Mac14,7
-        osName = operatingSystem.getFamily(); // macOS
-        osVersion = osVersionInfo.getVersion(); // 14.1
+
+        deviceManufacturer = computer.getManufacturer();
+        deviceModel = computer.getModel();
+
+        osName = operatingSystem.getFamily();
+        osVersion = osVersionInfo.getVersion();
         osFamily = readOsFamily();
-        osArch = System.getProperty("os.arch"); // x86_64
-        osBitness = operatingSystem.getBitness(); // 64, 32
-        cpuName = processorIdentifier.getName();// Apple M2
-        cpuFamily = processorIdentifier.getMicroarchitecture(); // ARM64 SoC: Avalanche + Blizzard
-        cpuVendor = processorIdentifier.getVendor();// Apple Inc.
+        osArch = System.getProperty("os.arch");
+        osBitness = operatingSystem.getBitness();
+
+        cpuName = processorIdentifier.getName();
+        cpuFamily = processorIdentifier.getMicroarchitecture();
+        cpuVendor = processorIdentifier.getVendor();
+
         ramSize = memory.getTotal();
         storageSize = readStorageSize(fileSystem);
-        deviceSignature = generateDeviceSignature(deviceManufacturer, deviceModel, computer.getBaseboard());
+
+        deviceSignature = generateDeviceSignature(computer);
     }
 
-    private static String generateDeviceSignature(String deviceManufacturer, String deviceModel, Baseboard baseboard) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(deviceManufacturer);
-        sb.append(deviceModel);
-        sb.append(baseboard.getManufacturer());
-        sb.append(baseboard.getModel());
-        sb.append(baseboard.getVersion());
-        sb.append(baseboard.getSerialNumber());
-        return DigestUtils.sha256Hex(sb.toString()).toUpperCase();
+    private static String generateDeviceSignature(ComputerSystem computer) {
+
+        Baseboard baseboard = computer.getBaseboard();
+
+        String hardwareUuid = normalizeHardwareIdentifier(computer.getHardwareUUID());
+
+        String systemSerial = normalizeHardwareIdentifier(computer.getSerialNumber());
+
+        String baseboardSerial = normalizeHardwareIdentifier(baseboard.getSerialNumber());
+
+        /*
+         * Do not pretend that manufacturer/model alone uniquely identifies a computer.
+         */
+        if (hardwareUuid.isEmpty() && systemSerial.isEmpty() && baseboardSerial.isEmpty()) {
+            return null;
+        }
+
+        String raw = String.join(
+                "|",
+                "v" + DEVICE_SIGNATURE_VERSION,
+                "manufacturer=" + normalizeValue(computer.getManufacturer()),
+                "model=" + normalizeValue(computer.getModel()),
+                "uuid=" + hardwareUuid,
+                "system-serial=" + systemSerial,
+                "baseboard-manufacturer=" + normalizeValue(baseboard.getManufacturer()),
+                "baseboard-model=" + normalizeValue(baseboard.getModel()),
+                "baseboard-serial=" + baseboardSerial);
+
+        return DigestUtils.sha256Hex(raw).toUpperCase(Locale.ROOT);
+    }
+
+    private static String normalizeHardwareIdentifier(String value) {
+        String normalized = normalizeValue(value);
+
+        if (INVALID_HARDWARE_IDENTIFIERS.contains(normalized)) {
+            return "";
+        }
+
+        return normalized;
+    }
+
+    private static String normalizeValue(String value) {
+        if (value == null) {
+            return "";
+        }
+
+        return value.trim().toLowerCase(Locale.ROOT);
     }
 
     public static String readOsFamily() {
         if (SystemUtils.IS_OS_MAC) {
             return OS_FAMILY_DARWIN;
         }
+
         if (SystemUtils.IS_OS_LINUX) {
             return OS_FAMILY_LINUX;
         }
+
         if (SystemUtils.IS_OS_WINDOWS) {
             return OS_FAMILY_WINDOWS;
         }
+
         return null;
     }
 
     public static Long readStorageSize(FileSystem fileSystem) {
         for (OSFileStore fs : fileSystem.getFileStores()) {
             String mount = fs.getMount();
+
             if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC) {
                 if (mount.equals("/")) {
                     return fs.getTotalSpace();
@@ -117,6 +203,7 @@ public final class DeviceUtils {
                 return fs.getTotalSpace();
             }
         }
+
         return null;
     }
 
@@ -126,8 +213,10 @@ public final class DeviceUtils {
 
     public static Long getStorageSizeAvailable() {
         FileSystem fileSystem = new SystemInfo().getOperatingSystem().getFileSystem();
+
         for (OSFileStore fs : fileSystem.getFileStores()) {
             String mount = fs.getMount();
+
             if (SystemUtils.IS_OS_LINUX || SystemUtils.IS_OS_MAC) {
                 if (mount.equals("/")) {
                     return fs.getFreeSpace();
@@ -136,6 +225,7 @@ public final class DeviceUtils {
                 return fs.getFreeSpace();
             }
         }
+
         return null;
     }
 

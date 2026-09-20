@@ -20,8 +20,8 @@ public class ServiceAspect {
     private SessionService sessionService;
 
     @Around("""
-            execution(public * pinodesk.service.*.*(..))
-            && !execution(public * pinodesk.service.SessionService.*(..))
+            execution(public * com.pinodesk.service.*.*(..))
+            && !execution(public * com.pinodesk.service.SessionService.*(..))
             && @annotation(targetActivity)
             """)
     public Object beforeAllServiceMethods(ProceedingJoinPoint call, TargetActivity targetActivity) throws Throwable {
