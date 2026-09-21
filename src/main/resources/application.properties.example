@@ -12,5 +12,5 @@ jdbc.driver=org.h2.Driver
 
 sequel.jdbc.formatsql=true
 
-pinodesk.api.base_url=http://localhost:8080
+pinodesk.api.base_url=http://localhost:8080/
 pinodesk.api.key=xxx
