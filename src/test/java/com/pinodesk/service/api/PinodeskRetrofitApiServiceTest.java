@@ -8,7 +8,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -130,7 +130,7 @@ class PinodeskRetrofitApiServiceTest {
         request.setInstallationCode("CODE123");
         request.setReleasePlatform("windows");
         request.setReleaseVersion("1.0.0");
-        request.setDeviceSignature("device-signature-abc");
+        request.setInstanceId("instance-id-abc");
 
         String expectedToken = "installation-token-xyz";
         String expectedInstallationId = "installation-id-456";
@@ -138,8 +138,8 @@ class PinodeskRetrofitApiServiceTest {
         RegisterInstallationResponse expectedResponse = new RegisterInstallationResponse();
         expectedResponse.setInstallationId(expectedInstallationId);
         expectedResponse.setInstallationToken(expectedToken);
-        expectedResponse.setDeviceSignature("device-signature-abc");
-        expectedResponse.setRegisteredAt(LocalDateTime.now());
+        expectedResponse.setInstanceId("instance-id-abc");
+        expectedResponse.setRegisteredAt(ZonedDateTime.now());
 
         PinodeskApiResponse<RegisterInstallationResponse> apiResponse = new PinodeskApiResponse<>();
         apiResponse.setSuccess(true);
@@ -224,18 +224,5 @@ class PinodeskRetrofitApiServiceTest {
 
         // Assert
         assertNull(ReflectionTestUtils.getField(retrofitApiService, "currentInstallationToken"));
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testDeprecatedMethods() {
-        // Arrange
-        com.pinodesk.apimodel.ActivateReleaseRequest activateRequest = new com.pinodesk.apimodel.ActivateReleaseRequest();
-        com.pinodesk.apimodel.CreateIssueRequest issueRequest = new com.pinodesk.apimodel.CreateIssueRequest();
-
-        // Act & Assert
-        assertThrows(UnsupportedOperationException.class, () -> retrofitApiService.activateRelease(activateRequest));
-
-        assertThrows(UnsupportedOperationException.class, () -> retrofitApiService.createIssue(issueRequest));
     }
 }

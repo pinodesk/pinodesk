@@ -2,6 +2,7 @@ package com.pinodesk.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.pinodesk.toolbox.jackson.ObjectConverter;
 
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,6 +24,7 @@ public abstract class BaseServiceTest {
     private ObjectMapper createObjectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.findAndRegisterModules();
         return objectMapper;
     }

@@ -1,30 +1,17 @@
 package com.pinodesk.service.api;
 
-import com.pinodesk.apimodel.ActivateReleaseRequest;
-import com.pinodesk.apimodel.ActivateReleaseResponse;
-import com.pinodesk.apimodel.CreateIssueRequest;
-import com.pinodesk.apimodel.CreateIssueResponse;
-import com.pinodesk.apimodel.RequestInstallationCodeRequest;
-import com.pinodesk.apimodel.RequestInstallationCodeResponse;
+import org.springframework.stereotype.Service;
+
 import com.pinodesk.apimodel.RegisterInstallationRequest;
 import com.pinodesk.apimodel.RegisterInstallationResponse;
+import com.pinodesk.apimodel.RequestInstallationCodeRequest;
+import com.pinodesk.apimodel.RequestInstallationCodeResponse;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
 public class PinodeskRetrofitApiService extends PinodeskRetrofitBaseService {
-
-    // Original methods - kept for reference but no longer used
-    @Deprecated
-    public ActivateReleaseResponse activateRelease(ActivateReleaseRequest req) {
-        throw new UnsupportedOperationException("This method is deprecated and no longer used");
-    }
-
-    @Deprecated
-    public CreateIssueResponse createIssue(CreateIssueRequest req) {
-        throw new UnsupportedOperationException("This method is deprecated and no longer used");
-    }
 
     public RequestInstallationCodeResponse requestInstallationCode(String email) {
         RequestInstallationCodeRequest request = new RequestInstallationCodeRequest();

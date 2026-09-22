@@ -46,12 +46,12 @@
                <children>
                   <VBox spacing="10.0" style="-fx-border-color: #b3e4da; -fx-border-width: 1px; -fx-background-color: #b3e4da;" GridPane.columnSpan="2">
                      <children>
-                        <Label fx:id="lblActivation" text="%lbl_activation" textFill="#009c7c">
+                        <Label fx:id="lblActivation" text="%lbl_title_register_installation" textFill="#009c7c">
                            <font>
                               <Font size="13.0" />
                            </font>
                         </Label>
-                        <Label fx:id="lblActivationIntro" text="%lbl_activation_intro" wrapText="true">
+                        <Label fx:id="lblActivationIntro" text="%lbl_installation_registration_info" wrapText="true">
                            <font>
                               <Font size="13.0" />
                            </font>
@@ -65,12 +65,17 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <TextField fx:id="tfActivationEmail" editable="false" prefHeight="30.0" styleClass="input-primary" />
+                                    <HBox spacing="5.0">
+                                       <children>
+                                          <TextField fx:id="tfActivationEmail" editable="false" prefHeight="30.0" styleClass="input-primary" HBox.hgrow="ALWAYS" />
+                                          <Button fx:id="btnRequestCode" mnemonicParsing="false" onAction="#onActionBtnRequestCode" prefHeight="30.0" styleClass="btn-secondary" text="%btn_request_code" textFill="WHITE" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </VBox>
                               <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label fx:id="lblActivationCode" text="%lbl_activation_code">
+                                    <Label fx:id="lblActivationCode" text="%lbl_installation_code">
                                        <font>
                                           <Font size="13.0" />
                                        </font>
@@ -89,7 +94,7 @@
                                           <Font size="13.0" />
                                        </font>
                                     </Label>
-                                    <Button fx:id="btnActivateNow" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnActivateNow" prefHeight="30.0" styleClass="btn-primary" text="%btn_activate_now" textFill="WHITE">
+                                    <Button fx:id="btnActivateNow" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnActivateNow" prefHeight="30.0" styleClass="btn-primary" text="%btn_register_now" textFill="WHITE">
                                        <font>
                                           <Font size="13.0" />
                                        </font>

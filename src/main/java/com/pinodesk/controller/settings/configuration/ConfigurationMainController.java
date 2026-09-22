@@ -2,11 +2,8 @@ package com.pinodesk.controller.settings.configuration;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,8 +14,8 @@ import java.util.concurrent.CompletionException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.pinodesk.apimodel.ActivateReleaseRequest;
-import com.pinodesk.apimodel.ActivateReleaseResponse;
+import com.pinodesk.apimodel.RegisterInstallationResponse;
+import com.pinodesk.apimodel.RequestInstallationCodeResponse;
 import com.pinodesk.constant.CommonConstants;
 import com.pinodesk.constant.CommonLabel;
 import com.pinodesk.constant.ConfigurationConstants;
@@ -34,14 +31,11 @@ import com.pinodesk.javafx.converter.LanguageComboBoxConverter;
 import com.pinodesk.pandora.model.SimpleComboBoxModel;
 import com.pinodesk.pandora.utility.AlertResult;
 import com.pinodesk.pandora.utility.ComboBoxUtils;
-import com.pinodesk.pandora.utility.ControlValidator;
 import com.pinodesk.pandora.utility.ScrollPaneUtils;
 import com.pinodesk.pandora.utility.StageUtils;
-import com.pinodesk.pandora.utility.ValidationResult;
 import com.pinodesk.service.ConfigurationService;
+import com.pinodesk.service.InstallationService;
 import com.pinodesk.toolbox.data.ListBuilder;
-import com.pinodesk.toolbox.jackson.JSON;
-import com.pinodesk.util.DeviceUtils;
 import com.pinodesk.util.PrintUtils;
 import com.pinodesk.util.SpringUtils;
 import com.pinodesk.util.TaskUtils;
@@ -122,51 +116,68 @@ public class ConfigurationMainController extends CommonContentPaneController {
     @FXML
     private Label lblActivationIntro;
 
+    @FXML
+    private Button btnRequestCode;
+
     private FileChooser fileChooser = new FileChooser();
 
     private ConfigurationService configurationService;
+    private InstallationService installationService;
+    private String installationRequestId;
     private List<Locale> locales;
     private Map<String, String> configurationMap;
     private PrintUtils printer;
 
     @FXML
-    void onActionBtnActivateNow(ActionEvent event) {
-        ControlValidator cv = new ControlValidator(resources);
-        cv.validateBlank(tfActivationCode, MessageCode.ERROR_EMPTY_ACTIVATION_CODE);
-        ValidationResult result = cv.getResult();
-        if (!result.isValid()) {
-            displayError(result.getMessages());
+    void onActionBtnRequestCode(ActionEvent event) {
+        String email = tfActivationEmail.getText();
+        if (email == null || email.trim().isEmpty()) {
+            displayError(MessageCode.ERROR_EMPTY_EMAIL);
             return;
         }
         Stage loading = displayLoading();
-        TaskUtils.runTask("Submit activation", () -> {
-            ActivateReleaseRequest req = new ActivateReleaseRequest();
-            req.setActivationCode(tfActivationCode.getText());
-            req.setReleasePlatform(applicationProperties.getReleasePlatform());
-            req.setReleaseVersion(applicationProperties.getAppVersion());
-            req.setDeviceSignature(DeviceUtils.getDeviceSignature());
-            req.setDeviceManufacturer(defaultNullUnknown(DeviceUtils.getDeviceManufacturer()));
-            req.setDeviceModel(defaultNullUnknown(DeviceUtils.getDeviceModel()));
-            req.setOsName(defaultNullUnknown(DeviceUtils.getOsName()));
-            req.setOsVersion(defaultNullUnknown(DeviceUtils.getOsVersion()));
-            req.setOsFamily(defaultNullUnknown(DeviceUtils.getOsFamily()));
-            req.setOsArch(defaultNullUnknown(DeviceUtils.getOsArch()));
-            req.setOsBitness(DeviceUtils.getOsBitness());
-            req.setCpuName(defaultNullUnknown(DeviceUtils.getCpuName()));
-            req.setCpuVendor(defaultNullUnknown(DeviceUtils.getCpuVendor()));
-            req.setCpuFamily(defaultNullUnknown(DeviceUtils.getCpuFamily()));
-            req.setRamSize(DeviceUtils.getRamSize());
-            req.setStorageSize(DeviceUtils.getStorageSize());
-            ActivateReleaseResponse response = pinodeskApiService.activateRelease(req);
-            Map<String, String> map = new HashMap<>();
-            map.put(ConfigurationConstants.ACTIVATION_DATA, JSON.stringify(response));
-            configurationService.updateConfiguration(map);
+        TaskUtils.runTask("Request installation code", () -> {
+            RequestInstallationCodeResponse response = installationService.requestInstallationCode(email);
+            if (response != null && response.getInstallationRequestId() != null) {
+                installationRequestId = response.getInstallationRequestId();
+                log.info("Installation code requested successfully, request ID: {}", installationRequestId);
+            }
             Platform.runLater(() -> {
                 loading.hide();
-                displayInfo(MessageCode.SUCCESS_ACTIVATION);
-                closeRootPane();
-                sessionService.logout();
-                StageUtils.open(Page.LOGIN, false);
+                if (installationRequestId != null) {
+                    displayInfo(MessageCode.SUCCESS_REQUEST_INSTALLATION_CODE);
+                    tfActivationCode.requestFocus();
+                }
+            });
+        }, throwable -> Platform.runLater(() -> {
+            loading.hide();
+            handleException(throwable);
+        }));
+    }
+
+    @FXML
+    void onActionBtnActivateNow(ActionEvent event) {
+        String email = tfActivationEmail.getText();
+        if (email == null || email.trim().isEmpty()) {
+            displayError(MessageCode.ERROR_EMPTY_EMAIL);
+            return;
+        }
+        if (installationRequestId == null) {
+            displayError(MessageCode.ERROR_EMPTY_INSTALLATION_REQUEST_ID);
+            return;
+        }
+        String code = tfActivationCode.getText();
+        if (code == null || code.trim().isEmpty()) {
+            displayError(MessageCode.ERROR_EMPTY_INSTALLATION_CODE);
+            return;
+        }
+        Stage loading = displayLoading();
+        TaskUtils.runTask("Register installation", () -> {
+            installationService.registerInstallation(email, installationRequestId, code);
+            Platform.runLater(() -> {
+                loading.hide();
+                displayInfo(MessageCode.SUCCESS_INSTALLATION_REGISTRATION);
+                updateInstallationRegistrationSection();
             });
         }, throwable -> Platform.runLater(() -> {
             loading.hide();
@@ -300,6 +311,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
     @Override
     protected void initServices() {
         configurationService = SpringUtils.getBean(ConfigurationService.class);
+        installationService = SpringUtils.getBean(InstallationService.class);
         locales = FXCollections.observableArrayList(
                 Locale.forLanguageTag(CommonConstants.LANGUAGE_CODE_ENGLISH),
                 Locale.forLanguageTag(CommonConstants.LANGUAGE_CODE_INDONESIA));
@@ -385,23 +397,32 @@ public class ConfigurationMainController extends CommonContentPaneController {
         Platform.runLater(() -> {
             ScrollPaneUtils.fixBlur(configurationScrollPane);
         });
-        String activationData = configurationMap.get(ConfigurationConstants.ACTIVATION_DATA);
-        String strTrialPeriodDays = configurationMap.get(ConfigurationConstants.TRIAL_PERIOD_DAYS);
-        String strInstallDatetime = configurationMap.get(ConfigurationConstants.INSTALL_DATETIME);
-        LocalDate today = LocalDate.now();
-        LocalDateTime installDatetime = ZonedDateTime.parse(strInstallDatetime).toLocalDateTime();
-        int trialPeriodDays = Integer.parseInt(strTrialPeriodDays);
-        LocalDate endTrialDate = installDatetime.plus(trialPeriodDays, ChronoUnit.DAYS).toLocalDate();
-        Long remainingDays = today.until(endTrialDate, ChronoUnit.DAYS);
-        if (StringUtils.isBlank(activationData)) {
-            String lblActivationPending = t.translate(CommonLabel.LBL_ACTIVATION_PENDING);
-            lblActivationIntro.setText(String.format(lblActivationPending, remainingDays, endTrialDate));
-            tfActivationCode.setEditable(true);
-        } else {
-            ActivateReleaseResponse response = JSON.parse(activationData, ActivateReleaseResponse.class);
-            tfActivationEmail.setText(response.getEmail());
-            tfActivationCode.setText(response.getCode());
+        updateInstallationRegistrationSection();
+    }
+
+    private void updateInstallationRegistrationSection() {
+        boolean registered = installationService.isRegistered();
+        if (registered) {
+            RegisterInstallationResponse data = installationService.getInstallationData();
+            lblActivationIntro.setText(t.translate("lbl_installation_registration_registered"));
+            String email = data != null && data.getEmail() != null ? data.getEmail() : "";
+            String code = data != null && data.getInstallationId() != null ? data.getInstallationId() : "";
+            tfActivationEmail.setText(email);
+            tfActivationCode.setText(code);
+            tfActivationEmail.setEditable(false);
+            tfActivationCode.setEditable(false);
+            if (btnRequestCode != null) {
+                setVisibleInLayout(false, btnRequestCode);
+            }
             setVisibleInLayout(false, vboxActivateNow);
+        } else {
+            lblActivationIntro.setText(t.translate("lbl_installation_registration_info"));
+            tfActivationEmail.setEditable(true);
+            tfActivationCode.setEditable(true);
+            if (btnRequestCode != null) {
+                setVisibleInLayout(true, btnRequestCode);
+            }
+            setVisibleInLayout(true, vboxActivateNow);
         }
     }
 

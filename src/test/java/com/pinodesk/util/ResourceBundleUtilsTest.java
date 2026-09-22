@@ -49,6 +49,50 @@ public class ResourceBundleUtilsTest {
         assertThat(rb.getLocale(), is(Locale.forLanguageTag("id")));
     }
 
+    @Test
+    void testInstallationRegistrationKeys_existInBothResourceBundles() {
+        String[] keys = {
+                "lbl_title_register_installation",
+                "lbl_installation_description",
+                "lbl_installation_code",
+                "btn_request_code",
+                "btn_register_now",
+                "btn_skip_for_now",
+                "lbl_installation_registration_info",
+                "lbl_installation_registration_registered",
+                "error_empty_email",
+                "error_empty_installation_code",
+                "error_empty_installation_request_id",
+                "success_request_installation_code",
+                "success_installation_registration" };
+        ResourceBundle enBundle = ResourceBundle.getBundle("pinodesk.lang", Locale.ENGLISH);
+        ResourceBundle idBundle = ResourceBundle.getBundle("pinodesk.lang", Locale.forLanguageTag("id"));
+
+        for (String key : keys) {
+            assertThat("Missing key in en bundle: " + key, enBundle.containsKey(key), is(true));
+            assertThat("Missing key in id bundle: " + key, idBundle.containsKey(key), is(true));
+        }
+    }
+
+    @Test
+    void testRegisterInstallationFxml_allResourceKeysExist() throws Exception {
+        java.io.InputStream is = getClass().getResourceAsStream("/assets/templates/register-installation.fxml");
+        assertThat(is, is(notNullValue()));
+        String fxmlContent = new String(is.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8);
+
+        java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("%([a-zA-Z0-9_]+)");
+        java.util.regex.Matcher matcher = pattern.matcher(fxmlContent);
+
+        ResourceBundle enBundle = ResourceBundle.getBundle("pinodesk.lang", Locale.ENGLISH);
+        ResourceBundle idBundle = ResourceBundle.getBundle("pinodesk.lang", Locale.forLanguageTag("id"));
+
+        while (matcher.find()) {
+            String key = matcher.group(1);
+            assertThat("Missing key in en bundle: " + key, enBundle.containsKey(key), is(true));
+            assertThat("Missing key in id bundle: " + key, idBundle.containsKey(key), is(true));
+        }
+    }
+
     @Configuration
     public static class SampleConfig {
 

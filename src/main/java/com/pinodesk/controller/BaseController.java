@@ -14,7 +14,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import com.pinodesk.apimodel.ActivateReleaseResponse;
 import com.pinodesk.apimodel.CreateIssueRequest;
 import com.pinodesk.constant.CommonConstants;
 import com.pinodesk.constant.CommonLabel;
@@ -37,7 +36,6 @@ import com.pinodesk.service.ConfigurationService;
 import com.pinodesk.service.SessionService;
 import com.pinodesk.service.api.PinodeskApiService;
 import com.pinodesk.toolbox.data.SingletonStack;
-import com.pinodesk.toolbox.jackson.JSON;
 import com.pinodesk.util.DeviceUtils;
 import com.pinodesk.util.SpringUtils;
 import com.pinodesk.util.TaskUtils;
@@ -185,10 +183,17 @@ public abstract class BaseController {
     protected void handlePinodeskApiException(PinodeskApiException e) {
         String code = e.getCode();
         String message = e.getMessage();
+
+        // Handle specific error codes with custom messages
+        if ("rate_limit_exceeded".equals(code)) {
+            displayError(MessageCode.ERROR_RATE_LIMIT_EXCEEDED);
+            return;
+        }
+
         if (e.getMessageCode() != null) {
             message = t.translate(e.getMessageCode());
         }
-        displayError(String.format("%s %s", message, code == null ? "" : "(" + code + ")"));
+        displayError(String.format("%s", message));
     }
 
     private IMessage getAlertHeaderMessageCode(AlertType type) {
@@ -384,15 +389,12 @@ public abstract class BaseController {
     }
 
     private void sendErrorReport(Throwable ex, String stacktrace) {
-        String strActivationData = configurationService.getConfiguration(ConfigurationConstants.ACTIVATION_DATA);
-        ActivateReleaseResponse activationData = JSON.parse(strActivationData, ActivateReleaseResponse.class);
         CreateIssueRequest req = new CreateIssueRequest();
         req.setCategory("bug_report");
         req.setSource("app");
         req.setTitle(ex.toString());
         req.setDescription("Please help to check the following error stacktrace from the user report:");
         req.setErrorStacktrace(stacktrace);
-        req.setActivationDeviceId(activationData.getActivationDeviceId());
         req.setReleasePlatform(applicationProperties.getReleasePlatform());
         req.setReleaseVersion(applicationProperties.getAppVersion());
         req.setDeviceSignature(DeviceUtils.getDeviceSignature());

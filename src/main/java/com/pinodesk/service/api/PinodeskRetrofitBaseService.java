@@ -1,5 +1,6 @@
 package com.pinodesk.service.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinodesk.apimodel.PinodeskApiError;
 import com.pinodesk.apimodel.PinodeskApiResponse;
@@ -28,7 +29,7 @@ public class PinodeskRetrofitBaseService {
     @Autowired
     private ObjectMapper mapper;
 
-    protected static final String HEADER_PINODESK_INSTALLATION_TOKEN = "X-Pinodesk-Installation-Token";
+    protected static final String HEADER_PINODESK_INSTALLATION_TOKEN = "Pinodesk-Installation-Token";
 
     protected PinodeskApiInterface apiInterface;
     protected String currentInstallationToken;
@@ -75,8 +76,25 @@ public class PinodeskRetrofitBaseService {
         try {
             Response<PinodeskApiResponse<T>> response = call.execute();
             if (!response.isSuccessful()) {
+                // Try to parse error body from unsuccessful HTTP responses
+                String errorBody = response.errorBody() != null ? response.errorBody().string() : null;
+                if (errorBody != null) {
+                    try {
+                        PinodeskApiResponse<?> errorResponse = mapper.readValue(errorBody, PinodeskApiResponse.class);
+                        if (errorResponse != null && errorResponse.getError() != null) {
+                            PinodeskApiError error = errorResponse.getError();
+                            log.error("API error: {} - {}", error.getCode(), error.getMessage());
+                            throw new PinodeskApiException(error.getCode(), error.getMessage(), null);
+                        }
+                    } catch (JsonProcessingException parseException) {
+                        log.warn("Failed to parse error body: {}", errorBody, parseException);
+                    }
+                }
                 log.error("HTTP error: {} {}", response.code(), response.message());
-                throw new PinodeskApiException(null, null, MessageCode.ERROR_REQUEST_PINODESK);
+                throw new PinodeskApiException(
+                        String.valueOf(response.code()),
+                        response.message(),
+                        MessageCode.ERROR_REQUEST_PINODESK);
             }
 
             PinodeskApiResponse<T> pinodeskResponse = response.body();

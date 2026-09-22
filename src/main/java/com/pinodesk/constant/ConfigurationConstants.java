@@ -14,4 +14,5 @@ public interface ConfigurationConstants {
     String INSTALL_DATETIME = "install_datetime";
     String TRIAL_PERIOD_DAYS = "trial_period_days";
     String ACTIVATE_LATER = "activate_later";
+    String REGISTRATION_SKIPPED = "registration_skipped";
 }

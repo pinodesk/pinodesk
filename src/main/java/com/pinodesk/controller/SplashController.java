@@ -1,14 +1,8 @@
 package com.pinodesk.controller;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-
-import org.apache.commons.lang3.StringUtils;
 
 import com.pinodesk.PinodeskConfig;
 import com.pinodesk.constant.CommonConstants;
@@ -17,6 +11,7 @@ import com.pinodesk.constant.Page;
 import com.pinodesk.constant.SimpleStatus;
 import com.pinodesk.pandora.utility.StageUtils;
 import com.pinodesk.service.ConfigurationService;
+import com.pinodesk.service.InstallationService;
 import com.pinodesk.service.SessionService;
 import com.pinodesk.util.SpringUtils;
 
@@ -31,26 +26,13 @@ public class SplashController {
     @FXML
     private AnchorPane contentPane;
 
-    private boolean isActivationRequired(Map<String, String> configurationMap) {
-        String activateLater = configurationMap.get(ConfigurationConstants.ACTIVATE_LATER);
-        String strTrialPeriodDays = configurationMap.get(ConfigurationConstants.TRIAL_PERIOD_DAYS);
-        String strInstallDatetime = configurationMap.get(ConfigurationConstants.INSTALL_DATETIME);
-        String activationData = configurationMap.get(ConfigurationConstants.ACTIVATION_DATA);
-        LocalDate today = LocalDate.now();
-        LocalDateTime installDatetime = ZonedDateTime.parse(strInstallDatetime).toLocalDateTime();
-        log.debug("Install date time: {}", installDatetime);
-        int trialPeriodDays = Integer.parseInt(strTrialPeriodDays);
-        log.debug("Trial period in days: {}", trialPeriodDays);
-        LocalDate endTrialDate = installDatetime.plus(trialPeriodDays, ChronoUnit.DAYS).toLocalDate();
-        log.debug("End trial date: {}", endTrialDate);
-        log.debug("Today's date: {}", today);
-        if (StringUtils.isBlank(activationData)) {
-            if (SimpleStatus.YES.toString().equals(activateLater)) {
-                return today.isAfter(endTrialDate);
-            }
-            return true;
+    private boolean isInstallationRegistrationRequired(Map<String, String> configurationMap) {
+        InstallationService installationService = SpringUtils.getBean(InstallationService.class);
+        if (installationService.isRegistered()) {
+            return false;
         }
-        return false;
+        String skipped = configurationMap.get(ConfigurationConstants.REGISTRATION_SKIPPED);
+        return !SimpleStatus.YES.toString().equals(skipped);
     }
 
     @FXML
@@ -58,10 +40,10 @@ public class SplashController {
         CompletableFuture.runAsync(() -> SpringUtils.init(PinodeskConfig.class)).thenRun(() -> {
             ConfigurationService configurationService = SpringUtils.getBean(ConfigurationService.class);
             Map<String, String> configurationMap = configurationService.getConfigurationMap();
-            if (isActivationRequired(configurationMap)) {
+            if (isInstallationRegistrationRequired(configurationMap)) {
                 Platform.runLater(() -> {
                     contentPane.getScene().getWindow().hide();
-                    StageUtils.open(Page.ACTIVATION, false);
+                    StageUtils.open(Page.REGISTER_INSTALLATION, false);
                 });
                 return;
             }

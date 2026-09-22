@@ -25,7 +25,7 @@ public class PinodeskBaseApiService extends BaseApiService {
     @Value("${pinodesk.api.base_url}")
     private String baseURL;
 
-    @Value("${pinodesk.api.key}")
+    // @Value("${pinodesk.api.key}")
     private String apiKey;
 
     @Autowired
