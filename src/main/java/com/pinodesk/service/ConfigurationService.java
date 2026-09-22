@@ -162,8 +162,8 @@ public class ConfigurationService extends BaseService {
     public void restoreDatabase(String location) {
         HikariDataSource ds = ((HikariDataSource) dataSource);
         String dirName = getDatabaseDir(ds.getJdbcUrl());
-        String dbDir = SystemConstants.USER_HOME_DIR + dirName;
-        String dbDirOld = SystemConstants.USER_HOME_DIR + dirName + ".old";
+        String dbDir = dirName;
+        String dbDirOld = dirName + ".old";
         File dbDirFile = new File(dbDir);
         File dbDirFileOld = new File(dbDirOld);
         try {
