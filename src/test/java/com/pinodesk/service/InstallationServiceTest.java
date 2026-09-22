@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.ZonedDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.pinodesk.apimodel.RegisterInstallationRequest;
 import com.pinodesk.apimodel.RegisterInstallationResponse;
 import com.pinodesk.apimodel.RequestInstallationCodeResponse;
+import com.pinodesk.model.InstallationData;
 import com.pinodesk.properties.ApplicationProperties;
 import com.pinodesk.service.api.PinodeskRetrofitApiService;
 
@@ -50,27 +52,31 @@ class InstallationServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void testLoadOrCreateInstanceId_generatesNewAndStoresInFileWhenNotExists() throws IOException {
-        String instanceId = installationService.loadOrCreateInstanceId();
+    void testEnsureInstallationDataExists_generatesNewAndStoresInFileWhenNotExists() throws IOException {
+        InstallationData data = installationService.ensureInstallationDataExists();
 
-        assertNotNull(instanceId);
-        assertFalse(instanceId.isBlank());
+        assertNotNull(data);
+        assertNotNull(data.getInstanceId());
+        assertFalse(data.getInstanceId().isBlank());
+        assertNotNull(data.getFirstRunAt());
         assertTrue(Files.exists(installationFilePath));
 
-        JsonNode root = objectMapper.readTree(installationFilePath.toFile());
-        assertTrue(root.hasNonNull("instance_id"));
-        assertEquals(instanceId, root.get("instance_id").asText());
+        InstallationData savedData = objectMapper.readValue(installationFilePath.toFile(), InstallationData.class);
+        assertEquals(data.getInstanceId(), savedData.getInstanceId());
+        assertEquals(data.getFirstRunAt(), savedData.getFirstRunAt());
     }
 
     @Test
-    void testLoadOrCreateInstanceId_readsExistingFromFile() throws IOException {
+    void testEnsureInstallationDataExists_readsExistingFromFile() throws IOException {
         String existingId = "existing-instance-uuid-123";
-        String content = "{\"instance_id\":\"" + existingId + "\"}";
+        Instant existingFirstRunAt = Instant.parse("2024-01-15T10:30:00Z");
+        String content = "{\"instance_id\":\"" + existingId + "\",\"first_run_at\":\"" + existingFirstRunAt + "\"}";
         Files.writeString(installationFilePath, content);
 
-        String instanceId = installationService.loadOrCreateInstanceId();
+        InstallationData data = installationService.ensureInstallationDataExists();
 
-        assertEquals(existingId, instanceId);
+        assertEquals(existingId, data.getInstanceId());
+        assertEquals(existingFirstRunAt, data.getFirstRunAt());
     }
 
     @Test
@@ -80,7 +86,7 @@ class InstallationServiceTest extends BaseServiceTest {
 
     @Test
     void testIsRegistered_returnsFalseWhenOnlyInstanceIdPresent() {
-        installationService.loadOrCreateInstanceId();
+        installationService.ensureInstallationDataExists();
         assertFalse(installationService.isRegistered());
     }
 
@@ -113,7 +119,10 @@ class InstallationServiceTest extends BaseServiceTest {
         when(applicationProperties.getAppVersion()).thenReturn("1.8.0");
 
         String expectedInstanceId = "my-instance-id";
-        Files.writeString(installationFilePath, "{\"instance_id\":\"" + expectedInstanceId + "\"}");
+        Instant firstRunAt = Instant.parse("2024-01-15T10:30:00Z");
+        String installationContent = "{\"instance_id\":\"" + expectedInstanceId + "\",\"first_run_at\":\"" + firstRunAt
+                + "\"}";
+        Files.writeString(installationFilePath, installationContent);
 
         RegisterInstallationResponse mockResponse = new RegisterInstallationResponse();
         mockResponse.setInstanceId(expectedInstanceId);
@@ -121,6 +130,7 @@ class InstallationServiceTest extends BaseServiceTest {
         mockResponse.setInstallationToken("token-xyz");
         mockResponse.setEmail("user@example.com");
         mockResponse.setRegisteredAt(ZonedDateTime.now());
+        mockResponse.setFirstRunAt(firstRunAt);
 
         when(pinodeskRetrofitApiService.registerInstallation(any(RegisterInstallationRequest.class)))
                 .thenReturn(mockResponse);
@@ -141,6 +151,7 @@ class InstallationServiceTest extends BaseServiceTest {
         assertEquals("linux", sentRequest.getReleasePlatform());
         assertEquals("1.8.0", sentRequest.getReleaseVersion());
         assertEquals(expectedInstanceId, sentRequest.getInstanceId());
+        assertEquals(firstRunAt, sentRequest.getFirstRunAt());
 
         JsonNode root = objectMapper.readTree(installationFilePath.toFile());
         assertEquals(expectedInstanceId, root.get("instance_id").asText());
@@ -152,11 +163,13 @@ class InstallationServiceTest extends BaseServiceTest {
         assertFalse(root.get("registered_at").isArray());
         assertTrue(installationService.isRegistered());
 
-        RegisterInstallationResponse data = installationService.getInstallationData();
+        InstallationData data = installationService.getInstallationData();
         assertNotNull(data);
         assertEquals("user@example.com", data.getEmail());
         assertEquals("inst-id-789", data.getInstallationId());
         assertEquals(expectedInstanceId, data.getInstanceId());
+        assertEquals("token-xyz", data.getInstallationToken());
+        assertEquals(firstRunAt, data.getFirstRunAt());
     }
 
 }

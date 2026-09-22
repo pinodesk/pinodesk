@@ -1,5 +1,7 @@
 package com.pinodesk.apimodel;
 
+import java.time.Instant;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -27,4 +29,5 @@ public class RegisterInstallationRequest {
     private String cpuVendor;
     private Long ramSize;
     private Long storageSize;
+    private Instant firstRunAt;
 }

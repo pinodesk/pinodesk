@@ -14,8 +14,8 @@ import java.util.concurrent.CompletionException;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.pinodesk.apimodel.RegisterInstallationResponse;
 import com.pinodesk.apimodel.RequestInstallationCodeResponse;
+import com.pinodesk.model.InstallationData;
 import com.pinodesk.constant.CommonConstants;
 import com.pinodesk.constant.CommonLabel;
 import com.pinodesk.constant.ConfigurationConstants;
@@ -403,7 +403,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
     private void updateInstallationRegistrationSection() {
         boolean registered = installationService.isRegistered();
         if (registered) {
-            RegisterInstallationResponse data = installationService.getInstallationData();
+            InstallationData data = installationService.getInstallationData();
             lblActivationIntro.setText(t.translate("lbl_installation_registration_registered"));
             String email = data != null && data.getEmail() != null ? data.getEmail() : "";
             String code = data != null && data.getInstallationId() != null ? data.getInstallationId() : "";

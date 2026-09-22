@@ -3,8 +3,7 @@ package com.pinodesk.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.time.Instant;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -12,13 +11,13 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinodesk.apimodel.RegisterInstallationRequest;
 import com.pinodesk.apimodel.RegisterInstallationResponse;
 import com.pinodesk.apimodel.RequestInstallationCodeResponse;
 import com.pinodesk.exception.DefaultRuntimeException;
+import com.pinodesk.model.InstallationData;
 import com.pinodesk.properties.ApplicationProperties;
 import com.pinodesk.service.api.PinodeskRetrofitApiService;
 import com.pinodesk.util.DeviceUtils;
@@ -40,20 +39,20 @@ public class InstallationService extends BaseService {
 
     @PostConstruct
     public void init() {
-        loadOrCreateInstanceId();
+        ensureInstallationDataExists();
     }
 
-    public synchronized String loadOrCreateInstanceId() {
+    public synchronized InstallationData ensureInstallationDataExists() {
         File installationFile = applicationProperties.getInstallationFile().toFile();
         if (installationFile.exists() && installationFile.isFile()) {
             try {
-                JsonNode root = objectMapper.readTree(installationFile);
-                if (root != null && root.hasNonNull("instance_id")) {
-                    String instanceId = root.get("instance_id").asText();
-                    if (!instanceId.trim().isEmpty()) {
-                        log.info("Loaded instance ID from {}: {}", installationFile.getAbsolutePath(), instanceId);
-                        return instanceId;
-                    }
+                InstallationData data = objectMapper.readValue(installationFile, InstallationData.class);
+                if (data != null && data.getInstanceId() != null && !data.getInstanceId().trim().isEmpty()) {
+                    log.info(
+                            "Loaded installation data from {}: instanceId={}",
+                            installationFile.getAbsolutePath(),
+                            data.getInstanceId());
+                    return data;
                 }
             } catch (IOException e) {
                 log.warn("Failed to read installation file at {}", installationFile.getAbsolutePath(), e);
@@ -61,13 +60,13 @@ public class InstallationService extends BaseService {
         }
 
         String newInstanceId = UUID.randomUUID().toString();
-        saveInstanceIdToFile(newInstanceId, installationFile);
-        log.info("Generated new instance ID: {}", newInstanceId);
-        return newInstanceId;
-    }
-
-    public synchronized String getInstanceId() {
-        return loadOrCreateInstanceId();
+        Instant firstRunAt = Instant.now();
+        InstallationData data = new InstallationData();
+        data.setInstanceId(newInstanceId);
+        data.setFirstRunAt(firstRunAt);
+        saveInstallationData(data, installationFile);
+        log.info("Generated new installation data: instanceId={}", newInstanceId);
+        return data;
     }
 
     public RequestInstallationCodeResponse requestInstallationCode(String email) {
@@ -78,13 +77,16 @@ public class InstallationService extends BaseService {
             String email,
             String installationRequestId,
             String installationCode) {
+        InstallationData installationData = ensureInstallationDataExists();
+
         RegisterInstallationRequest req = new RegisterInstallationRequest();
         req.setEmail(email);
         req.setInstallationRequestId(installationRequestId);
         req.setInstallationCode(installationCode);
         req.setReleasePlatform(applicationProperties.getReleasePlatform());
         req.setReleaseVersion(applicationProperties.getAppVersion());
-        req.setInstanceId(loadOrCreateInstanceId());
+        req.setInstanceId(installationData.getInstanceId());
+        req.setFirstRunAt(installationData.getFirstRunAt());
         req.setDeviceManufacturer(defaultNullUnknown(DeviceUtils.getDeviceManufacturer()));
         req.setDeviceModel(defaultNullUnknown(DeviceUtils.getDeviceModel()));
         req.setOsName(defaultNullUnknown(DeviceUtils.getOsName()));
@@ -100,33 +102,17 @@ public class InstallationService extends BaseService {
 
         RegisterInstallationResponse response = pinodeskRetrofitApiService.registerInstallation(req);
         if (response != null) {
-            updateInstallationData(response);
+            InstallationData data = convertResponseToData(response);
+            saveInstallationData(data);
         }
         return response;
     }
 
-    public synchronized void updateInstallationData(RegisterInstallationResponse response) {
-        File installationFile = applicationProperties.getInstallationFile().toFile();
-        try {
-            if (installationFile.getParentFile() != null) {
-                Files.createDirectories(installationFile.getParentFile().toPath());
-            }
-            if (response.getInstanceId() == null || response.getInstanceId().isBlank()) {
-                response.setInstanceId(loadOrCreateInstanceId());
-            }
-            objectMapper.writerWithDefaultPrettyPrinter().writeValue(installationFile, response);
-            log.info("Installation data saved to: {}", installationFile.getAbsolutePath());
-        } catch (IOException e) {
-            log.error("Failed to save installation data to file", e);
-            throw new DefaultRuntimeException(e);
-        }
-    }
-
-    public RegisterInstallationResponse getInstallationData() {
+    public InstallationData getInstallationData() {
         File installationFile = applicationProperties.getInstallationFile().toFile();
         if (installationFile.exists() && installationFile.isFile()) {
             try {
-                return objectMapper.readValue(installationFile, RegisterInstallationResponse.class);
+                return objectMapper.readValue(installationFile, InstallationData.class);
             } catch (IOException e) {
                 log.error("Failed to read installation data", e);
             }
@@ -151,31 +137,37 @@ public class InstallationService extends BaseService {
         return false;
     }
 
-    private void saveInstanceIdToFile(String instanceId, File installationFile) {
+    private void saveInstallationData(InstallationData data) {
+        File installationFile = applicationProperties.getInstallationFile().toFile();
+        saveInstallationData(data, installationFile);
+    }
+
+    private void saveInstallationData(InstallationData data, File installationFile) {
         try {
             if (installationFile.getParentFile() != null) {
                 Files.createDirectories(installationFile.getParentFile().toPath());
             }
-            Map<String, Object> data = new LinkedHashMap<>();
-            if (installationFile.exists() && installationFile.isFile()) {
-                try {
-                    data = objectMapper.readValue(installationFile, new TypeReference<Map<String, Object>>() {
-                    });
-                } catch (Exception e) {
-                    log.warn("Could not parse existing installation file to map, creating fresh map", e);
-                }
-            }
-            data.put("instance_id", instanceId);
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(installationFile, data);
-            log.info("Instance ID saved to: {}", installationFile.getAbsolutePath());
+            log.info("Installation data saved to: {}", installationFile.getAbsolutePath());
         } catch (IOException e) {
-            log.error("Failed to save instance ID to file", e);
+            log.error("Failed to save installation data to file", e);
             throw new DefaultRuntimeException(e);
         }
     }
 
     private String defaultNullUnknown(String val) {
         return "unknown".equalsIgnoreCase(val) ? null : val;
+    }
+
+    private InstallationData convertResponseToData(RegisterInstallationResponse response) {
+        InstallationData data = new InstallationData();
+        data.setInstanceId(response.getInstanceId());
+        data.setInstallationId(response.getInstallationId());
+        data.setInstallationToken(response.getInstallationToken());
+        data.setEmail(response.getEmail());
+        data.setRegisteredAt(response.getRegisteredAt());
+        data.setFirstRunAt(response.getFirstRunAt());
+        return data;
     }
 
 }
