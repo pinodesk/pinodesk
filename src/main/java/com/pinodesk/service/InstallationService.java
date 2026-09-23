@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinodesk.apimodel.RegisterInstallationRequest;
 import com.pinodesk.apimodel.RegisterInstallationResponse;
 import com.pinodesk.apimodel.RequestInstallationCodeResponse;
+import com.pinodesk.constant.JavaInfo;
 import com.pinodesk.exception.DefaultRuntimeException;
 import com.pinodesk.model.InstallationData;
 import com.pinodesk.properties.ApplicationProperties;
@@ -85,6 +86,9 @@ public class InstallationService extends BaseService {
         req.setInstallationCode(installationCode);
         req.setReleasePlatform(applicationProperties.getReleasePlatform());
         req.setReleaseVersion(applicationProperties.getAppVersion());
+        req.setJavaVendor(JavaInfo.VM_VENDOR);
+        req.setJavaVersion(JavaInfo.VM_VERSION);
+        req.setJavaVm(JavaInfo.VM_NAME);
         req.setInstanceId(installationData.getInstanceId());
         req.setFirstRunAt(installationData.getFirstRunAt());
         req.setDeviceManufacturer(defaultNullUnknown(DeviceUtils.getDeviceManufacturer()));

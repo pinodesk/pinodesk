@@ -16,6 +16,9 @@ public class RegisterInstallationRequest {
     private String installationCode;
     private String releasePlatform;
     private String releaseVersion;
+    private String javaVm;
+    private String javaVendor;
+    private String javaVersion;
     private String instanceId;
     private String deviceModel;
     private String deviceManufacturer;
