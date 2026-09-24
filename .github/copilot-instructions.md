@@ -34,7 +34,7 @@ Key integrations: H2 database with Flyway migrations, external API via Retrofit,
 - **Database**: H2 in app home directory (`${app.home}/db/`), MySQL mode, encrypted connections.
 - **API**: REST calls to external API endpoints using Retrofit with Jackson serialization.
 - **UI**: JavaFX with FXML templates in `src/main/resources/assets/templates/`, CSS in `assets/css/`, images in `assets/images/`.
-- **External Libs**: Mudiatech Pandora for UI utils, Sequel for data models, Toolbox/Norway for utilities.
+- **External Libs**: Pinodesk's Pandora for UI utils, Sequel for data models, Toolbox/Norway for utilities.
 - **Cross-Platform**: Assets in `assets/linux/`, `assets/mac/`, `assets/windows/`; packaging via Javapackager.
 
 Reference key files: `pom.xml` (dependencies/profiles), `Pinodesk.java` (app entry), `application.properties` (config), `UserService.java` (service pattern), `MainController.java` (controller pattern).

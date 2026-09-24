@@ -1,16 +1,16 @@
 app.name=${project.name}
 app.version=${project.version}
-app.home=${APP_HOME:${user.home}/.pinodesk}
+app.home=${dollar}{user.home}/.${project.artifactId}
 
-# Please change based on your development OS, must be one of: windows, macos, linux-deb, linux-rpm
-release.platform=windows
+# Set by the active Maven profile: windows, macos, linux-deb, linux-rpm
+release.platform=${release.platform}
 
 # JDBC configs
 jdbc.url=jdbc:h2:${dollar}{app.home}/db/pinodesk;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_ON_EXIT=FALSE;CIPHER=AES
-jdbc.user=sa
-jdbc.password=sa
+jdbc.user=${env.JDBC_USER}
+jdbc.password=${env.JDBC_PASSWORD}
 jdbc.driver=org.h2.Driver
 
 sequel.jdbc.formatsql=true
 
-pinodesk.api.base_url=http://localhost:8080/
+pinodesk.api.base_url=${env.PINODESK_API_BASE_URL}

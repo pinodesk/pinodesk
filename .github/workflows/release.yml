@@ -6,6 +6,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    environment: release
     permissions:
       contents: write
       packages: write
@@ -74,11 +75,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Generate application.properties
+        run: cp src/main/resources/application.properties.example src/main/resources/application.properties
+
       - name: Build DEB package
         run: ./mvnw --batch-mode -s .m2/settings.xml clean package -Pdeb -B
         env:
           MAVEN_USERNAME: ${{ github.actor }}
           MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          JDBC_USER: ${{ secrets.JDBC_USER }}
+          JDBC_PASSWORD: ${{ secrets.JDBC_PASSWORD }}
+          PINODESK_API_BASE_URL: ${{ secrets.PINODESK_API_BASE_URL }}
 
       - name: Upload DEB artifact
         uses: actions/upload-artifact@v4
@@ -116,11 +123,18 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
+      - name: Generate application.properties
+        run: copy src\main\resources\application.properties.example src\main\resources\application.properties
+        shell: cmd
+
       - name: Build Windows installer
         run: ./mvnw --batch-mode -s .m2/settings.xml clean package -Pexe -B
         env:
           MAVEN_USERNAME: ${{ github.actor }}
           MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+          JDBC_USER: ${{ secrets.JDBC_USER }}
+          JDBC_PASSWORD: ${{ secrets.JDBC_PASSWORD }}
+          PINODESK_API_BASE_URL: ${{ secrets.PINODESK_API_BASE_URL }}
 
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4

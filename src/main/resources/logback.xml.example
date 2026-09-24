@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <if condition='"${version}".endsWith("SNAPSHOT")'>
-        <then>
-            <property name="LOG_DIR" value="${dollar}{user.home}/.pinodesk-snapshot/logs" />
-        </then>
-        <else>
-            <property name="LOG_DIR" value="${dollar}{user.home}/.pinodesk/logs" />
-        </else>
-    </if>
+    <property name="LOG_DIR" value="${dollar}{user.home}/.${artifactId}/logs" />
 
     <appender name="STDOUT_COLOR" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>

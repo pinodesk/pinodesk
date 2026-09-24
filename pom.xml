@@ -3,7 +3,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>pinodesk</groupId>
+    <groupId>com.pinodesk</groupId>
     <artifactId>pinodesk</artifactId>
     <version>1.8.0-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -291,6 +291,7 @@
                 <filtering>true</filtering>
                 <excludes>
                     <exclude>pinodesk/misc/*</exclude>
+                    <exclude>*.example</exclude>
                 </excludes>
             </resource>
         </resources>
@@ -437,38 +438,6 @@
                     </gitFlowConfig>
                 </configuration>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                    <execution>
-                        <id>rename-profile-prefixed-files</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <copy
-                                    file="${project.build.outputDirectory}/application-${currentProfile}.properties"
-                                    tofile="${project.build.outputDirectory}/application.properties" />
-                                <copy
-                                    file="${project.build.outputDirectory}/logback-${currentProfile}.xml"
-                                    tofile="${project.build.outputDirectory}/logback.xml" />
-                                <delete>
-                                    <fileset dir="${project.build.outputDirectory}">
-                                        <include name="application-*.properties" />
-                                        <include name="logback-*.xml" />
-                                    </fileset>
-                                </delete>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
         </plugins>
     </build>
     <profiles>
@@ -477,14 +446,11 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <properties>
-                <currentProfile>dev</currentProfile>
-            </properties>
         </profile>
         <profile>
             <id>exe</id>
             <properties>
-                <currentProfile>exe</currentProfile>
+                <release.platform>windows</release.platform>
             </properties>
             <build>
                 <plugins>
@@ -522,12 +488,6 @@
                                         <setupLanguages>
                                             <english>compiler:Default.isl</english>
                                         </setupLanguages>
-                                        <signing>
-                                            <storetype>PKCS12</storetype>
-                                            <keystore>
-                                                src/main/resources/Mudiatech_Code_Signing_Certificate.p12</keystore>
-                                            <storepass>Secret1234</storepass>
-                                        </signing>
                                     </winConfig>
                                 </configuration>
                             </execution>
@@ -539,7 +499,7 @@
         <profile>
             <id>deb</id>
             <properties>
-                <currentProfile>deb</currentProfile>
+                <release.platform>linux-deb</release.platform>
             </properties>
             <build>
                 <plugins>
@@ -580,7 +540,7 @@
         <profile>
             <id>rpm</id>
             <properties>
-                <currentProfile>rpm</currentProfile>
+                <release.platform>linux-rpm</release.platform>
             </properties>
             <build>
                 <plugins>
@@ -621,7 +581,7 @@
         <profile>
             <id>pkg</id>
             <properties>
-                <currentProfile>pkg</currentProfile>
+                <release.platform>macos</release.platform>
             </properties>
             <build>
                 <plugins>
