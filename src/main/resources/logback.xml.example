@@ -27,18 +27,18 @@
         </encoder>
     </appender>
 
-    <root level="ERROR">
+    <root level="INFO">
         <appender-ref ref="FILE" />
     </root>
 
     <if condition='property("os.name").toLowerCase().contains("windows")'>
         <then>
-            <root>
+            <root level="INFO">
                 <appender-ref ref="STDOUT_NO_COLOR" />
             </root>
         </then>
         <else>
-            <root>
+            <root level="INFO">
                 <appender-ref ref="STDOUT_COLOR" />
             </root>
         </else>
