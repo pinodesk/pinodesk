@@ -13,11 +13,11 @@ function run {
 }
 
 function build_exe {
-	./mvnw -V clean package -DskipTests -Pexe
+	./mvnw -V --batch-mode -s .m2/settings.xml clean package -DskipTests -Pexe
 }
 
 function build_deb {
-	./mvnw -V clean package -DskipTests -Pdeb
+	./mvnw -V --batch-mode -s .m2/settings.xml clean package -DskipTests -Pdeb
 }
 
 if [ ! -z $1 ]; then

@@ -79,7 +79,7 @@ jobs:
         run: cp src/main/resources/application.properties.example src/main/resources/application.properties
 
       - name: Build DEB package
-        run: ./mvnw --batch-mode -s .m2/settings.xml clean package -Pdeb -B
+        run: ./script.sh build:deb
         env:
           MAVEN_USERNAME: ${{ github.actor }}
           MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
@@ -128,7 +128,7 @@ jobs:
         shell: cmd
 
       - name: Build Windows installer
-        run: ./mvnw --batch-mode -s .m2/settings.xml clean package -Pexe -B
+        run: ./script.sh build:exe
         env:
           MAVEN_USERNAME: ${{ github.actor }}
           MAVEN_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
