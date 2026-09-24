@@ -170,10 +170,11 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Generate application.properties
-        run: copy src\main\resources\application.properties.example src\main\resources\application.properties
-        shell: cmd
+        shell: bash
+        run: cp src/main/resources/application.properties.example src/main/resources/application.properties
 
       - name: Build Windows installer
+        shell: bash
         run: ./script.sh build:exe
         env:
           MAVEN_USERNAME: ${{ github.actor }}
