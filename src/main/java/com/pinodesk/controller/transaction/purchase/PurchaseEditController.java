@@ -688,7 +688,7 @@ public class PurchaseEditController extends CommonDataSaveController {
         }, MessageCode.ERROR_DISCOUNT_AMOUNT_PERCENTAGE_OUT_OF_RANGE);
         cv.validateCustom(() -> {
             BigDecimal buyingPrice = toBigDecimalOrNull(tfBuyingPrice.getText(), CommonConstants.DECIMAL_SCALE);
-            return DiscountType.FIXED_AMOUNT.equals(discountType) && discountAmount != null
+            return DiscountType.FIXED_AMOUNT.equals(discountType) && discountAmount != null && buyingPrice != null
                     && discountAmount.compareTo(buyingPrice) > 0;
         }, MessageCode.ERROR_DISCOUNT_AMOUNT_FIXED_AMOUNT_GREATER_THAN_BUYING_PRICE);
         cv.validateCustom(
