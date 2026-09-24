@@ -8,15 +8,14 @@ import lombok.Data;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class CreateIssueRequest {
     private String category;
-    private String source;
-    private String email;
     private String title;
     private String description;
     private String errorStacktrace;
-    private Long activationDeviceId;
     private String releasePlatform;
     private String releaseVersion;
-    private String deviceSignature;
+    private String javaVm;
+    private String javaVendor;
+    private String javaVersion;
     private String deviceModel;
     private String deviceManufacturer;
     private String osName;

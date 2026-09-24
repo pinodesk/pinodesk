@@ -1,5 +1,7 @@
 package com.pinodesk.service.api;
 
+import com.pinodesk.apimodel.CreateIssueRequest;
+import com.pinodesk.apimodel.CreateIssueResponse;
 import com.pinodesk.apimodel.PinodeskApiResponse;
 import com.pinodesk.apimodel.RequestInstallationCodeRequest;
 import com.pinodesk.apimodel.RequestInstallationCodeResponse;
@@ -18,4 +20,7 @@ public interface PinodeskApiInterface {
     @POST("api/v1/installations")
     Call<PinodeskApiResponse<RegisterInstallationResponse>> registerInstallation(
             @Body RegisterInstallationRequest request);
+
+    @POST("api/v1/issues")
+    Call<PinodeskApiResponse<CreateIssueResponse>> createIssue(@Body CreateIssueRequest request);
 }

@@ -9,7 +9,7 @@ Pinodesk is a desktop-based Point of Sale application with JavaFX and a layered 
 - **ViewModels** (`pinodesk.viewmodel`): DTOs for UI data binding.
 - **Constants** (`pinodesk.constant`): Centralized enums and strings (e.g., `Activity`, `DomainError`, `Page`).
 
-Key integrations: H2 database with Flyway migrations, external API via Unirest, i18n with `ResourceBundle`, custom Mudiatech libraries (Sequel, Pandora, Toolbox).
+Key integrations: H2 database with Flyway migrations, external API via Retrofit, i18n with `ResourceBundle`, custom Pinodesk libraries (Sequel, Pandora, Toolbox).
 
 ## Developer Workflows
 - **Build & Run**: Use `./mvnw clean javafx:run` or `./script.sh run` for development.
@@ -31,8 +31,8 @@ Key integrations: H2 database with Flyway migrations, external API via Unirest, 
 - **Security**: Password hashing via `PasswordUtils`, session management in `SessionService`.
 
 ## Integration Patterns
-- **Database**: H2 in user home (`~/.pinodesk-snapshot/db/`), MySQL mode, encrypted connections.
-- **API**: REST calls to `https://api-staging.pinodesk.com` using Unirest with Jackson serialization.
+- **Database**: H2 in app home directory (`${app.home}/db/`), MySQL mode, encrypted connections.
+- **API**: REST calls to external API endpoints using Retrofit with Jackson serialization.
 - **UI**: JavaFX with FXML templates in `src/main/resources/assets/templates/`, CSS in `assets/css/`, images in `assets/images/`.
 - **External Libs**: Mudiatech Pandora for UI utils, Sequel for data models, Toolbox/Norway for utilities.
 - **Cross-Platform**: Assets in `assets/linux/`, `assets/mac/`, `assets/windows/`; packaging via Javapackager.

@@ -11,12 +11,12 @@
 
 # Open Source Point of Sale for Everyone
 
-Pinodesk is a free, open-source, desktop-based Point of Sale system designed for retail businesses of all sizes. Build it yourself or download the installer, activate with a code sent to your email, and you're ready to manage your store. No licensing fees, no subscriptions, no vendor lock-in.
+Pinodesk is a free, open-source, desktop-based Point of Sale system designed for retail businesses of all sizes. Build it yourself or download the installer, register your installation with a code sent to your email, and you're ready to manage your store. No licensing fees, no subscriptions, no vendor lock-in.
 
 ## Why Pinodesk?
 
 - **Free and Open Source**. Full-featured POS software released under an open license. Use it for any business purpose without cost.
-- **Offline-First**. Your data stays on your computer. No internet connection required after activation.
+- **Offline-First**. Your data stays on your computer. No internet connection required after installation registration.
 - **Cross-Platform**. Available for Windows and Linux with easy installation.
 - **Hardware Compatible**. Works with standard barcode scanners and 58mm thermal printers from any brand. Just connect and start scanning.
 - **Unlimited Data**. Store as much as your hardware allows. No cloud limits, no hidden caps.
@@ -42,7 +42,7 @@ Pinodesk is a free, open-source, desktop-based Point of Sale system designed for
 
 1. **Download**. Get the installer for your platform from [pinodesk.com/en/download](https://www.pinodesk.com/en/download).
 2. **Install**. Run the installer and follow the setup wizard. No server or database configuration needed.
-3. **Activate**. Enter your email on the activation screen. An activation code will be sent to you.
+3. **Register Installation**. Enter your email on the installation registration screen. An installation code will be sent to you.
 4. **Start Selling**. That's it. Begin adding products and processing transactions.
 
 ### Hardware Requirements
@@ -66,7 +66,7 @@ Pinodesk is built with proven, reliable technologies:
 | **Backend** | Spring Framework (JDBC, Caching, Transactions) |
 | **Build** | Maven with multi-profile packaging (currently only EXE and DEB) |
 | **Architecture** | Layered: Entities > Repositories > Services > Controllers |
-| **Libraries** | Lombok, Unirest (HTTP), Jackson (JSON), Pinodesk libraries |
+| **Libraries** | Lombok, Retrofit (HTTP), Jackson (JSON), Pinodesk libraries |
 
 ### Project Structure
 

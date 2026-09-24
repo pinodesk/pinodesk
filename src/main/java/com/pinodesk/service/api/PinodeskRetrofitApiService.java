@@ -2,6 +2,8 @@ package com.pinodesk.service.api;
 
 import org.springframework.stereotype.Service;
 
+import com.pinodesk.apimodel.CreateIssueRequest;
+import com.pinodesk.apimodel.CreateIssueResponse;
 import com.pinodesk.apimodel.RegisterInstallationRequest;
 import com.pinodesk.apimodel.RegisterInstallationResponse;
 import com.pinodesk.apimodel.RequestInstallationCodeRequest;
@@ -32,4 +34,10 @@ public class PinodeskRetrofitApiService extends PinodeskRetrofitBaseService {
 
         return response;
     }
+
+    public CreateIssueResponse createIssue(CreateIssueRequest req) {
+        log.info("Creating issue with category: {} and title: {}", req.getCategory(), req.getTitle());
+        return executeCall(apiInterface.createIssue(req));
+    }
+
 }

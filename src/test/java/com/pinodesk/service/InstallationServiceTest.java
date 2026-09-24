@@ -163,7 +163,7 @@ class InstallationServiceTest extends BaseServiceTest {
         assertFalse(root.get("registered_at").isArray());
         assertTrue(installationService.isRegistered());
 
-        InstallationData data = installationService.getInstallationData();
+        InstallationData data = installationService.getInstallationData().orElseThrow();
         assertNotNull(data);
         assertEquals("user@example.com", data.getEmail());
         assertEquals("inst-id-789", data.getInstallationId());

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -11,7 +12,6 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pinodesk.apimodel.RegisterInstallationRequest;
 import com.pinodesk.apimodel.RegisterInstallationResponse;
@@ -112,33 +112,20 @@ public class InstallationService extends BaseService {
         return response;
     }
 
-    public InstallationData getInstallationData() {
+    public Optional<InstallationData> getInstallationData() {
         File installationFile = applicationProperties.getInstallationFile().toFile();
         if (installationFile.exists() && installationFile.isFile()) {
             try {
-                return objectMapper.readValue(installationFile, InstallationData.class);
+                return Optional.of(objectMapper.readValue(installationFile, InstallationData.class));
             } catch (IOException e) {
                 log.error("Failed to read installation data", e);
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public boolean isRegistered() {
-        File installationFile = applicationProperties.getInstallationFile().toFile();
-        if (!installationFile.exists() || !installationFile.isFile()) {
-            return false;
-        }
-        try {
-            JsonNode root = objectMapper.readTree(installationFile);
-            if (root != null && root.hasNonNull("installation_id")) {
-                String installationId = root.get("installation_id").asText();
-                return !installationId.trim().isEmpty();
-            }
-        } catch (Exception e) {
-            log.error("Failed to check installation registration status", e);
-        }
-        return false;
+        return getInstallationData().map(InstallationData::getInstallationId).isPresent();
     }
 
     private void saveInstallationData(InstallationData data) {

@@ -15,7 +15,6 @@ import java.util.concurrent.CompletionException;
 import org.apache.commons.lang3.StringUtils;
 
 import com.pinodesk.apimodel.RequestInstallationCodeResponse;
-import com.pinodesk.model.InstallationData;
 import com.pinodesk.constant.CommonConstants;
 import com.pinodesk.constant.CommonLabel;
 import com.pinodesk.constant.ConfigurationConstants;
@@ -28,6 +27,7 @@ import com.pinodesk.constant.StringConstants;
 import com.pinodesk.constant.SystemConstants;
 import com.pinodesk.controller.CommonContentPaneController;
 import com.pinodesk.javafx.converter.LanguageComboBoxConverter;
+import com.pinodesk.model.InstallationData;
 import com.pinodesk.pandora.model.SimpleComboBoxModel;
 import com.pinodesk.pandora.utility.AlertResult;
 import com.pinodesk.pandora.utility.ComboBoxUtils;
@@ -403,7 +403,7 @@ public class ConfigurationMainController extends CommonContentPaneController {
     private void updateInstallationRegistrationSection() {
         boolean registered = installationService.isRegistered();
         if (registered) {
-            InstallationData data = installationService.getInstallationData();
+            InstallationData data = installationService.getInstallationData().get();
             lblActivationIntro.setText(t.translate("lbl_installation_registration_registered"));
             String email = data != null && data.getEmail() != null ? data.getEmail() : "";
             String code = data != null && data.getInstallationId() != null ? data.getInstallationId() : "";

@@ -19,6 +19,7 @@ import com.pinodesk.constant.CommonConstants;
 import com.pinodesk.constant.CommonLabel;
 import com.pinodesk.constant.ConfigurationConstants;
 import com.pinodesk.constant.DomainError;
+import com.pinodesk.constant.JavaInfo;
 import com.pinodesk.constant.MessageCode;
 import com.pinodesk.constant.Page;
 import com.pinodesk.constant.SimpleStatus;
@@ -33,8 +34,9 @@ import com.pinodesk.pandora.utility.StageUtils;
 import com.pinodesk.pandora.utility.Translator;
 import com.pinodesk.properties.ApplicationProperties;
 import com.pinodesk.service.ConfigurationService;
+import com.pinodesk.service.InstallationService;
 import com.pinodesk.service.SessionService;
-import com.pinodesk.service.api.PinodeskApiService;
+import com.pinodesk.service.api.PinodeskRetrofitApiService;
 import com.pinodesk.toolbox.data.SingletonStack;
 import com.pinodesk.util.DeviceUtils;
 import com.pinodesk.util.SpringUtils;
@@ -77,7 +79,9 @@ public abstract class BaseController {
 
     protected ConfigurationService configurationService;
 
-    protected PinodeskApiService pinodeskApiService;
+    protected InstallationService installationService;
+
+    protected PinodeskRetrofitApiService pinodeskRetrofitApiService;
 
     protected DateTimeFormatter datetimeFormatter = DateTimeFormatter
             .ofPattern(CommonConstants.DATETIME_DISPLAY_PATTERN);
@@ -95,7 +99,8 @@ public abstract class BaseController {
         applicationProperties = SpringUtils.getBean(ApplicationProperties.class);
         sessionService = SpringUtils.getBean(SessionService.class);
         configurationService = SpringUtils.getBean(ConfigurationService.class);
-        pinodeskApiService = SpringUtils.getBean(PinodeskApiService.class);
+        installationService = SpringUtils.getBean(InstallationService.class);
+        pinodeskRetrofitApiService = SpringUtils.getBean(PinodeskRetrofitApiService.class);
         setDefaultUncaughtExceptionHandler();
         initServices();
         initControlActions();
@@ -347,9 +352,8 @@ public abstract class BaseController {
         dialogPane.getButtonTypes().clear();
         dialogPane.getStylesheets().add(getClass().getResource("/assets/css/pinodesk.css").toExternalForm());
 
-        // Display report button only when the app is already activated
-        String strActivationData = configurationService.getConfiguration(ConfigurationConstants.ACTIVATION_DATA);
-        if (!StringUtils.isBlank(strActivationData)) {
+        // Display report button only when the installation is already registered
+        if (installationService.isRegistered()) {
             ButtonType btnTypeSendReport = new ButtonType(t.translate(CommonLabel.BTN_SEND_REPORT));
             dialogPane.getButtonTypes().add(btnTypeSendReport);
             Button btnSendReport = (Button) dialogPane.lookupButton(btnTypeSendReport);
@@ -391,15 +395,16 @@ public abstract class BaseController {
     private void sendErrorReport(Throwable ex, String stacktrace) {
         CreateIssueRequest req = new CreateIssueRequest();
         req.setCategory("bug_report");
-        req.setSource("app");
         req.setTitle(ex.toString());
         req.setDescription("Please help to check the following error stacktrace from the user report:");
         req.setErrorStacktrace(stacktrace);
         req.setReleasePlatform(applicationProperties.getReleasePlatform());
         req.setReleaseVersion(applicationProperties.getAppVersion());
-        req.setDeviceSignature(DeviceUtils.getDeviceSignature());
-        req.setDeviceManufacturer(defaultNullUnknown(DeviceUtils.getDeviceManufacturer()));
+        req.setJavaVm(JavaInfo.VM_NAME);
+        req.setJavaVendor(JavaInfo.VM_VENDOR);
+        req.setJavaVersion(JavaInfo.VM_VERSION);
         req.setDeviceModel(defaultNullUnknown(DeviceUtils.getDeviceModel()));
+        req.setDeviceManufacturer(defaultNullUnknown(DeviceUtils.getDeviceManufacturer()));
         req.setOsName(defaultNullUnknown(DeviceUtils.getOsName()));
         req.setOsVersion(defaultNullUnknown(DeviceUtils.getOsVersion()));
         req.setOsFamily(defaultNullUnknown(DeviceUtils.getOsFamily()));
@@ -412,7 +417,7 @@ public abstract class BaseController {
         req.setRamSizeAvailable(DeviceUtils.getRamSizeAvailable());
         req.setStorageSize(DeviceUtils.getStorageSize());
         req.setStorageSizeAvailable(DeviceUtils.getStorageSizeAvailable());
-        pinodeskApiService.createIssue(req);
+        pinodeskRetrofitApiService.createIssue(req);
     }
 
     protected String defaultNullUnknown(String val) {

@@ -39,13 +39,7 @@
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
-            <dependency>
-                <groupId>com.konghq</groupId>
-                <artifactId>unirest-java-bom</artifactId>
-                <version>4.4.5</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+
         </dependencies>
     </dependencyManagement>
     <repositories>
@@ -257,25 +251,7 @@
             <version>1.9.3</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.konghq</groupId>
-            <artifactId>unirest-java-core</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.konghq</groupId>
-            <artifactId>unirest-modules-jackson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.sitture</groupId>
-            <artifactId>unirest-curl</artifactId>
-            <version>0.5.0</version>
-        </dependency>
+
         <!-- Retrofit for API calls -->
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>

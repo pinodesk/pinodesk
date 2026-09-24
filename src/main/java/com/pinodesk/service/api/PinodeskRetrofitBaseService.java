@@ -6,6 +6,8 @@ import com.pinodesk.apimodel.PinodeskApiError;
 import com.pinodesk.apimodel.PinodeskApiResponse;
 import com.pinodesk.constant.MessageCode;
 import com.pinodesk.exception.PinodeskApiException;
+import com.pinodesk.service.InstallationService;
+
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -29,6 +31,9 @@ public class PinodeskRetrofitBaseService {
     @Autowired
     private ObjectMapper mapper;
 
+    @Autowired
+    private InstallationService installationService;
+
     protected static final String HEADER_PINODESK_INSTALLATION_TOKEN = "Pinodesk-Installation-Token";
 
     protected PinodeskApiInterface apiInterface;
@@ -45,6 +50,13 @@ public class PinodeskRetrofitBaseService {
                     okhttp3.Request original = chain.request();
                     okhttp3.Request.Builder requestBuilder = original.newBuilder()
                             .header("Content-Type", "application/json");
+
+                    // Check the installation token
+                    if (currentInstallationToken == null) {
+                        installationService.getInstallationData().ifPresent(data -> {
+                            currentInstallationToken = data.getInstallationToken();
+                        });
+                    }
 
                     // Add installation token if available
                     if (currentInstallationToken != null && !currentInstallationToken.isEmpty()) {
