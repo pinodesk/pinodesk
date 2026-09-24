@@ -91,6 +91,7 @@ jobs:
   build-linux:
     # needs: build
     runs-on: ubuntu-latest
+    environment: snapshot
     permissions:
       contents: write
       packages: write
@@ -145,6 +146,7 @@ jobs:
   # build-windows:
   #   needs: build
   #   runs-on: windows-2022
+    # environment: snapshot
   #   permissions:
   #     contents: write
   #     packages: write
