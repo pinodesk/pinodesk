@@ -71,7 +71,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Label fx:id="lblMenuCatalog" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167;" styleClass="bg-secondary" text="%lbl_menu_catalog" textFill="WHITE">
+                        <Label fx:id="lblMenuCatalog" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167; -fx-text-fill: white;" styleClass="bg-secondary" text="%lbl_menu_catalog">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
@@ -116,7 +116,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Label fx:id="lblMenuTransaction" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167;" styleClass="bg-secondary" text="%lbl_menu_transaction" textFill="WHITE">
+                        <Label fx:id="lblMenuTransaction" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167; -fx-text-fill: white;" styleClass="bg-secondary" text="%lbl_menu_transaction">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
@@ -171,7 +171,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Label fx:id="lblMenuReport" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167;" styleClass="bg-secondary" text="%lbl_menu_report" textFill="WHITE">
+                        <Label fx:id="lblMenuReport" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167; -fx-text-fill: white;" styleClass="bg-secondary" text="%lbl_menu_report">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
@@ -196,7 +196,7 @@
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
                         </Button>
-                        <Label fx:id="lblMenuSettings" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167;" styleClass="bg-secondary" text="%lbl_menu_settings" textFill="WHITE">
+                        <Label fx:id="lblMenuSettings" alignment="CENTER" maxWidth="1.7976931348623157E308" style="-fx-background-color: #008167; -fx-text-fill: white;" styleClass="bg-secondary" text="%lbl_menu_settings">
                            <padding>
                               <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                            </padding>
