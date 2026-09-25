@@ -25,6 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.pinodesk.properties.ApplicationProperties;
 import com.pinodesk.repository.ConfigurationRepository;
 import com.pinodesk.repository.UserRepository;
 import com.pinodesk.service.ConfigurationService;
@@ -134,6 +135,11 @@ public class ResourceBundleUtilsTest {
         @Bean
         public static StandardPBEByteEncryptor byteEncryptor() {
             return mock(StandardPBEByteEncryptor.class);
+        }
+
+        @Bean
+        public ApplicationProperties applicationProperties() {
+            return mock(ApplicationProperties.class);
         }
 
         @Bean

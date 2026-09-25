@@ -27,8 +27,12 @@ public class ApplicationProperties {
         return Path.of(appHome);
     }
 
+    public Path getDatabaseDir() {
+        return getAppHomePath().resolve("db");
+    }
+
     public Path getDatabasePath() {
-        return getAppHomePath().resolve("db").resolve("pinodesk");
+        return getDatabaseDir().resolve("pinodesk");
     }
 
     public Path getInstallationFile() {

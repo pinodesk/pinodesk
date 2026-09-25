@@ -68,6 +68,11 @@ public class PinodeskConfig extends AbstractJdbcConfiguration {
         ds.setPassword(jdbcPassword);
         ds.setMaximumPoolSize(10);
         ds.setMinimumIdle(10);
+        // Disable leak detection (with threshold 0), as it is not really useful for the
+        // user of the desktop application and can cause false positives for legitimate
+        // operations that take a long time to complete (e.g. database migrations).
+        // Enable it for debugging purposes if you suspect a connection leak.
+        ds.setLeakDetectionThreshold(0);
         return ds;
     }
 

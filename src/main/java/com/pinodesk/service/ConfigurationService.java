@@ -1,25 +1,30 @@
 package com.pinodesk.service;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import java.sql.PreparedStatement;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
-import com.pinodesk.annotation.TargetActivity;
-import com.pinodesk.constant.Activity;
-import com.pinodesk.constant.CacheNameConstants;
-import com.pinodesk.constant.DomainError;
-import com.pinodesk.constant.SystemConstants;
-import com.pinodesk.entity.Configuration;
-import com.pinodesk.entity.User;
-import com.pinodesk.exception.DomainException;
-import com.pinodesk.repository.ConfigurationRepository;
-import com.pinodesk.repository.UserRepository;
-import com.pinodesk.util.PasswordUtils;
-import com.pinodesk.viewmodel.UserAddVM;
-import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -30,24 +35,22 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.FileSystemUtils;
 
-import java.sql.PreparedStatement;
-import javax.sql.DataSource;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import com.pinodesk.annotation.TargetActivity;
+import com.pinodesk.constant.Activity;
+import com.pinodesk.constant.CacheNameConstants;
+import com.pinodesk.constant.DomainError;
+import com.pinodesk.constant.SystemConstants;
+import com.pinodesk.entity.Configuration;
+import com.pinodesk.entity.User;
+import com.pinodesk.exception.DomainException;
+import com.pinodesk.properties.ApplicationProperties;
+import com.pinodesk.repository.ConfigurationRepository;
+import com.pinodesk.repository.UserRepository;
+import com.pinodesk.util.PasswordUtils;
+import com.pinodesk.viewmodel.UserAddVM;
+import com.zaxxer.hikari.HikariDataSource;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -74,11 +77,8 @@ public class ConfigurationService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
-    @Value("${app.name}")
-    private String appName;
-
-    @Value("${app.version}")
-    private String appVersion;
+    @Autowired
+    private ApplicationProperties applicationProperties;
 
     private static final String BACKUP_FILENAME = "backup.zip";
     private static final String BACKUP_FILENAME_ENCRYPTED = "backup.dat";
@@ -151,8 +151,8 @@ public class ConfigurationService extends BaseService {
         File f = new File(filename);
         FileWriter fw = new FileWriter(f);
         Properties prop = new Properties();
-        prop.put("app.name", appName);
-        prop.put("app.version", appVersion);
+        prop.put("app.name", applicationProperties.getAppName());
+        prop.put("app.version", applicationProperties.getAppVersion());
         prop.put("timestamp", String.format("%d", System.currentTimeMillis()));
         prop.store(fw, "DO NOT EDIT!!!");
         fw.close();
@@ -160,32 +160,53 @@ public class ConfigurationService extends BaseService {
     }
 
     public void restoreDatabase(String location) {
-        HikariDataSource ds = ((HikariDataSource) dataSource);
-        String dirName = getDatabaseDir(ds.getJdbcUrl());
-        String dbDir = dirName;
-        String dbDirOld = dirName + ".old";
-        File dbDirFile = new File(dbDir);
-        File dbDirFileOld = new File(dbDirOld);
+        HikariDataSource ds = (HikariDataSource) dataSource;
+        Path dbDir = applicationProperties.getDatabaseDir().toAbsolutePath().normalize();
+        Path dbDirOld = dbDir.resolveSibling(dbDir.getFileName() + ".old");
         try {
-            ds.close();
+            // Extract and validate the backup before shutting down the database. Otherwise
+            // a corrupt backup could leave the application without a usable datasource.
             File backupFile = extractEncryptedBackupFile(location);
             if (backupFile == null || !backupFile.exists()) {
                 throw new FileNotFoundException(location);
             }
-            Files.move(dbDirFile.toPath(), dbDirFileOld.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            dbDirFile.mkdirs();
-            extractRealBackupFile(backupFile, dbDir);
-            boolean deleted = FileSystemUtils.deleteRecursively(dbDirFileOld);
-            log.debug("The old dir deleted: {}", deleted);
+
+            // Close all connections to the database before restoring the backup
+            ds.close();
+
+            // Move the old database directory if exists
+            if (Files.exists(dbDirOld)) {
+                FileSystemUtils.deleteRecursively(dbDirOld);
+            }
+
+            // Move the current database directory and mark it as old.
+            // This is to allow rollback in case the restore fails.
+            Files.move(dbDir, dbDirOld, StandardCopyOption.REPLACE_EXISTING);
+
+            // Create a new empty database directory to extract the backup into.
+            Files.createDirectories(dbDir);
+
+            // Extract the backup file into the new database directory
+            extractRealBackupFile(backupFile, dbDir.toString());
+
+            // Delete the old database directory after successful restore
+            boolean deleted = FileSystemUtils.deleteRecursively(dbDirOld);
+            log.debug("The old database directory deleted: {}", deleted);
         } catch (Exception e) {
             log.error("Failed to restore database", e);
-            if (dbDirFileOld.exists()) {
-                if (dbDirFile.exists()) {
-                    boolean deleted = dbDirFile.delete();
-                    log.debug("Deleted db dir: {}", deleted);
+            try {
+                // Rollback the restore by moving the old database directory back to its
+                // original location
+                if (Files.exists(dbDirOld)) {
+                    // Remove the new database directory if it exists before restoring the old one
+                    if (Files.exists(dbDir)) {
+                        FileSystemUtils.deleteRecursively(dbDir);
+                    }
+                    Files.move(dbDirOld, dbDir, StandardCopyOption.REPLACE_EXISTING);
+                    log.debug("Restored old database directory");
                 }
-                boolean renamed = dbDirFileOld.renameTo(dbDirFile);
-                log.debug("Renamed old dir to db dir: {}", renamed);
+            } catch (Exception rollbackException) {
+                log.error("Failed to rollback database restore", rollbackException);
             }
             if (e instanceof DomainException) {
                 throw (DomainException) e;
@@ -211,10 +232,6 @@ public class ConfigurationService extends BaseService {
         });
     }
 
-    private String getDatabaseDir(String url) {
-        return url.substring(url.indexOf("/"), url.lastIndexOf("/"));
-    }
-
     private File extractEncryptedBackupFile(String location) throws EncryptionOperationNotPossibleException,
             IOException {
         File backupFile = null;
@@ -225,7 +242,7 @@ public class ConfigurationService extends BaseService {
                     Properties prop = new Properties();
                     prop.load(new ByteArrayInputStream(zis.readAllBytes()));
                     String backupAppVersion = prop.getProperty("app.version");
-                    int intCurrentAppVersion = parseVersionToInt(appVersion);
+                    int intCurrentAppVersion = parseVersionToInt(applicationProperties.getAppVersion());
                     log.info("intCurrentAppVersion: {}", intCurrentAppVersion);
                     int intBackupAppVersion = parseVersionToInt(backupAppVersion);
                     log.info("intBackupAppVersion: {}", intBackupAppVersion);
@@ -235,7 +252,7 @@ public class ConfigurationService extends BaseService {
                     if (intBackupAppVersion > intCurrentAppVersion) {
                         throw new DomainException(
                                 DomainError.DIFFERENT_BACKUP_APP_VERSION,
-                                appVersion,
+                                applicationProperties.getAppVersion(),
                                 backupAppVersion);
                     }
                 }
