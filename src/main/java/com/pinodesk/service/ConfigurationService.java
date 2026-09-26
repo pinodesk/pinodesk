@@ -149,13 +149,13 @@ public class ConfigurationService extends BaseService {
 
     private File createBackupProperties(String filename) throws IOException {
         File f = new File(filename);
-        FileWriter fw = new FileWriter(f);
-        Properties prop = new Properties();
-        prop.put("app.name", applicationProperties.getAppName());
-        prop.put("app.version", applicationProperties.getAppVersion());
-        prop.put("timestamp", String.format("%d", System.currentTimeMillis()));
-        prop.store(fw, "DO NOT EDIT!!!");
-        fw.close();
+        try (FileWriter fw = new FileWriter(f)) {
+            Properties prop = new Properties();
+            prop.put("app.name", applicationProperties.getAppName());
+            prop.put("app.version", applicationProperties.getAppVersion());
+            prop.put("timestamp", String.format("%d", System.currentTimeMillis()));
+            prop.store(fw, "DO NOT EDIT!!!");
+        }
         return f;
     }
 
