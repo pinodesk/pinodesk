@@ -52,9 +52,8 @@ class SessionServiceTest extends BaseServiceTest {
 
     @org.junit.jupiter.api.BeforeEach
     void wireDependencies() {
-        service = new SessionService(userRepository, userGroupRepository);
+        service = new SessionService(userRepository, userGroupRepository, userGroupMenuRepository);
         ReflectionTestUtils.setField(service, "objectConverter", objectConverter);
-        ReflectionTestUtils.setField(service, "userGroupMenuRepository", userGroupMenuRepository);
         ReflectionTestUtils.setField(service, "configurationService", configurationService);
         ReflectionTestUtils.setField(service, "sessionRepository", sessionRepository);
     }
@@ -186,6 +185,25 @@ class SessionServiceTest extends BaseServiceTest {
         com.pinodesk.exception.DomainException error = org.junit.jupiter.api.Assertions
                 .assertThrows(com.pinodesk.exception.DomainException.class, () -> service.login("alice", "password"));
         assertEquals(com.pinodesk.constant.DomainError.USER_GROUP_NOT_FOUND_BY_ID, error.getError());
+        org.mockito.Mockito.verifyNoInteractions(sessionRepository);
+    }
+
+    @Test
+    void menuLookupFailureCannotStartSession() {
+        User user = new User();
+        user.setPasswordHash(PasswordUtils.encrypt("password"));
+        user.setUserGroupId(2L);
+        UserGroup group = new UserGroup();
+        group.setId(2L);
+        when(userRepository.findByUsernameAndDeletedAtIsNull("alice")).thenReturn(Optional.of(user));
+        when(userGroupRepository.findById(2L)).thenReturn(Optional.of(group));
+        when(configurationService.getConfigurationMap()).thenReturn(Map.of(ConfigurationConstants.LANGUAGE, "en"));
+        IllegalStateException failure = new IllegalStateException("Menu unavailable");
+        when(userGroupMenuRepository.findByUserGroupId(2L, "en")).thenThrow(failure);
+        org.junit.jupiter.api.Assertions.assertSame(
+                failure,
+                org.junit.jupiter.api.Assertions
+                        .assertThrows(IllegalStateException.class, () -> service.login("alice", "password")));
         org.mockito.Mockito.verifyNoInteractions(sessionRepository);
     }
 }

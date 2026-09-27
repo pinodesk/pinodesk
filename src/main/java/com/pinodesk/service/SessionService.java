@@ -43,8 +43,7 @@ public class SessionService extends BaseService {
 
     private final UserGroupRepository userGroupRepository;
 
-    @Autowired
-    private UserGroupMenuRepository userGroupMenuRepository;
+    private final UserGroupMenuRepository userGroupMenuRepository;
 
     @Autowired
     private ConfigurationService configurationService;
@@ -52,9 +51,11 @@ public class SessionService extends BaseService {
     @Autowired
     private SessionRepository sessionRepository;
 
-    public SessionService(UserRepository userRepository, UserGroupRepository userGroupRepository) {
+    public SessionService(UserRepository userRepository, UserGroupRepository userGroupRepository,
+                          UserGroupMenuRepository userGroupMenuRepository) {
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
+        this.userGroupMenuRepository = userGroupMenuRepository;
     }
 
     @Transactional
