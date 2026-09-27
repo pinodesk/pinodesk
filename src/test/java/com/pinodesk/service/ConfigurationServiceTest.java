@@ -33,12 +33,16 @@ import org.mockito.MockedConstruction;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.pinodesk.entity.Configuration;
+import com.pinodesk.properties.ApplicationProperties;
 import com.pinodesk.repository.ConfigurationRepository;
 
 class ConfigurationServiceTest extends BaseServiceTest {
 
     @Mock
     private ConfigurationRepository configurationRepository;
+
+    @Mock
+    private ApplicationProperties applicationProperties;
 
     @InjectMocks
     private ConfigurationService configurationService;
@@ -77,8 +81,8 @@ class ConfigurationServiceTest extends BaseServiceTest {
 
     @Test
     void createBackupProperties_shouldWriteMetadata() throws IOException {
-        ReflectionTestUtils.setField(configurationService, "appName", "Pinodesk");
-        ReflectionTestUtils.setField(configurationService, "appVersion", "1.0");
+        when(applicationProperties.getAppName()).thenReturn("Pinodesk");
+        when(applicationProperties.getAppVersion()).thenReturn("1.0");
         Path path = tempDir.resolve("backup.properties");
         long before = System.currentTimeMillis();
 
@@ -97,8 +101,8 @@ class ConfigurationServiceTest extends BaseServiceTest {
 
     @Test
     void createBackupProperties_whenFlushFails_shouldCloseWriterAndPreserveFailure() throws IOException {
-        ReflectionTestUtils.setField(configurationService, "appName", "Pinodesk");
-        ReflectionTestUtils.setField(configurationService, "appVersion", "1.0");
+        when(applicationProperties.getAppName()).thenReturn("Pinodesk");
+        when(applicationProperties.getAppVersion()).thenReturn("1.0");
         IOException failure = new IOException("Disk full");
         try (MockedConstruction<FileWriter> writers = mockConstruction(
                 FileWriter.class,
