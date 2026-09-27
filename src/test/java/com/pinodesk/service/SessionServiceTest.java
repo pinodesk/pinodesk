@@ -52,9 +52,8 @@ class SessionServiceTest extends BaseServiceTest {
 
     @org.junit.jupiter.api.BeforeEach
     void wireDependencies() {
-        service = new SessionService(userRepository);
+        service = new SessionService(userRepository, userGroupRepository);
         ReflectionTestUtils.setField(service, "objectConverter", objectConverter);
-        ReflectionTestUtils.setField(service, "userGroupRepository", userGroupRepository);
         ReflectionTestUtils.setField(service, "userGroupMenuRepository", userGroupMenuRepository);
         ReflectionTestUtils.setField(service, "configurationService", configurationService);
         ReflectionTestUtils.setField(service, "sessionRepository", sessionRepository);
@@ -174,6 +173,19 @@ class SessionServiceTest extends BaseServiceTest {
                 .assertThrows(com.pinodesk.exception.DomainException.class, () -> service.login("missing", "password"));
         assertEquals(com.pinodesk.constant.DomainError.USER_NOT_FOUND, error.getError());
         assertFalse(service.isCurrentSessionActive());
+        org.mockito.Mockito.verifyNoInteractions(sessionRepository);
+    }
+
+    @Test
+    void missingGroupCannotDeleteExistingSessions() {
+        User user = new User();
+        user.setPasswordHash(PasswordUtils.encrypt("password"));
+        user.setUserGroupId(2L);
+        when(userRepository.findByUsernameAndDeletedAtIsNull("alice")).thenReturn(Optional.of(user));
+        when(userGroupRepository.findById(2L)).thenReturn(Optional.empty());
+        com.pinodesk.exception.DomainException error = org.junit.jupiter.api.Assertions
+                .assertThrows(com.pinodesk.exception.DomainException.class, () -> service.login("alice", "password"));
+        assertEquals(com.pinodesk.constant.DomainError.USER_GROUP_NOT_FOUND_BY_ID, error.getError());
         org.mockito.Mockito.verifyNoInteractions(sessionRepository);
     }
 }
