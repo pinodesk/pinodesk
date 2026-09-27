@@ -1,6 +1,7 @@
 package com.pinodesk.service;
 
 import java.time.LocalDateTime;
+import java.time.Clock;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,7 @@ public class SessionService extends BaseService {
         List<UserGroupMenuVM> userGroupMenus = userGroupMenuRepository.findByUserGroupId(userGroup.getId(), language);
         // Delete all unlogged-out sessions to make sure only one session is active
         sessionRepository.deleteUpdateByDeletedAtIsNull();
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(Clock.systemDefaultZone());
         Session session = new Session();
         session.setLoginAt(now);
         session.setUserId(user.getId());
