@@ -119,4 +119,43 @@ class SessionServiceTest extends BaseServiceTest {
                 service.getCurrentSession().getSession().getLastActivity());
         assertEquals(9L, service.getCurrentSession().getSession().getId());
     }
+
+    @Test
+    void sessionExpiresAtExactConfiguredHourInApplicationZone() {
+        Session session = new Session();
+        session.setUserId(7L);
+        session.setLastActivityAt(NOW.minusHours(2));
+        when(sessionRepository.findFirstByDeletedAtIsNullOrderByIdDesc()).thenReturn(Optional.of(session));
+        when(configurationService.getConfiguration(ConfigurationConstants.SESSION_MAX_DURATION_HOUR)).thenReturn("2");
+        try (MockedStatic<Clock> clocks = mockStatic(Clock.class)) {
+            clocks.when(Clock::systemDefaultZone).thenReturn(CLOCK);
+            service.activateLastSession();
+        }
+        assertFalse(service.isCurrentSessionActive());
+        org.mockito.Mockito.verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void sessionBeforeExpiryCanBeReactivatedAcrossMidnight() {
+        Session session = new Session();
+        session.setUserId(7L);
+        session.setLastActivityAt(NOW.minusHours(2).plusSeconds(1));
+        User user = new User();
+        user.setId(7L);
+        user.setUserGroupId(2L);
+        UserGroup group = new UserGroup();
+        group.setId(2L);
+        when(sessionRepository.findFirstByDeletedAtIsNullOrderByIdDesc()).thenReturn(Optional.of(session));
+        when(configurationService.getConfiguration(ConfigurationConstants.SESSION_MAX_DURATION_HOUR)).thenReturn("2");
+        when(configurationService.getConfiguration(ConfigurationConstants.LANGUAGE)).thenReturn("id");
+        when(userRepository.findByIdAndDeletedAtIsNull(7L)).thenReturn(Optional.of(user));
+        when(userGroupRepository.findById(2L)).thenReturn(Optional.of(group));
+        when(userGroupMenuRepository.findByUserGroupId(2L, "id")).thenReturn(List.of());
+        try (MockedStatic<Clock> clocks = mockStatic(Clock.class)) {
+            clocks.when(Clock::systemDefaultZone).thenReturn(CLOCK);
+            service.activateLastSession();
+        }
+        assertTrue(service.isCurrentSessionActive());
+        assertEquals(7L, service.getCurrentSession().getUser().getId());
+    }
 }

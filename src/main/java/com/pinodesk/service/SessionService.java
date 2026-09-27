@@ -118,7 +118,7 @@ public class SessionService extends BaseService {
             return;
         }
         String strMaxDuration = configurationService.getConfiguration(ConfigurationConstants.SESSION_MAX_DURATION_HOUR);
-        long actualDuration = lastActivityAt.until(LocalDateTime.now(), ChronoUnit.HOURS);
+        long actualDuration = lastActivityAt.until(LocalDateTime.now(Clock.systemDefaultZone()), ChronoUnit.HOURS);
         log.debug("Actual duration: {}", actualDuration);
         if (actualDuration >= Long.valueOf(strMaxDuration)) {
             return;
