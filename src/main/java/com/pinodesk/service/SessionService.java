@@ -39,8 +39,7 @@ public class SessionService extends BaseService {
     @Getter
     private CurrentSessionVM currentSession;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     private UserGroupRepository userGroupRepository;
@@ -53,6 +52,10 @@ public class SessionService extends BaseService {
 
     @Autowired
     private SessionRepository sessionRepository;
+
+    public SessionService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Transactional
     public void login(String username, String password) {

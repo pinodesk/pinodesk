@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 
@@ -49,8 +48,17 @@ class SessionServiceTest extends BaseServiceTest {
     private ConfigurationService configurationService;
     @Mock
     private SessionRepository sessionRepository;
-    @InjectMocks
     private SessionService service;
+
+    @org.junit.jupiter.api.BeforeEach
+    void wireDependencies() {
+        service = new SessionService(userRepository);
+        ReflectionTestUtils.setField(service, "objectConverter", objectConverter);
+        ReflectionTestUtils.setField(service, "userGroupRepository", userGroupRepository);
+        ReflectionTestUtils.setField(service, "userGroupMenuRepository", userGroupMenuRepository);
+        ReflectionTestUtils.setField(service, "configurationService", configurationService);
+        ReflectionTestUtils.setField(service, "sessionRepository", sessionRepository);
+    }
 
     private static final Clock CLOCK = Clock.fixed(Instant.parse("2026-09-26T18:30:00Z"), ZoneId.of("Asia/Jakarta"));
     private static final LocalDateTime NOW = LocalDateTime.of(2026, 9, 27, 1, 30);
@@ -157,5 +165,15 @@ class SessionServiceTest extends BaseServiceTest {
         }
         assertTrue(service.isCurrentSessionActive());
         assertEquals(7L, service.getCurrentSession().getUser().getId());
+    }
+
+    @Test
+    void missingUserCannotStartSession() {
+        when(userRepository.findByUsernameAndDeletedAtIsNull("missing")).thenReturn(Optional.empty());
+        com.pinodesk.exception.DomainException error = org.junit.jupiter.api.Assertions
+                .assertThrows(com.pinodesk.exception.DomainException.class, () -> service.login("missing", "password"));
+        assertEquals(com.pinodesk.constant.DomainError.USER_NOT_FOUND, error.getError());
+        assertFalse(service.isCurrentSessionActive());
+        org.mockito.Mockito.verifyNoInteractions(sessionRepository);
     }
 }
