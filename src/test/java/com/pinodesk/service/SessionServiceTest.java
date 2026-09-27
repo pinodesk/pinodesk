@@ -1,5 +1,11 @@
 package com.pinodesk.service;
 
+import com.pinodesk.viewmodel.SessionVM;
+
+import com.pinodesk.viewmodel.CurrentSessionVM;
+import org.springframework.test.util.ReflectionTestUtils;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -74,5 +80,24 @@ class SessionServiceTest extends BaseServiceTest {
         assertEquals(Activity.LOGIN.toString(), saved.getValue().getLastActivity());
         verify(sessionRepository).deleteUpdateByDeletedAtIsNull();
         assertTrue(service.isCurrentSessionActive());
+    }
+
+    @Test
+    void logoutUsesApplicationZoneAndClearsSession() {
+        CurrentSessionVM current = new CurrentSessionVM();
+        SessionVM session = new SessionVM();
+        session.setId(9L);
+        current.setSession(session);
+        ReflectionTestUtils.setField(service, "currentSession", current);
+        try (MockedStatic<Clock> clocks = mockStatic(Clock.class)) {
+            clocks.when(Clock::systemDefaultZone).thenReturn(CLOCK);
+            service.logout();
+        }
+        ArgumentCaptor<Session> saved = ArgumentCaptor.forClass(Session.class);
+        verify(sessionRepository).save(saved.capture());
+        assertEquals(9L, saved.getValue().getId());
+        assertEquals(NOW, saved.getValue().getLogoutAt());
+        assertEquals(NOW, saved.getValue().getDeletedAt());
+        assertFalse(service.isCurrentSessionActive());
     }
 }

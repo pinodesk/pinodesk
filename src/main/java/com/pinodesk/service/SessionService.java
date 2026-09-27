@@ -85,7 +85,7 @@ public class SessionService extends BaseService {
 
     @Transactional
     public void logout() {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(Clock.systemDefaultZone());
         Session session = objectConverter.convertObject(currentSession.getSession(), Session.class);
         session.setLogoutAt(now);
         session.setDeletedAt(now);
