@@ -221,7 +221,8 @@ public abstract class BaseController {
             ButtonType btnTypeNo = new ButtonType(t.translate(CommonLabel.BTN_NO), ButtonData.NO);
             Alert alert = new Alert(type);
             alert.setTitle(CommonConstants.APP_TITLE);
-            alert.setHeaderText(t.translate(getAlertHeaderMessageCode(type)));
+            IMessage headerMessage = getAlertHeaderMessageCode(type);
+            alert.setHeaderText(headerMessage == null ? null : t.translate(headerMessage));
             DialogPane dialogPane = alert.getDialogPane();
             StageUtils.setIcons((Stage) dialogPane.getScene().getWindow(), CommonConstants.APP_ICON_PATHS);
             Text text = new Text(message);
@@ -252,10 +253,14 @@ public abstract class BaseController {
                     dialogPane.lookupButton(btnTypeNo).getStyleClass().add("btn-secondary");
                     break;
                 default:
+                    dialogPane.getButtonTypes().add(btnTypeOk);
+                    dialogPane.lookupButton(btnTypeOk).getStyleClass().add("btn-primary");
                     break;
             }
-            headerIcon.setFitHeight(48); // Set size to API recommendation.
-            headerIcon.setFitWidth(48);
+            if (headerIcon != null) {
+                headerIcon.setFitHeight(48); // Set size to API recommendation.
+                headerIcon.setFitWidth(48);
+            }
             dialogPane.setGraphic(headerIcon);
             dialogPane.applyCss();
             HBox buttonContainer = (HBox) dialogPane.lookup(".container");
