@@ -101,7 +101,7 @@ public class SessionService extends BaseService {
     public synchronized void updateLastActivity(Activity activity) {
         Session session = objectConverter.convertObject(currentSession.getSession(), Session.class);
         session.setLastActivity(activity.toString());
-        session.setLastActivityAt(LocalDateTime.now());
+        session.setLastActivityAt(LocalDateTime.now(Clock.systemDefaultZone()));
         currentSession.setSession(objectConverter.convertObject(sessionRepository.save(session), SessionVM.class));
     }
 

@@ -100,4 +100,23 @@ class SessionServiceTest extends BaseServiceTest {
         assertEquals(NOW, saved.getValue().getDeletedAt());
         assertFalse(service.isCurrentSessionActive());
     }
+
+    @Test
+    void activityUsesApplicationZoneAndKeepsPersistedSession() {
+        CurrentSessionVM current = new CurrentSessionVM();
+        SessionVM session = new SessionVM();
+        session.setId(9L);
+        current.setSession(session);
+        ReflectionTestUtils.setField(service, "currentSession", current);
+        when(sessionRepository.save(any(Session.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        try (MockedStatic<Clock> clocks = mockStatic(Clock.class)) {
+            clocks.when(Clock::systemDefaultZone).thenReturn(CLOCK);
+            service.updateLastActivity(Activity.GET_CONFIGURATION_MAP);
+        }
+        assertEquals(NOW, service.getCurrentSession().getSession().getLastActivityAt());
+        assertEquals(
+                Activity.GET_CONFIGURATION_MAP.toString(),
+                service.getCurrentSession().getSession().getLastActivity());
+        assertEquals(9L, service.getCurrentSession().getSession().getId());
+    }
 }
