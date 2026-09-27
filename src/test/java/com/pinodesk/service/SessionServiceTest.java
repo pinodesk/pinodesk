@@ -52,9 +52,12 @@ class SessionServiceTest extends BaseServiceTest {
 
     @org.junit.jupiter.api.BeforeEach
     void wireDependencies() {
-        service = new SessionService(userRepository, userGroupRepository, userGroupMenuRepository);
+        service = new SessionService(
+                userRepository,
+                userGroupRepository,
+                userGroupMenuRepository,
+                configurationService);
         ReflectionTestUtils.setField(service, "objectConverter", objectConverter);
-        ReflectionTestUtils.setField(service, "configurationService", configurationService);
         ReflectionTestUtils.setField(service, "sessionRepository", sessionRepository);
     }
 
@@ -200,6 +203,22 @@ class SessionServiceTest extends BaseServiceTest {
         when(configurationService.getConfigurationMap()).thenReturn(Map.of(ConfigurationConstants.LANGUAGE, "en"));
         IllegalStateException failure = new IllegalStateException("Menu unavailable");
         when(userGroupMenuRepository.findByUserGroupId(2L, "en")).thenThrow(failure);
+        org.junit.jupiter.api.Assertions.assertSame(
+                failure,
+                org.junit.jupiter.api.Assertions
+                        .assertThrows(IllegalStateException.class, () -> service.login("alice", "password")));
+        org.mockito.Mockito.verifyNoInteractions(sessionRepository);
+    }
+
+    @Test
+    void configurationFailureCannotStartSession() {
+        User user = new User();
+        user.setPasswordHash(PasswordUtils.encrypt("password"));
+        user.setUserGroupId(2L);
+        when(userRepository.findByUsernameAndDeletedAtIsNull("alice")).thenReturn(Optional.of(user));
+        when(userGroupRepository.findById(2L)).thenReturn(Optional.of(new UserGroup()));
+        IllegalStateException failure = new IllegalStateException("Configuration unavailable");
+        when(configurationService.getConfigurationMap()).thenThrow(failure);
         org.junit.jupiter.api.Assertions.assertSame(
                 failure,
                 org.junit.jupiter.api.Assertions
