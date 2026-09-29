@@ -56,9 +56,9 @@ class SessionServiceTest extends BaseServiceTest {
                 userRepository,
                 userGroupRepository,
                 userGroupMenuRepository,
-                configurationService);
+                configurationService,
+                sessionRepository);
         ReflectionTestUtils.setField(service, "objectConverter", objectConverter);
-        ReflectionTestUtils.setField(service, "sessionRepository", sessionRepository);
     }
 
     private static final Clock CLOCK = Clock.fixed(Instant.parse("2026-09-26T18:30:00Z"), ZoneId.of("Asia/Jakarta"));
@@ -224,5 +224,29 @@ class SessionServiceTest extends BaseServiceTest {
                 org.junit.jupiter.api.Assertions
                         .assertThrows(IllegalStateException.class, () -> service.login("alice", "password")));
         org.mockito.Mockito.verifyNoInteractions(sessionRepository);
+    }
+
+    @Test
+    void failedSessionSaveDoesNotActivateSession() {
+        User user = new User();
+        user.setId(7L);
+        user.setUserGroupId(2L);
+        user.setPasswordHash(PasswordUtils.encrypt("password"));
+        UserGroup group = new UserGroup();
+        group.setId(2L);
+        when(userRepository.findByUsernameAndDeletedAtIsNull("alice")).thenReturn(Optional.of(user));
+        when(userGroupRepository.findById(2L)).thenReturn(Optional.of(group));
+        when(configurationService.getConfigurationMap()).thenReturn(Map.of(ConfigurationConstants.LANGUAGE, "id"));
+        when(userGroupMenuRepository.findByUserGroupId(2L, "id")).thenReturn(List.of());
+        IllegalStateException failure = new IllegalStateException("Session store unavailable");
+        when(sessionRepository.save(any(Session.class))).thenThrow(failure);
+
+        org.junit.jupiter.api.Assertions.assertSame(
+                failure,
+                org.junit.jupiter.api.Assertions
+                        .assertThrows(IllegalStateException.class, () -> service.login("alice", "password")));
+
+        assertFalse(service.isCurrentSessionActive());
+        verify(sessionRepository).save(any(Session.class));
     }
 }

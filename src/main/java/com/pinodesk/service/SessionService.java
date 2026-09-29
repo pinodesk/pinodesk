@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,15 +46,16 @@ public class SessionService extends BaseService {
 
     private final ConfigurationService configurationService;
 
-    @Autowired
-    private SessionRepository sessionRepository;
+    private final SessionRepository sessionRepository;
 
     public SessionService(UserRepository userRepository, UserGroupRepository userGroupRepository,
-                          UserGroupMenuRepository userGroupMenuRepository, ConfigurationService configurationService) {
+                          UserGroupMenuRepository userGroupMenuRepository, ConfigurationService configurationService,
+                          SessionRepository sessionRepository) {
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
         this.userGroupMenuRepository = userGroupMenuRepository;
         this.configurationService = configurationService;
+        this.sessionRepository = sessionRepository;
     }
 
     @Transactional
