@@ -45,9 +45,7 @@ class InstallationServiceTest extends BaseServiceTest {
 
     @BeforeEach
     void setUp() {
-        installationService = new InstallationService(pinodeskRetrofitApiService);
-        org.springframework.test.util.ReflectionTestUtils
-                .setField(installationService, "applicationProperties", applicationProperties);
+        installationService = new InstallationService(pinodeskRetrofitApiService, applicationProperties);
         org.springframework.test.util.ReflectionTestUtils.setField(installationService, "objectMapper", objectMapper);
         installationFilePath = tempDir.resolve("installation.json");
         when(applicationProperties.getInstallationFile()).thenReturn(installationFilePath);
@@ -63,6 +61,15 @@ class InstallationServiceTest extends BaseServiceTest {
                         IllegalStateException.class,
                         () -> installationService.requestInstallationCode("alice@example.test")));
         assertTrue(Files.notExists(installationFilePath));
+    }
+
+    @Test
+    void createsMissingParentDirectoryAtConfiguredInstallationPath() {
+        Path nested = tempDir.resolve("new-directory/installation.json");
+        when(applicationProperties.getInstallationFile()).thenReturn(nested);
+        InstallationData created = installationService.ensureInstallationDataExists();
+        assertTrue(Files.isRegularFile(nested));
+        assertEquals(created.getInstanceId(), installationService.getInstallationData().orElseThrow().getInstanceId());
     }
 
     @Test

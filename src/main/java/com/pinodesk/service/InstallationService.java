@@ -31,14 +31,15 @@ public class InstallationService extends BaseService {
 
     private final PinodeskRetrofitApiService pinodeskRetrofitApiService;
 
-    @Autowired
-    private ApplicationProperties applicationProperties;
+    private final ApplicationProperties applicationProperties;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    public InstallationService(@org.springframework.context.annotation.Lazy PinodeskRetrofitApiService pinodeskRetrofitApiService) {
+    public InstallationService(@org.springframework.context.annotation.Lazy PinodeskRetrofitApiService pinodeskRetrofitApiService,
+                               ApplicationProperties applicationProperties) {
         this.pinodeskRetrofitApiService = pinodeskRetrofitApiService;
+        this.applicationProperties = applicationProperties;
     }
 
     @PostConstruct
