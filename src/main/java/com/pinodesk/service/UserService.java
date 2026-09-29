@@ -27,11 +27,14 @@ import com.pinodesk.viewmodel.UserVM;
 @Service
 public class UserService extends BaseService {
 
-    @Autowired
-    private SessionService sessionService;
+    private final SessionService sessionService;
 
     @Autowired
     private UserRepository userRepository;
+
+    public UserService(SessionService sessionService) {
+        this.sessionService = sessionService;
+    }
 
     @TargetActivity(Activity.SEARCH_USERS_BY_FILTER)
     @Cacheable(CacheNameConstants.USERS_BY_FILTER)
