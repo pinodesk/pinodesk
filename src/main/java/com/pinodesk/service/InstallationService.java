@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,13 +32,13 @@ public class InstallationService extends BaseService {
 
     private final ApplicationProperties applicationProperties;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     public InstallationService(@org.springframework.context.annotation.Lazy PinodeskRetrofitApiService pinodeskRetrofitApiService,
-                               ApplicationProperties applicationProperties) {
+                               ApplicationProperties applicationProperties, ObjectMapper objectMapper) {
         this.pinodeskRetrofitApiService = pinodeskRetrofitApiService;
         this.applicationProperties = applicationProperties;
+        this.objectMapper = objectMapper;
     }
 
     @PostConstruct

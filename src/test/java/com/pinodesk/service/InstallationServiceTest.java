@@ -45,8 +45,7 @@ class InstallationServiceTest extends BaseServiceTest {
 
     @BeforeEach
     void setUp() {
-        installationService = new InstallationService(pinodeskRetrofitApiService, applicationProperties);
-        org.springframework.test.util.ReflectionTestUtils.setField(installationService, "objectMapper", objectMapper);
+        installationService = new InstallationService(pinodeskRetrofitApiService, applicationProperties, objectMapper);
         installationFilePath = tempDir.resolve("installation.json");
         when(applicationProperties.getInstallationFile()).thenReturn(installationFilePath);
     }
@@ -61,6 +60,18 @@ class InstallationServiceTest extends BaseServiceTest {
                         IllegalStateException.class,
                         () -> installationService.requestInstallationCode("alice@example.test")));
         assertTrue(Files.notExists(installationFilePath));
+    }
+
+    @Test
+    void corruptedInstallationMetadataIsRecoveredAsReadableJson() throws IOException {
+        Files.writeString(installationFilePath, "invalid JSON");
+
+        InstallationData created = installationService.ensureInstallationDataExists();
+
+        assertNotNull(created.getInstanceId());
+        InstallationData saved = objectMapper.readValue(installationFilePath.toFile(), InstallationData.class);
+        assertEquals(created.getInstanceId(), saved.getInstanceId());
+        assertEquals(created.getFirstRunAt(), saved.getFirstRunAt());
     }
 
     @Test
