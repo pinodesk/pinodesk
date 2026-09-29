@@ -3,7 +3,6 @@ package com.pinodesk.service;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -29,11 +28,11 @@ public class UserService extends BaseService {
 
     private final SessionService sessionService;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    public UserService(SessionService sessionService) {
+    public UserService(SessionService sessionService, UserRepository userRepository) {
         this.sessionService = sessionService;
+        this.userRepository = userRepository;
     }
 
     @TargetActivity(Activity.SEARCH_USERS_BY_FILTER)
