@@ -53,10 +53,31 @@ class PinodeskRetrofitApiServiceTest {
 
     @BeforeEach
     void setUp() {
-        retrofitApiService = new PinodeskRetrofitApiService();
+        retrofitApiService = new PinodeskRetrofitApiService(mockObjectMapper);
         ReflectionTestUtils.setField(retrofitApiService, "apiInterface", mockApiInterface);
-        ReflectionTestUtils.setField(retrofitApiService, "mapper", mockObjectMapper);
         ReflectionTestUtils.setField(retrofitApiService, "baseURL", "https://api.pinodesk.com");
+    }
+
+    @Test
+    void structuredHttpFailurePreservesApiErrorCodeAndMessage() throws Exception {
+        String json = "{\"success\":false}";
+        PinodeskApiError error = new PinodeskApiError();
+        error.setCode("INSTALLATION_LIMIT");
+        error.setMessage("Installation limit reached");
+        PinodeskApiResponse<RequestInstallationCodeResponse> response = new PinodeskApiResponse<>();
+        response.setError(error);
+        when(mockObjectMapper.readValue(json, PinodeskApiResponse.class)).thenReturn(response);
+        when(mockApiInterface.requestInstallationCode(any(RequestInstallationCodeRequest.class)))
+                .thenReturn(mockCodeCall);
+        when(mockCodeCall.execute())
+                .thenReturn(Response.error(429, ResponseBody.create(MediaType.parse("application/json"), json)));
+
+        PinodeskApiException failure = assertThrows(
+                PinodeskApiException.class,
+                () -> retrofitApiService.requestInstallationCode("alice@example.test"));
+
+        assertEquals("INSTALLATION_LIMIT", failure.getCode());
+        assertEquals("Installation limit reached", failure.getMessage());
     }
 
     @Test

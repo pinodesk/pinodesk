@@ -28,8 +28,7 @@ public class PinodeskRetrofitBaseService {
     @Value("${pinodesk.api.base_url}")
     private String baseURL;
 
-    @Autowired
-    private ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     @Autowired
     private InstallationService installationService;
@@ -38,6 +37,10 @@ public class PinodeskRetrofitBaseService {
 
     protected PinodeskApiInterface apiInterface;
     protected String currentInstallationToken;
+
+    public PinodeskRetrofitBaseService(ObjectMapper mapper) {
+        this.mapper = mapper;
+    }
 
     @PostConstruct
     protected void init() {

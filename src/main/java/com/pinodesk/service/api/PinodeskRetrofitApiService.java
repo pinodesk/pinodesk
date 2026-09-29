@@ -15,6 +15,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PinodeskRetrofitApiService extends PinodeskRetrofitBaseService {
 
+    public PinodeskRetrofitApiService(com.fasterxml.jackson.databind.ObjectMapper mapper) {
+        super(mapper);
+    }
+
     public RequestInstallationCodeResponse requestInstallationCode(String email) {
         RequestInstallationCodeRequest request = new RequestInstallationCodeRequest();
         request.setEmail(email);
