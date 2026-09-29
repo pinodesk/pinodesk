@@ -29,14 +29,17 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class InstallationService extends BaseService {
 
-    @Autowired
-    private PinodeskRetrofitApiService pinodeskRetrofitApiService;
+    private final PinodeskRetrofitApiService pinodeskRetrofitApiService;
 
     @Autowired
     private ApplicationProperties applicationProperties;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    public InstallationService(@org.springframework.context.annotation.Lazy PinodeskRetrofitApiService pinodeskRetrofitApiService) {
+        this.pinodeskRetrofitApiService = pinodeskRetrofitApiService;
+    }
 
     @PostConstruct
     public void init() {

@@ -18,7 +18,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -37,7 +36,6 @@ class InstallationServiceTest extends BaseServiceTest {
     @Mock
     private ApplicationProperties applicationProperties;
 
-    @InjectMocks
     private InstallationService installationService;
 
     @TempDir
@@ -47,8 +45,24 @@ class InstallationServiceTest extends BaseServiceTest {
 
     @BeforeEach
     void setUp() {
+        installationService = new InstallationService(pinodeskRetrofitApiService);
+        org.springframework.test.util.ReflectionTestUtils
+                .setField(installationService, "applicationProperties", applicationProperties);
+        org.springframework.test.util.ReflectionTestUtils.setField(installationService, "objectMapper", objectMapper);
         installationFilePath = tempDir.resolve("installation.json");
         when(applicationProperties.getInstallationFile()).thenReturn(installationFilePath);
+    }
+
+    @Test
+    void requestCodePreservesApiFailureWithoutWritingInstallation() {
+        IllegalStateException failure = new IllegalStateException("API unavailable");
+        when(pinodeskRetrofitApiService.requestInstallationCode("alice@example.test")).thenThrow(failure);
+        org.junit.jupiter.api.Assertions.assertSame(
+                failure,
+                org.junit.jupiter.api.Assertions.assertThrows(
+                        IllegalStateException.class,
+                        () -> installationService.requestInstallationCode("alice@example.test")));
+        assertTrue(Files.notExists(installationFilePath));
     }
 
     @Test
