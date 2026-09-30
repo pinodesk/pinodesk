@@ -27,6 +27,7 @@ import com.pinodesk.apimodel.RegisterInstallationResponse;
 import com.pinodesk.apimodel.RequestInstallationCodeRequest;
 import com.pinodesk.apimodel.RequestInstallationCodeResponse;
 import com.pinodesk.exception.PinodeskApiException;
+import com.pinodesk.service.InstallationService;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -44,6 +45,9 @@ class PinodeskRetrofitApiServiceTest {
     private ObjectMapper mockObjectMapper;
 
     @Mock
+    private InstallationService mockInstallationService;
+
+    @Mock
     private Call<PinodeskApiResponse<RequestInstallationCodeResponse>> mockCodeCall;
 
     @Mock
@@ -53,7 +57,7 @@ class PinodeskRetrofitApiServiceTest {
 
     @BeforeEach
     void setUp() {
-        retrofitApiService = new PinodeskRetrofitApiService(mockObjectMapper);
+        retrofitApiService = new PinodeskRetrofitApiService(mockObjectMapper, mockInstallationService);
         ReflectionTestUtils.setField(retrofitApiService, "apiInterface", mockApiInterface);
         ReflectionTestUtils.setField(retrofitApiService, "baseURL", "https://api.pinodesk.com");
     }

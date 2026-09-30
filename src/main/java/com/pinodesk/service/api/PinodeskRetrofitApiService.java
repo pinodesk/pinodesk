@@ -1,6 +1,7 @@
 package com.pinodesk.service.api;
 
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Lazy;
 
 import com.pinodesk.apimodel.CreateIssueRequest;
 import com.pinodesk.apimodel.CreateIssueResponse;
@@ -8,6 +9,7 @@ import com.pinodesk.apimodel.RegisterInstallationRequest;
 import com.pinodesk.apimodel.RegisterInstallationResponse;
 import com.pinodesk.apimodel.RequestInstallationCodeRequest;
 import com.pinodesk.apimodel.RequestInstallationCodeResponse;
+import com.pinodesk.service.InstallationService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,8 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PinodeskRetrofitApiService extends PinodeskRetrofitBaseService {
 
-    public PinodeskRetrofitApiService(com.fasterxml.jackson.databind.ObjectMapper mapper) {
-        super(mapper);
+    public PinodeskRetrofitApiService(com.fasterxml.jackson.databind.ObjectMapper mapper,
+                                      @Lazy InstallationService installationService) {
+        super(mapper, installationService);
     }
 
     public RequestInstallationCodeResponse requestInstallationCode(String email) {

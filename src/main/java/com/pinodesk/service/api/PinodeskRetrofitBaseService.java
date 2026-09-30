@@ -11,8 +11,8 @@ import com.pinodesk.service.InstallationService;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -30,16 +30,16 @@ public class PinodeskRetrofitBaseService {
 
     private final ObjectMapper mapper;
 
-    @Autowired
-    private InstallationService installationService;
+    private final InstallationService installationService;
 
     protected static final String HEADER_PINODESK_INSTALLATION_TOKEN = "Pinodesk-Installation-Token";
 
     protected PinodeskApiInterface apiInterface;
     protected String currentInstallationToken;
 
-    public PinodeskRetrofitBaseService(ObjectMapper mapper) {
+    protected PinodeskRetrofitBaseService(ObjectMapper mapper, @Lazy InstallationService installationService) {
         this.mapper = mapper;
+        this.installationService = installationService;
     }
 
     @PostConstruct
