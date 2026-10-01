@@ -129,7 +129,7 @@ public class DashboardService extends BaseService {
     }
 
     public List<ReceivableClosestDueDateVM> getReceivableClosestDueDates() {
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.now(Clock.systemDefaultZone());
         LocalDate next2month = now.plusMonths(2);
         return receivableRepository.findByDueDateBefore(next2month);
     }

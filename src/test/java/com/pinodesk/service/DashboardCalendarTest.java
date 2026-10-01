@@ -14,6 +14,24 @@ import com.pinodesk.repository.ProductRepository;
 
 class DashboardCalendarTest {
     @Test
+    void receivableHorizonUsesLocalDateAcrossUtcMonthBoundary() {
+        Clock clock = Clock.fixed(Instant.parse("2026-03-31T18:00:00Z"), ZoneId.of("Asia/Jakarta"));
+        com.pinodesk.repository.ReceivableRepository receivables = mock(
+                com.pinodesk.repository.ReceivableRepository.class);
+        DashboardService service = new DashboardService();
+        ReflectionTestUtils.setField(service, "receivableRepository", receivables);
+        java.time.LocalDate cutoff = java.time.LocalDate.of(2026, 6, 1);
+        List<com.pinodesk.viewmodel.ReceivableClosestDueDateVM> rows = List
+                .of(new com.pinodesk.viewmodel.ReceivableClosestDueDateVM());
+        when(receivables.findByDueDateBefore(cutoff)).thenReturn(rows);
+        try (MockedStatic<Clock> clocks = mockStatic(Clock.class)) {
+            clocks.when(Clock::systemDefaultZone).thenReturn(clock);
+            assertSame(rows, service.getReceivableClosestDueDates());
+        }
+        verify(receivables).findByDueDateBefore(cutoff);
+    }
+
+    @Test
     void payableHorizonHandlesLeapYearEndOfMonthInApplicationZone() {
         Clock clock = Clock.fixed(Instant.parse("2027-12-30T18:00:00Z"), ZoneId.of("Asia/Jakarta"));
         com.pinodesk.repository.PayableRepository payables = mock(com.pinodesk.repository.PayableRepository.class);
