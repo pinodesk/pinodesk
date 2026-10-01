@@ -55,6 +55,28 @@ class ProductCategoryServiceTest extends BaseServiceTest {
     }
 
     @Test
+    void codeLookupMapsCategoryDetailsAndUsesRequestedLanguage() {
+        productCategory.setParentCategoryId(8L);
+        when(productCategoryRepository.findByLanguageAndCodeAndDeletedAtIsNull("en", "0001"))
+                .thenReturn(Optional.of(productCategory));
+        ProductCategoryVM result = productCategoryService.getProductCategoryByCode("0001", "en");
+        assertEquals(1L, result.getId());
+        assertEquals("0001", result.getCode());
+        assertEquals("Category 0001", result.getName());
+        assertEquals(8L, result.getParentCategoryId());
+        verify(productCategoryRepository).findByLanguageAndCodeAndDeletedAtIsNull("en", "0001");
+    }
+
+    @Test
+    void missingCodeHasSpecificDomainError() {
+        DomainException failure = assertThrows(
+                DomainException.class,
+                () -> productCategoryService.getProductCategoryByCode("missing", "id"));
+        assertEquals(DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_CODE, failure.getError());
+        verify(productCategoryRepository).findByLanguageAndCodeAndDeletedAtIsNull("id", "missing");
+    }
+
+    @Test
     void testSearchProductCategoryByKeyword_shouldSucceed() {
         when(configurationService.getConfiguration(anyString())).thenReturn("1");
         when(productCategoryRepository.findByKeyword(anyString(), anyString())).thenReturn(new ArrayList<>());

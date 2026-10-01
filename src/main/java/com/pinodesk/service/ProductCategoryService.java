@@ -20,8 +20,11 @@ import com.pinodesk.viewmodel.ProductCategoryVM;
 @Service
 public class ProductCategoryService extends BaseService {
 
-    @Autowired
-    private ProductCategoryRepository productCategoryRepository;
+    private final ProductCategoryRepository productCategoryRepository;
+
+    public ProductCategoryService(ProductCategoryRepository productCategoryRepository) {
+        this.productCategoryRepository = productCategoryRepository;
+    }
 
     @Autowired
     private ConfigurationService configurationService;
