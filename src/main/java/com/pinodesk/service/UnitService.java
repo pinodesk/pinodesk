@@ -20,8 +20,11 @@ import com.pinodesk.viewmodel.UnitVM;
 @Service
 public class UnitService extends BaseService {
 
-    @Autowired
-    private UnitRepository unitRepository;
+    private final UnitRepository unitRepository;
+
+    public UnitService(UnitRepository unitRepository) {
+        this.unitRepository = unitRepository;
+    }
 
     @Autowired
     private ConfigurationService configurationService;

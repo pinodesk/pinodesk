@@ -48,6 +48,27 @@ class UnitServiceTest extends BaseServiceTest {
     }
 
     @Test
+    void codeLookupPreservesUnitDetailsAndLanguage() {
+        Unit unit = new Unit("Tablet", "tab", "TABLET", "id");
+        unit.setId(42L);
+        when(unitRepository.findByLanguageAndCodeAndDeletedAtIsNull("id", "TABLET")).thenReturn(Optional.of(unit));
+        UnitVM result = unitService.getUnitByCode("TABLET", "id");
+        assertEquals(42L, result.getId());
+        assertEquals("Tablet", result.getName());
+        assertEquals("tab", result.getLabel());
+        assertEquals("TABLET", result.getCode());
+        verify(unitRepository).findByLanguageAndCodeAndDeletedAtIsNull("id", "TABLET");
+    }
+
+    @Test
+    void missingCodeReportsSpecificDomainError() {
+        when(unitRepository.findByLanguageAndCodeAndDeletedAtIsNull("en", "missing")).thenReturn(Optional.empty());
+        DomainException failure = assertThrows(DomainException.class, () -> unitService.getUnitByCode("missing", "en"));
+        assertEquals(DomainError.UNIT_NOT_FOUND_BY_CODE, failure.getError());
+        verify(unitRepository).findByLanguageAndCodeAndDeletedAtIsNull("en", "missing");
+    }
+
+    @Test
     void testGetAllUnits_shouldSucceed() {
         when(unitRepository.findByDeletedAtIsNull()).thenReturn(new ArrayList<>());
         List<UnitVM> units = unitService.getAllUnits();
