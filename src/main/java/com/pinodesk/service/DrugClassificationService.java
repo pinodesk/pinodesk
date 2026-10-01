@@ -2,7 +2,6 @@ package com.pinodesk.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +16,11 @@ import com.pinodesk.viewmodel.DrugClassificationVM;
 @Service
 public class DrugClassificationService extends BaseService {
 
-    @Autowired
-    private DrugClassificationRepository drugClassificationRepository;
+    private final DrugClassificationRepository drugClassificationRepository;
+
+    public DrugClassificationService(DrugClassificationRepository drugClassificationRepository) {
+        this.drugClassificationRepository = drugClassificationRepository;
+    }
 
     @TargetActivity(Activity.SEARCH_DRUG_CLASSIFICATIONS_BY_KEYWORD)
     @Cacheable(CacheNameConstants.DRUG_CLASSIFICATION_BY_KEYWORD)
