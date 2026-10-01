@@ -22,6 +22,7 @@ import com.pinodesk.viewmodel.TotalSaleTransactionVM;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,7 +93,7 @@ public class DashboardService extends BaseService {
     }
 
     public List<Integer> getYears() {
-        Integer yearMax = LocalDate.now().getYear();
+        Integer yearMax = LocalDate.now(Clock.systemDefaultZone()).getYear();
         Integer yearMin = yearMax;
         List<Integer> years = new ArrayList<>();
         Optional<Integer> minCreatedYear = productRepository.findMinCreatedYear();
