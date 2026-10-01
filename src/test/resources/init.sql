@@ -73,6 +73,8 @@ create table if not exists unit (
 	created_at timestamp not null default current_timestamp,
 	updated_at timestamp not null default current_timestamp on update current_timestamp,
 	deleted_at timestamp,
+	language char(2) not null,
+	code char(4) not null,
 	label varchar(32) not null,
 	name varchar(128) not null,
 	primary key (id),
@@ -126,4 +128,22 @@ create table if not exists product (
 	index idx_product__barcode (barcode),
 	index idx_product__category_code (category_code),
 	index idx_product__id__unit_id (id, unit_id)
+);
+
+-- Drug classification schema from V0005; unit locale/code above reflect V0035.
+create table if not exists drug_classification (
+	id bigint not null auto_increment,
+	created_at timestamp not null default current_timestamp,
+	updated_at timestamp not null default current_timestamp on update current_timestamp,
+	deleted_at timestamp,
+	language char(2) not null,
+	code varchar(64) not null,
+	name varchar(256) not null,
+	description varchar(512),
+	primary key (id),
+	index idx_drug_classification__deleted_at (deleted_at),
+	index idx_drug_classification__code (code),
+	index idx_drug_classification__code__deleted_at (code, deleted_at),
+	index idx_drug_classification__language__code (language, code),
+	index idx_drug_classification__language__code__deleted_at (language, code, deleted_at)
 );

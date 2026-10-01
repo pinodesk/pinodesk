@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <drug_classification id="8203" language="en" code="0003" name="Analgesic deleted" deleted_at="2026-01-01 00:00:00" />
+  <drug_classification id="8201" language="en" code="0001" name="Analgesic" />
+  <drug_classification id="8202" language="en" code="0002" name="Vitamin" />
+  <drug_classification id="8204" language="id" code="0001" name="Analgesik" />
+  <unit id="8103" language="en" code="0003" name="Tablet deleted" label="tbl" deleted_at="2026-01-01 00:00:00" />
+  <unit id="8101" language="en" code="0001" name="Tablet" label="tbl" />
+  <unit id="8102" language="en" code="0002" name="Capsule" label="cap" />
+  <unit id="8104" language="id" code="0001" name="Tablet Indonesia" label="tab" />
+</dataset>
