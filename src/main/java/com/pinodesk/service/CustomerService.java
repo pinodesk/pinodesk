@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -28,8 +27,11 @@ import com.pinodesk.viewmodel.CustomerVM;
 @Service
 public class CustomerService extends BaseService {
 
-    @Autowired
-    private CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+
+    public CustomerService(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 
     @TargetActivity(Activity.SEARCH_CUSTOMERS_BY_FILTER)
     @Cacheable(CacheNameConstants.CUSTOMERS_BY_FILTER)
