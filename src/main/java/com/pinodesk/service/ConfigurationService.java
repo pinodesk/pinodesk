@@ -77,12 +77,15 @@ public class ConfigurationService extends BaseService {
     @Autowired
     private ConfigurationService configurationService;
 
-    @Autowired
-    private ApplicationProperties applicationProperties;
+    private final ApplicationProperties applicationProperties;
 
     private static final String BACKUP_FILENAME = "backup.zip";
     private static final String BACKUP_FILENAME_ENCRYPTED = "backup.dat";
     private static final String BACKUP_PROPERTIES = "backup.properties";
+
+    public ConfigurationService(ApplicationProperties applicationProperties) {
+        this.applicationProperties = applicationProperties;
+    }
 
     @TargetActivity(Activity.GET_CONFIGURATION_BY_CODE)
     @Cacheable(CacheNameConstants.CONFIGURATION_BY_CODE)
