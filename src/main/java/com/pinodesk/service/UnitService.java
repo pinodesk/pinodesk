@@ -3,7 +3,6 @@ package com.pinodesk.service;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +21,12 @@ public class UnitService extends BaseService {
 
     private final UnitRepository unitRepository;
 
-    public UnitService(UnitRepository unitRepository) {
+    public UnitService(UnitRepository unitRepository, ConfigurationService configurationService) {
         this.unitRepository = unitRepository;
+        this.configurationService = configurationService;
     }
 
-    @Autowired
-    private ConfigurationService configurationService;
+    private final ConfigurationService configurationService;
 
     @TargetActivity(Activity.GET_ALL_UNITS)
     @Cacheable(CacheNameConstants.UNITS_ALL)

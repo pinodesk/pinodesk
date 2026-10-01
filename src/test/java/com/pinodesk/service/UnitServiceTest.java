@@ -69,6 +69,32 @@ class UnitServiceTest extends BaseServiceTest {
     }
 
     @Test
+    void blankSearchUsesConfiguredLanguageAndMapsResults() {
+        Unit unit = new Unit("Tablet", "tab", "TABLET", "id");
+        when(configurationService.getConfiguration("language")).thenReturn("id");
+        when(unitRepository.findByLanguageAndDeletedAtIsNullOrderByName("id")).thenReturn(List.of(unit));
+        for (String keyword : new String[] { null, "", "   " }) {
+            List<UnitVM> results = unitService.searchUnitByKeyword(keyword);
+            assertEquals(1, results.size());
+            assertEquals("Tablet", results.get(0).getName());
+            assertEquals("TABLET", results.get(0).getCode());
+        }
+        org.mockito.Mockito.verify(configurationService, org.mockito.Mockito.times(3)).getConfiguration("language");
+        org.mockito.Mockito.verify(unitRepository, org.mockito.Mockito.times(3))
+                .findByLanguageAndDeletedAtIsNullOrderByName("id");
+    }
+
+    @Test
+    void failedLanguageLookupDoesNotQueryUnits() {
+        IllegalStateException failure = new IllegalStateException("configuration unavailable");
+        when(configurationService.getConfiguration("language")).thenThrow(failure);
+        org.junit.jupiter.api.Assertions.assertSame(
+                failure,
+                assertThrows(IllegalStateException.class, () -> unitService.searchUnitByKeyword("tablet")));
+        verify(configurationService).getConfiguration("language");
+    }
+
+    @Test
     void testGetAllUnits_shouldSucceed() {
         when(unitRepository.findByDeletedAtIsNull()).thenReturn(new ArrayList<>());
         List<UnitVM> units = unitService.getAllUnits();
