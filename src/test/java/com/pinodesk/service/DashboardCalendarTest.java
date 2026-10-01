@@ -14,6 +14,23 @@ import com.pinodesk.repository.ProductRepository;
 
 class DashboardCalendarTest {
     @Test
+    void expiryHorizonUsesApplicationDateAndClampsToMonthEnd() {
+        Clock clock = Clock.fixed(Instant.parse("2026-11-29T18:00:00Z"), ZoneId.of("Asia/Jakarta"));
+        ProductRepository products = mock(ProductRepository.class);
+        DashboardService service = new DashboardService();
+        ReflectionTestUtils.setField(service, "productRepository", products);
+        java.time.LocalDate cutoff = java.time.LocalDate.of(2027, 2, 28);
+        List<com.pinodesk.viewmodel.ProductClosestExpiryVM> rows = List
+                .of(new com.pinodesk.viewmodel.ProductClosestExpiryVM());
+        when(products.findByExpiredDateBefore(cutoff, "id")).thenReturn(rows);
+        try (MockedStatic<Clock> clocks = mockStatic(Clock.class)) {
+            clocks.when(Clock::systemDefaultZone).thenReturn(clock);
+            assertSame(rows, service.getProductClosestExpiries("id"));
+        }
+        verify(products).findByExpiredDateBefore(cutoff, "id");
+    }
+
+    @Test
     void yearsUseLocalApplicationYearAcrossUtcNewYearBoundary() {
         Clock clock = Clock.fixed(Instant.parse("2026-12-31T18:00:00Z"), ZoneId.of("Asia/Jakarta"));
         ProductRepository products = mock(ProductRepository.class);

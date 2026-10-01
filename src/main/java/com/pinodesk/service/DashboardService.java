@@ -113,7 +113,7 @@ public class DashboardService extends BaseService {
     }
 
     public List<ProductClosestExpiryVM> getProductClosestExpiries(String language) {
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.now(Clock.systemDefaultZone());
         LocalDate next3month = now.plusMonths(3);
         return productRepository.findByExpiredDateBefore(next3month, language);
     }
