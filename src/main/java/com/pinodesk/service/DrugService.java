@@ -1,6 +1,5 @@
 package com.pinodesk.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pinodesk.annotation.TargetActivity;
@@ -11,8 +10,11 @@ import com.pinodesk.viewmodel.DrugVM;
 @Service
 public class DrugService extends BaseService {
 
-    @Autowired
-    private DrugRepository drugRepository;
+    private final DrugRepository drugRepository;
+
+    public DrugService(DrugRepository drugRepository) {
+        this.drugRepository = drugRepository;
+    }
 
     @TargetActivity(Activity.GET_DRUG_BY_PRODUCT_ID)
     public DrugVM getDrugByProductId(Long productId) {

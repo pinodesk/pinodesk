@@ -42,6 +42,28 @@ class DrugServiceTest extends BaseServiceTest {
     }
 
     @Test
+    void absentDrugReturnsNullForNonDrugProduct() {
+        when(drugRepository.findByProductIdAndDeletedAtIsNull(77L)).thenReturn(Optional.empty());
+        org.junit.jupiter.api.Assertions.assertNull(drugService.getDrugByProductId(77L));
+        verify(drugRepository).findByProductIdAndDeletedAtIsNull(77L);
+    }
+
+    @Test
+    void lookupPreservesDrugClassificationAndUsageDetails() {
+        drug.setProductId(77L);
+        drug.setClassificationCode("RX");
+        drug.setIndication("Indication text");
+        drug.setContraindication("Contraindication text");
+        when(drugRepository.findByProductIdAndDeletedAtIsNull(77L)).thenReturn(Optional.of(drug));
+        DrugVM result = drugService.getDrugByProductId(77L);
+        assertEquals(77L, result.getProductId());
+        assertEquals("RX", result.getClassificationCode());
+        assertEquals("Indication text", result.getIndication());
+        assertEquals("Contraindication text", result.getContraindication());
+        verify(drugRepository).findByProductIdAndDeletedAtIsNull(77L);
+    }
+
+    @Test
     void testGetDrugByProductId_shouldSucceed() {
         when(drugRepository.findByProductIdAndDeletedAtIsNull(anyLong())).thenReturn(Optional.of(drug));
         DrugVM result = drugService.getDrugByProductId(1L);
