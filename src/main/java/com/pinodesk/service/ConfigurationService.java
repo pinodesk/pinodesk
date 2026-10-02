@@ -24,11 +24,11 @@ import javax.sql.DataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,26 +56,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ConfigurationService extends BaseService {
 
-    @Autowired
-    private StandardPBEByteEncryptor byteEncryptor;
-
-    @Autowired
-    private DataSource dataSource;
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    private CacheManager cacheManager;
-
-    @Autowired
-    private ConfigurationRepository configurationRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ConfigurationService configurationService;
+    private final StandardPBEByteEncryptor byteEncryptor;
+    private final DataSource dataSource;
+    private final JdbcTemplate jdbcTemplate;
+    private final CacheManager cacheManager;
+    private final ConfigurationRepository configurationRepository;
+    private final UserRepository userRepository;
+    private final ConfigurationService configurationService;
 
     private final ApplicationProperties applicationProperties;
 
@@ -83,7 +70,18 @@ public class ConfigurationService extends BaseService {
     private static final String BACKUP_FILENAME_ENCRYPTED = "backup.dat";
     private static final String BACKUP_PROPERTIES = "backup.properties";
 
-    public ConfigurationService(ApplicationProperties applicationProperties) {
+    public ConfigurationService(StandardPBEByteEncryptor byteEncryptor, DataSource dataSource,
+                                JdbcTemplate jdbcTemplate, CacheManager cacheManager,
+                                ConfigurationRepository configurationRepository, UserRepository userRepository,
+                                @Lazy ConfigurationService configurationService,
+                                ApplicationProperties applicationProperties) {
+        this.byteEncryptor = byteEncryptor;
+        this.dataSource = dataSource;
+        this.jdbcTemplate = jdbcTemplate;
+        this.cacheManager = cacheManager;
+        this.configurationRepository = configurationRepository;
+        this.userRepository = userRepository;
+        this.configurationService = configurationService;
         this.applicationProperties = applicationProperties;
     }
 
