@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -34,17 +33,18 @@ import com.pinodesk.viewmodel.UserGroupVM;
 @Service
 public class UserGroupService extends BaseService {
 
-    @Autowired
-    private UserGroupRepository userGroupRepository;
+    private final UserGroupRepository userGroupRepository;
+    private final UserGroupMenuRepository userGroupMenuRepository;
+    private final UserRepository userRepository;
+    private final MenuRepository menuRepository;
 
-    @Autowired
-    private UserGroupMenuRepository userGroupMenuRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MenuRepository menuRepository;
+    public UserGroupService(UserGroupRepository userGroupRepository, UserGroupMenuRepository userGroupMenuRepository,
+                            UserRepository userRepository, MenuRepository menuRepository) {
+        this.userGroupRepository = userGroupRepository;
+        this.userGroupMenuRepository = userGroupMenuRepository;
+        this.userRepository = userRepository;
+        this.menuRepository = menuRepository;
+    }
 
     @TargetActivity(Activity.SEARCH_USER_GROUPS_BY_FILTER)
     @Cacheable(CacheNameConstants.USER_GROUPS_BY_FILTER)
