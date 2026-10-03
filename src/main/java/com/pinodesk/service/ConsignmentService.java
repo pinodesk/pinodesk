@@ -2,7 +2,6 @@ package com.pinodesk.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -33,26 +32,34 @@ import com.pinodesk.viewmodel.ConsignmentVM;
 @Service
 public class ConsignmentService extends BaseService {
 
-    @Autowired
-    private ConsignmentRepository consignmentRepository;
+    private final ConsignmentRepository consignmentRepository;
 
-    @Autowired
-    private ConsignmentDetailRepository consignmentDetailRepository;
+    private final ConsignmentDetailRepository consignmentDetailRepository;
 
-    @Autowired
-    private ProductStockRepository productStockRepository;
+    private final ProductStockRepository productStockRepository;
 
-    @Autowired
-    private ProductPriceRepository productPriceRepository;
+    private final ProductPriceRepository productPriceRepository;
 
-    @Autowired
-    private ProductExpiryRepository productExpiryRepository;
+    private final ProductExpiryRepository productExpiryRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private SessionService sessionService;
+    private final SessionService sessionService;
+
+    public ConsignmentService(ConsignmentRepository consignmentRepository,
+                              ConsignmentDetailRepository consignmentDetailRepository,
+                              ProductStockRepository productStockRepository,
+                              ProductPriceRepository productPriceRepository,
+                              ProductExpiryRepository productExpiryRepository, ProductRepository productRepository,
+                              SessionService sessionService) {
+        this.consignmentRepository = consignmentRepository;
+        this.consignmentDetailRepository = consignmentDetailRepository;
+        this.productStockRepository = productStockRepository;
+        this.productPriceRepository = productPriceRepository;
+        this.productExpiryRepository = productExpiryRepository;
+        this.productRepository = productRepository;
+        this.sessionService = sessionService;
+    }
 
     @TargetActivity(Activity.SEARCH_CONSIGNMENTS_BY_FILTER)
     @Cacheable(CacheNameConstants.CONSIGNMENTS_BY_FILTER)
