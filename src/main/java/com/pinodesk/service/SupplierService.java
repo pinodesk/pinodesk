@@ -7,7 +7,6 @@ import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -32,11 +31,13 @@ import com.pinodesk.viewmodel.SupplierVM;
 @Service
 public class SupplierService extends BaseService {
 
-    @Autowired
-    private SupplierRepository supplierRepository;
+    private final SupplierRepository supplierRepository;
+    private final SupplierContactRepository supplierContactRepository;
 
-    @Autowired
-    private SupplierContactRepository supplierContactRepository;
+    public SupplierService(SupplierRepository supplierRepository, SupplierContactRepository supplierContactRepository) {
+        this.supplierRepository = supplierRepository;
+        this.supplierContactRepository = supplierContactRepository;
+    }
 
     @TargetActivity(Activity.SEARCH_SUPPLIERS_BY_FILTER)
     @Cacheable(CacheNameConstants.SUPPLIERS_BY_FILTER)
