@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -61,41 +60,40 @@ import java.util.Set;
 @Service
 public class ProductService extends BaseService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final ConfigurationService configurationService;
+    private final DrugRepository drugRepository;
+    private final ProductPriceRepository productPriceRepository;
+    private final ProductStockRepository productStockRepository;
+    private final ProductExpiryRepository productExpiryRepository;
+    private final ProductCategoryRepository productCategoryRepository;
+    private final UnitRepository unitRepository;
+    private final DrugClassificationRepository drugClassificationRepository;
+    private final PackageDetailRepository packageDetailRepository;
+    private final SessionService sessionService;
+    private final PurchaseDetailRepository purchaseDetailRepository;
 
-    @Autowired
-    private ConfigurationService configurationService;
-
-    @Autowired
-    private DrugRepository drugRepository;
-
-    @Autowired
-    private ProductPriceRepository productPriceRepository;
-
-    @Autowired
-    private ProductStockRepository productStockRepository;
-
-    @Autowired
-    private ProductExpiryRepository productExpiryRepository;
-
-    @Autowired
-    private ProductCategoryRepository productCategoryRepository;
-
-    @Autowired
-    private UnitRepository unitRepository;
-
-    @Autowired
-    private DrugClassificationRepository drugClassificationRepository;
-
-    @Autowired
-    private PackageDetailRepository packageDetailRepository;
-
-    @Autowired
-    private SessionService sessionService;
-
-    @Autowired
-    private PurchaseDetailRepository purchaseDetailRepository;
+    public ProductService(ProductRepository productRepository, ConfigurationService configurationService,
+                          DrugRepository drugRepository, ProductPriceRepository productPriceRepository,
+                          ProductStockRepository productStockRepository,
+                          ProductExpiryRepository productExpiryRepository,
+                          ProductCategoryRepository productCategoryRepository, UnitRepository unitRepository,
+                          DrugClassificationRepository drugClassificationRepository,
+                          PackageDetailRepository packageDetailRepository, SessionService sessionService,
+                          PurchaseDetailRepository purchaseDetailRepository) {
+        this.productRepository = productRepository;
+        this.configurationService = configurationService;
+        this.drugRepository = drugRepository;
+        this.productPriceRepository = productPriceRepository;
+        this.productStockRepository = productStockRepository;
+        this.productExpiryRepository = productExpiryRepository;
+        this.productCategoryRepository = productCategoryRepository;
+        this.unitRepository = unitRepository;
+        this.drugClassificationRepository = drugClassificationRepository;
+        this.packageDetailRepository = packageDetailRepository;
+        this.sessionService = sessionService;
+        this.purchaseDetailRepository = purchaseDetailRepository;
+    }
 
     @TargetActivity(Activity.SEARCH_PRODUCTS_BY_FILTER)
     @Cacheable(CacheNameConstants.PRODUCTS_BY_FILTER)
