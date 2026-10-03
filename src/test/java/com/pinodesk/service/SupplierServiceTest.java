@@ -17,6 +17,20 @@ import com.pinodesk.repository.SupplierContactRepository;
 import com.pinodesk.viewmodel.*;
 
 class SupplierServiceTest extends BaseServiceTest {
+    @Test
+    void updateCanPopulatePreviouslyNullContacts() {
+        Supplier supplier = existing();
+        supplier.setEmail(null);
+        supplier.setPhone(null);
+        SupplierEditVM request = edit();
+        service.updateSupplier(request, List.of());
+        assertEquals("office@example.test", supplier.getEmail());
+        assertEquals("08111", supplier.getPhone());
+        verify(suppliers).existsByEmailIgnoreCaseAndDeletedAtIsNull("office@example.test");
+        verify(suppliers).existsByPhoneIgnoreCaseAndDeletedAtIsNull("08111");
+        verify(suppliers).save(supplier);
+    }
+
     @Mock
     private SupplierRepository suppliers;
     @Mock

@@ -113,12 +113,12 @@ public class SupplierService extends BaseService {
             throw new DomainException(DomainError.SUPPLIER_OTHER_EXISTS_BY_CODE);
         }
         String email = supplierEdit.getEmail();
-        if (StringUtils.isNotBlank(email) && !supplier.getEmail().equalsIgnoreCase(email)
+        if (StringUtils.isNotBlank(email) && !email.equalsIgnoreCase(supplier.getEmail())
                 && supplierRepository.existsByEmailIgnoreCaseAndDeletedAtIsNull(email)) {
             throw new DomainException(DomainError.SUPPLIER_OTHER_EXISTS_BY_EMAIL);
         }
         String phone = supplierEdit.getPhone();
-        if (StringUtils.isNotBlank(phone) && !supplier.getPhone().equals(phone)
+        if (StringUtils.isNotBlank(phone) && !phone.equals(supplier.getPhone())
                 && supplierRepository.existsByPhoneIgnoreCaseAndDeletedAtIsNull(phone)) {
             throw new DomainException(DomainError.SUPPLIER_OTHER_EXISTS_BY_PHONE);
         }
