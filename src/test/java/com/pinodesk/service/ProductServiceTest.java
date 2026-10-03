@@ -292,6 +292,164 @@ class ProductServiceTest extends BaseServiceTest {
         verify(products).updateClosestExpiredDateById(7L, null);
     }
 
+    private ProductImportVM imported(String name, String code) {
+        ProductImportVM row = new ProductImportVM();
+        row.setName(name);
+        row.setCode(code);
+        row.setProductCategoryCode("GENERAL");
+        row.setUnitCode("0001");
+        row.setStatus(ProductStatus.ACTIVE);
+        return row;
+    }
+
+    private void validImportReferences() {
+        when(categories.existsByCodeAndDeletedAtIsNull(anyString())).thenReturn(true);
+        when(units.existsByCodeAndDeletedAtIsNull("0001")).thenReturn(true);
+        saveWithId();
+    }
+
+    @Test
+    void importDeduplicatesCaseInsensitiveNamesWithinAUnitAndCachesReferenceChecks() {
+        validImportReferences();
+        service.importProducts(
+                List.of(imported("Aspirin", "A1"), imported("ASPIRIN", "A2"), imported("Vitamin", "V1")));
+        ArgumentCaptor<Product> cap = ArgumentCaptor.forClass(Product.class);
+        verify(products, times(2)).save(cap.capture());
+        assertEquals(List.of("A1", "V1"), cap.getAllValues().stream().map(Product::getCode).toList());
+        verify(categories, times(1)).existsByCodeAndDeletedAtIsNull("GENERAL");
+        verify(units, times(1)).existsByCodeAndDeletedAtIsNull("0001");
+        verifyNoInteractions(drugs, prices, stocks, expiries);
+    }
+
+    @Test
+    void importUsesPrescriptionPriceAsFallbackAndAssociatesAllHistories() {
+        validImportReferences();
+        when(classifications.existsByCodeAndDeletedAtIsNull("RX")).thenReturn(true);
+        ProductImportVM row = imported("Drug", "D1");
+        row.setProductCategoryCode(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
+        row.setDrugClassificationCode("RX");
+        row.setPrescriptionSellingPrice(new BigDecimal("12.3456"));
+        row.setQuantity(7);
+        row.setExpiredDate(expiryDate);
+        service.importProducts(List.of(row));
+        ArgumentCaptor<Product> product = ArgumentCaptor.forClass(Product.class);
+        verify(products).save(product.capture());
+        assertEquals(new BigDecimal("12.3456"), product.getValue().getGeneralSellingPrice());
+        assertEquals(expiryDate, product.getValue().getClosestExpiredDate());
+        ArgumentCaptor<Drug> drug = ArgumentCaptor.forClass(Drug.class);
+        verify(drugs).save(drug.capture());
+        assertEquals(7L, drug.getValue().getProductId());
+        assertEquals("RX", drug.getValue().getClassificationCode());
+        ArgumentCaptor<ProductPrice> price = ArgumentCaptor.forClass(ProductPrice.class);
+        verify(prices).save(price.capture());
+        assertEquals(new BigDecimal("12.3456"), price.getValue().getGeneralSellingPrice());
+        assertEquals(7L, price.getValue().getProductId());
+        assertEquals(8L, price.getValue().getUserId());
+        assertEquals(Activity.IMPORT_PRODUCTS.toString(), price.getValue().getActivity());
+        ArgumentCaptor<ProductStock> stock = ArgumentCaptor.forClass(ProductStock.class);
+        verify(stocks).save(stock.capture());
+        assertEquals(7, stock.getValue().getFinalQuantity());
+        assertEquals(7L, stock.getValue().getProductId());
+        ArgumentCaptor<ProductExpiry> expiry = ArgumentCaptor.forClass(ProductExpiry.class);
+        verify(expiries).save(expiry.capture());
+        assertEquals(7, expiry.getValue().getFinalQuantity());
+        assertEquals(7, expiry.getValue().getFinalQuantityExpiredDate());
+        assertEquals(7L, expiry.getValue().getProductId());
+    }
+
+    @Test
+    void importKeepsExplicitGeneralPriceAndAllowsBlankDrugClassification() {
+        validImportReferences();
+        ProductImportVM row = imported("Drug", "D1");
+        row.setProductCategoryCode(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
+        row.setDrugClassificationCode(" ");
+        row.setGeneralSellingPrice(new BigDecimal("20"));
+        row.setPrescriptionSellingPrice(BigDecimal.TEN);
+        row.setQuantity(2);
+        service.importProducts(List.of(row));
+        ArgumentCaptor<ProductPrice> price = ArgumentCaptor.forClass(ProductPrice.class);
+        verify(prices).save(price.capture());
+        assertEquals(new BigDecimal("20"), price.getValue().getGeneralSellingPrice());
+        ArgumentCaptor<Drug> drug = ArgumentCaptor.forClass(Drug.class);
+        verify(drugs).save(drug.capture());
+        assertNull(drug.getValue().getClassificationCode());
+        verifyNoInteractions(classifications, expiries);
+    }
+
+    @Test
+    void invalidImportReferencesRejectTheWholeBatchBeforeAnySave() {
+        ProductImportVM row = imported("Drug", "D1");
+        assertEquals(
+                DomainError.PRODUCT_CATEGORY_NOT_FOUND_BY_CODE,
+                assertThrows(DomainException.class, () -> service.importProducts(List.of(row))).getError());
+        when(categories.existsByCodeAndDeletedAtIsNull(anyString())).thenReturn(true);
+        assertEquals(
+                DomainError.UNIT_NOT_FOUND_BY_CODE,
+                assertThrows(DomainException.class, () -> service.importProducts(List.of(row))).getError());
+        when(units.existsByCodeAndDeletedAtIsNull("0001")).thenReturn(true);
+        row.setProductCategoryCode(CommonConstants.PRODUCT_CATEGORY_CODE_DRUGS);
+        row.setDrugClassificationCode("BAD");
+        assertEquals(
+                DomainError.DRUG_CATEGORY_NOT_FOUND_BY_CODE,
+                assertThrows(DomainException.class, () -> service.importProducts(List.of(imported("Valid", "V1"), row)))
+                        .getError());
+        verify(products, never()).save(any());
+        verifyNoInteractions(drugs, prices, stocks, expiries);
+    }
+
+    @Test
+    void invalidImportQuantityStopsBeforeWritesEvenAfterValidRows() {
+        validImportReferences();
+        ProductImportVM invalid = imported("Invalid", "I1");
+        invalid.setQuantity(-1);
+        assertThrows(
+                ConstraintViolationException.class,
+                () -> service.importProducts(List.of(imported("Valid", "V1"), invalid)));
+        verify(products, never()).save(any());
+        verifyNoInteractions(drugs, prices, stocks, expiries);
+    }
+
+    @Test
+    void packageCreationAndReplacementAssociateComponentIdsAndQuantities() {
+        saveWithId();
+        PackageProductVM part = new PackageProductVM();
+        part.setId(42L);
+        part.setQuantityInPackage(3);
+        service.createPackage(addition(), List.of(part));
+        ArgumentCaptor<List<PackageDetail>> cap = ArgumentCaptor.forClass(List.class);
+        verify(packages).saveAll(cap.capture());
+        assertEquals(1, cap.getValue().size());
+        assertEquals(7L, cap.getValue().get(0).getProductId());
+        assertEquals(42L, cap.getValue().get(0).getPackageProductId());
+        assertEquals(3, cap.getValue().get(0).getQuantity());
+        clearInvocations(packages);
+        existing();
+        part.setQuantityInPackage(5);
+        service.updatePackage(objectMapper.convertValue(addition(), ProductEditVM.class), 7L, List.of(part));
+        InOrder order = inOrder(packages);
+        order.verify(packages).deleteByProductId(7L);
+        order.verify(packages).saveAll(cap.capture());
+        assertEquals(5, cap.getValue().get(0).getQuantity());
+    }
+
+    @Test
+    void packageAvailabilityUsesLowestStockIncludingUnknownStockAsZero() {
+        when(configuration.getConfiguration(ConfigurationConstants.LANGUAGE)).thenReturn("id");
+        PackageProductVM plenty = new PackageProductVM();
+        plenty.setQuantity(10);
+        PackageProductVM low = new PackageProductVM();
+        low.setQuantity(2);
+        PackageProductVM unknown = new PackageProductVM();
+        when(packages.findByProductId(7L, "id")).thenReturn(List.of(plenty, low));
+        assertSame(low, service.getLowestQuantityPackageProduct(7L));
+        when(packages.findByProductId(7L, "id")).thenReturn(List.of(plenty, unknown));
+        assertSame(unknown, service.getLowestQuantityPackageProduct(7L));
+        when(packages.findByProductId(7L, "id")).thenReturn(List.of(unknown, plenty));
+        assertSame(unknown, service.getLowestQuantityPackageProduct(7L));
+        when(packages.findByProductId(7L, "id")).thenReturn(List.of());
+        assertThrows(java.util.NoSuchElementException.class, () -> service.getLowestQuantityPackageProduct(7L));
+    }
+
     @Test
     void localizedSearchAndDeletionUseRequestedArguments() {
         when(configuration.getConfiguration(ConfigurationConstants.LANGUAGE)).thenReturn("id");
