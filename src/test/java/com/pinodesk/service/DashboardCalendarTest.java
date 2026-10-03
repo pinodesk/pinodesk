@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.springframework.test.util.ReflectionTestUtils;
+import com.pinodesk.repository.*;
 import com.pinodesk.repository.ProductRepository;
 
 class DashboardCalendarTest {
@@ -18,8 +18,12 @@ class DashboardCalendarTest {
         Clock clock = Clock.fixed(Instant.parse("2026-03-31T18:00:00Z"), ZoneId.of("Asia/Jakarta"));
         com.pinodesk.repository.ReceivableRepository receivables = mock(
                 com.pinodesk.repository.ReceivableRepository.class);
-        DashboardService service = new DashboardService();
-        ReflectionTestUtils.setField(service, "receivableRepository", receivables);
+        DashboardService service = new DashboardService(
+                mock(SaleRepository.class),
+                mock(PurchaseRepository.class),
+                mock(ProductRepository.class),
+                mock(PayableRepository.class),
+                receivables);
         java.time.LocalDate cutoff = java.time.LocalDate.of(2026, 6, 1);
         List<com.pinodesk.viewmodel.ReceivableClosestDueDateVM> rows = List
                 .of(new com.pinodesk.viewmodel.ReceivableClosestDueDateVM());
@@ -35,8 +39,12 @@ class DashboardCalendarTest {
     void payableHorizonHandlesLeapYearEndOfMonthInApplicationZone() {
         Clock clock = Clock.fixed(Instant.parse("2027-12-30T18:00:00Z"), ZoneId.of("Asia/Jakarta"));
         com.pinodesk.repository.PayableRepository payables = mock(com.pinodesk.repository.PayableRepository.class);
-        DashboardService service = new DashboardService();
-        ReflectionTestUtils.setField(service, "payableRepository", payables);
+        DashboardService service = new DashboardService(
+                mock(SaleRepository.class),
+                mock(PurchaseRepository.class),
+                mock(ProductRepository.class),
+                payables,
+                mock(ReceivableRepository.class));
         java.time.LocalDate cutoff = java.time.LocalDate.of(2028, 2, 29);
         List<com.pinodesk.viewmodel.PayableClosestDueDateVM> rows = List
                 .of(new com.pinodesk.viewmodel.PayableClosestDueDateVM());
@@ -52,8 +60,12 @@ class DashboardCalendarTest {
     void expiryHorizonUsesApplicationDateAndClampsToMonthEnd() {
         Clock clock = Clock.fixed(Instant.parse("2026-11-29T18:00:00Z"), ZoneId.of("Asia/Jakarta"));
         ProductRepository products = mock(ProductRepository.class);
-        DashboardService service = new DashboardService();
-        ReflectionTestUtils.setField(service, "productRepository", products);
+        DashboardService service = new DashboardService(
+                mock(SaleRepository.class),
+                mock(PurchaseRepository.class),
+                products,
+                mock(PayableRepository.class),
+                mock(ReceivableRepository.class));
         java.time.LocalDate cutoff = java.time.LocalDate.of(2027, 2, 28);
         List<com.pinodesk.viewmodel.ProductClosestExpiryVM> rows = List
                 .of(new com.pinodesk.viewmodel.ProductClosestExpiryVM());
@@ -69,8 +81,12 @@ class DashboardCalendarTest {
     void yearsUseLocalApplicationYearAcrossUtcNewYearBoundary() {
         Clock clock = Clock.fixed(Instant.parse("2026-12-31T18:00:00Z"), ZoneId.of("Asia/Jakarta"));
         ProductRepository products = mock(ProductRepository.class);
-        DashboardService service = new DashboardService();
-        ReflectionTestUtils.setField(service, "productRepository", products);
+        DashboardService service = new DashboardService(
+                mock(SaleRepository.class),
+                mock(PurchaseRepository.class),
+                products,
+                mock(PayableRepository.class),
+                mock(ReceivableRepository.class));
         when(products.findMinCreatedYear()).thenReturn(Optional.of(2025));
         try (MockedStatic<Clock> clocks = mockStatic(Clock.class)) {
             clocks.when(Clock::systemDefaultZone).thenReturn(clock);

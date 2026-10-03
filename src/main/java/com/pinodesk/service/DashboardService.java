@@ -1,6 +1,5 @@
 package com.pinodesk.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pinodesk.repository.PayableRepository;
@@ -30,20 +29,21 @@ import java.util.Optional;
 @Service
 public class DashboardService extends BaseService {
 
-    @Autowired
-    private SaleRepository saleRepository;
+    private final SaleRepository saleRepository;
+    private final PurchaseRepository purchaseRepository;
+    private final ProductRepository productRepository;
+    private final PayableRepository payableRepository;
+    private final ReceivableRepository receivableRepository;
 
-    @Autowired
-    private PurchaseRepository purchaseRepository;
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    @Autowired
-    private PayableRepository payableRepository;
-
-    @Autowired
-    private ReceivableRepository receivableRepository;
+    public DashboardService(SaleRepository saleRepository, PurchaseRepository purchaseRepository,
+                            ProductRepository productRepository, PayableRepository payableRepository,
+                            ReceivableRepository receivableRepository) {
+        this.saleRepository = saleRepository;
+        this.purchaseRepository = purchaseRepository;
+        this.productRepository = productRepository;
+        this.payableRepository = payableRepository;
+        this.receivableRepository = receivableRepository;
+    }
 
     public TotalSaleTransactionVM getTotalSaleTransaction(LocalDate start, LocalDate end) {
         return saleRepository.findTotalSaleTransaction(start, end);
