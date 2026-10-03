@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+  <unit id="9101" code="0001" language="en" name="Tablet" label="tab" />
+  <unit id="9102" code="0001" language="id" name="Tablet ID" label="tablet-id" />
+  <unit id="9103" code="0002" language="en" name="Bottle" label="btl" />
+  <product_category id="9201" code="MED" language="en" name="Medicine" />
+  <product_category id="9202" code="MED" language="id" name="Obat" />
+  <product_category id="9203" code="SUP" language="en" name="Supplies" />
+  <product id="9303" code="deleted" barcode="deleted" name="Deleted aspirin" description="Deleted medicine" quantity="10" unit_code="0001" category_code="MED" general_selling_price="10.0000" prescription_selling_price="8.0000" status="active" deleted_at="2026-01-01 00:00:00" />
+  <product id="9301" code="asp01" barcode="bar-asp" name="Aspirin" description="Pain relief" quantity="10" unit_code="0001" category_code="MED" general_selling_price="10.0000" prescription_selling_price="8.0000" status="active" />
+  <product id="9302" code="vit02" barcode="bar-vit" name="Vitamin" description="Supplement" quantity="20" unit_code="0002" category_code="SUP" general_selling_price="20.0000" prescription_selling_price="16.0000" status="inactive" />
+  <product_expiry id="9401" product_id="9301" expired_date="2026-10-31" batch_number="batch-A" />
+  <product_expiry id="9402" product_id="9301" expired_date="2027-02-01" batch_number="batch-B" />
+  <product_expiry id="9403" product_id="9302" expired_date="2027-02-01" batch_number="batch-C" />
+</dataset>

@@ -113,8 +113,7 @@ create table if not exists product (
 	name varchar(256) not null,
 	description varchar(512),
 	quantity integer null,
-	unit_id bigint not null,
-	unit_label varchar(32) not null,
+	unit_code char(4) not null,
 	category_code varchar(64) not null,
 	general_selling_price decimal(16,4) null,
 	prescription_selling_price decimal(16,4) null,
@@ -122,12 +121,20 @@ create table if not exists product (
 	closest_expired_date date null,
 	status varchar(8) not null, -- ACTIVE, INACTIVE
 	primary key (id),
-	constraint fk_product__unit_id foreign key (unit_id) references unit(id),
 	index idx_product__deleted_at (deleted_at),
 	index idx_product__code (code),
 	index idx_product__barcode (barcode),
-	index idx_product__category_code (category_code),
-	index idx_product__id__unit_id (id, unit_id)
+	index idx_product__category_code (category_code)
+);
+
+-- Query-test projection of V0017: expiry lookup only uses these columns.
+create table if not exists product_expiry (
+    id bigint primary key,
+    product_id bigint not null,
+    expired_date date not null,
+    batch_number varchar(64),
+    deleted_at timestamp,
+    constraint fk_expiry_test_product foreign key (product_id) references product(id)
 );
 
 -- Drug classification schema from V0005; unit locale/code above reflect V0035.
