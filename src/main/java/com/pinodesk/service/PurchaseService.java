@@ -10,7 +10,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -49,35 +48,42 @@ import com.pinodesk.viewmodel.PurchaseVM;
 @Service
 public class PurchaseService extends BaseService {
 
-    @Autowired
-    private PurchaseRepository purchaseRepository;
+    private final PurchaseRepository purchaseRepository;
 
-    @Autowired
-    private PurchaseDetailRepository purchaseDetailRepository;
+    private final PurchaseDetailRepository purchaseDetailRepository;
 
-    @Autowired
-    private ProductStockRepository productStockRepository;
+    private final ProductStockRepository productStockRepository;
 
-    @Autowired
-    private ProductPriceRepository productPriceRepository;
+    private final ProductPriceRepository productPriceRepository;
 
-    @Autowired
-    private ProductExpiryRepository productExpiryRepository;
+    private final ProductExpiryRepository productExpiryRepository;
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Autowired
-    private PayableRepository payableRepository;
+    private final PayableRepository payableRepository;
 
-    @Autowired
-    private PayablePaymentRepository payablePaymentRepository;
+    private final PayablePaymentRepository payablePaymentRepository;
 
-    @Autowired
-    private ConfigurationService configurationService;
+    private final ConfigurationService configurationService;
 
-    @Autowired
-    private SessionService sessionService;
+    private final SessionService sessionService;
+
+    public PurchaseService(PurchaseRepository purchaseRepository, PurchaseDetailRepository purchaseDetailRepository,
+                           ProductStockRepository productStockRepository, ProductPriceRepository productPriceRepository,
+                           ProductExpiryRepository productExpiryRepository, ProductRepository productRepository,
+                           PayableRepository payableRepository, PayablePaymentRepository payablePaymentRepository,
+                           ConfigurationService configurationService, SessionService sessionService) {
+        this.purchaseRepository = purchaseRepository;
+        this.purchaseDetailRepository = purchaseDetailRepository;
+        this.productStockRepository = productStockRepository;
+        this.productPriceRepository = productPriceRepository;
+        this.productExpiryRepository = productExpiryRepository;
+        this.productRepository = productRepository;
+        this.payableRepository = payableRepository;
+        this.payablePaymentRepository = payablePaymentRepository;
+        this.configurationService = configurationService;
+        this.sessionService = sessionService;
+    }
 
     @TargetActivity(Activity.SEARCH_PURCHASES_BY_FILTER)
     @Cacheable(CacheNameConstants.PURCHASES_BY_FILTER)
