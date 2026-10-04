@@ -1,0 +1,33 @@
+/* Scoped shell styling keeps embedded pages on their existing theme. */
+.main-shell { -fx-background-color: white; }
+.shell-topbar { -fx-background-color: #24221f; -fx-padding: 10 20; -fx-border-width: 0; }
+.shell-store { -fx-font-size: 21px; -fx-font-weight: bold; -fx-text-fill: #faf8f5; }
+.shell-icon { -fx-fill: transparent; -fx-stroke: -fx-text-base-color; -fx-stroke-width: 1.7; -fx-stroke-line-cap: round; -fx-stroke-line-join: round; }
+.shell-sidebar-toolbar { -fx-background-color: #008167; -fx-padding: 0; }
+.shell-toggle { -fx-background-color: transparent; -fx-background-radius: 0; -fx-border-radius: 0; -fx-border-color: transparent; -fx-padding: 9 22; -fx-min-height: 42; -fx-alignment: center-left; -fx-graphic-text-gap: 12; -fx-cursor: hand; -fx-text-fill: white; -fx-text-base-color: white; }
+.shell-toggle:hover, .shell-toggle:focused { -fx-background-color: #006e58; -fx-border-color: transparent; }
+.shell-sidebar:collapsed .shell-toggle { -fx-alignment: center; -fx-padding: 9 4; -fx-graphic-text-gap: 0; }
+.shell-profile { -fx-background-color: transparent; -fx-background-radius: 0; -fx-border-radius: 0; -fx-border-color: transparent; -fx-background-insets: 0; -fx-padding: 5; -fx-min-width: 48; -fx-pref-width: 48; -fx-max-width: 48; -fx-min-height: 48; -fx-pref-height: 48; -fx-max-height: 48; -fx-alignment: center; -fx-cursor: hand; }
+.shell-profile:hover, .shell-profile:selected { -fx-background-color: #37332e; }
+.shell-profile:focused { -fx-background-color: #37332e; -fx-border-color: transparent; }
+.shell-account-panel { -fx-background-color: white; -fx-border-color: #e1e7e3; -fx-border-width: 1; -fx-padding: 6; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 16, 0, 0, 6); }
+.shell-account-heading { -fx-padding: 10; }
+.shell-account-separator { -fx-padding: 4 0 8 0; }
+.shell-account-separator .line { -fx-border-color: #e8edea; -fx-border-width: 1 0 0 0; }
+.shell-account-user { -fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #24221f; }
+.shell-account-group { -fx-font-size: 12px; -fx-text-fill: #64756e; }
+.shell-logout { -fx-padding: 10; -fx-min-height: 42; -fx-border-width: 0; -fx-background-insets: 0; -fx-font-size: 13px; -fx-alignment: center-left; -fx-graphic-text-gap: 12; -fx-background-color: white; -fx-background-radius: 0; -fx-border-radius: 0; -fx-border-color: transparent; -fx-text-fill: #b63b48; -fx-text-base-color: #b63b48; -fx-cursor: hand; }
+.shell-logout:hover, .shell-logout:focused { -fx-background-color: #fff0f0; -fx-border-color: transparent; -fx-border-width: 0; }
+.shell-sidebar, .shell-sidebar > .viewport { -fx-background-color: #009c7c; }
+.shell-sidebar { -fx-padding: 0; -fx-background-insets: 0; -fx-border-width: 0; }
+.shell-menu-list { -fx-padding: 16 12; }
+.shell-menu { -fx-background-color: transparent; -fx-background-radius: 0; -fx-border-radius: 0; -fx-border-color: transparent; -fx-background-insets: 0; -fx-text-fill: white; -fx-text-base-color: white; -fx-alignment: center-left; -fx-padding: 9 10; -fx-graphic-text-gap: 12; -fx-min-height: 42; -fx-cursor: hand; }
+.shell-menu:hover { -fx-background-color: #008167; }
+.shell-menu:focused { -fx-border-color: #a4e7d2; }
+.shell-menu.btn-primary-active { -fx-background-color: white; -fx-text-fill: #00775f; -fx-text-base-color: #00775f; -fx-font-weight: bold; }
+.shell-section { -fx-padding: 18 10 5 10; -fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #b5e4d6; }
+.shell-sidebar:collapsed .shell-menu-list { -fx-padding: 16 8; }
+.shell-sidebar:collapsed .shell-menu { -fx-alignment: center; -fx-padding: 9 4; -fx-graphic-text-gap: 0; }
+.shell-content { -fx-background-color: white; }
+.shell-footer { -fx-background-color: #008167; -fx-border-width: 0; -fx-padding: 0 18; }
+.shell-footer .label { -fx-text-fill: white; -fx-font-size: 13px; }

@@ -24,12 +24,19 @@ import com.pinodesk.viewmodel.SaleReportFilterVM;
 import com.pinodesk.viewmodel.UserGroupMenuVM;
 
 import javafx.application.Platform;
+import javafx.css.PseudoClass;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -37,6 +44,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MainController extends BaseController {
+
+    private boolean sidebarCollapsed;
+
+    @FXML
+    private Button btnToggleSidebar;
 
     @FXML
     private AnchorPane rootPane;
@@ -108,6 +120,15 @@ public class MainController extends BaseController {
     private Button btnLogout;
 
     @FXML
+    private ToggleButton profileMenu;
+
+    @FXML
+    private VBox accountPanel;
+
+    @FXML
+    private VBox sidebarPane;
+
+    @FXML
     private Label lblVersion;
 
     @FXML
@@ -132,7 +153,73 @@ public class MainController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        // No controls to init
+        vboxMenu.getChildren().stream().filter(Button.class::isInstance).map(Button.class::cast).forEach(button -> {
+            button.setTooltip(new Tooltip(button.getText()));
+            button.setAccessibleText(button.getText());
+        });
+        profileMenu.accessibleTextProperty().bind(lblUser.textProperty());
+        Tooltip profileTooltip = new Tooltip();
+        profileTooltip.textProperty().bind(lblUser.textProperty());
+        profileMenu.setTooltip(profileTooltip);
+        accountPanel.visibleProperty().bind(profileMenu.selectedProperty());
+        accountPanel.managedProperty().bind(profileMenu.selectedProperty());
+        profileMenu.selectedProperty().addListener((observable, oldValue, selected) -> {
+            if (selected) {
+                btnLogout.requestFocus();
+            }
+        });
+        rootPane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            if (profileMenu.isSelected() && event.getTarget() instanceof Node target && !isInside(target, accountPanel)
+                    && !isInside(target, profileMenu)) {
+                profileMenu.setSelected(false);
+            }
+        });
+        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (profileMenu.isSelected() && event.getCode() == KeyCode.ESCAPE) {
+                profileMenu.setSelected(false);
+                profileMenu.requestFocus();
+                event.consume();
+            }
+        });
+        updateSidebar();
+    }
+
+    private boolean isInside(Node node, Node container) {
+        for (Node current = node; current != null; current = current.getParent()) {
+            if (current == container) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @FXML
+    void onActionBtnToggleSidebar(ActionEvent event) {
+        sidebarCollapsed = !sidebarCollapsed;
+        updateSidebar();
+    }
+
+    private void updateSidebar() {
+        double width = sidebarCollapsed ? 76 : 250;
+        sidebarPane.setPrefWidth(width);
+        AnchorPane.setLeftAnchor(contentPane, width);
+        sidebarPane.pseudoClassStateChanged(PseudoClass.getPseudoClass("collapsed"), sidebarCollapsed);
+        menuScrollPane.pseudoClassStateChanged(PseudoClass.getPseudoClass("collapsed"), sidebarCollapsed);
+        // Only update remaining nodes; permission-filtered menus must never be
+        // restored.
+        vboxMenu.getChildren().forEach(node -> {
+            if (node instanceof Button button) {
+                button.setContentDisplay(sidebarCollapsed ? ContentDisplay.GRAPHIC_ONLY : ContentDisplay.LEFT);
+            } else if (node instanceof Label) {
+                node.setVisible(!sidebarCollapsed);
+                node.setManaged(!sidebarCollapsed);
+            }
+        });
+        String label = resources.getString(sidebarCollapsed ? "btn_expand_sidebar" : "btn_collapse_sidebar");
+        btnToggleSidebar.setText(label);
+        btnToggleSidebar.setContentDisplay(sidebarCollapsed ? ContentDisplay.GRAPHIC_ONLY : ContentDisplay.LEFT);
+        btnToggleSidebar.setAccessibleText(label);
+        btnToggleSidebar.setTooltip(new Tooltip(label));
     }
 
     @Override
@@ -268,6 +355,7 @@ public class MainController extends BaseController {
 
     @FXML
     void onActionBtnLogout(ActionEvent event) {
+        profileMenu.setSelected(false);
         if (!sessionService.isCurrentSessionActive()) {
             close();
             return;

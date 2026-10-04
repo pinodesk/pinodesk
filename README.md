@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/github/license/pinodesk/pinodesk)](https://github.com/pinodesk/pinodesk/blob/main/LICENSE)
 </div>
 
-# Open Source Point of Sale for Everyone
+# About Pinodesk
 
 Pinodesk is a free, open-source, desktop-based Point of Sale system designed for retail businesses of all sizes. Build it yourself or download the installer, register your installation with a code sent to your email, and you're ready to manage your store. No licensing fees, no subscriptions, no vendor lock-in.
 
