@@ -68,6 +68,20 @@ class ProductCategoryServiceTest extends BaseServiceTest {
     }
 
     @Test
+    void blankSearchUsesConfiguredLanguageAndMapsResults() {
+        when(configurationService.getConfiguration(com.pinodesk.constant.ConfigurationConstants.LANGUAGE))
+                .thenReturn("id");
+        when(productCategoryRepository.findByLanguageAndDeletedAtIsNullOrderByName("id"))
+                .thenReturn(List.of(productCategory));
+        List<ProductCategoryVM> results = productCategoryService.searchProductCategoryByKeyword(" ");
+        assertEquals(1, results.size());
+        assertEquals("0001", results.get(0).getCode());
+        assertEquals("Category 0001", results.get(0).getName());
+        verify(configurationService).getConfiguration(com.pinodesk.constant.ConfigurationConstants.LANGUAGE);
+        verify(productCategoryRepository).findByLanguageAndDeletedAtIsNullOrderByName("id");
+    }
+
+    @Test
     void missingCodeHasSpecificDomainError() {
         DomainException failure = assertThrows(
                 DomainException.class,

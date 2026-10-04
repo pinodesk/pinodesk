@@ -3,7 +3,6 @@ package com.pinodesk.service;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +21,13 @@ public class ProductCategoryService extends BaseService {
 
     private final ProductCategoryRepository productCategoryRepository;
 
-    public ProductCategoryService(ProductCategoryRepository productCategoryRepository) {
-        this.productCategoryRepository = productCategoryRepository;
-    }
+    private final ConfigurationService configurationService;
 
-    @Autowired
-    private ConfigurationService configurationService;
+    public ProductCategoryService(ProductCategoryRepository productCategoryRepository,
+                                  ConfigurationService configurationService) {
+        this.productCategoryRepository = productCategoryRepository;
+        this.configurationService = configurationService;
+    }
 
     @TargetActivity(Activity.GET_PRODUCT_CATEGORY_BY_ID)
     public ProductCategoryVM getProductCategoryById(Long id) {
