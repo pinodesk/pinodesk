@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -31,14 +30,18 @@ import com.pinodesk.viewmodel.PayableVM;
 @Service
 public class PayableService extends BaseService {
 
-    @Autowired
-    private PayableRepository payableRepository;
+    private final PayableRepository payableRepository;
 
-    @Autowired
-    private PayablePaymentRepository payablePaymentRepository;
+    private final PayablePaymentRepository payablePaymentRepository;
 
-    @Autowired
-    private PurchaseRepository purchaseRepository;
+    private final PurchaseRepository purchaseRepository;
+
+    public PayableService(PayableRepository payableRepository, PayablePaymentRepository payablePaymentRepository,
+                          PurchaseRepository purchaseRepository) {
+        this.payableRepository = payableRepository;
+        this.payablePaymentRepository = payablePaymentRepository;
+        this.purchaseRepository = purchaseRepository;
+    }
 
     @TargetActivity(Activity.SEARCH_PAYABLES_BY_FILTER)
     @Cacheable(CacheNameConstants.PAYABLES_BY_FILTER)
