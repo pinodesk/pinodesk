@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -31,14 +30,18 @@ import com.pinodesk.viewmodel.ReceivableVM;
 @Service
 public class ReceivableService extends BaseService {
 
-    @Autowired
-    private ReceivableRepository receivableRepository;
+    private final ReceivableRepository receivableRepository;
 
-    @Autowired
-    private ReceivablePaymentRepository receivablePaymentRepository;
+    private final ReceivablePaymentRepository receivablePaymentRepository;
 
-    @Autowired
-    private SaleRepository saleRepository;
+    private final SaleRepository saleRepository;
+
+    public ReceivableService(ReceivableRepository receivableRepository,
+                             ReceivablePaymentRepository receivablePaymentRepository, SaleRepository saleRepository) {
+        this.receivableRepository = receivableRepository;
+        this.receivablePaymentRepository = receivablePaymentRepository;
+        this.saleRepository = saleRepository;
+    }
 
     @TargetActivity(Activity.SEARCH_RECEIVABLES_BY_FILTER)
     @Cacheable(CacheNameConstants.RECEIVABLES_BY_FILTER)
