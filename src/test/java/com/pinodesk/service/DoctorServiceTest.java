@@ -172,6 +172,33 @@ class DoctorServiceTest extends BaseServiceTest {
     }
 
     @Test
+    void updateCanFillEachPreviouslyNullOptionalField() {
+        for (int field = 0; field < 4; field++) {
+            reset(doctors);
+            Doctor doctor = existing();
+            switch (field) {
+                case 0:
+                    doctor.setRegistrationNumber(null);
+                    break;
+                case 1:
+                    doctor.setMedicalLicenseNumber(null);
+                    break;
+                case 2:
+                    doctor.setEmail(null);
+                    break;
+                default:
+                    doctor.setPhone(null);
+            }
+            service.updateDoctor(edit(), 7L);
+            assertEquals("REG1", doctor.getRegistrationNumber());
+            assertEquals("LIC1", doctor.getMedicalLicenseNumber());
+            assertEquals("doc@example.com", doctor.getEmail());
+            assertEquals("081", doctor.getPhone());
+            verify(doctors).save(doctor);
+        }
+    }
+
+    @Test
     void searchesUseLocaleAndTrimKeywordAndMapCategory() {
         when(configuration.getConfiguration(ConfigurationConstants.LANGUAGE)).thenReturn("id");
         DoctorFilterVM f = new DoctorFilterVM();

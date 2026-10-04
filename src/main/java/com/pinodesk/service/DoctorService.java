@@ -107,23 +107,23 @@ public class DoctorService extends BaseService {
             throw new DomainException(DomainError.DOCTOR_EXISTS_BY_CODE);
         }
         String registrationNumber = doctorEdit.getRegistrationNumber();
-        if (StringUtils.isNotBlank(registrationNumber) && !doctor.getRegistrationNumber().equals(registrationNumber)
+        if (StringUtils.isNotBlank(registrationNumber) && !registrationNumber.equals(doctor.getRegistrationNumber())
                 && doctorRepository.existsByRegistrationNumberAndDeletedAtIsNull(registrationNumber)) {
             throw new DomainException(DomainError.DOCTOR_EXISTS_BY_REGISTRATION_NUMBER);
         }
         String medicalLicenseNumber = doctorEdit.getMedicalLicenseNumber();
         if (StringUtils.isNotBlank(medicalLicenseNumber)
-                && !doctor.getMedicalLicenseNumber().equals(medicalLicenseNumber)
+                && !medicalLicenseNumber.equals(doctor.getMedicalLicenseNumber())
                 && doctorRepository.existsByMedicalLicenseNumberAndDeletedAtIsNull(medicalLicenseNumber)) {
             throw new DomainException(DomainError.DOCTOR_EXISTS_BY_MEDICAL_LICENSE_NUMBER);
         }
         String email = doctorEdit.getEmail();
-        if (StringUtils.isNotBlank(email) && !doctor.getEmail().equals(email)
+        if (StringUtils.isNotBlank(email) && !email.equals(doctor.getEmail())
                 && doctorRepository.existsByEmailIgnoreCaseAndDeletedAtIsNull(email)) {
             throw new DomainException(DomainError.DOCTOR_EXISTS_BY_EMAIL);
         }
         String phone = doctorEdit.getPhone();
-        if (StringUtils.isNotBlank(phone) && !doctor.getPhone().equals(phone)
+        if (StringUtils.isNotBlank(phone) && !phone.equals(doctor.getPhone())
                 && doctorRepository.existsByPhoneAndDeletedAtIsNull(phone)) {
             throw new DomainException(DomainError.DOCTOR_EXISTS_BY_PHONE);
         }
