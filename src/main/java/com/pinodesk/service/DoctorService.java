@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -32,14 +31,18 @@ import com.pinodesk.viewmodel.DoctorVM;
 @Service
 public class DoctorService extends BaseService {
 
-    @Autowired
-    private DoctorRepository doctorRepository;
+    private final DoctorRepository doctorRepository;
 
-    @Autowired
-    private DoctorCategoryRepository doctorCategoryRepository;
+    private final DoctorCategoryRepository doctorCategoryRepository;
 
-    @Autowired
-    private ConfigurationService configurationService;
+    private final ConfigurationService configurationService;
+
+    public DoctorService(DoctorRepository doctorRepository, DoctorCategoryRepository doctorCategoryRepository,
+                         ConfigurationService configurationService) {
+        this.doctorRepository = doctorRepository;
+        this.doctorCategoryRepository = doctorCategoryRepository;
+        this.configurationService = configurationService;
+    }
 
     @TargetActivity(Activity.SEARCH_DOCTORS_BY_FILTER)
     @Cacheable(CacheNameConstants.DOCTORS_BY_FILTER)
