@@ -30,6 +30,7 @@ import com.pinodesk.service.PayableService;
 import com.pinodesk.service.ProductService;
 import com.pinodesk.service.ReceivableService;
 import com.pinodesk.util.SpringUtils;
+import com.pinodesk.util.DashboardTableScrollSupport;
 import com.pinodesk.util.TaskUtils;
 import com.pinodesk.viewmodel.BestSellingProductVM;
 import com.pinodesk.viewmodel.LowestSellingProductVM;
@@ -199,6 +200,9 @@ public class DashboardController extends BaseController {
 
     @Override
     protected void initControlActions() {
+        DashboardTableScrollSupport.install(dashboardScrollPane, List.of(tblBestSellingProducts,
+                tblLowestSellingProducts, tblProductOutOfStock, tblProductClosestExpiry,
+                tblPayableClosestDueDate, tblReceivableClosestDueDate));
         Locale locale = resources.getLocale();
 
         TableViewUtils.setColumnValue(colBestSellingProductName, BestSellingProductVM::getProductName);

@@ -1,0 +1,2 @@
+.dashboard-scroll-hint { -fx-text-fill: #64756e; -fx-font-size: 12px; }
+.dashboard-scroll-table:scroll-active { -fx-border-color: #009c7c; -fx-border-width: 1; }
