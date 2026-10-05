@@ -32,6 +32,9 @@ import com.pinodesk.service.ConfigurationService;
 import com.pinodesk.service.ProductService;
 import com.pinodesk.toolbox.data.StringNumberUtils;
 import com.pinodesk.util.ProductUtils;
+import com.pinodesk.util.AccountPanelSupport;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.layout.VBox;
 import com.pinodesk.util.SpringUtils;
 import com.pinodesk.viewmodel.ChooseResultVM;
 import com.pinodesk.viewmodel.CurrentSessionVM;
@@ -58,6 +61,12 @@ import javafx.scene.input.KeyCode;
 import lombok.Data;
 
 public class CashierController extends CommonContentPaneController {
+
+    @FXML
+    private ToggleButton profileMenu;
+
+    @FXML
+    private VBox accountPanel;
 
     @FXML
     private Label lblUser;
@@ -221,6 +230,7 @@ public class CashierController extends CommonContentPaneController {
 
     @Override
     protected void initContentPaneControlActions() {
+        AccountPanelSupport.install(contentPane, profileMenu, accountPanel, lblUser, accountPanel);
         Locale locale = resources.getLocale();
         toggleSellingMode.selectedToggleProperty()
                 .addListener((o, ov, nv) -> handleSelectedSellingMode((RadioButton) nv));

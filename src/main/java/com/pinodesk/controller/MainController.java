@@ -18,6 +18,7 @@ import com.pinodesk.pandora.utility.AlertResult;
 import com.pinodesk.pandora.utility.PageLoader;
 import com.pinodesk.pandora.utility.ScrollPaneUtils;
 import com.pinodesk.pandora.utility.StageUtils;
+import com.pinodesk.util.AccountPanelSupport;
 import com.pinodesk.viewmodel.CurrentSessionVM;
 import com.pinodesk.viewmodel.PurchaseReportFilterVM;
 import com.pinodesk.viewmodel.SaleReportFilterVM;
@@ -32,9 +33,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.AnchorPane;
@@ -157,40 +155,8 @@ public class MainController extends BaseController {
             button.setTooltip(new Tooltip(button.getText()));
             button.setAccessibleText(button.getText());
         });
-        profileMenu.accessibleTextProperty().bind(lblUser.textProperty());
-        Tooltip profileTooltip = new Tooltip();
-        profileTooltip.textProperty().bind(lblUser.textProperty());
-        profileMenu.setTooltip(profileTooltip);
-        accountPanel.visibleProperty().bind(profileMenu.selectedProperty());
-        accountPanel.managedProperty().bind(profileMenu.selectedProperty());
-        profileMenu.selectedProperty().addListener((observable, oldValue, selected) -> {
-            if (selected) {
-                btnLogout.requestFocus();
-            }
-        });
-        rootPane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            if (profileMenu.isSelected() && event.getTarget() instanceof Node target && !isInside(target, accountPanel)
-                    && !isInside(target, profileMenu)) {
-                profileMenu.setSelected(false);
-            }
-        });
-        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (profileMenu.isSelected() && event.getCode() == KeyCode.ESCAPE) {
-                profileMenu.setSelected(false);
-                profileMenu.requestFocus();
-                event.consume();
-            }
-        });
+        AccountPanelSupport.install(rootPane, profileMenu, accountPanel, lblUser, btnLogout);
         updateSidebar();
-    }
-
-    private boolean isInside(Node node, Node container) {
-        for (Node current = node; current != null; current = current.getParent()) {
-            if (current == container) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @FXML
