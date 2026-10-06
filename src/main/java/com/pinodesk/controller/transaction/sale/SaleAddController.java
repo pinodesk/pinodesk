@@ -1,5 +1,8 @@
 package com.pinodesk.controller.transaction.sale;
 
+import com.pinodesk.entity.PaymentMethod;
+import com.pinodesk.util.PaymentMethodControls;
+
 import static com.pinodesk.constant.CommonConstants.DECIMAL_SCALE;
 import static com.pinodesk.toolbox.data.StringNumberUtils.formatOrDefault;
 import static com.pinodesk.toolbox.data.StringNumberUtils.toBigDecimalOrNull;
@@ -93,6 +96,9 @@ public class SaleAddController extends CommonDataSaveController {
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbSellingMode;
+
+    @FXML
+    private ComboBox<PaymentMethod> cbPaymentMethod;
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
@@ -324,6 +330,10 @@ public class SaleAddController extends CommonDataSaveController {
             if (isPaid) {
                 dpDueDate.setValue(null);
             }
+            cbPaymentMethod.setDisable(!isPaid);
+            if (!isPaid) {
+                cbPaymentMethod.setValue(null);
+            }
             vboxDueDate.setDisable(isPaid);
         });
         ComboBoxUtils.onSelectedItemChanged(cbSellingMode, (ov, nv) -> updateDisplaySellingPrice(nv.getValue()));
@@ -331,6 +341,7 @@ public class SaleAddController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
+        PaymentMethodControls.initialize(cbPaymentMethod, resources, null);
         LocalDateTime now = LocalDateTime.now();
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         ComboBoxUtils.selectIndex(cbSellingMode, 0);
@@ -354,6 +365,7 @@ public class SaleAddController extends CommonDataSaveController {
         saleAdd.setInvoiceNumber(tfInvoiceNumber.getText().trim());
         saleAdd.setInvoiceDate(dpInvoiceDate.getValue());
         PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
+        saleAdd.setPaymentMethodId(cbPaymentMethod.getValue() == null ? null : cbPaymentMethod.getValue().getId());
         saleAdd.setPaymentStatus(paymentStatus);
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
             saleAdd.setPaymentDueDate(dpDueDate.getValue());
@@ -369,6 +381,10 @@ public class SaleAddController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
+        validator.validateCustom(
+                () -> PaymentStatus.PAID.equals(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue())
+                        && cbPaymentMethod.getValue() == null,
+                MessageCode.ERROR_PAYMENT_METHOD_NOT_FOUND);
         LocalDate invoiceDate = dpInvoiceDate.getValue();
         LocalDate dueDate = dpDueDate.getValue();
         PaymentStatus selected = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();

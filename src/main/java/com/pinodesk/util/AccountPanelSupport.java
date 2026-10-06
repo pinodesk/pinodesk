@@ -27,8 +27,8 @@ public final class AccountPanelSupport {
             }
         });
         root.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            if (trigger.isSelected() && event.getTarget() instanceof Node target
-                    && !isInside(target, panel) && !isInside(target, trigger)) {
+            if (trigger.isSelected() && event.getTarget() instanceof Node target && !isInside(target, panel)
+                    && !isInside(target, trigger)) {
                 trigger.setSelected(false);
             }
         });

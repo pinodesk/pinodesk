@@ -186,6 +186,10 @@
                                                       </AnchorPane>
                                                    </children>
                                                 </VBox>
+<VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+<Label text="%lbl_payment_method" />
+<ComboBox fx:id="cbPaymentMethod" minWidth="158" prefWidth="220" maxWidth="Infinity" styleClass="combo-box-primary" />
+</VBox>
                                                 <VBox spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                                    <children>
                                                       <Label text="%lbl_invoice_date">

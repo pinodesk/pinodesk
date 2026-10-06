@@ -26,6 +26,9 @@ import javafx.scene.layout.VBox;
 public class SaleFilterController extends CommonDataFilterController<SaleFilterVM> {
 
     @FXML
+    private ComboBox<com.pinodesk.entity.PaymentMethod> cbPaymentMethod;
+
+    @FXML
     private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
 
     @FXML
@@ -71,6 +74,19 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
     protected void initDataFilterControlValues() {
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
         if (currentFilter != null) {
+            cbPaymentMethod.getItems().stream()
+                    .filter(m -> m != null && m.getId().equals(currentFilter.getPaymentMethodId())).findFirst()
+                    .ifPresent(cbPaymentMethod::setValue);
+            if (currentFilter.getCustomerId() != null) {
+                selectedCustomer = new CustomerVM();
+                selectedCustomer.setId(currentFilter.getCustomerId());
+                selectedCustomer.setName(currentFilter.getCustomerName());
+            }
+            if (currentFilter.getDoctorId() != null && isPharmacyFeatureEnabled()) {
+                selectedDoctor = new DoctorVM();
+                selectedDoctor.setId(currentFilter.getDoctorId());
+                selectedDoctor.setName(currentFilter.getDoctorName());
+            }
             tfInvoiceNumber.setText(currentFilter.getInvoiceNumber());
             tfCustomer.setText(currentFilter.getCustomerName());
             tfDoctor.setText(currentFilter.getDoctorName());
@@ -102,13 +118,18 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
                                 .orElseThrow());
             }
         }
-        if (!isPharmacyFeatureEnabled()) {
-            vboxDoctor.setVisible(false);
+        boolean pharmacy = isPharmacyFeatureEnabled();
+        vboxDoctor.setVisible(pharmacy);
+        vboxDoctor.setManaged(pharmacy);
+        if (!pharmacy) {
+            selectedDoctor = null;
+            tfDoctor.clear();
         }
     }
 
     @Override
     protected void initDataFilterControlActions() {
+        com.pinodesk.util.PaymentMethodControls.initialize(cbPaymentMethod, resources, null, true);
         initCustomDatePicker(dpCreatedDateMax, dpCreatedDateMin, dpDueDateMax, dpDueDateMin);
         TextFieldUtils.setDecimalTextFields(tfTotalPaymentMax, tfTotalPaymentMin);
         TextFieldUtils.setDigitTextFields(tfTotalProductMax, tfTotalProductMin);
@@ -127,6 +148,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
     @Override
     protected SaleFilterVM getFreshFilterValues() {
         SaleFilterVM filter = new SaleFilterVM();
+        filter.setPaymentMethodId(cbPaymentMethod.getValue() == null ? null : cbPaymentMethod.getValue().getId());
         filter.setInvoiceNumber(tfInvoiceNumber.getText());
         filter.setCreatedDateMax(dpCreatedDateMax.getValue());
         filter.setCreatedDateMin(dpCreatedDateMin.getValue());
@@ -138,7 +160,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
             filter.setCustomerId(selectedCustomer.getId());
             filter.setCustomerName(selectedCustomer.getName());
         }
-        if (selectedDoctor != null) {
+        if (isPharmacyFeatureEnabled() && selectedDoctor != null) {
             filter.setDoctorId(selectedDoctor.getId());
             filter.setDoctorName(selectedDoctor.getName());
         }
@@ -164,6 +186,7 @@ public class SaleFilterController extends CommonDataFilterController<SaleFilterV
         dpDueDateMax.setValue(null);
         dpDueDateMin.setValue(null);
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
+        cbPaymentMethod.setValue(null);
         selectedCustomer = null;
         selectedDoctor = null;
     }

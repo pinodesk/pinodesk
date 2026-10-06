@@ -11,6 +11,7 @@ import lombok.Data;
 
 @Data
 public class SaleEditVM {
+    private Long paymentMethodId;
     private Long customerId;
     private Long doctorId;
     private SellingMode sellingMode;

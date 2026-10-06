@@ -230,6 +230,8 @@
 .date-picker-clear-btn {
     -fx-min-height: 23px;
     -fx-max-height: 23px;
+    -fx-alignment: CENTER;
+    -fx-padding: 0;
 }
 
 .date-picker-clear-btn:hover,
@@ -443,3 +445,29 @@
 .tab-header-area .tab .tab-label {
     -fx-text-fill: white;
 }
+/* Visible single-choice payment methods for quick cashier entry. */
+.payment-method-scroll, .payment-method-scroll > .viewport {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+.payment-method-choice {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cbd5e1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-padding: 8;
+    -fx-cursor: hand;
+    -fx-alignment: CENTER;
+}
+.payment-method-choice:hover { -fx-background-color: #f0faf7; }
+.payment-method-choice:selected {
+    -fx-background-color: #e4f7f0;
+    -fx-border-color: #009c7c;
+    -fx-text-fill: #00775f;
+}
+.payment-method-choice:focused { -fx-border-color: #005b48; -fx-border-width: 2; -fx-padding: 7; }
+.payment-method-choice .radio { -fx-padding: 4; }
+.payment-method-choice .dot { -fx-padding: 3; }
+.payment-method-choice:selected .dot { -fx-background-color: #009c7c; }

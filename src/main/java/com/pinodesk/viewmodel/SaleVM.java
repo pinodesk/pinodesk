@@ -12,6 +12,8 @@ public class SaleVM {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+    private Long paymentMethodId;
+    private String paymentMethodName;
     private Long customerId;
     private String customerName;
     private Long doctorId;

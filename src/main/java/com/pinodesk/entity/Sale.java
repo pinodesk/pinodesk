@@ -24,6 +24,7 @@ public class Sale extends DataModel {
     public static final String C_TOTAL_SALE = "total_sale";
     public static final String C_USER_ID = "user_id";
 
+    private Long paymentMethodId;
     private Long customerId;
     private Long doctorId;
     private String sellingMode;

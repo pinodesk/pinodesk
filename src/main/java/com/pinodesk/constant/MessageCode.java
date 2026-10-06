@@ -3,6 +3,12 @@ package com.pinodesk.constant;
 import com.pinodesk.pandora.utility.IMessage;
 
 public enum MessageCode implements IMessage {
+    CONFIRMATION_REMOVE_PAYMENT_METHODS,
+    ERROR_PAYMENT_METHOD_IN_USE,
+    ERROR_PAYMENT_METHOD_PROTECTED,
+    ERROR_PAYMENT_METHOD_DUPLICATE,
+    ERROR_PAYMENT_METHOD_INVALID,
+    ERROR_PAYMENT_METHOD_NOT_FOUND,
 
     ERROR_INCOMPLETE_FORM,
     ERROR_REQUIRED,

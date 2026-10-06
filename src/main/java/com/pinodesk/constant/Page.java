@@ -4,6 +4,10 @@ import com.pinodesk.pandora.utility.IPage;
 
 public enum Page implements IPage {
 
+    SETTINGS_PAYMENT_METHOD_MAIN("settings/payment-method/main"),
+    SETTINGS_PAYMENT_METHOD_ADD("settings/payment-method/add"),
+    SETTINGS_PAYMENT_METHOD_EDIT("settings/payment-method/edit"),
+    SETTINGS_PAYMENT_METHOD_FILTER("settings/payment-method/filter"),
     MAIN("main"),
     SPLASH("splash"),
     LOADING("loading"),

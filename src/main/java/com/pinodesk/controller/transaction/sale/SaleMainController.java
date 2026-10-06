@@ -84,6 +84,9 @@ public class SaleMainController extends BaseController {
     private TableColumn<SaleVM, String> colPaymentStatus;
 
     @FXML
+    private TableColumn<SaleVM, String> colPaymentMethod;
+
+    @FXML
     private TableColumn<SaleVM, LocalDate> colDueDate;
 
     @FXML
@@ -185,6 +188,7 @@ public class SaleMainController extends BaseController {
         disableWriteAction(MenuCodeConstants.TRANSACTION_SALES, btnAdd, btnRemove);
         Locale locale = resources.getLocale();
         TableViewUtils.setColumnValue(colInvoiceNumber, SaleVM::getInvoiceNumber);
+        TableViewUtils.setColumnValue(colPaymentMethod, SaleVM::getPaymentMethodName);
         TableViewUtils.setColumnValue(colCustomerName, SaleVM::getCustomerName);
         TableViewUtils.setColumnValue(colDueDate, SaleVM::getPaymentDueDate);
         TableViewUtils.setColumnValue(colDoctorName, SaleVM::getDoctorName);

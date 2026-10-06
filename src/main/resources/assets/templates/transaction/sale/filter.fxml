@@ -1,279 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
-<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
-
-<VBox fx:id="contentPane" prefWidth="774.0" style="-fx-background-color: white;" stylesheets="@../../../css/pinodesk.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pinodesk.controller.transaction.sale.SaleFilterController">
-   <children>
-      <AnchorPane prefWidth="774.0">
-         <children>
-            <Label layoutX="14.0" layoutY="8.0" style="-fx-background-color: white;" text="%lbl_title_filter_sales" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="0.0">
-               <font>
-                  <Font size="24.0" />
-               </font>
-               <padding>
-                  <Insets bottom="5.0" top="5.0" />
-               </padding>
-            </Label>
-         </children>
-      </AnchorPane>
-      <AnchorPane style="-fx-border-color: #bebebe; -fx-border-width: 1px;">
-         <children>
-            <VBox layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <HBox spacing="10.0">
-                     <children>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_invoice_number">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfInvoiceNumber" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_created_date_min">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <AnchorPane>
-                                 <children>
-                                    <DatePicker fx:id="dpCreatedDateMin" editable="false" maxHeight="28.0" maxWidth="1.7976931348623157E308" styleClass="input-primary" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    <Button layoutX="164.5" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" textFill="WHITE" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
-                                       <graphic>
-                                          <FontAwesomeIconView fx:id="faBtnSummary224" fill="WHITE" glyphName="TIMES" size="13" />
-                                       </graphic>
-                                       <styleClass>
-                                          <String fx:value="btn-secondary" />
-                                          <String fx:value="date-picker-clear-btn" />
-                                       </styleClass>
-                                    </Button>
-                                 </children>
-                              </AnchorPane>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_created_date_max">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <AnchorPane>
-                                 <children>
-                                    <DatePicker fx:id="dpCreatedDateMax" editable="false" maxHeight="28.0" maxWidth="1.7976931348623157E308" styleClass="input-primary" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    <Button layoutX="164.5" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" textFill="WHITE" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
-                                       <graphic>
-                                          <FontAwesomeIconView fx:id="faBtnSummary2241" fill="WHITE" glyphName="TIMES" size="13" />
-                                       </graphic>
-                                       <styleClass>
-                                          <String fx:value="btn-secondary" />
-                                          <String fx:value="date-picker-clear-btn" />
-                                       </styleClass>
-                                    </Button>
-                                 </children>
-                              </AnchorPane>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_customer">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfCustomer" editable="false" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </HBox>
-                  <HBox spacing="10.0">
-                     <children>
-                        <VBox fx:id="vboxDoctor" spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_doctor">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfDoctor" editable="false" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_payment_status">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <ComboBox fx:id="cbPaymentStatus" maxWidth="1.7976931348623157E308" prefWidth="163.0">
-                                 <styleClass>
-                                    <String fx:value="combo-box-primary" />
-                                    <String fx:value="input-primary" />
-                                 </styleClass>
-                              </ComboBox>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_due_date_min">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <AnchorPane>
-                                 <children>
-                                    <DatePicker fx:id="dpDueDateMin" editable="false" maxHeight="28.0" maxWidth="1.7976931348623157E308" styleClass="input-primary" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    <Button layoutX="164.5" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" textFill="WHITE" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
-                                       <graphic>
-                                          <FontAwesomeIconView fx:id="faBtnSummary2242" fill="WHITE" glyphName="TIMES" size="13" />
-                                       </graphic>
-                                       <styleClass>
-                                          <String fx:value="btn-secondary" />
-                                          <String fx:value="date-picker-clear-btn" />
-                                       </styleClass>
-                                    </Button>
-                                 </children>
-                              </AnchorPane>
-                           </children>
-                        </VBox>
-                        <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_due_date_max">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <AnchorPane>
-                                 <children>
-                                    <DatePicker fx:id="dpDueDateMax" editable="false" maxHeight="28.0" maxWidth="1.7976931348623157E308" styleClass="input-primary" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                    <Button layoutX="164.5" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" textFill="WHITE" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
-                                       <graphic>
-                                          <FontAwesomeIconView fx:id="faBtnSummary2243" fill="WHITE" glyphName="TIMES" size="13" />
-                                       </graphic>
-                                       <styleClass>
-                                          <String fx:value="btn-secondary" />
-                                          <String fx:value="date-picker-clear-btn" />
-                                       </styleClass>
-                                    </Button>
-                                 </children>
-                              </AnchorPane>
-                           </children>
-                        </VBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </HBox>
-                  <HBox spacing="10.0">
-                     <children>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_total_product_min">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfTotalProductMin" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_total_product_max">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfTotalProductMax" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_total_payment_min">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfTotalPaymentMin" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                        <VBox maxWidth="361.0" spacing="5.0" HBox.hgrow="ALWAYS">
-                           <children>
-                              <Label text="%lbl_total_payment_max">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </Label>
-                              <TextField fx:id="tfTotalPaymentMax" styleClass="input-primary">
-                                 <font>
-                                    <Font size="13.0" />
-                                 </font>
-                              </TextField>
-                           </children>
-                        </VBox>
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-                     </padding>
-                  </HBox>
-               </children>
-            </VBox>
-         </children>
-         <VBox.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" />
-         </VBox.margin>
-      </AnchorPane>
-      <AnchorPane prefWidth="774.0" style="-fx-background-color: #ececec;" VBox.vgrow="NEVER">
-         <children>
-            <HBox layoutX="644.0" layoutY="7.0" spacing="1.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-               <children>
-                  <Button fx:id="btnCancel" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnCancel" styleClass="btn-secondary" text="%btn_cancel" textFill="WHITE" />
-                  <Button fx:id="btnReset" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnReset" styleClass="btn-secondary" text="%btn_reset" textFill="WHITE" />
-                  <Button fx:id="btnFilter" minWidth="73.0" mnemonicParsing="false" onAction="#onActionBtnFilter" styleClass="btn-primary" text="%btn_filter" textFill="WHITE" />
-               </children>
-            </HBox>
-         </children>
-      </AnchorPane>
-   </children>
+<?import java.lang.String?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<VBox fx:id="contentPane" prefWidth="774" style="-fx-background-color: white; -fx-font-size: 13px;" stylesheets="@../../../css/pinodesk.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pinodesk.controller.transaction.sale.SaleFilterController">
+    <Label text="%lbl_title_filter_sales" style="-fx-font-size: 24px;">
+        <padding><Insets top="5" bottom="5" left="10" right="10" /></padding>
+    </Label>
+    <VBox spacing="10" style="-fx-border-color: #bebebe;">
+        <padding><Insets top="10" right="10" bottom="10" left="10" /></padding>
+        <VBox.margin><Insets left="10" right="10" bottom="10" /></VBox.margin>
+        <HBox spacing="10">
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_invoice_number" /><TextField fx:id="tfInvoiceNumber" maxWidth="Infinity" styleClass="input-primary" /></VBox>
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_customer" /><TextField fx:id="tfCustomer" maxWidth="Infinity" styleClass="input-primary" editable="false"/></VBox>
+            <VBox fx:id="vboxDoctor" spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_doctor" /><TextField fx:id="tfDoctor" maxWidth="Infinity" styleClass="input-primary" editable="false"/></VBox>
+        </HBox>
+        <HBox spacing="10">
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_payment_status" /><ComboBox fx:id="cbPaymentStatus" maxWidth="Infinity" styleClass="combo-box-primary" /></VBox>
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_payment_method" /><ComboBox fx:id="cbPaymentMethod" maxWidth="Infinity" styleClass="combo-box-primary" /></VBox>
+        </HBox>
+        <HBox spacing="10">
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_created_date_min" /><AnchorPane><DatePicker fx:id="dpCreatedDateMin" editable="false" maxWidth="Infinity" styleClass="input-primary" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+                <Button prefWidth="25" prefHeight="25" textFill="WHITE" AnchorPane.rightAnchor="2" AnchorPane.topAnchor="2" AnchorPane.bottomAnchor="2"><graphic><FontAwesomeIconView glyphName="TIMES" fill="WHITE" size="13" /></graphic><styleClass><String fx:value="btn-secondary" /><String fx:value="date-picker-clear-btn" /></styleClass></Button></AnchorPane></VBox>
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_created_date_max" /><AnchorPane><DatePicker fx:id="dpCreatedDateMax" editable="false" maxWidth="Infinity" styleClass="input-primary" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+                <Button prefWidth="25" prefHeight="25" textFill="WHITE" AnchorPane.rightAnchor="2" AnchorPane.topAnchor="2" AnchorPane.bottomAnchor="2"><graphic><FontAwesomeIconView glyphName="TIMES" fill="WHITE" size="13" /></graphic><styleClass><String fx:value="btn-secondary" /><String fx:value="date-picker-clear-btn" /></styleClass></Button></AnchorPane></VBox>
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_due_date_min" /><AnchorPane><DatePicker fx:id="dpDueDateMin" editable="false" maxWidth="Infinity" styleClass="input-primary" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+                <Button prefWidth="25" prefHeight="25" textFill="WHITE" AnchorPane.rightAnchor="2" AnchorPane.topAnchor="2" AnchorPane.bottomAnchor="2"><graphic><FontAwesomeIconView glyphName="TIMES" fill="WHITE" size="13" /></graphic><styleClass><String fx:value="btn-secondary" /><String fx:value="date-picker-clear-btn" /></styleClass></Button></AnchorPane></VBox>
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_due_date_max" /><AnchorPane><DatePicker fx:id="dpDueDateMax" editable="false" maxWidth="Infinity" styleClass="input-primary" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+                <Button prefWidth="25" prefHeight="25" textFill="WHITE" AnchorPane.rightAnchor="2" AnchorPane.topAnchor="2" AnchorPane.bottomAnchor="2"><graphic><FontAwesomeIconView glyphName="TIMES" fill="WHITE" size="13" /></graphic><styleClass><String fx:value="btn-secondary" /><String fx:value="date-picker-clear-btn" /></styleClass></Button></AnchorPane></VBox>
+        </HBox>
+        <HBox spacing="10">
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_total_product_min" /><TextField fx:id="tfTotalProductMin" maxWidth="Infinity" styleClass="input-primary" /></VBox>
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_total_product_max" /><TextField fx:id="tfTotalProductMax" maxWidth="Infinity" styleClass="input-primary" /></VBox>
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_total_payment_min" /><TextField fx:id="tfTotalPaymentMin" maxWidth="Infinity" styleClass="input-primary" /></VBox>
+            <VBox  spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS"><Label text="%lbl_total_payment_max" /><TextField fx:id="tfTotalPaymentMax" maxWidth="Infinity" styleClass="input-primary" /></VBox>
+        </HBox>
+    </VBox>
+    <AnchorPane style="-fx-background-color: #ececec;">
+        <HBox spacing="1" AnchorPane.topAnchor="10" AnchorPane.bottomAnchor="10" AnchorPane.rightAnchor="10">
+            <Button fx:id="btnCancel" minWidth="73" text="%btn_cancel" textFill="WHITE" onAction="#onActionBtnCancel" styleClass="btn-secondary" />
+            <Button fx:id="btnReset" minWidth="73" text="%btn_reset" textFill="WHITE" onAction="#onActionBtnReset" styleClass="btn-secondary" />
+            <Button fx:id="btnFilter" minWidth="73" text="%btn_filter" textFill="WHITE" onAction="#onActionBtnFilter" styleClass="btn-primary" />
+        </HBox>
+    </AnchorPane>
 </VBox>

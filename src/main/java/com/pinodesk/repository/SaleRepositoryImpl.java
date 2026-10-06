@@ -22,11 +22,13 @@ public class SaleRepositoryImpl extends AbstractRepository<Sale> implements Sale
                     b.name as customer_name,
                     c.id as doctor_id,
                     c.name as doctor_name,
-                    d.full_name as user_full_name
+                    d.full_name as user_full_name,
+                    pm.name as payment_method_name
                 from sale a
                 left join customer b on b.id = a.customer_id
                 left join doctor c on c.id = a.doctor_id
                 inner join `user` d on d.id = a.user_id
+                left join payment_method pm on pm.id = a.payment_method_id
                 """);
         Where where = new Where().isNull("a.deleted_at");
         if (StringUtils.isNotBlank(filter.getInvoiceNumber())) {
@@ -43,6 +45,9 @@ public class SaleRepositoryImpl extends AbstractRepository<Sale> implements Sale
         }
         if (filter.getDueDateMax() != null) {
             where.andLowerThanOrEqual("a.payment_due_date", filter.getDueDateMax());
+        }
+        if (filter.getPaymentMethodId() != null) {
+            where.andEquals("a.payment_method_id", filter.getPaymentMethodId());
         }
         if (filter.getPaymentStatus() != null) {
             where.andEquals("a.payment_status", filter.getPaymentStatus().toString());

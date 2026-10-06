@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox fx:id="contentPane" prefWidth="560" style="-fx-background-color: white;" stylesheets="@../../../css/pinodesk.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pinodesk.controller.settings.paymentmethod.PaymentMethodFormController">
+    <Label text="%lbl_edit_payment_method" style="-fx-font-size: 24px;">
+        <padding><Insets top="5" bottom="5" left="10" right="10" /></padding>
+    </Label>
+    <VBox spacing="10" style="-fx-border-color: #bebebe;">
+        <padding><Insets top="10" right="10" bottom="10" left="10" /></padding>
+        <VBox.margin><Insets left="10" right="10" bottom="10" /></VBox.margin>
+        <HBox spacing="10">
+            <VBox spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS">
+                <Label text="%lbl_name" />
+                <TextField fx:id="tfName" promptText="%prompt_payment_method_name" styleClass="input-primary" />
+            </VBox>
+            <VBox spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS">
+                <Label text="%lbl_category" />
+                <ComboBox fx:id="cbCategory" maxWidth="Infinity" styleClass="combo-box-primary" />
+            </VBox>
+            <VBox spacing="5" prefWidth="0" minWidth="0" HBox.hgrow="ALWAYS">
+                <Label text="%lbl_status" />
+                <ComboBox fx:id="cbStatus" maxWidth="Infinity" styleClass="combo-box-primary" />
+            </VBox>
+        </HBox>
+    </VBox>
+    <AnchorPane style="-fx-background-color: #ececec;">
+        <HBox spacing="1" AnchorPane.topAnchor="10" AnchorPane.bottomAnchor="10" AnchorPane.rightAnchor="10">
+            <Button fx:id="btnCancel" minWidth="73" text="%btn_cancel" textFill="WHITE" onAction="#onActionBtnCancel" styleClass="btn-secondary" />
+            <Button fx:id="btnSave" minWidth="73" text="%btn_save" textFill="WHITE" onAction="#onActionBtnSave" styleClass="btn-primary" />
+        </HBox>
+    </AnchorPane>
+</VBox>

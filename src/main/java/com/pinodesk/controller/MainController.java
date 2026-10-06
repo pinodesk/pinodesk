@@ -112,6 +112,9 @@ public class MainController extends BaseController {
     private Button btnMenuUsers;
 
     @FXML
+    private Button btnMenuPaymentMethods;
+
+    @FXML
     private Button btnMenuUserGroups;
 
     @FXML
@@ -286,6 +289,11 @@ public class MainController extends BaseController {
     }
 
     private void initSettingsMenus(Set<Node> inaccessibleMenus, List<String> userGroupMenuCodes) {
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
+                MenuCodeConstants.SETTINGS_PAYMENT_METHODS,
+                btnMenuPaymentMethods);
         appendInaccessibleMenus(inaccessibleMenus, userGroupMenuCodes, MenuCodeConstants.SETTINGS, lblMenuSettings);
         appendInaccessibleMenus(
                 inaccessibleMenus,
@@ -387,6 +395,11 @@ public class MainController extends BaseController {
     @FXML
     void onActionBtnMenuConfiguration(ActionEvent event) {
         changeContent(Page.SETTINGS_CONFIGURATION_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
+    void onActionBtnMenuPaymentMethods(ActionEvent event) {
+        changeContent(Page.SETTINGS_PAYMENT_METHOD_MAIN, (Button) event.getSource());
     }
 
     @FXML

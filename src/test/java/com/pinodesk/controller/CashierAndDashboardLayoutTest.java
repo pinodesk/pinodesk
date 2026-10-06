@@ -40,8 +40,8 @@ class CashierAndDashboardLayoutTest extends JavaFXTestBase {
             for (String language : List.of("en", "id")) {
                 try {
                     CashierController controller = new LayoutCashierController();
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource(
-                            "/assets/templates/transaction/sale/cashier/main.fxml"),
+                    FXMLLoader loader = new FXMLLoader(
+                            getClass().getResource("/assets/templates/transaction/sale/cashier/main.fxml"),
                             ResourceBundle.getBundle("pinodesk.lang", Locale.forLanguageTag(language)));
                     loader.setControllerFactory(type -> controller);
                     AnchorPane root = loader.load();
@@ -58,8 +58,8 @@ class CashierAndDashboardLayoutTest extends JavaFXTestBase {
                     assertTrue(panel.isVisible());
                     assertEquals(48, profile.getWidth());
                     assertEquals(profile.getWidth(), profile.getHeight());
-                    root.fireEvent(new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.ESCAPE,
-                            false, false, false, false));
+                    root.fireEvent(
+                            new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.ESCAPE, false, false, false, false));
                     assertFalse(panel.isVisible());
                     assertSame(items, cart.getItems());
                     for (String id : List.of("btnAddProduct", "btnCustomer", "btnPay", "btnCancel")) {
@@ -83,7 +83,8 @@ class CashierAndDashboardLayoutTest extends JavaFXTestBase {
                     var service = mock(com.pinodesk.service.DashboardService.class);
                     when(service.getYears()).thenReturn(List.of(2026));
                     org.springframework.test.util.ReflectionTestUtils.setField(controller, "dashboardService", service);
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/assets/templates/dashboard.fxml"),
+                    FXMLLoader loader = new FXMLLoader(
+                            getClass().getResource("/assets/templates/dashboard.fxml"),
                             ResourceBundle.getBundle("pinodesk.lang", Locale.forLanguageTag(language)));
                     loader.setControllerFactory(type -> controller);
                     VBox root = loader.load();
@@ -91,8 +92,8 @@ class CashierAndDashboardLayoutTest extends JavaFXTestBase {
                     new Scene(root, 1000, 640);
                     root.applyCss();
                     root.layout();
-                    var tables = loader.getNamespace().values().stream()
-                            .filter(TableView.class::isInstance).map(value -> (TableView<?>) value).toList();
+                    var tables = loader.getNamespace().values().stream().filter(TableView.class::isInstance)
+                            .map(value -> (TableView<?>) value).toList();
                     assertEquals(6, tables.size());
                     var active = javafx.css.PseudoClass.getPseudoClass("scroll-active");
                     for (TableView<?> table : tables) {
@@ -115,8 +116,8 @@ class CashierAndDashboardLayoutTest extends JavaFXTestBase {
     @Test
     void dashboardTablesRouteWheelToPageUntilClickedAndReleaseAtEdges(FxRobot robot) {
         robot.interact(() -> {
-            TableView<String> table = new TableView<>(FXCollections.observableArrayList(
-                    IntStream.range(0, 200).mapToObj(i -> "Row " + i).toList()));
+            TableView<String> table = new TableView<>(
+                    FXCollections.observableArrayList(IntStream.range(0, 200).mapToObj(i -> "Row " + i).toList()));
             TableColumn<String, String> column = new TableColumn<>("Product");
             column.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue()));
             table.getColumns().add(column);
@@ -135,8 +136,8 @@ class CashierAndDashboardLayoutTest extends JavaFXTestBase {
             root.layout();
             Node flow = table.lookup(".virtual-flow");
             ScrollBar bar = table.lookupAll(".scroll-bar").stream().filter(ScrollBar.class::isInstance)
-                    .map(ScrollBar.class::cast).filter(b -> b.getOrientation() == Orientation.VERTICAL)
-                    .findFirst().orElseThrow();
+                    .map(ScrollBar.class::cast).filter(b -> b.getOrientation() == Orientation.VERTICAL).findFirst()
+                    .orElseThrow();
             wheel(flow, -60);
             assertTrue(page.getVvalue() > 0, "Inactive table must scroll the page");
             assertEquals(0, bar.getValue(), "Inactive table must keep its row position");
@@ -152,36 +153,93 @@ class CashierAndDashboardLayoutTest extends JavaFXTestBase {
             bar.setValue(bar.getMin());
             wheel(flow, 60);
             assertTrue(page.getVvalue() < pagePosition, "Top edge hands scroll back to page");
-            page.fireEvent(new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.ESCAPE,
-                    false, false, false, false));
+            page.fireEvent(new KeyEvent(KeyEvent.KEY_PRESSED, "", "", KeyCode.ESCAPE, false, false, false, false));
             assertFalse(table.getPseudoClassStates().contains(javafx.css.PseudoClass.getPseudoClass("scroll-active")));
             pagePosition = page.getVvalue();
             wheel(flow, -60);
             assertTrue(page.getVvalue() > pagePosition);
             click(table);
-            table.fireEvent(new MouseEvent(MouseEvent.MOUSE_EXITED, 0, 0, 0, 0, MouseButton.NONE,
-                    0, false, false, false, false, false, false, false, false, false, false, null));
+            table.fireEvent(
+                    new MouseEvent(
+                            MouseEvent.MOUSE_EXITED,
+                            0,
+                            0,
+                            0,
+                            0,
+                            MouseButton.NONE,
+                            0,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            false,
+                            null));
             assertFalse(table.getPseudoClassStates().contains(javafx.css.PseudoClass.getPseudoClass("scroll-active")));
         });
     }
 
     private static void click(Node node) {
-        node.fireEvent(new MouseEvent(MouseEvent.MOUSE_PRESSED, 5, 5, 5, 5, MouseButton.PRIMARY,
-                1, false, false, false, false, true, false, false, false, false, true, null));
+        node.fireEvent(
+                new MouseEvent(
+                        MouseEvent.MOUSE_PRESSED,
+                        5,
+                        5,
+                        5,
+                        5,
+                        MouseButton.PRIMARY,
+                        1,
+                        false,
+                        false,
+                        false,
+                        false,
+                        true,
+                        false,
+                        false,
+                        false,
+                        false,
+                        true,
+                        null));
     }
 
     private static void wheel(Node node, double delta) {
-        node.fireEvent(new ScrollEvent(ScrollEvent.SCROLL, 5, 5, 5, 5,
-                false, false, false, false, false, false, 0, delta, 0, delta,
-                ScrollEvent.HorizontalTextScrollUnits.NONE, 0,
-                ScrollEvent.VerticalTextScrollUnits.NONE, 0, 0, null));
+        node.fireEvent(
+                new ScrollEvent(
+                        ScrollEvent.SCROLL,
+                        5,
+                        5,
+                        5,
+                        5,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        false,
+                        0,
+                        delta,
+                        0,
+                        delta,
+                        ScrollEvent.HorizontalTextScrollUnits.NONE,
+                        0,
+                        ScrollEvent.VerticalTextScrollUnits.NONE,
+                        0,
+                        0,
+                        null));
     }
 
     private static void savePreview(javafx.scene.Parent root, String name) throws java.io.IOException {
         String directory = System.getProperty("pinodesk.previewDir");
-        if (directory == null) return;
+        if (directory == null)
+            return;
         var snapshot = root.snapshot(null, null);
-        var image = new java.awt.image.BufferedImage((int) snapshot.getWidth(), (int) snapshot.getHeight(),
+        var image = new java.awt.image.BufferedImage(
+                (int) snapshot.getWidth(),
+                (int) snapshot.getHeight(),
                 java.awt.image.BufferedImage.TYPE_INT_ARGB);
         for (int y = 0; y < image.getHeight(); y++) {
             for (int x = 0; x < image.getWidth(); x++) {

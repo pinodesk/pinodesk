@@ -1,6 +1,10 @@
 package com.pinodesk.constant;
 
 public enum Activity {
+    GET_PAYMENT_METHODS,
+    GET_PAYMENT_METHOD,
+    SAVE_PAYMENT_METHOD,
+    REMOVE_PAYMENT_METHODS,
     ADD_PRODUCT,
     ADD_PACKAGE,
     EDIT_PACKAGE,

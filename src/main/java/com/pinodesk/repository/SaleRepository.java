@@ -32,6 +32,8 @@ public interface SaleRepository extends PagingAndSortingRepository<Sale, Long>, 
     @Query("delete from sale where id in (:ids)")
     Long deleteByIdIn(@Param("ids") List<Long> ids);
 
+    boolean existsByPaymentMethodId(Long paymentMethodId);
+
     boolean existsByInvoiceNumberIgnoreCaseAndDeletedAtIsNull(String invoiceNumber);
 
     Optional<Sale> findByIdAndDeletedAtIsNull(Long saleId);

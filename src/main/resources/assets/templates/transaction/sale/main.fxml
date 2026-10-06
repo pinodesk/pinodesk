@@ -68,13 +68,14 @@
         <columns>
           <TableColumn fx:id="colInvoiceNumber" minWidth="-Infinity" prefWidth="200.0" text="%lbl_invoice_number" />
             <TableColumn fx:id="colInvoiceDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_invoice_date" />
-          <TableColumn fx:id="colSellingMode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_selling_mode" />
-            <TableColumn fx:id="colCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />
-            <TableColumn fx:id="colDoctorName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_doctor_name" />
+            <TableColumn fx:id="colSellingMode" minWidth="-Infinity" prefWidth="150.0" text="%lbl_selling_mode" />
             <TableColumn fx:id="colTotalProduct" minWidth="-Infinity" prefWidth="150.0" text="%lbl_total_product" />
             <TableColumn fx:id="colTotalPayment" minWidth="-Infinity" prefWidth="200.0" text="%lbl_total_payment" />
+            <TableColumn fx:id="colPaymentMethod" prefWidth="180.0" text="%lbl_payment_method" />
             <TableColumn fx:id="colPaymentStatus" minWidth="-Infinity" prefWidth="150.0" text="%lbl_payment_status" />
             <TableColumn fx:id="colDueDate" minWidth="-Infinity" prefWidth="150.0" text="%lbl_due_date" />
+            <TableColumn fx:id="colCustomerName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_customer_name" />
+            <TableColumn fx:id="colDoctorName" minWidth="-Infinity" prefWidth="200.0" text="%lbl_doctor_name" />
             <TableColumn fx:id="colUser" minWidth="-Infinity" prefWidth="200.0" text="%lbl_user" />
             <TableColumn fx:id="colCreatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_created_at" />
             <TableColumn fx:id="colUpdatedAt" minWidth="-Infinity" prefWidth="150.0" text="%lbl_updated_at" />

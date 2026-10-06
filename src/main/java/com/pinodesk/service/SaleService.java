@@ -51,6 +51,9 @@ import com.pinodesk.viewmodel.SaleVM;
 public class SaleService extends BaseService {
 
     @Autowired
+    private PaymentMethodService paymentMethodService;
+
+    @Autowired
     private SaleRepository saleRepository;
 
     @Autowired
@@ -146,6 +149,9 @@ public class SaleService extends BaseService {
             throw new DomainException(DomainError.SALE_EXISTS_BY_INVOICE_NUMBER);
         }
         Sale sale = new Sale();
+        sale.setPaymentMethodId(
+                saleAdd.getPaymentMethodId() == null ?
+                        null : paymentMethodService.get(saleAdd.getPaymentMethodId()).getId());
         sale.setCustomerId(saleAdd.getCustomerId());
         if (SellingMode.PRESCRIPTION.equals(saleAdd.getSellingMode())) {
             sale.setDoctorId(saleAdd.getDoctorId());
@@ -407,6 +413,9 @@ public class SaleService extends BaseService {
             throw new DomainException(DomainError.SALE_OTHER_EXISTS_BY_INVOICE_NUMBER);
 
         }
+        sale.setPaymentMethodId(
+                saleEdit.getPaymentMethodId() == null ?
+                        null : paymentMethodService.get(saleEdit.getPaymentMethodId()).getId());
         sale.setCustomerId(saleEdit.getCustomerId());
         if (SellingMode.PRESCRIPTION.equals(saleEdit.getSellingMode())) {
             sale.setDoctorId(saleEdit.getDoctorId());

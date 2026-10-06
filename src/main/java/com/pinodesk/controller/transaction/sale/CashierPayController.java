@@ -18,11 +18,14 @@ import com.pinodesk.constant.PaymentStatus;
 import com.pinodesk.constant.SellingMode;
 import com.pinodesk.constant.StringConstants;
 import com.pinodesk.controller.CommonDataSaveController;
+import com.pinodesk.entity.PaymentMethod;
 import com.pinodesk.pandora.model.SimpleComboBoxModel;
 import com.pinodesk.pandora.utility.ComboBoxUtils;
 import com.pinodesk.pandora.utility.ControlValidator;
 import com.pinodesk.pandora.utility.TextFieldUtils;
+import com.pinodesk.service.PaymentMethodService;
 import com.pinodesk.service.SaleService;
+import com.pinodesk.util.PaymentMethodControls;
 import com.pinodesk.util.SpringUtils;
 import com.pinodesk.viewmodel.CustomerVM;
 import com.pinodesk.viewmodel.PaymentDataVM;
@@ -34,6 +37,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleGroup;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
 public class CashierPayController extends CommonDataSaveController {
@@ -52,6 +57,11 @@ public class CashierPayController extends CommonDataSaveController {
 
     @FXML
     private TextField tfPaymentAmount;
+
+    @FXML
+    private FlowPane paymentMethods;
+
+    private ToggleGroup paymentMethodGroup = new ToggleGroup();
 
     @FXML
     private ComboBox<SimpleComboBoxModel> cbPaymentStatus;
@@ -91,6 +101,11 @@ public class CashierPayController extends CommonDataSaveController {
             boolean isPaid = PaymentStatus.PAID.equals(nv.getValue());
             if (isPaid) {
                 dpDueDate.setValue(null);
+                if (paymentMethodGroup.getSelectedToggle() == null && !paymentMethodGroup.getToggles().isEmpty()) {
+                    paymentMethodGroup.selectToggle(paymentMethodGroup.getToggles().get(0));
+                }
+            } else {
+                paymentMethodGroup.selectToggle(null);
             }
             vboxDueDate.setDisable(isPaid);
         });
@@ -98,15 +113,29 @@ public class CashierPayController extends CommonDataSaveController {
 
     @Override
     protected void initDataSaveControlValues() {
+        paymentMethodGroup = PaymentMethodControls
+                .initializeChoices(paymentMethods, SpringUtils.getBean(PaymentMethodService.class).findAll());
+        paymentMethodGroup.selectedToggleProperty().addListener((o, old, value) -> updatePaymentAmount());
         Locale locale = resources.getLocale();
         saleData = getPageData();
         lblTotalSale.setText(formatOrDefault(saleData.getTotalSale(), locale, DECIMAL_SCALE, "0"));
         lblTotalProduct.setText(formatOrDefault(saleData.getTotalProduct(), locale, "0"));
+        tfPaymentAmount.setText(saleData.getTotalSale().stripTrailingZeros().toPlainString());
         lblCustomer.setText(saleData.getCustomer().map(CustomerVM::getName).orElse(StringConstants.MINUS));
         lblSellingMode.setText(
                 SellingMode.GENERAL.equals(saleData.getSellingMode()) ?
                         t.translate(CommonLabel.LBL_GENERAL) : t.translate(CommonLabel.LBL_PRESCRIPTION));
         ComboBoxUtils.selectIndex(cbPaymentStatus, 0);
+        updatePaymentAmount();
+    }
+
+    private void updatePaymentAmount() {
+        if (saleData == null || PaymentMethodControls.selectedMethod(paymentMethodGroup) == null)
+            return;
+        boolean cash = "CASH".equals(PaymentMethodControls.selectedMethod(paymentMethodGroup).getCategory());
+        tfPaymentAmount.setEditable(cash);
+        if (!cash)
+            tfPaymentAmount.setText(saleData.getTotalSale().stripTrailingZeros().toPlainString());
     }
 
     @Override
@@ -119,6 +148,8 @@ public class CashierPayController extends CommonDataSaveController {
         saleAdd.setInvoiceNumber(invoiceNumber);
         saleAdd.setInvoiceDate(paymentDateTime.toLocalDate());
         PaymentStatus paymentStatus = ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue();
+        PaymentMethod selectedPaymentMethod = PaymentMethodControls.selectedMethod(paymentMethodGroup);
+        saleAdd.setPaymentMethodId(selectedPaymentMethod == null ? null : selectedPaymentMethod.getId());
         saleAdd.setPaymentStatus(paymentStatus);
         LocalDate paymentDueDate = null;
         if (PaymentStatus.UNPAID.equals(paymentStatus)) {
@@ -142,6 +173,10 @@ public class CashierPayController extends CommonDataSaveController {
 
     @Override
     protected void validate(ControlValidator validator) {
+        validator.validateCustom(
+                () -> PaymentStatus.PAID.equals(ComboBoxUtils.getSelectedItem(cbPaymentStatus).getValue())
+                        && PaymentMethodControls.selectedMethod(paymentMethodGroup) == null,
+                MessageCode.ERROR_PAYMENT_METHOD_NOT_FOUND);
         validator.validateCustom(() -> {
             BigDecimal paymentAmount = toBigDecimalOrZero(tfPaymentAmount.getText());
             return paymentAmount.compareTo(saleData.getTotalSale()) < 0;

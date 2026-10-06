@@ -9,6 +9,7 @@ import lombok.Data;
 
 @Data
 public class SaleFilterVM {
+    private Long paymentMethodId;
     private String invoiceNumber;
     private LocalDate createdDateMin;
     private LocalDate createdDateMax;

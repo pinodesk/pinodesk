@@ -68,6 +68,9 @@
                 <Button fx:id="btnMenuConfiguration" text="%btn_menu_configuration" onAction="#onActionBtnMenuConfiguration" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
                     <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M3 6 H21 M7 3 V9 M3 12 H21 M16 9 V15 M3 18 H21 M10 15 V21" styleClass="shell-icon" /></StackPane></graphic>
                 </Button>
+                <Button fx:id="btnMenuPaymentMethods" text="%lbl_payment_methods" onAction="#onActionBtnMenuPaymentMethods" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
+                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24"><SVGPath content="M3 5 H21 V19 H3 Z M3 9 H21 M6 15 H10" styleClass="shell-icon" /></StackPane></graphic>
+                </Button>
                 <Button fx:id="btnMenuUsers" text="%btn_menu_users" onAction="#onActionBtnMenuUsers" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
                     <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M18 21 V18 Q18 14 14 14 H10 Q6 14 6 18 V21 M12 2 A4 4 0 1 1 12 10 A4 4 0 1 1 12 2" styleClass="shell-icon" /></StackPane></graphic>
                 </Button>

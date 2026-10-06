@@ -200,9 +200,15 @@ public class DashboardController extends BaseController {
 
     @Override
     protected void initControlActions() {
-        DashboardTableScrollSupport.install(dashboardScrollPane, List.of(tblBestSellingProducts,
-                tblLowestSellingProducts, tblProductOutOfStock, tblProductClosestExpiry,
-                tblPayableClosestDueDate, tblReceivableClosestDueDate));
+        DashboardTableScrollSupport.install(
+                dashboardScrollPane,
+                List.of(
+                        tblBestSellingProducts,
+                        tblLowestSellingProducts,
+                        tblProductOutOfStock,
+                        tblProductClosestExpiry,
+                        tblPayableClosestDueDate,
+                        tblReceivableClosestDueDate));
         Locale locale = resources.getLocale();
 
         TableViewUtils.setColumnValue(colBestSellingProductName, BestSellingProductVM::getProductName);

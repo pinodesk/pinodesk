@@ -13,7 +13,10 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 
-/** Keeps nested tables from capturing page scrolling before the user engages them. */
+/**
+ * Keeps nested tables from capturing page scrolling before the user engages
+ * them.
+ */
 public final class DashboardTableScrollSupport {
     private static final PseudoClass ACTIVE = PseudoClass.getPseudoClass("scroll-active");
     private final List<TableView<?>> tables;
@@ -49,7 +52,8 @@ public final class DashboardTableScrollSupport {
         page.addEventFilter(ScrollEvent.SCROLL, event -> {
             TableView<?> table = support.tableFor(event.getTarget());
             if (table != null && (support.active != table || atVerticalEdge(table, event))) {
-                // Retarget above the table's VirtualFlow so only the page consumes the wheel gesture.
+                // Retarget above the table's VirtualFlow so only the page consumes the wheel
+                // gesture.
                 Node content = page.getContent();
                 ScrollEvent forwarded = event.copyFor(content, content);
                 event.consume();
@@ -83,8 +87,7 @@ public final class DashboardTableScrollSupport {
         }
         for (Node node : table.lookupAll(".scroll-bar")) {
             if (node instanceof ScrollBar bar && bar.getOrientation() == Orientation.VERTICAL && bar.isVisible()) {
-                return event.getDeltaY() > 0 ? bar.getValue() <= bar.getMin()
-                        : bar.getValue() >= bar.getMax();
+                return event.getDeltaY() > 0 ? bar.getValue() <= bar.getMin() : bar.getValue() >= bar.getMax();
             }
         }
         return true;
