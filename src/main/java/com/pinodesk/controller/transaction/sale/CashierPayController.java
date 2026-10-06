@@ -130,9 +130,10 @@ public class CashierPayController extends CommonDataSaveController {
     }
 
     private void updatePaymentAmount() {
-        if (saleData == null || PaymentMethodControls.selectedMethod(paymentMethodGroup) == null)
+        PaymentMethod selectedMethod = PaymentMethodControls.selectedMethod(paymentMethodGroup);
+        if (saleData == null || selectedMethod == null)
             return;
-        boolean cash = "CASH".equals(PaymentMethodControls.selectedMethod(paymentMethodGroup).getCategory());
+        boolean cash = "CASH".equals(selectedMethod.getCategory());
         tfPaymentAmount.setEditable(cash);
         if (!cash)
             tfPaymentAmount.setText(saleData.getTotalSale().stripTrailingZeros().toPlainString());
