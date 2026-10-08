@@ -1,0 +1,147 @@
+# Antigravity AI Rules for Pinodesk
+
+> **Full Reference:** See [AGENTS.md](AGENTS.md)
+
+## Quick Overview
+
+**Pinodesk** - Desktop Point of Sale (POS) system
+- Java 21, JavaFX 21, Spring Framework 6.0.7
+- Spring Data JDBC, H2 Database, Flyway
+
+### Build Commands (Use script.sh)
+```bash
+./script.sh build   # Build
+./script.sh run     # Run app
+./script.sh test    # Quality checks + tests
+./script.sh fix     # Fix formatting
+```
+
+### Architecture
+```
+Controllers → Services → Repositories → Entities
+```
+
+---
+
+## Critical Rules (MUST Follow)
+
+### 1. Constructor Injection Only
+```java
+// GOOD
+@Service
+public class UserService {
+    private final UserRepository userRepository;
+    
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+}
+
+// BAD - Never use field injection
+@Autowired
+private UserRepository userRepository;
+```
+
+### 2. Always Filter Soft-Deleted Records
+```java
+Optional<User> findByUsernameAndDeletedAtIsNull(String username);
+
+if (userRepository.existsByUsernameAndDeletedAtIsNull(username)) {
+    throw new DomainException(DomainError.USER_EXISTS_BY_USERNAME);
+}
+```
+
+### 3. Define Column Constants
+```java
+@Data
+@EqualsAndHashCode(callSuper = false)
+public class User extends DataModel {
+    public static final String C_FULL_NAME = "full_name";
+    public static final String C_USERNAME = "username";
+    
+    private String fullName;
+    private String username;
+    private LocalDateTime deletedAt;
+}
+```
+
+### 4. Caching Pattern
+```java
+@Cacheable(CacheNameConstants.USERS_BY_FILTER)
+public List<UserVM> searchUsersByFilter(UserFilterVM filter) {
+    return userRepository.findByFilter(filter);
+}
+
+@CacheEvict(value = { CacheNameConstants.USERS_BY_FILTER }, allEntries = true)
+@Transactional
+public void removeUsers(List<Long> ids) {
+    userRepository.deleteUpdateByIdIn(ids);
+}
+```
+
+### 5. Error Handling
+```java
+if (userRepository.existsByUsernameAndDeletedAtIsNull(username)) {
+    throw new DomainException(DomainError.USER_EXISTS_BY_USERNAME);
+}
+```
+
+### 6. Use @Transactional for Writes
+```java
+@Transactional
+public User createUser(UserAddVM userAdd) {
+    // ...
+}
+```
+
+### 7. Import Guidelines
+Spotless automatically handles import ordering. Follow these guidelines:
+
+1. **Never use wildcard imports (`*`)**
+2. **Always use complete import paths**
+3. **Spotless will automatically sort and remove unused imports**
+
+```java
+// GOOD
+import java.util.List;
+import java.util.Optional;
+import com.pinodesk.entity.User;
+import com.pinodesk.constant.DomainError;
+
+// BAD - Don't use wildcards
+import java.util.*;
+import com.pinodesk.entity.*;
+```
+
+### 8. Method Ordering
+
+Organize class members in this order:
+
+1. **Static fields** (constants)
+2. **Instance fields**
+3. **Constructors**
+4. **Public methods** (business logic)
+5. **Package-private methods**
+6. **Protected methods**
+7. **Private methods** (helpers at the bottom)
+
+---
+
+## File Naming
+
+| Type | Pattern | Example |
+|------|---------|---------|
+| Entity | PascalCase | `User.java` |
+| Repository | Entity + Repository | `UserRepository.java` |
+| Service | Entity + Service | `UserService.java` |
+| Controller | Entity + Action + Controller | `UserMainController.java` |
+| ViewModel | Entity + Action + VM | `UserVM.java` |
+| FXML | snake_case | `user_main.fxml` |
+| Language Files | snake_case | `lang_en.properties` |
+
+---
+
+## References
+
+- [AGENTS.md](AGENTS.md) - Full documentation
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines

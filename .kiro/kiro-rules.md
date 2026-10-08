@@ -1,10 +1,10 @@
-# GitHub Copilot Instructions for Pinodesk
+# Kiro AI Rules for Pinodesk
 
-> **Full Reference:** See [AGENTS.md](../AGENTS.md) for complete documentation.
+> **Full Reference:** See [AGENTS.md](../AGENTS.md)
 
-## Quick Reference
+## Quick Overview
 
-### Tech Stack
+**Pinodesk** - Desktop Point of Sale (POS) system
 - Java 21, JavaFX 21, Spring Framework 6.0.7
 - Spring Data JDBC, H2 Database, Flyway
 
@@ -23,10 +23,11 @@ Controllers → Services → Repositories → Entities
 
 ---
 
-## Critical Rules
+## Critical Rules (MUST Follow)
 
 ### 1. Constructor Injection Only
 ```java
+// GOOD
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -35,6 +36,10 @@ public class UserService {
         this.userRepository = userRepository;
     }
 }
+
+// BAD - Never use field injection
+@Autowired
+private UserRepository userRepository;
 ```
 
 ### 2. Always Filter Soft-Deleted Records
@@ -80,6 +85,45 @@ if (userRepository.existsByUsernameAndDeletedAtIsNull(username)) {
     throw new DomainException(DomainError.USER_EXISTS_BY_USERNAME);
 }
 ```
+
+### 6. Use @Transactional for Writes
+```java
+@Transactional
+public User createUser(UserAddVM userAdd) {
+    // ...
+}
+```
+
+### 7. Import Guidelines
+Spotless automatically handles import ordering. Follow these guidelines:
+
+1. **Never use wildcard imports (`*`)**
+2. **Always use complete import paths**
+3. **Spotless will automatically sort and remove unused imports**
+
+```java
+// GOOD
+import java.util.List;
+import java.util.Optional;
+import com.pinodesk.entity.User;
+import com.pinodesk.constant.DomainError;
+
+// BAD - Don't use wildcards
+import java.util.*;
+import com.pinodesk.entity.*;
+```
+
+### 8. Method Ordering
+
+Organize class members in this order:
+
+1. **Static fields** (constants)
+2. **Instance fields**
+3. **Constructors**
+4. **Public methods** (business logic)
+5. **Package-private methods**
+6. **Protected methods**
+7. **Private methods** (helpers at the bottom)
 
 ---
 
@@ -149,9 +193,7 @@ public class UserMainController extends BaseController {
     private Button btnAdd;
     
     @Override
-    protected void initServices() {
-        // Initialize services
-    }
+    protected void initServices() { }
     
     @Override
     protected void initControlActions() {
@@ -188,5 +230,5 @@ public class UserMainController extends BaseController {
 
 ## References
 
-- [AGENTS.md](../AGENTS.md) - Full documentation
-- [CONTRIBUTING.md](../CONTRIBUTING.md) - Contribution guidelines
+- [AGENTS.md](AGENTS.md) - Full documentation
+- [CONTRIBUTING.md](CONTRIBUTING.md) - Contribution guidelines

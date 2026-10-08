@@ -1,6 +1,8 @@
 # Contributing to Pinodesk
 
-Thank you for your interest in contributing to Pinodesk! This document will help you get started with development, understand our conventions, and submit quality contributions.
+Thank you for your interest in contributing to Pinodesk! This document will help you get started with development, understand our workflow, and submit quality contributions.
+
+**For coding standards and architecture guidelines**, refer to [AGENTS.md](AGENTS.md) — it's our authoritative technical reference.
 
 ## Table of Contents
 
@@ -90,227 +92,55 @@ We use Spotless with Eclipse formatter rules. Always format before committing:
 
 ---
 
-## Project Architecture
+## Project Architecture & Standards
 
-Pinodesk follows a **layered architecture** with clear separation of concerns:
+For comprehensive documentation on project architecture, layer patterns, and our complete tech stack, 
+see [AGENTS.md](AGENTS.md#architecture--layer-patterns).
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Controllers                          │
-│         (JavaFX FXML controllers, UI event handlers)    │
-├─────────────────────────────────────────────────────────┤
-│                     Services                            │
-│    (Business logic, caching, transactions, validation)  │
-├─────────────────────────────────────────────────────────┤
-│                   Repositories                          │
-│     (Spring Data JDBC, custom queries, soft deletes)    │
-├─────────────────────────────────────────────────────────┤
-│                     Entities                            │
-│        (Data models, Lombok, column constants)          │
-└─────────────────────────────────────────────────────────┘
-```
+**Key highlights:**
+- Layered architecture: Entities → Repositories → Services → Controllers
+- Entities extend `DataModel` with column constants (`C_` prefix)
+- Repositories use Spring Data JDBC with soft deletes
+- Services handle business logic with caching and transactions
+- Controllers extend `BaseController` and manage UI interactions
 
-### Layer Details
-
-| Layer | Package | Purpose |
-|-------|---------|---------|
-| **Entities** | `com.pinodesk.entity` | Data models extending `DataModel`, using Lombok `@Data`, with column name constants (e.g., `C_FULL_NAME`) |
-| **Repositories** | `com.pinodesk.repository` | Spring Data JDBC interfaces. Complex queries go in `*Impl.java` files. Soft deletes use `deleted_at` field. |
-| **Services** | `com.pinodesk.service` | Business logic layer. Uses `@Cacheable`/`@CacheEvict` for caching, `@Transactional` for modifications, `@TargetActivity` for activity logging. |
-| **Controllers** | `com.pinodesk.controller` | JavaFX FXML controllers. Use `PageLoader` and `StageUtils` for navigation. Extend `BaseController` or its subclasses. |
-| **ViewModels** | `com.pinodesk.viewmodel` | DTOs for UI data binding |
-| **Constants** | `com.pinodesk.constant` | Centralized enums and strings (`Activity`, `DomainError`, `Page`, etc.) |
-
-### Key Files to Reference
-
-- `pom.xml` — Dependencies, build profiles, and plugin configuration
-- `Pinodesk.java` — Application entry point
-- `application.properties` — Configuration (encrypted credentials via Jasypt)
-- `UserService.java` — Example service pattern
-- `MainController.java` — Example controller pattern
+For detailed patterns and code examples, refer to [AGENTS.md](AGENTS.md#essential-code-patterns).
 
 ---
 
-## Coding Conventions
+## Coding Conventions & Standards
 
-### Entities
+For our complete coding conventions and standards, including detailed code examples and best practices, 
+see [AGENTS.md](AGENTS.md#code-style--conventions) and [AGENTS.md](AGENTS.md#essential-code-patterns).
 
-```java
-@Data
-public class User extends DataModel {
-    // Column name constants for type-safe queries
-    public static final String C_USERNAME = "username";
-    public static final String C_FULL_NAME = "full_name";
-    
-    private String username;
-    private String fullName;
-    private LocalDateTime deletedAt; // For soft deletes
-}
-```
+**Key standards:**
+- **Entities:** Extend `DataModel`, use Lombok `@Data`, define column constants with `C_` prefix
+- **Repositories:** Use Spring Data JDBC naming, create `*Impl.java` for complex queries, filter soft deletes
+- **Services:** Use constructor injection, apply `@Cacheable`/`@CacheEvict`, throw `DomainException` for business errors
+- **Controllers:** Extend `BaseController`, override required methods, use `@FXML` for UI binding
+- **Imports:** Never use wildcard imports, Spotless automatically organizes them
+- **Build:** Always use `./script.sh` instead of direct Maven commands
+- **Database:** Migrations use `V{number}__{description}.sql` format
 
-**Rules:**
-- Extend `DataModel` from Pinodesk Sequel library
-- Define column constants with `C_` prefix
-- Use Lombok `@Data` for getters/setters/equals/hashCode
-- Soft deletes via `deleted_at` field (set to `now()` instead of actual deletion)
-
-### Repositories
-
-```java
-public interface UserRepository extends CrudRepository<User, Long> {
-    // Spring Data JDBC generates the query
-    Optional<User> findByUsername(String username);
-    
-    // Complex queries go in *Impl.java
-    List<User> findActiveUsers();
-}
-
-// In UserRepositoryImpl.java
-@Transactional
-public List<User> findActiveUsers() {
-    // Custom query implementation
-    // Use deleted_at IS NULL for active records
-}
-```
-
-**Rules:**
-- Use Spring Data JDBC naming conventions for simple queries
-- Create `*Impl.java` files for complex queries
-- Mark modification methods with `@Transactional`
-- Always filter out soft-deleted records (`deleted_at IS NULL`)
-
-### Services
-
-```java
-@Service
-public class UserService {
-    
-    @Cacheable("users")
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
-    }
-    
-    @CacheEvict(value = "users", allEntries = true)
-    @TargetActivity(Activity.USER_CREATED)
-    public User createUser(User user) {
-        // Validation logic
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new DomainException(DomainError.USER_ALREADY_EXISTS);
-        }
-        return userRepository.save(user);
-    }
-}
-```
-
-**Rules:**
-- Inject repositories, never use `new` for dependencies
-- Use `@Cacheable` for read-heavy operations
-- Use `@CacheEvict` when modifying cached data
-- Throw `DomainException` with `DomainError` enum for business errors
-- Use `@TargetActivity` for audit logging where appropriate
-
-### Controllers
-
-```java
-public class MainController extends BaseController {
-    
-    @FXML private TextField usernameField;
-    
-    @Override
-    protected void initServices() {
-        // Initialize service dependencies
-    }
-    
-    @Override
-    protected void initControlActions() {
-        // Set up event handlers
-        usernameField.setOnAction(this::handleUsernameAction);
-    }
-    
-    @Override
-    protected void initControlValues() {
-        // Initialize UI values
-    }
-    
-    @Override
-    protected Stage getCurrentStage() {
-        return (Stage) usernameField.getScene().getWindow();
-    }
-    
-    @FXML
-    private void handleUsernameAction(ActionEvent event) {
-        // Handle event
-    }
-}
-```
-
-**Rules:**
-- Extend `BaseController` or its subclasses (`CommonContentPaneController`, `CommonDataSaveController`)
-- Override abstract methods: `initServices()`, `initControlActions()`, `initControlValues()`, `getCurrentStage()`
-- Use `@FXML` annotation for UI elements and event handlers
-- Load pages via `PageLoader.modal(Page.SOME_PAGE)` or `PageLoader.navigate(Page.SOME_PAGE)`
-
-### Configuration
-
-- `application.properties` contains main configuration
-- Database credentials are encrypted with Jasypt
-- Use profile-specific files: `application-dev.properties`, `application-prod.properties`
-
-### Database Migrations
-
-Migrations are in `src/main/resources/db/migration/`:
-
-```
-V0001__create_and_init_table_configuration.sql
-V0002__create_table_user.sql
-V0003__add_column_user_status.sql
-```
-
-**Naming convention:** `V{number}__{description}.sql` (double underscore)
+For method ordering, naming conventions, and detailed patterns, refer to [AGENTS.md](AGENTS.md).
 
 ---
 
 ## Testing Guidelines
 
-### Test Structure
+For comprehensive testing guidelines and patterns, see [AGENTS.md](AGENTS.md#testing).
 
-Tests go in `src/test/java/` mirroring the main package structure:
+**Quick reference:**
+- Tests go in `src/test/java/` mirroring the main package structure
+- Use JUnit 5 + TestFX + Mockito
+- UI tests extend `JavaFXTestBase` with Monocle for headless testing
+- Use a separate `application-test.properties` configuration
+- New code should have corresponding tests
 
+**Before submitting a PR, run:**
+```bash
+./script.sh test    # Runs all tests + PMD analysis
 ```
-src/test/java/com/pinodesk/
-├── service/
-│   └── UserServiceTest.java
-├── repository/
-│   └── UserRepositoryTest.java
-└── controller/
-    └── MainControllerTest.java
-```
-
-### UI Testing
-
-For JavaFX UI tests, extend `JavaFXTestBase` which uses TestFX with Monocle for headless testing:
-
-```java
-class MainControllerTest extends JavaFXTestBase {
-    
-    @Test
-    void shouldDisplayUsername() {
-        // Given
-        interact(() -> {
-            // Setup UI state
-        });
-        
-        // When & Then
-        verifyThat("#usernameField", hasText("expected"));
-    }
-}
-```
-
-**Important:** JavaFX tests require `headless=false` in configuration. Use Monocle for CI environments.
-
-### Test Profile
-
-Use a separate test configuration in `application-test.properties` to avoid affecting your development database.
 
 ---
 
@@ -318,24 +148,19 @@ Use a separate test configuration in `application-test.properties` to avoid affe
 
 ### Before Submitting
 
-1. **Format your code**
+1. **Run all quality checks and tests** (this runs PMD, Spotless, and tests)
    ```bash
-   ./mvnw spotless:apply
+   ./script.sh test
    ```
 
-2. **Run static analysis**
+2. **Fix any formatting issues automatically**
    ```bash
-   ./mvnw pmd:check
+   ./script.sh fix
    ```
 
-3. **Run all tests**
+3. **Test your changes manually**
    ```bash
-   ./mvnw test
-   ```
-
-4. **Test your changes manually**
-   ```bash
-   ./mvnw javafx:run
+   ./script.sh run
    ```
 
 ### Submission Checklist
