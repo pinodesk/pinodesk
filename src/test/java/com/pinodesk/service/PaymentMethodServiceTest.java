@@ -2,11 +2,15 @@ package com.pinodesk.service;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+
 import java.util.List;
 import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import com.pinodesk.constant.PaymentMethodCategory;
+import com.pinodesk.constant.UserStatus;
 import com.pinodesk.entity.PaymentMethod;
 import com.pinodesk.exception.DomainException;
 import com.pinodesk.repository.PaymentMethodRepository;
@@ -75,6 +79,58 @@ class PaymentMethodServiceTest {
     @Test
     void missingSelectionIdIsRejected() {
         assertThrows(DomainException.class, () -> service.get(999L));
+    }
+
+    @Test
+    void findAllReturnsAllMethodsOrdered() {
+        PaymentMethod cash = method(1L, "Cash", true);
+        PaymentMethod transfer = method(2L, "Transfer", false);
+        PaymentMethod credit = method(3L, "Credit", false);
+
+        when(repository.findAllByOrderByDefaultMethodDescNameAsc()).thenReturn(List.of(cash, transfer, credit));
+
+        List<PaymentMethod> result = service.findAll();
+
+        assertEquals(3, result.size());
+        assertEquals(cash, result.get(0));
+        assertEquals(transfer, result.get(1));
+        assertEquals(credit, result.get(2));
+        verify(repository).findAllByOrderByDefaultMethodDescNameAsc();
+    }
+
+    @Test
+    void findActiveReturnsOnlyActiveMethodsOrdered() {
+        PaymentMethod cash = method(1L, "Cash", true);
+        cash.setStatus(UserStatus.ACTIVE.toString());
+        PaymentMethod transfer = method(2L, "Transfer", false);
+        transfer.setStatus(UserStatus.ACTIVE.toString());
+        PaymentMethod inactive = method(3L, "Inactive", false);
+        inactive.setStatus(UserStatus.INACTIVE.toString());
+
+        when(repository.findByStatusOrderByDefaultMethodDescNameAsc(UserStatus.ACTIVE.toString()))
+                .thenReturn(List.of(cash, transfer));
+
+        List<PaymentMethod> result = service.findActive();
+
+        assertEquals(2, result.size());
+        assertEquals(cash, result.get(0));
+        assertEquals(transfer, result.get(1));
+        verify(repository).findByStatusOrderByDefaultMethodDescNameAsc(UserStatus.ACTIVE.toString());
+    }
+
+    @Test
+    void savePreservesStatusWhenEditing() {
+        PaymentMethod existing = method(1L, "Old Name", false);
+        existing.setStatus(UserStatus.INACTIVE.toString());
+
+        when(repository.findById(1L)).thenReturn(Optional.of(existing));
+        when(repository.findByNameIgnoreCase("New Name")).thenReturn(Optional.empty());
+        when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        PaymentMethod result = service.save(1L, "New Name", PaymentMethodCategory.CASH);
+
+        assertEquals("New Name", result.getName());
+        assertEquals(UserStatus.INACTIVE.toString(), result.getStatus());
     }
 
     @Test

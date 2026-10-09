@@ -4,6 +4,10 @@ import com.pinodesk.pandora.utility.IPage;
 
 public enum Page implements IPage {
 
+    SETTINGS_EXPENSE_CATEGORY_MAIN("settings/expense-category/main"),
+    SETTINGS_EXPENSE_CATEGORY_ADD("settings/expense-category/add"),
+    SETTINGS_EXPENSE_CATEGORY_EDIT("settings/expense-category/edit"),
+    SETTINGS_EXPENSE_CATEGORY_FILTER("settings/expense-category/filter"),
     SETTINGS_PAYMENT_METHOD_MAIN("settings/payment-method/main"),
     SETTINGS_PAYMENT_METHOD_ADD("settings/payment-method/add"),
     SETTINGS_PAYMENT_METHOD_EDIT("settings/payment-method/edit"),

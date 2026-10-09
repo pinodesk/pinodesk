@@ -7,125 +7,319 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane fx:id="rootPane" minHeight="640" minWidth="1024" prefHeight="768" prefWidth="1280"
     styleClass="main-shell" stylesheets="@../css/pinodesk.css, @../css/main-shell.css"
-    xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.pinodesk.controller.MainController">
+    xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.pinodesk.controller.MainController">
     <HBox alignment="CENTER_LEFT" spacing="16" prefHeight="76" styleClass="shell-topbar"
         AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
-        <ImageView fitHeight="36" fitWidth="36" preserveRatio="true"><image><Image url="@../images/pinodesk-logo-icon-128.png" /></image></ImageView>
-        <Label fx:id="lblStoreName" text="Store" minWidth="0" maxWidth="Infinity" HBox.hgrow="ALWAYS" styleClass="shell-store" />
+        <ImageView fitHeight="36" fitWidth="36" preserveRatio="true">
+            <image>
+                <Image url="@../images/pinodesk-logo-icon-128.png" />
+            </image>
+        </ImageView>
+        <Label fx:id="lblStoreName" text="Store" minWidth="0" maxWidth="Infinity"
+            HBox.hgrow="ALWAYS" styleClass="shell-store" />
         <ToggleButton fx:id="profileMenu" mnemonicParsing="false" styleClass="shell-profile">
-            <graphic><ImageView fx:id="imgUser" fitHeight="36" fitWidth="36" preserveRatio="true"><image><Image url="@../images/user.png" /></image></ImageView></graphic>
+            <graphic>
+                <ImageView fx:id="imgUser" fitHeight="36" fitWidth="36" preserveRatio="true">
+                    <image>
+                        <Image url="@../images/user.png" />
+                    </image>
+                </ImageView>
+            </graphic>
         </ToggleButton>
     </HBox>
     <VBox fx:id="sidebarPane" prefWidth="250" minWidth="0" styleClass="shell-sidebar"
         AnchorPane.leftAnchor="0" AnchorPane.topAnchor="76" AnchorPane.bottomAnchor="28">
         <HBox alignment="CENTER_LEFT" styleClass="shell-sidebar-toolbar">
-            <Button fx:id="btnToggleSidebar" onAction="#onActionBtnToggleSidebar" styleClass="shell-toggle" mnemonicParsing="false" maxWidth="Infinity" HBox.hgrow="ALWAYS">
-                <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M4 5 H20 M4 12 H20 M4 19 H20" styleClass="shell-icon" /></StackPane></graphic>
+            <Button fx:id="btnToggleSidebar" onAction="#onActionBtnToggleSidebar"
+                styleClass="shell-toggle" mnemonicParsing="false" maxWidth="Infinity"
+                HBox.hgrow="ALWAYS">
+                <graphic>
+                    <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                        prefHeight="24" maxHeight="24">
+                        <SVGPath content="M4 5 H20 M4 12 H20 M4 19 H20" styleClass="shell-icon" />
+                    </StackPane>
+                </graphic>
             </Button>
         </HBox>
-    <ScrollPane fx:id="menuScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER" minWidth="0" minHeight="0" VBox.vgrow="ALWAYS" styleClass="shell-sidebar">
-        <content><VBox fx:id="vboxMenu" spacing="4" fillWidth="true" styleClass="shell-menu-list">
-                <Button fx:id="btnMenuDashboard" text="%btn_menu_dashboard" onAction="#onActionBtnMenuDashboard" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M3 3 H9 V9 H3 Z M15 3 H21 V9 H15 Z M3 15 H9 V21 H3 Z M15 15 H21 V21 H15 Z" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Label fx:id="lblMenuCatalog" text="%lbl_menu_catalog" maxWidth="Infinity" styleClass="shell-section" />
-                <Button fx:id="btnMenuProducts" text="%btn_menu_products" onAction="#onActionBtnMenuProducts" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M3 7 L12 2 L21 7 V17 L12 22 L3 17 Z M3 7 L12 12 L21 7 M12 12 V22 M8 4 L17 9" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuCustomers" text="%btn_menu_customers" onAction="#onActionBtnMenuCustomers" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M16 21 V18 Q16 14 12 14 H6 Q2 14 2 18 V21 M9 3 A4 4 0 1 1 9 11 A4 4 0 1 1 9 3 M17 4 Q22 5 20 10 M20 14 Q23 15 23 20" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuSuppliers" text="%btn_menu_suppliers" onAction="#onActionBtnMenuSuppliers" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M2 5 H15 V18 H2 Z M15 10 H19 L23 14 V18 H15 M5 18 A2 2 0 1 0 9 18 M17 18 A2 2 0 1 0 21 18" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuDoctors" text="%btn_menu_doctors" onAction="#onActionBtnMenuDoctors" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M16 21 V18 Q16 14 12 14 H6 Q2 14 2 18 V21 M9 3 A4 4 0 1 1 9 11 A4 4 0 1 1 9 3 M17 4 Q22 5 20 10 M20 14 Q23 15 23 20" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Label fx:id="lblMenuTransaction" text="%lbl_menu_transaction" maxWidth="Infinity" styleClass="shell-section" />
-                <Button fx:id="btnMenuPurchases" text="%btn_menu_purchases" onAction="#onActionBtnMenuPurchases" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M3 8 H21 L19 22 H5 Z M8 8 V6 A4 4 0 0 1 16 6 V8 M12 12 V18 M9 15 L12 18 L15 15" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuSales" text="%btn_menu_sales" onAction="#onActionBtnMenuSales" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M2 3 H5 L8 16 H20 L23 7 H6 M9 21 H10 M18 21 H19" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuConsignments" text="%btn_menu_consignments" onAction="#onActionBtnMenuConsignments" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M3 7 L12 2 L21 7 V17 L12 22 L3 17 Z M3 7 L12 12 L21 7 M12 12 V22 M8 15 H16" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuPayables" text="%btn_menu_payables" onAction="#onActionBtnMenuPayables" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M3 5 H21 V21 H3 Z M3 9 H21 M12 12 V18 M9 15 L12 18 L15 15" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuReceivables" text="%btn_menu_receivables" onAction="#onActionBtnMenuReceivables" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M3 5 H21 V21 H3 Z M3 9 H21 M12 12 V18 M9 15 L12 12 L15 15" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Label fx:id="lblMenuReport" text="%lbl_menu_report" maxWidth="Infinity" styleClass="shell-section" />
-                <Button fx:id="btnMenuPurchasesReport" text="%btn_menu_purchase_report" onAction="#onActionBtnMenuPurchasesReport" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M5 2 H15 L21 8 V22 H5 Z M15 2 V8 H21 M9 13 H17 M9 17 H14" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuSalesReport" text="%btn_menu_sale_report" onAction="#onActionBtnMenuSalesReport" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M5 2 H15 L21 8 V22 H5 Z M15 2 V8 H21 M9 13 H17 M9 17 H14" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Label fx:id="lblMenuSettings" text="%lbl_menu_settings" maxWidth="Infinity" styleClass="shell-section" />
-                <Button fx:id="btnMenuConfiguration" text="%btn_menu_configuration" onAction="#onActionBtnMenuConfiguration" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M3 6 H21 M7 3 V9 M3 12 H21 M16 9 V15 M3 18 H21 M10 15 V21" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuPaymentMethods" text="%lbl_payment_methods" onAction="#onActionBtnMenuPaymentMethods" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24"><SVGPath content="M3 5 H21 V19 H3 Z M3 9 H21 M6 15 H10" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuUsers" text="%btn_menu_users" onAction="#onActionBtnMenuUsers" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M18 21 V18 Q18 14 14 14 H10 Q6 14 6 18 V21 M12 2 A4 4 0 1 1 12 10 A4 4 0 1 1 12 2" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-                <Button fx:id="btnMenuUserGroups" text="%btn_menu_user_groups" onAction="#onActionBtnMenuUserGroups" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-menu">
-                    <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M9 3 A3 3 0 1 1 9 9 A3 3 0 1 1 9 3 M2 21 V17 Q2 13 6 13 H12 Q16 13 16 17 V21 M17 3 Q23 4 20 9 M20 13 Q23 14 23 19" styleClass="shell-icon" /></StackPane></graphic>
-                </Button>
-        </VBox></content>
-    </ScrollPane>
+        <ScrollPane fx:id="menuScrollPane" fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="NEVER"
+            minWidth="0" minHeight="0" VBox.vgrow="ALWAYS" styleClass="shell-sidebar">
+            <content>
+                <VBox fx:id="vboxMenu" spacing="4" fillWidth="true" styleClass="shell-menu-list">
+                    <Button fx:id="btnMenuDashboard" text="%btn_menu_dashboard"
+                        onAction="#onActionBtnMenuDashboard" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M3 3 H9 V9 H3 Z M15 3 H21 V9 H15 Z M3 15 H9 V21 H3 Z M15 15 H21 V21 H15 Z"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Label fx:id="lblMenuCatalog" text="%lbl_menu_catalog" maxWidth="Infinity"
+                        styleClass="shell-section" />
+                    <Button fx:id="btnMenuProducts" text="%btn_menu_products"
+                        onAction="#onActionBtnMenuProducts" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M3 7 L12 2 L21 7 V17 L12 22 L3 17 Z M3 7 L12 12 L21 7 M12 12 V22 M8 4 L17 9"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuCustomers" text="%btn_menu_customers"
+                        onAction="#onActionBtnMenuCustomers" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M16 21 V18 Q16 14 12 14 H6 Q2 14 2 18 V21 M9 3 A4 4 0 1 1 9 11 A4 4 0 1 1 9 3 M17 4 Q22 5 20 10 M20 14 Q23 15 23 20"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuSuppliers" text="%btn_menu_suppliers"
+                        onAction="#onActionBtnMenuSuppliers" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M2 5 H15 V18 H2 Z M15 10 H19 L23 14 V18 H15 M5 18 A2 2 0 1 0 9 18 M17 18 A2 2 0 1 0 21 18"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuDoctors" text="%btn_menu_doctors"
+                        onAction="#onActionBtnMenuDoctors" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M16 21 V18 Q16 14 12 14 H6 Q2 14 2 18 V21 M9 3 A4 4 0 1 1 9 11 A4 4 0 1 1 9 3 M17 4 Q22 5 20 10 M20 14 Q23 15 23 20"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Label fx:id="lblMenuTransaction" text="%lbl_menu_transaction"
+                        maxWidth="Infinity" styleClass="shell-section" />
+                    <Button fx:id="btnMenuPurchases" text="%btn_menu_purchases"
+                        onAction="#onActionBtnMenuPurchases" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M3 8 H21 L19 22 H5 Z M8 8 V6 A4 4 0 0 1 16 6 V8 M12 12 V18 M9 15 L12 18 L15 15"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuSales" text="%btn_menu_sales"
+                        onAction="#onActionBtnMenuSales" mnemonicParsing="false" maxWidth="Infinity"
+                        styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath content="M2 3 H5 L8 16 H20 L23 7 H6 M9 21 H10 M18 21 H19"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuConsignments" text="%btn_menu_consignments"
+                        onAction="#onActionBtnMenuConsignments" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M3 7 L12 2 L21 7 V17 L12 22 L3 17 Z M3 7 L12 12 L21 7 M12 12 V22 M8 15 H16"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuPayables" text="%btn_menu_payables"
+                        onAction="#onActionBtnMenuPayables" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M3 5 H21 V21 H3 Z M3 9 H21 M12 12 V18 M9 15 L12 18 L15 15"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuReceivables" text="%btn_menu_receivables"
+                        onAction="#onActionBtnMenuReceivables" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M3 5 H21 V21 H3 Z M3 9 H21 M12 12 V18 M9 15 L12 12 L15 15"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Label fx:id="lblMenuReport" text="%lbl_menu_report" maxWidth="Infinity"
+                        styleClass="shell-section" />
+                    <Button fx:id="btnMenuPurchasesReport" text="%btn_menu_purchase_report"
+                        onAction="#onActionBtnMenuPurchasesReport" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M5 2 H15 L21 8 V22 H5 Z M15 2 V8 H21 M9 13 H17 M9 17 H14"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuSalesReport" text="%btn_menu_sale_report"
+                        onAction="#onActionBtnMenuSalesReport" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M5 2 H15 L21 8 V22 H5 Z M15 2 V8 H21 M9 13 H17 M9 17 H14"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Label fx:id="lblMenuSettings" text="%lbl_menu_settings" maxWidth="Infinity"
+                        styleClass="shell-section" />
+                    <Button fx:id="btnMenuConfiguration" text="%btn_menu_configuration"
+                        onAction="#onActionBtnMenuConfiguration" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M3 6 H21 M7 3 V9 M3 12 H21 M16 9 V15 M3 18 H21 M10 15 V21"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuPaymentMethods" text="%lbl_payment_methods"
+                        onAction="#onActionBtnMenuPaymentMethods" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24">
+                                <SVGPath content="M3 5 H21 V19 H3 Z M3 9 H21 M6 15 H10"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuExpenseCategories" text="%lbl_expense_categories"
+                        onAction="#onActionBtnMenuExpenseCategories" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath content="M4 4 H20 V20 H4 Z M8 8 H16 M8 12 H16 M8 16 H13"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuUsers" text="%btn_menu_users"
+                        onAction="#onActionBtnMenuUsers" mnemonicParsing="false" maxWidth="Infinity"
+                        styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M18 21 V18 Q18 14 14 14 H10 Q6 14 6 18 V21 M12 2 A4 4 0 1 1 12 10 A4 4 0 1 1 12 2"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="btnMenuUserGroups" text="%btn_menu_user_groups"
+                        onAction="#onActionBtnMenuUserGroups" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M9 3 A3 3 0 1 1 9 9 A3 3 0 1 1 9 3 M2 21 V17 Q2 13 6 13 H12 Q16 13 16 17 V21 M17 3 Q23 4 20 9 M20 13 Q23 14 23 19"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
+                </VBox>
+            </content>
+        </ScrollPane>
     </VBox>
-    <AnchorPane fx:id="contentPane" styleClass="shell-content" AnchorPane.leftAnchor="250" AnchorPane.topAnchor="76" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="28">
-        <children><VBox alignment="CENTER" layoutX="356.0" layoutY="20.0" spacing="10.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="30.0">
-               <children>
-                  <HBox alignment="CENTER" spacing="1.0">
-                     <children>
-                        <Label text="%lbl_hello" textAlignment="CENTER" textFill="#008167">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="lblHelloName" text="..." textAlignment="CENTER" textFill="#008167">
-                           <font>
-                              <Font size="20.0" />
-                           </font>
-                        </Label>
-                     </children>
-                  </HBox>
-                  <Label text="%lbl_thank_you" textAlignment="CENTER" wrapText="true">
-                     <font>
-                        <Font size="16.0" />
-                     </font>
-                  </Label>
-                  <ImageView fitHeight="400.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/greeting.png" />
-                     </image>
-                  </ImageView>
-               </children>
-               <padding>
-                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-               </padding>
+    <AnchorPane fx:id="contentPane" styleClass="shell-content" AnchorPane.leftAnchor="250"
+        AnchorPane.topAnchor="76" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="28">
+        <children>
+            <VBox alignment="CENTER" layoutX="356.0" layoutY="20.0" spacing="10.0"
+                AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0"
+                AnchorPane.topAnchor="30.0">
+                <children>
+                    <HBox alignment="CENTER" spacing="1.0">
+                        <children>
+                            <Label text="%lbl_hello" textAlignment="CENTER" textFill="#008167">
+                                <font>
+                                    <Font size="20.0" />
+                                </font>
+                            </Label>
+                            <Label fx:id="lblHelloName" text="..." textAlignment="CENTER"
+                                textFill="#008167">
+                                <font>
+                                    <Font size="20.0" />
+                                </font>
+                            </Label>
+                        </children>
+                    </HBox>
+                    <Label text="%lbl_thank_you" textAlignment="CENTER" wrapText="true">
+                        <font>
+                            <Font size="16.0" />
+                        </font>
+                    </Label>
+                    <ImageView fitHeight="400.0" fitWidth="400.0" pickOnBounds="true"
+                        preserveRatio="true">
+                        <image>
+                            <Image url="@../images/greeting.png" />
+                        </image>
+                    </ImageView>
+                </children>
+                <padding>
+                    <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                </padding>
             </VBox>
-         </children>
+        </children>
     </AnchorPane>
-    <HBox alignment="CENTER_RIGHT" prefHeight="28" styleClass="shell-footer" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+    <HBox alignment="CENTER_RIGHT" prefHeight="28" styleClass="shell-footer"
+        AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
         <Label fx:id="lblVersion" />
     </HBox>
-    <VBox fx:id="accountPanel" visible="false" managed="false" prefWidth="260" maxWidth="260" styleClass="shell-account-panel"
+    <VBox fx:id="accountPanel" visible="false" managed="false" prefWidth="260" maxWidth="260"
+        styleClass="shell-account-panel"
         AnchorPane.topAnchor="70" AnchorPane.rightAnchor="20">
         <VBox spacing="5" styleClass="shell-account-heading">
             <Label fx:id="lblUser" text="User" maxWidth="228" styleClass="shell-account-user" />
-            <Label fx:id="lblUserGroup" text="User Group" maxWidth="228" styleClass="shell-account-group" />
+            <Label fx:id="lblUserGroup" text="User Group" maxWidth="228"
+                styleClass="shell-account-group" />
         </VBox>
         <Separator styleClass="shell-account-separator" />
-        <Button fx:id="btnLogout" text="%btn_logout" onAction="#onActionBtnLogout" mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-logout">
-            <graphic><StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24" maxHeight="24"><SVGPath content="M9 3 H3 V21 H9 M9 12 H22 M17 7 L22 12 L17 17" styleClass="shell-icon" /></StackPane></graphic>
+        <Button fx:id="btnLogout" text="%btn_logout" onAction="#onActionBtnLogout"
+            mnemonicParsing="false" maxWidth="Infinity" styleClass="shell-logout">
+            <graphic>
+                <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24" prefHeight="24"
+                    maxHeight="24">
+                    <SVGPath content="M9 3 H3 V21 H9 M9 12 H22 M17 7 L22 12 L17 17"
+                        styleClass="shell-icon" />
+                </StackPane>
+            </graphic>
         </Button>
     </VBox>
 </AnchorPane>

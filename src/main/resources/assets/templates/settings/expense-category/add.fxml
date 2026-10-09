@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?><?import javafx.scene.control.*?><?import javafx.scene.layout.*?>
+<VBox fx:id="contentPane" prefWidth="500" style="-fx-background-color: white;"
+    stylesheets="@../../../css/pinodesk.css" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.pinodesk.controller.settings.expensecategory.ExpenseCategoryFormController">
+    <Label text="%lbl_add_expense_category" style="-fx-font-size: 24px;">
+        <padding>
+            <Insets top="8" bottom="8" left="12" right="12" />
+        </padding>
+    </Label>
+    <VBox spacing="12" style="-fx-border-color: #bebebe;">
+        <padding>
+            <Insets top="14" right="14" bottom="14" left="14" />
+        </padding>
+        <VBox.margin>
+            <Insets left="10" right="10" bottom="12" />
+        </VBox.margin>
+        <VBox spacing="5">
+            <Label text="%lbl_expense_category_name" />
+            <TextField fx:id="tfName" promptText="%prompt_expense_category_name"
+                styleClass="input-primary" />
+        </VBox>
+        <VBox spacing="5">
+            <Label text="%lbl_status" />
+            <ComboBox fx:id="cbStatus" maxWidth="Infinity" styleClass="combo-box-primary" />
+        </VBox>
+    </VBox>
+    <AnchorPane style="-fx-background-color: #ececec;">
+        <HBox spacing="1" AnchorPane.topAnchor="10" AnchorPane.bottomAnchor="10"
+            AnchorPane.rightAnchor="10">
+            <Button fx:id="btnCancel" minWidth="73" text="%btn_cancel" textFill="WHITE"
+                onAction="#onActionBtnCancel" styleClass="btn-secondary" />
+            <Button fx:id="btnSave" minWidth="73" text="%btn_save" textFill="WHITE"
+                onAction="#onActionBtnSave" styleClass="btn-primary" />
+        </HBox>
+    </AnchorPane>
+</VBox>

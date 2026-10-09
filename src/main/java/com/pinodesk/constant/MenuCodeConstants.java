@@ -4,6 +4,7 @@ public interface MenuCodeConstants {
     String CATALOG = "0001";
     String TRANSACTION = "0002";
     String SETTINGS_PAYMENT_METHODS = "0020";
+    String SETTINGS_EXPENSE_CATEGORIES = "0021";
     String SETTINGS = "0003";
     String CATALOG_PRODUCTS = "0004";
     String CATALOG_CUSTOMERS = "0005";

@@ -51,7 +51,7 @@ class MainControllerLayoutTest extends JavaFXTestBase {
                     savePreview(root, language + "-expanded");
                     var buttons = menu.getChildren().stream().filter(Button.class::isInstance).map(Button.class::cast)
                             .toList();
-                    assertEquals(16, buttons.size());
+                    assertEquals(17, buttons.size());
                     assertTrue(buttons.contains(loader.getNamespace().get("btnMenuPaymentMethods")));
                     for (Button button : buttons) {
                         assertNotNull(button.getGraphic());
