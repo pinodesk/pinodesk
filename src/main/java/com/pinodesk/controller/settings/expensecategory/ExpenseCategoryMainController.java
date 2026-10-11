@@ -150,6 +150,7 @@ public class ExpenseCategoryMainController extends BaseController {
                     }
                     tblCategories.setItems(FXCollections.observableArrayList(items));
                     lblRows.setText(StringNumberUtils.format(items.size(), resources.getLocale()));
+                    TableViewUtils.sortDescending(tblCategories, colUpdatedAt);
                 }));
     }
 

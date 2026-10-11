@@ -3,8 +3,6 @@ package com.pinodesk.constant;
 public interface MenuCodeConstants {
     String CATALOG = "0001";
     String TRANSACTION = "0002";
-    String SETTINGS_PAYMENT_METHODS = "0020";
-    String SETTINGS_EXPENSE_CATEGORIES = "0021";
     String SETTINGS = "0003";
     String CATALOG_PRODUCTS = "0004";
     String CATALOG_CUSTOMERS = "0005";
@@ -22,4 +20,7 @@ public interface MenuCodeConstants {
     String REPORT_SALES = "0017";
     String REPORT_PURCHASES = "0018";
     String TRANSACTION_CONSIGNMENTS = "0019";
+    String SETTINGS_PAYMENT_METHODS = "0020";
+    String SETTINGS_EXPENSE_CATEGORIES = "0021";
+    String TRANSACTION_EXPENSES = "0022";
 }

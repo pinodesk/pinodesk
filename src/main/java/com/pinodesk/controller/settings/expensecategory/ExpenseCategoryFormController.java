@@ -54,8 +54,9 @@ public class ExpenseCategoryFormController extends CommonDataSaveController {
     @Override
     protected void validate(ControlValidator validator) {
         validator.validateBlank(tfName, MessageCode.ERROR_EMPTY_NAME);
-        validator
-                .validateCustom(() -> tfName.getText().trim().length() > 100, MessageCode.ERROR_PAYMENT_METHOD_INVALID);
+        validator.validateCustom(
+                () -> tfName.getText().trim().length() > 100,
+                MessageCode.ERROR_EXPENSE_CATEGORY_INVALID);
     }
 
     @Override

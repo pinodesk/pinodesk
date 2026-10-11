@@ -178,6 +178,7 @@ public class PaymentMethodMainController extends BaseController {
                     }
                     tblMethods.setItems(FXCollections.observableArrayList(methods));
                     lblRows.setText(StringNumberUtils.format(methods.size(), resources.getLocale()));
+                    TableViewUtils.sortDescending(tblMethods, colUpdatedAt);
                 }));
     }
 

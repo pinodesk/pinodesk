@@ -37,8 +37,11 @@ public final class PaymentMethodControls {
             Long selectedId,
             boolean allowAll) {
         PaymentMethodService service = SpringUtils.getBean(PaymentMethodService.class);
-        box.getItems().setAll(service.findActive());
-        box.getItems().add(0, null);
+        box.getItems().clear();
+        if (allowAll) {
+            box.getItems().add(null);
+        }
+        box.getItems().addAll(service.findActive());
         box.setConverter(new StringConverter<>() {
             @Override
             public String toString(PaymentMethod method) {
@@ -51,9 +54,10 @@ public final class PaymentMethodControls {
             }
         });
         if (allowAll) {
-            box.setValue(null);
-            if (selectedId == null)
+            if (selectedId == null) {
+                box.getSelectionModel().selectFirst();
                 return;
+            }
         }
         box.getItems().stream().filter(m -> m != null)
                 .filter(m -> selectedId == null ? m.isDefaultMethod() : selectedId.equals(m.getId())).findFirst()
