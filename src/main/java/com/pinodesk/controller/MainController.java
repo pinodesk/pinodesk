@@ -100,6 +100,9 @@ public class MainController extends BaseController {
     private Button btnMenuReceivables;
 
     @FXML
+    private Button btnMenuExpenses;
+
+    @FXML
     private Button btnMenuConsignments;
 
     @FXML
@@ -287,6 +290,11 @@ public class MainController extends BaseController {
         appendInaccessibleMenus(
                 inaccessibleMenus,
                 userGroupMenuCodes,
+                MenuCodeConstants.TRANSACTION_EXPENSES,
+                btnMenuExpenses);
+        appendInaccessibleMenus(
+                inaccessibleMenus,
+                userGroupMenuCodes,
                 MenuCodeConstants.TRANSACTION_CONSIGNMENTS,
                 btnMenuConsignments);
     }
@@ -393,6 +401,11 @@ public class MainController extends BaseController {
     @FXML
     void onActionBtnMenuReceivables(ActionEvent event) {
         changeContent(Page.TRANSACTION_RECEIVABLE_MAIN, (Button) event.getSource());
+    }
+
+    @FXML
+    void onActionBtnMenuExpenses(ActionEvent event) {
+        changeContent(Page.TRANSACTION_EXPENSE_MAIN, (Button) event.getSource());
     }
 
     @FXML

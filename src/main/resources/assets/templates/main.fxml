@@ -169,6 +169,18 @@
                             </StackPane>
                         </graphic>
                     </Button>
+                    <Button fx:id="btnMenuExpenses" text="%btn_menu_expenses"
+                        onAction="#onActionBtnMenuExpenses" mnemonicParsing="false"
+                        maxWidth="Infinity" styleClass="shell-menu">
+                        <graphic>
+                            <StackPane minWidth="24" prefWidth="24" maxWidth="24" minHeight="24"
+                                prefHeight="24" maxHeight="24">
+                                <SVGPath
+                                    content="M3 5 H21 V21 H3 Z M3 9 H21 M6 12 H18 M6 16 H15"
+                                    styleClass="shell-icon" />
+                            </StackPane>
+                        </graphic>
+                    </Button>
                     <Label fx:id="lblMenuReport" text="%lbl_menu_report" maxWidth="Infinity"
                         styleClass="shell-section" />
                     <Button fx:id="btnMenuPurchasesReport" text="%btn_menu_purchase_report"

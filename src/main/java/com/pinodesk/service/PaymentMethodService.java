@@ -46,7 +46,8 @@ public class PaymentMethodService {
     }
 
     @Transactional
-    @CacheEvict(value = CacheNameConstants.SALES_BY_FILTER, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.SALES_BY_FILTER, CacheNameConstants.EXPENSES_BY_FILTER },
+        allEntries = true)
     @TargetActivity(Activity.SAVE_PAYMENT_METHOD)
     public PaymentMethod save(Long id, String name, PaymentMethodCategory category) {
         return save(
@@ -57,7 +58,8 @@ public class PaymentMethodService {
     }
 
     @Transactional
-    @CacheEvict(value = CacheNameConstants.SALES_BY_FILTER, allEntries = true)
+    @CacheEvict(value = { CacheNameConstants.SALES_BY_FILTER, CacheNameConstants.EXPENSES_BY_FILTER },
+        allEntries = true)
     @TargetActivity(Activity.SAVE_PAYMENT_METHOD)
     public PaymentMethod save(Long id, String name, PaymentMethodCategory category, UserStatus status) {
         if (name == null || name.isBlank() || name.trim().length() > 100 || category == null) {
@@ -83,6 +85,8 @@ public class PaymentMethodService {
     }
 
     @Transactional
+    @CacheEvict(value = { CacheNameConstants.SALES_BY_FILTER, CacheNameConstants.EXPENSES_BY_FILTER },
+        allEntries = true)
     @TargetActivity(Activity.REMOVE_PAYMENT_METHODS)
     public void remove(List<Long> ids) {
         List<PaymentMethod> methods = ids.stream().distinct().map(this::get).toList();

@@ -66,6 +66,11 @@ public enum Page implements IPage {
     TRANSACTION_PURCHASE_ADD("transaction/purchase/add"),
     TRANSACTION_PURCHASE_EDIT("transaction/purchase/edit"),
 
+    TRANSACTION_EXPENSE_MAIN("transaction/expense/main"),
+    TRANSACTION_EXPENSE_FILTER("transaction/expense/filter"),
+    TRANSACTION_EXPENSE_ADD("transaction/expense/add"),
+    TRANSACTION_EXPENSE_EDIT("transaction/expense/edit"),
+
     TRANSACTION_SALE_MAIN("transaction/sale/main"),
     TRANSACTION_SALE_FILTER("transaction/sale/filter"),
     TRANSACTION_SALE_ADD("transaction/sale/add"),
