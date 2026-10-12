@@ -40,7 +40,7 @@ Pinodesk is a free, open-source, desktop-based Point of Sale system designed for
 
 ### Quick Start
 
-1. **Download**. Get the installer for your platform from [pinodesk.com/en/download](https://www.pinodesk.com/en/download).
+1. **Download**. Get the installer for your platform from [pinodesk.com/download](https://www.pinodesk.com/download).
 2. **Install**. Run the installer and follow the setup wizard. No server or database configuration needed.
 3. **Register Installation**. Enter your email on the installation registration screen. An installation code will be sent to you.
 4. **Start Selling**. That's it. Begin adding products and processing transactions.
@@ -92,6 +92,6 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for:
 
 ## Documentation & Support
 
-- **Documentation**: [pinodesk.com/en/documentation](https://www.pinodesk.com/en/documentation)
-- **FAQ**: [pinodesk.com/en/documentation/faq](https://www.pinodesk.com/en/documentation/faq/)
+- **Documentation**: [pinodesk.com/documentation](https://www.pinodesk.com/documentation)
+- **FAQ**: [pinodesk.com/documentation/faq](https://www.pinodesk.com/documentation/faq/)
 - **Website**: [pinodesk.com](https://www.pinodesk.com/en)
