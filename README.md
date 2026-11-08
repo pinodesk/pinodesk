@@ -3,7 +3,7 @@
 
 [![GitHub Release](https://img.shields.io/github/v/release/pinodesk/pinodesk)](https://github.com/pinodesk/pinodesk/releases)
 [![CI](https://github.com/pinodesk/pinodesk/actions/workflows/ci.yml/badge.svg)](https://github.com/pinodesk/pinodesk/actions/workflows/ci.yml)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=pinodesk_pinodesk&metric=coverage)](https://sonarcloud.io/summary/new_code?id=pinodesk_pinodesk)
+[![Coverage](https://codecov.io/gh/pinodesk/pinodesk/graph/badge.svg?token=UJTEFRBBC3)](https://codecov.io/gh/pinodesk/pinodesk)
 [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=pinodesk_pinodesk&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=pinodesk_pinodesk)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=pinodesk_pinodesk&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=pinodesk_pinodesk)
 [![License](https://img.shields.io/github/license/pinodesk/pinodesk)](https://github.com/pinodesk/pinodesk/blob/main/LICENSE)

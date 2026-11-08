@@ -449,7 +449,7 @@ public class UserMainController extends BaseController {
 ### Testing
 
 - **Framework:** JUnit 5 + TestFX + Mockito
-- **Coverage:** JaCoCo with SonarCloud integration
+- **Coverage:** JaCoCo with Codecov integration
 - **UI Tests:** Use `JavaFXTestBase` with Monocle for headless testing
 
 **Commands:**
