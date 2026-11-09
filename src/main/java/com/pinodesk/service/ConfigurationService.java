@@ -299,12 +299,19 @@ public class ConfigurationService extends BaseService {
     }
 
     private void extractRealBackupFile(File backupFile, String dbDir) throws IOException {
+        Path destination = Path.of(dbDir).toAbsolutePath().normalize();
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(backupFile))) {
             ZipEntry entry = zis.getNextEntry();
             while (entry != null) {
+                Path target = destination.resolve(entry.getName()).normalize();
+                if (!target.startsWith(destination)) {
+                    throw new IOException("Backup entry escapes destination directory: " + entry.getName());
+                }
                 if (!entry.isDirectory()) {
-                    String db = dbDir + "/" + entry.getName();
-                    FileCopyUtils.copy(zis.readAllBytes(), new File(db));
+                    Files.createDirectories(target.getParent());
+                    FileCopyUtils.copy(zis.readAllBytes(), target.toFile());
+                } else {
+                    Files.createDirectories(target);
                 }
                 zis.closeEntry();
                 entry = zis.getNextEntry();
