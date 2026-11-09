@@ -1,6 +1,7 @@
 package com.pinodesk.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -20,8 +21,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -117,6 +121,44 @@ class ConfigurationServiceTest extends BaseServiceTest {
             assertSame(failure, thrown.getCause());
             assertEquals(1, writers.constructed().size());
             verify(writers.constructed().get(0)).close();
+        }
+    }
+
+    @Test
+    void extractRealBackupFile_shouldExtractNestedFiles() throws IOException {
+        Path archive = tempDir.resolve("backup.zip");
+        createZip(archive, "nested/database.db", "database");
+        Path destination = tempDir.resolve("database");
+
+        ReflectionTestUtils
+                .invokeMethod(configurationService, "extractRealBackupFile", archive.toFile(), destination.toString());
+
+        assertEquals("database", Files.readString(destination.resolve("nested/database.db")));
+    }
+
+    @Test
+    void extractRealBackupFile_shouldRejectEntriesOutsideDestination() throws IOException {
+        Path archive = tempDir.resolve("malicious-backup.zip");
+        createZip(archive, "../escaped.db", "outside");
+        Path destination = tempDir.resolve("database");
+
+        UndeclaredThrowableException thrown = assertThrows(
+                UndeclaredThrowableException.class,
+                () -> ReflectionTestUtils.invokeMethod(
+                        configurationService,
+                        "extractRealBackupFile",
+                        archive.toFile(),
+                        destination.toString()));
+
+        assertTrue(thrown.getCause() instanceof IOException);
+        assertFalse(Files.exists(tempDir.resolve("escaped.db")));
+    }
+
+    private void createZip(Path archive, String entryName, String contents) throws IOException {
+        try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(archive))) {
+            zip.putNextEntry(new ZipEntry(entryName));
+            zip.write(contents.getBytes(StandardCharsets.UTF_8));
+            zip.closeEntry();
         }
     }
 
