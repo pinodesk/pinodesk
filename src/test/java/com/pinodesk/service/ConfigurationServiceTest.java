@@ -152,11 +152,8 @@ class ConfigurationServiceTest extends BaseServiceTest {
 
         UndeclaredThrowableException thrown = assertThrows(
                 UndeclaredThrowableException.class,
-                () -> ReflectionTestUtils.invokeMethod(
-                        configurationService,
-                        "extractRealBackupFile",
-                        archiveFile,
-                        destinationPath));
+                () -> ReflectionTestUtils
+                        .invokeMethod(configurationService, "extractRealBackupFile", archiveFile, destinationPath));
 
         assertTrue(thrown.getCause() instanceof IOException);
         assertFalse(Files.exists(tempDir.resolve("escaped.db")));
