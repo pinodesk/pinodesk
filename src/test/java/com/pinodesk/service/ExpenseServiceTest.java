@@ -89,10 +89,9 @@ class ExpenseServiceTest {
     @Test
     void updateExpenseRejectsMissingExpense() {
         when(repository.findById(404L)).thenReturn(Optional.empty());
+        ExpenseAddVM input = expenseInput();
 
-        DomainException exception = assertThrows(
-                DomainException.class,
-                () -> service.updateExpense(expenseInput(), 404L));
+        DomainException exception = assertThrows(DomainException.class, () -> service.updateExpense(input, 404L));
 
         assertEquals(DomainError.EXPENSE_NOT_FOUND_BY_ID, exception.getError());
         verify(repository, never()).save(org.mockito.ArgumentMatchers.any(Expense.class));
