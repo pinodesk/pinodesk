@@ -127,7 +127,13 @@ class ConfigurationServiceTest extends BaseServiceTest {
     @Test
     void extractRealBackupFile_shouldExtractNestedFiles() throws IOException {
         Path archive = tempDir.resolve("backup.zip");
-        createZip(archive, "nested/database.db", "database");
+        try (ZipOutputStream zip = new ZipOutputStream(Files.newOutputStream(archive))) {
+            zip.putNextEntry(new ZipEntry("nested/"));
+            zip.closeEntry();
+            zip.putNextEntry(new ZipEntry("nested/database.db"));
+            zip.write("database".getBytes(StandardCharsets.UTF_8));
+            zip.closeEntry();
+        }
         Path destination = tempDir.resolve("database");
 
         ReflectionTestUtils
@@ -141,14 +147,16 @@ class ConfigurationServiceTest extends BaseServiceTest {
         Path archive = tempDir.resolve("malicious-backup.zip");
         createZip(archive, "../escaped.db", "outside");
         Path destination = tempDir.resolve("database");
+        File archiveFile = archive.toFile();
+        String destinationPath = destination.toString();
 
         UndeclaredThrowableException thrown = assertThrows(
                 UndeclaredThrowableException.class,
                 () -> ReflectionTestUtils.invokeMethod(
                         configurationService,
                         "extractRealBackupFile",
-                        archive.toFile(),
-                        destination.toString()));
+                        archiveFile,
+                        destinationPath));
 
         assertTrue(thrown.getCause() instanceof IOException);
         assertFalse(Files.exists(tempDir.resolve("escaped.db")));
