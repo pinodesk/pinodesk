@@ -87,31 +87,9 @@ class SaleServiceTest extends BaseServiceTest {
     }
 
     @Test
-    void createSalePersistsStockExpiryPriceAndUnpaidReceivable() {
-        SaleAddVM addition = saleAddition(3);
-        Product product = productWithQuantity(10);
-        when(sales.existsByInvoiceNumberIgnoreCaseAndDeletedAtIsNull("SALE-001")).thenReturn(false);
-        when(sales.save(any(Sale.class))).thenAnswer(invocation -> {
-            Sale sale = invocation.getArgument(0);
-            sale.setId(5L);
-            sale.setCreatedAt(LocalDateTime.of(2026, 11, 9, 10, 0));
-            return sale;
-        });
-        when(details.save(any(SaleDetail.class))).thenAnswer(invocation -> {
-            SaleDetail detail = invocation.getArgument(0);
-            detail.setId(11L);
-            return detail;
-        });
-        when(products.findByIdAndDeletedAtIsNull(7L)).thenReturn(Optional.of(product));
-        when(products.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
-        when(stocks.findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(7L)).thenReturn(Optional.of(stockBalance(10)));
-        ProductExpiry priorExpiry = new ProductExpiry();
-        priorExpiry.setExpiredDate(LocalDate.of(2027, 3, 31));
-        priorExpiry.setFinalQuantity(10);
-        priorExpiry.setFinalQuantityExpiredDate(6);
-        when(expiries.findFirstByProductIdOrderByIdDesc(7L)).thenReturn(Optional.of(priorExpiry));
-
-        service.createSale(addition, Activity.ADD_SALE);
+    void createSalePersistsSaleAndDetail() {
+        prepareSale();
+        service.createSale(saleAddition(3), Activity.ADD_SALE);
 
         ArgumentCaptor<Sale> saleCaptor = ArgumentCaptor.forClass(Sale.class);
         verify(sales).save(saleCaptor.capture());
@@ -124,6 +102,12 @@ class SaleServiceTest extends BaseServiceTest {
         assertEquals(5L, detailCaptor.getValue().getSaleId());
         assertEquals(7L, detailCaptor.getValue().getProductId());
         assertEquals(3, detailCaptor.getValue().getQuantity());
+    }
+
+    @Test
+    void createSaleUpdatesInventoryPriceExpiryAndReceivable() {
+        Product product = prepareSale();
+        service.createSale(saleAddition(3), Activity.ADD_SALE);
 
         ArgumentCaptor<ProductStock> stockCaptor = ArgumentCaptor.forClass(ProductStock.class);
         verify(stocks).save(stockCaptor.capture());
@@ -187,11 +171,12 @@ class SaleServiceTest extends BaseServiceTest {
 
     @Test
     void duplicateInvoiceIsRejectedBeforeSaleOrInventoryWrites() {
+        SaleAddVM addition = saleAddition(3);
         when(sales.existsByInvoiceNumberIgnoreCaseAndDeletedAtIsNull("SALE-001")).thenReturn(true);
 
         DomainException error = assertThrows(
                 DomainException.class,
-                () -> service.createSale(saleAddition(3), Activity.ADD_SALE));
+                () -> service.createSale(addition, Activity.ADD_SALE));
 
         assertEquals(DomainError.SALE_EXISTS_BY_INVOICE_NUMBER, error.getError());
         verify(sales, never()).save(any(Sale.class));
@@ -204,6 +189,31 @@ class SaleServiceTest extends BaseServiceTest {
                 receivables,
                 receivablePayments,
                 packageDetails);
+    }
+
+    private Product prepareSale() {
+        Product product = productWithQuantity(10);
+        when(sales.existsByInvoiceNumberIgnoreCaseAndDeletedAtIsNull("SALE-001")).thenReturn(false);
+        when(sales.save(any(Sale.class))).thenAnswer(invocation -> {
+            Sale sale = invocation.getArgument(0);
+            sale.setId(5L);
+            sale.setCreatedAt(LocalDateTime.of(2026, 11, 9, 10, 0));
+            return sale;
+        });
+        when(details.save(any(SaleDetail.class))).thenAnswer(invocation -> {
+            SaleDetail detail = invocation.getArgument(0);
+            detail.setId(11L);
+            return detail;
+        });
+        when(products.findByIdAndDeletedAtIsNull(7L)).thenReturn(Optional.of(product));
+        when(products.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(stocks.findFirstByProductIdAndDeletedAtIsNullOrderByIdDesc(7L)).thenReturn(Optional.of(stockBalance(10)));
+        ProductExpiry priorExpiry = new ProductExpiry();
+        priorExpiry.setExpiredDate(LocalDate.of(2027, 3, 31));
+        priorExpiry.setFinalQuantity(10);
+        priorExpiry.setFinalQuantityExpiredDate(6);
+        when(expiries.findFirstByProductIdOrderByIdDesc(7L)).thenReturn(Optional.of(priorExpiry));
+        return product;
     }
 
     private SaleAddVM saleAddition(int quantity) {
