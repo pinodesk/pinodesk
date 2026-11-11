@@ -1,5 +1,5 @@
-<div align="center" width="100%">
-<img src="src/main/resources/assets/images/pinodesk-logo-text-128.png" height="48" alt="Pinodesk Logo" /> 
+<img src="src/main/resources/assets/images/pinodesk-logo-text-128.png" height="50" alt="Pinodesk Logo" />
+<p></p>
 
 [![GitHub Release](https://img.shields.io/github/v/release/pinodesk/pinodesk)](https://github.com/pinodesk/pinodesk/releases)
 [![CI](https://github.com/pinodesk/pinodesk/actions/workflows/ci.yml/badge.svg)](https://github.com/pinodesk/pinodesk/actions/workflows/ci.yml)
@@ -7,7 +7,6 @@
 [![Quality gate status](https://sonarcloud.io/api/project_badges/measure?project=pinodesk_pinodesk&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=pinodesk_pinodesk)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=pinodesk_pinodesk&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=pinodesk_pinodesk)
 [![License](https://img.shields.io/github/license/pinodesk/pinodesk)](https://github.com/pinodesk/pinodesk/blob/main/LICENSE)
-</div>
 
 ## About Pinodesk
 
