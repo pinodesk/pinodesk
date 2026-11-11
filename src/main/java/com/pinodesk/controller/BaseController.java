@@ -152,7 +152,7 @@ public abstract class BaseController {
     }
 
     protected void handleException(Throwable e) {
-        e.printStackTrace();
+        log.debug("Handling application exception", e);
         handleException(e, Thread.currentThread());
     }
 

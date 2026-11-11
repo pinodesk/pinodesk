@@ -16,7 +16,7 @@ public class PropertiesUtils {
                 prop.load(is);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Failed to load application properties", e);
         }
         return prop;
     }
