@@ -8,6 +8,7 @@ import static com.pinodesk.toolbox.data.StringNumberUtils.toStringOrEmpty;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 import com.pinodesk.constant.MessageCode;
 import com.pinodesk.constant.SellingMode;
@@ -132,14 +133,14 @@ public class CashierConfirmProductController extends CommonDataSaveController {
             Integer currentQty = toIntegerOrZero(tfCurrentQuantity.getText());
             Integer saleQty = toIntegerOrZero(tfSaleQuantity.getText());
             GroupedProductExpiryVM px = ComboBoxUtils.getSelectedItem(cbExpiredDate);
-            if (px != null) {
-                return saleQty > px.getQuantity();
-            }
-            List<SaleProductVM> saleProducts = confirmProduct.getCurrentSaleProducts();
-            int qtySameProductsDifferentExpiry = saleProducts.stream()
-                    .filter(sp -> equalsProductIdAndNotExpiredDate(sp, px)).map(SaleProductVM::getSaleQuantity)
-                    .reduce(0, Integer::sum);
-            return qtySameProductsDifferentExpiry + saleQty > currentQty;
+            Long productId = isEdit ? currentSaleProduct.getProductId() : currentProduct.getId();
+            long quantityAlreadyInSale = confirmProduct.getCurrentSaleProducts().stream()
+                    .filter(sp -> Objects.equals(sp.getProductId(), productId))
+                    .filter(sp -> !isEdit || sp != currentSaleProduct)
+                    .filter(sp -> px == null || Objects.equals(sp.getExpiredDate(), px.getExpiredDate()))
+                    .mapToLong(sp -> Objects.requireNonNullElse(sp.getSaleQuantity(), 0)).sum();
+            int availableQuantity = px == null ? currentQty : Objects.requireNonNullElse(px.getQuantity(), 0);
+            return quantityAlreadyInSale + saleQty > availableQuantity;
         }, MessageCode.ERROR_SALE_QUANTITY_GREATER_THAN_PRODUCT_QUANTITY);
     }
 
@@ -158,14 +159,6 @@ public class CashierConfirmProductController extends CommonDataSaveController {
         if (tfCurrentQuantity.isEditable()) {
             setFocused(tfCurrentQuantity);
         }
-    }
-
-    private boolean equalsProductIdAndNotExpiredDate(SaleProductVM sp, GroupedProductExpiryVM px) {
-        Long productId = isEdit ? currentSaleProduct.getProductId() : currentProduct.getId();
-        boolean equalsProductId = sp.getProductId().equals(productId);
-        boolean notEqualsExpiry = px == null ?
-                sp.getExpiredDate() != null : !sp.getExpiredDate().equals(px.getExpiredDate());
-        return equalsProductId && notEqualsExpiry;
     }
 
     private void initValuesForEdit() {
